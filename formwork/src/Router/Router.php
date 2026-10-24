@@ -424,8 +424,9 @@ class Router
             $pattern = $this->resolvePatternShortcut($pattern);
 
             // Wrap the regex in tilde delimiters, so we don't need to escape slashes, ensure the regex matches the entire string.
-            // A non-capturing group is added to avoid issues with alternation
-            if (!(bool) preg_match('~^(?:' . trim($pattern, '^$') . ')$~', (string) $params[$param])) {
+            // A non-capturing group is added to avoid issues with alternation. Values are matched against the URL-decoded
+            // form, as is done for the request path, so that already encoded values (e.g. `%3D`) are accepted
+            if (!(bool) preg_match('~^(?:' . trim($pattern, '^$') . ')$~', rawurldecode((string) $params[$param]))) {
                 throw new InvalidArgumentException(sprintf('Invalid value for param "%s"', $param));
             }
 

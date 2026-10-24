@@ -203,6 +203,7 @@ final class RouterTest extends TestCase
             'hex shortcut'        => ['/hash/{value:xdigits}', ['value' => 'deadbeef'], '/hash/deadbeef/'],
             'number shortcut'     => ['/id/{number:number}', ['number' => '12'], '/id/12/'],
             'base64 shortcut'     => ['/token/{value:base64}', ['value' => 'YWJj'], '/token/YWJj/'],
+            'encoded base64'      => ['/token/{value:base64}', ['value' => 'YWJjZA%3D%3D'], '/token/YWJjZA%3D%3D/'],
             'optional parameter'  => ['/archive/{year:digits}?', [], '/archive/'],
             'comma separator'     => ['/search,{term}', ['term' => 'php'], '/search,php/'],
             'colon separator'     => ['/version:{version}', ['version' => 'v2'], '/version:v2/'],
@@ -239,6 +240,16 @@ final class RouterTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid value for param "id"');
         $router->generate('user', ['id' => 'abc']);
+    }
+
+    public function testGenerateRejectsEncodedValuesThatDoNotMatchTheirConstraintOnceDecoded(): void
+    {
+        $router = $this->router('/');
+        $router->addRoute('user', '/users/{id:digits}');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid value for param "id"');
+        $router->generate('user', ['id' => '%41']);
     }
 
     public function testGenerateWithUsesCurrentParametersButExplicitValuesWin(): void
