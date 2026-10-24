@@ -1,29 +1,45 @@
-export function serializeObject(object: Record<string, string | number | boolean>) {
-    const serialized: string[] = [];
-    for (const property in object) {
-        serialized.push(`${encodeURIComponent(property)}=${encodeURIComponent(object[property])}`);
-    }
-    return serialized.join("&");
-}
-
+/**
+ * Serialize the fields of a form as a query string
+ *
+ * Disabled fields, buttons, file inputs, unchecked checkboxes and radios and fields with
+ * `data-form-ignore="true"` are left out
+ */
 export function serializeForm(form: HTMLFormElement) {
     const serialized: string[] = [];
+
+    const add = (name: string, value: string) => {
+        serialized.push(`${encodeURIComponent(name)}=${encodeURIComponent(value)}`);
+    };
+
     for (const field of Array.from(form.elements) as HTMLFormElement[]) {
-        if (field.name && !field.disabled && field.dataset.formIgnore !== "true" && field.type !== "file" && field.type !== "reset" && field.type !== "submit" && field.type !== "button") {
-            if (field.type === "select-multiple") {
-                for (const option of field.options) {
-                    if (option.selected) {
-                        serialized.push(`${encodeURIComponent(field.name)}=${encodeURIComponent(option.value)}`);
-                    }
+        if (!isSerializable(field)) {
+            continue;
+        }
+
+        if (field.type === "select-multiple") {
+            for (const option of field.options) {
+                if (option.selected) {
+                    add(field.name, option.value);
                 }
-            } else if ((field.type !== "checkbox" && field.type !== "radio") || field.checked) {
-                serialized.push(`${encodeURIComponent(field.name)}=${encodeURIComponent(field.value)}`);
             }
+        } else if (field.checked || (field.type !== "checkbox" && field.type !== "radio")) {
+            add(field.name, field.value);
         }
     }
+
     return serialized.join("&");
 }
 
+/**
+ * Return whether a field is sent with the form and is considered in its changes
+ */
+function isSerializable(field: HTMLFormElement) {
+    return field.name && !field.disabled && field.dataset.formIgnore !== "true" && !["file", "reset", "submit", "button"].includes(field.type);
+}
+
+/**
+ * Download a file sent by the server in answer to a POST request
+ */
 export function triggerDownload(uri: string, csrfToken: string) {
     const form = document.createElement("form");
     form.action = uri;

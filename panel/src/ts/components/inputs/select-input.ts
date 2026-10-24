@@ -1,8 +1,11 @@
-import { app } from "../../app";
+import { effect } from "@preact/signals-core";
+import { app } from "../../services/app";
+import { makeSearchRegExp } from "../../utils/search";
 import { $, $$ } from "../../utils/selectors";
 import { toCamelCase } from "../../utils/strings";
-import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
-import * as icons from "../icons";
+import * as icons from "../ui/icons";
+import { DropdownList } from "./dropdown-list";
+import { InputBase } from "./input";
 
 type SelectInputListItem = {
     label: string;
@@ -12,7 +15,10 @@ type SelectInputListItem = {
     dataset: Record<string, string>;
 };
 
-interface SelectInputOptions {
+/**
+ * Holds the options of a select input
+ */
+export interface SelectInputOptions {
     labels: {
         empty: string;
     };
@@ -20,29 +26,35 @@ interface SelectInputOptions {
 
 let instanceCount = 0;
 
-export class SelectInput {
+/**
+ * Provides a select input with a searchable list of options in place of a native select
+ *
+ * The native select is hidden and holds the value sent with the form
+ */
+export class SelectInput extends InputBase<HTMLSelectElement> {
     readonly options: SelectInputOptions;
 
-    readonly element: HTMLSelectElement;
-
-    private dropdown!: HTMLElement;
+    private list!: DropdownList;
 
     private labelInput: HTMLInputElement;
 
     private emptyState: HTMLDivElement;
 
+    // Whether a key has been typed since the text field got the focus
+    private isTyping = false;
+
     private readonly uid = ++instanceCount;
 
     private optionCount = 0;
 
-    constructor(element: HTMLSelectElement, options: Partial<SelectInputOptions>) {
+    constructor(element: HTMLSelectElement, options: Partial<SelectInputOptions> = {}) {
         const defaults: SelectInputOptions = {
             labels: {
                 empty: app.translation.get("fields.select.empty", "No matching options"),
             },
         };
 
-        this.element = element;
+        super(element);
 
         this.options = { ...defaults, ...options };
 
@@ -53,108 +65,62 @@ export class SelectInput {
         this.createField();
     }
 
+    /**
+     * Get the element of the list
+     */
+    private get dropdown() {
+        return this.list.element;
+    }
+
+    /**
+     * Get the element of the list
+     */
     get dropdownElement() {
         return this.dropdown;
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
+    // The getter is defined again because a class defining only the setter would lose it
     get value() {
         return this.element.value;
     }
 
+    /**
+     * Select the option with a value
+     */
     set value(value: string) {
         this.element.value = value;
         this.setCurrent();
     }
 
+    /**
+     * Get the selected item of the list
+     */
     get selectedDropdownItem() {
-        return $(".dropdown-item.selected", this.dropdown);
+        return this.list.selected.value;
     }
 
+    /**
+     * Get the items of the list
+     */
     get dropdownItems() {
         return $$(".dropdown-item", this.dropdown);
     }
 
+    /**
+     * Create the text field and the list from the options of the select
+     */
     private createField() {
-        const hasWrap = this.element.closest(".form-input-wrap");
+        const wrap = this.getWrap();
 
-        const wrap = hasWrap || document.createElement("div");
+        this.createLabelInput();
+        this.hideSelect();
 
-        const selectId = this.element.id;
-
-        if (!hasWrap) {
-            wrap.className = "form-input-wrap";
-            (this.element.parentNode as ParentNode).insertBefore(wrap, this.element.nextSibling);
-        }
-
-        this.element.hidden = true;
-
-        this.labelInput.type = "text";
-
-        this.labelInput.className = this.element.className;
-        this.labelInput.classList.add("form-select");
-        this.labelInput.id = selectId;
-
-        const describedBy = this.element.getAttribute("aria-describedby");
-
-        if (describedBy) {
-            this.labelInput.setAttribute("aria-describedby", describedBy);
-        }
-
-        // The text input acts as the combobox, its dropdown is the listbox
-        this.labelInput.setAttribute("role", "combobox");
-        this.labelInput.setAttribute("aria-autocomplete", "list");
-        this.labelInput.setAttribute("aria-haspopup", "listbox");
-        this.labelInput.setAttribute("aria-expanded", "false");
-
-        this.element.removeAttribute("id");
-
-        this.element.ariaHidden = "true";
-
-        this.element.tabIndex = -1;
-
-        if (this.element.hasAttribute("disabled")) {
-            this.labelInput.disabled = true;
-        }
-
-        for (const key in this.element.dataset) {
-            this.labelInput.dataset[key] = this.element.dataset[key];
-        }
-
-        const list: SelectInputListItem[] = [];
-
-        $$<HTMLOptionElement>("option", this.element).forEach((option) => {
-            const dataset: Record<string, string> = {};
-
-            for (const key in option.dataset) {
-                dataset[key] = option.dataset[key] as string;
-            }
-
-            list.push({
-                label: option.innerText,
-                value: option.value,
-                selected: option.selected,
-                disabled: option.disabled,
-                dataset,
-            });
-
-            if (option.selected) {
-                this.labelInput.value = option.innerText;
-            }
-        });
+        const items = this.readOptions();
 
         wrap.appendChild(this.labelInput);
-
         wrap.appendChild(this.element);
 
-        this.createDropdown(list, wrap as HTMLElement);
+        this.createList(items, wrap);
 
         const labelId = this.labelInput.labels?.[0]?.id;
 
@@ -163,10 +129,92 @@ export class SelectInput {
         }
     }
 
+    /**
+     * Get the element wrapping the input, creating it if the select has none
+     */
+    private getWrap() {
+        const existingWrap = this.element.closest<HTMLElement>(".form-input-wrap");
+
+        if (existingWrap) {
+            return existingWrap;
+        }
+
+        const wrap = document.createElement("div");
+        wrap.className = "form-input-wrap";
+        (this.element.parentNode as ParentNode).insertBefore(wrap, this.element.nextSibling);
+
+        return wrap;
+    }
+
+    /**
+     * Set up the text field, which acts as the combobox of the list
+     */
+    private createLabelInput() {
+        const input = this.labelInput;
+
+        input.type = "text";
+        input.className = this.element.className;
+        input.classList.add("form-select");
+        input.id = this.element.id;
+
+        const describedBy = this.element.getAttribute("aria-describedby");
+
+        if (describedBy) {
+            input.setAttribute("aria-describedby", describedBy);
+        }
+
+        input.setAttribute("role", "combobox");
+        input.setAttribute("aria-autocomplete", "list");
+        input.setAttribute("aria-haspopup", "listbox");
+        input.setAttribute("aria-expanded", "false");
+
+        if (this.element.hasAttribute("disabled")) {
+            input.disabled = true;
+        }
+
+        for (const key in this.element.dataset) {
+            input.dataset[key] = this.element.dataset[key];
+        }
+    }
+
+    /**
+     * Hide the select from users and assistive technologies, leaving the id to the text field
+     */
+    private hideSelect() {
+        this.element.hidden = true;
+        this.element.removeAttribute("id");
+        this.element.ariaHidden = "true";
+        this.element.tabIndex = -1;
+    }
+
+    /**
+     * Read the options of the select, showing the label of the selected one in the text field
+     */
+    private readOptions() {
+        return Array.from($$<HTMLOptionElement>("option", this.element), (option): SelectInputListItem => {
+            if (option.selected) {
+                this.labelInput.value = option.textContent;
+            }
+
+            return {
+                label: option.textContent,
+                value: option.value,
+                selected: option.selected,
+                disabled: option.disabled,
+                dataset: { ...option.dataset } as Record<string, string>,
+            };
+        });
+    }
+
+    /**
+     * Add an option
+     *
+     * @param option Label, value, disabled state, thumbnail URI and icon name of the option
+     */
     addOption({ label, value, disabled, thumb, icon }: { label: string; value: string; disabled?: boolean; thumb?: string; icon?: string }) {
         const option = document.createElement("option");
         option.value = value;
-        option.innerText = label;
+        option.textContent = label;
         option.disabled = disabled ?? false;
         if (thumb) {
             option.dataset.thumb = thumb;
@@ -188,43 +236,68 @@ export class SelectInput {
         });
     }
 
+    /**
+     * Remove an option, selecting the first available one if it was selected
+     */
     removeOption(value: string) {
-        const option = $(`option[value="${value}"]`, this.element) as HTMLOptionElement;
+        const option = $(`option[value="${CSS.escape(value)}"]`, this.element) as HTMLOptionElement;
         if (option) {
             option.remove();
         }
 
-        const item = $(`.dropdown-item[data-value="${value}"]`, this.dropdown);
+        const item = this.list.find(value);
         if (item) {
             item.remove();
+            if (this.list.selected.value === item) {
+                this.list.selected.value = null;
+            }
         }
 
         if (option?.selected) {
-            this.selectFirstDropdownItem();
-            this.setCurrent(this.getSelected());
+            this.list.selectFirst();
+
+            const selected = this.list.selected.value;
+
+            if (selected) {
+                this.setCurrent(selected);
+            }
         }
     }
 
+    /**
+     * Sort the items of the list by value
+     */
     sortDropdownItems() {
-        const items = $$(".dropdown-item", this.dropdown);
-        const sorted = Array.from(items).sort((a, b) => (a.dataset.value as string).localeCompare(b.dataset.value as string));
-        for (const item of sorted) {
-            this.dropdown.appendChild(item);
-        }
+        this.list.sort();
     }
 
+    /**
+     * Add an item to the list
+     */
     private addDropdownItem(option: SelectInputListItem) {
+        const item = this.createItem(option);
+
+        this.bindItemEvents(item);
+
+        this.dropdown.appendChild(item);
+    }
+
+    /**
+     * Create the element of an option, with its thumbnail or icon
+     */
+    private createItem(option: SelectInputListItem) {
         const item = document.createElement("div");
         item.className = "dropdown-item";
         item.id = `${this.dropdown.id}-option-${++this.optionCount}`;
         item.setAttribute("role", "option");
         item.setAttribute("aria-selected", String(option.selected));
 
-        item.innerText = option.label;
+        item.textContent = option.label;
         item.dataset.value = option.value;
 
         if (option.selected) {
             item.classList.add("selected");
+            this.list.selected.value = item;
         }
 
         if (option.disabled) {
@@ -245,18 +318,24 @@ export class SelectInput {
         }
 
         for (const key in option.dataset) {
-            if (["icon", "thumb"].includes(key)) {
-                continue;
+            if (key !== "icon" && key !== "thumb") {
+                item.dataset[key] = option.dataset[key];
             }
-            item.dataset[key] = option.dataset[key];
         }
 
+        return item;
+    }
+
+    /**
+     * Pick the option of an item when it is clicked, but not when the pointer was pressed elsewhere
+     */
+    private bindItemEvents(item: HTMLElement) {
         let mousedownCaptured = false;
 
         item.addEventListener("mousedown", (event) => {
             if (!item.classList.contains("disabled")) {
                 mousedownCaptured = true;
-                this.selectDropdownItem(item);
+                this.list.select(item);
             }
             event.preventDefault();
             event.stopPropagation();
@@ -272,12 +351,13 @@ export class SelectInput {
             event.preventDefault();
             event.stopPropagation();
         });
-
-        this.dropdown.appendChild(item);
     }
 
-    private createDropdown(list: SelectInputListItem[], wrap: HTMLElement) {
-        this.dropdown = document.createElement("div");
+    /**
+     * Create the list, fill it with the items and bind the text field to it
+     */
+    private createList(items: SelectInputListItem[], wrap: HTMLElement) {
+        this.list = new DropdownList(document.createElement("div"));
         this.dropdown.className = "dropdown-list";
 
         this.dropdown.dataset.for = this.labelInput.id;
@@ -287,22 +367,66 @@ export class SelectInput {
 
         this.emptyState.className = "dropdown-empty";
         this.emptyState.style.display = "none";
-        this.emptyState.innerText = this.options.labels.empty;
+        this.emptyState.textContent = this.options.labels.empty;
 
         this.dropdown.appendChild(this.emptyState);
 
-        for (const option of list) {
-            this.addDropdownItem(option);
+        for (const item of items) {
+            this.addDropdownItem(item);
         }
 
         wrap.appendChild(this.dropdown);
 
-        let hasKeyboardInput = false;
+        this.bindAriaState();
+        this.bindLabelInput();
+    }
 
+    /**
+     * Keep the ARIA attributes of the text field and of the items in sync with the list
+     */
+    private bindAriaState() {
+        effect(() => {
+            const expanded = this.list.open.value;
+
+            if (expanded === null) {
+                return;
+            }
+
+            this.labelInput.setAttribute("aria-expanded", String(expanded));
+
+            if (!expanded) {
+                this.labelInput.removeAttribute("aria-activedescendant");
+            }
+        });
+
+        let isFirstSelection = true;
+
+        effect(() => {
+            const selected = this.list.selected.value;
+
+            for (const element of this.list.items) {
+                element.setAttribute("aria-selected", String(element === selected));
+            }
+
+            // The attribute is not set for the option selected by the markup
+            if (selected && !isFirstSelection) {
+                this.labelInput.setAttribute("aria-activedescendant", selected.id);
+            } else if (!selected) {
+                this.labelInput.removeAttribute("aria-activedescendant");
+            }
+
+            isFirstSelection = false;
+        });
+    }
+
+    /**
+     * Bind the focus, blur and keyboard events of the text field
+     */
+    private bindLabelInput() {
         this.labelInput.addEventListener("focus", () => {
-            this.selectCurrent();
+            this.openWithCurrent();
             this.labelInput.setSelectionRange(0, 0);
-            hasKeyboardInput = false;
+            this.isTyping = false;
         });
 
         this.labelInput.addEventListener("mousedown", (event) => {
@@ -310,261 +434,209 @@ export class SelectInput {
             event.preventDefault();
         });
 
-        this.labelInput.addEventListener("blur", () => {
-            if (!this.validateDropdownItem(this.labelInput.value)) {
-                this.labelInput.value = this.getCurrentLabel();
-            }
-            this.setExpanded(false);
-        });
-
-        this.labelInput.addEventListener("keydown", (event) => {
-            const selectedItem = $(".dropdown-item.selected", this.dropdown);
-
-            switch (event.key) {
-                case "Backspace": // backspace
-                    this.updateDropdown();
-                    break;
-
-                case "ArrowUp": // up arrow
-                    if (getComputedStyle(this.dropdown).display !== "none") {
-                        this.selectPrevDropdownItem();
-                    } else {
-                        this.selectCurrent();
-                    }
-                    event.preventDefault();
-                    break;
-
-                case "ArrowDown": // down arrow
-                    if (getComputedStyle(this.dropdown).display !== "none") {
-                        this.selectNextDropdownItem();
-                    } else {
-                        this.selectCurrent();
-                    }
-                    event.preventDefault();
-                    break;
-
-                case "Enter":
-                    if (selectedItem && getComputedStyle(selectedItem).display !== "none") {
-                        this.setCurrent(selectedItem);
-                    }
-
-                    // dropdown.style.display = 'none';
-                    this.labelInput.blur();
-                    event.preventDefault();
-                    break;
-
-                case "Escape":
-                case "ArrowLeft":
-                case "ArrowRight":
-                    break;
-
-                default:
-                    if (!hasKeyboardInput) {
-                        this.labelInput.value = "";
-                        hasKeyboardInput = true;
-                    }
-                    break;
-            }
-        });
-
-        this.labelInput.addEventListener("keyup", (event) => {
-            const value = this.labelInput.value.trim();
-            switch (event.key) {
-                case "Escape":
-                    this.labelInput.blur();
-                    event.stopPropagation();
-                    break;
-                case "ArrowUp":
-                case "ArrowDown":
-                case "ArrowLeft":
-                case "ArrowRight":
-                case "Tab":
-                case "Enter":
-                    return true;
-                default:
-                    this.setExpanded(true);
-                    this.filterDropdown(value);
-                    if (value.length > 0) {
-                        this.selectFirstDropdownItem();
-                    }
-            }
-        });
+        this.labelInput.addEventListener("blur", () => this.commitLabel());
+        this.labelInput.addEventListener("keydown", (event) => this.handleKeydown(event));
+        this.labelInput.addEventListener("keyup", (event) => this.handleKeyup(event));
     }
 
-    private updateDropdown() {
-        let visibleItems = 0;
-        $$(".dropdown-item", this.dropdown).forEach((element) => {
-            if (getComputedStyle(element).display !== "none") {
-                visibleItems++;
-            }
-            element.classList.remove("selected");
-            element.setAttribute("aria-selected", "false");
-        });
+    /**
+     * Pick the option whose label has been typed, or restore the label of the current one
+     */
+    private commitLabel() {
+        const item = this.findDropdownItem(this.labelInput.value);
 
-        this.labelInput.removeAttribute("aria-activedescendant");
-
-        if (visibleItems > 0) {
-            this.emptyState.style.display = "none";
+        if (!item) {
+            this.labelInput.value = this.getCurrentLabel();
+        } else if (item.dataset.value !== this.element.value) {
+            this.setCurrent(item);
         } else {
-            this.emptyState.style.display = "block";
+            this.labelInput.value = item.textContent.trim();
+        }
+
+        this.list.open.value = false;
+    }
+
+    /**
+     * Move through the items with the arrows, pick the selected one with Enter
+     */
+    private handleKeydown(event: KeyboardEvent) {
+        switch (event.key) {
+            case "Backspace":
+                this.resetSelection();
+                break;
+
+            case "ArrowUp":
+                this.moveSelection(() => this.list.selectPrevious());
+                event.preventDefault();
+                break;
+
+            case "ArrowDown":
+                this.moveSelection(() => this.list.selectNext());
+                event.preventDefault();
+                break;
+
+            case "Enter":
+                this.pickSelected();
+                event.preventDefault();
+                break;
+
+            case "Escape":
+            case "ArrowLeft":
+            case "ArrowRight":
+                break;
+
+            default:
+                // The first key typed replaces the label instead of editing it
+                if (!this.isTyping) {
+                    this.labelInput.value = "";
+                    this.isTyping = true;
+                }
+                break;
         }
     }
 
-    private setExpanded(expanded: boolean) {
-        this.dropdown.style.display = expanded ? "block" : "none";
-        this.labelInput.setAttribute("aria-expanded", String(expanded));
+    /**
+     * Filter the items by the typed text, close the text field with Escape
+     */
+    private handleKeyup(event: KeyboardEvent) {
+        switch (event.key) {
+            case "Escape":
+                this.labelInput.blur();
+                event.stopPropagation();
+                break;
 
-        if (!expanded) {
-            this.labelInput.removeAttribute("aria-activedescendant");
+            case "ArrowUp":
+            case "ArrowDown":
+            case "ArrowLeft":
+            case "ArrowRight":
+            case "Tab":
+            case "Enter":
+                break;
+
+            default: {
+                const value = this.labelInput.value.trim();
+
+                this.list.open.value = true;
+                this.filterItems(value);
+
+                if (value.length > 0) {
+                    this.list.selectFirst();
+                }
+            }
         }
     }
 
-    private filterDropdown(value: string) {
-        const filter = (element: HTMLElement) => {
-            if (value === "") {
-                return true;
-            }
-            const text = `${element.textContent}`;
-            const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "i");
-            return regexp.test(text);
-        };
-
-        let visibleItems = 0;
-        $$(".dropdown-item", this.dropdown).forEach((element) => {
-            if (value === null || filter(element)) {
-                element.style.display = "block";
-                visibleItems++;
-            } else {
-                element.style.display = "none";
-            }
-        });
-
-        if (visibleItems > 0) {
-            this.emptyState.style.display = "none";
+    /**
+     * Move the selection if the list is open, otherwise open it
+     */
+    private moveSelection(move: () => void) {
+        if (this.list.open.value === true) {
+            move();
         } else {
-            this.emptyState.style.display = "block";
+            this.openWithCurrent();
         }
     }
 
-    private scrollToDropdownItem(item: HTMLElement) {
-        const dropdownScrollTop = this.dropdown.scrollTop;
-        const dropdownHeight = this.dropdown.clientHeight;
-        const dropdownScrollBottom = dropdownScrollTop + dropdownHeight;
-        const dropdownStyle = getComputedStyle(this.dropdown);
-        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop, 10);
-        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom, 10);
-        const itemTop = item.offsetTop;
-        const itemHeight = item.clientHeight;
-        const itemBottom = itemTop + itemHeight;
-        if (itemTop < dropdownScrollTop) {
-            this.dropdown.scrollTop = itemTop - dropdownPaddingTop;
-        } else if (itemBottom > dropdownScrollBottom) {
-            this.dropdown.scrollTop = itemBottom - dropdownHeight + dropdownPaddingBottom;
+    /**
+     * Pick the selected item, if it is displayed, and leave the text field
+     */
+    private pickSelected() {
+        const selected = this.list.selected.value;
+
+        if (selected && getComputedStyle(selected).display !== "none") {
+            this.setCurrent(selected);
         }
+
+        this.labelInput.blur();
     }
 
-    private selectDropdownItem(item: HTMLElement) {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
-        if (selectedItem) {
-            selectedItem.classList.remove("selected");
-            selectedItem.setAttribute("aria-selected", "false");
-        }
+    /**
+     * Clear the selection and update the empty state
+     */
+    private resetSelection() {
+        this.list.selected.value = null;
+
+        this.updateEmptyState();
+    }
+
+    /**
+     * Show the empty state if no item is displayed
+     */
+    private updateEmptyState() {
+        this.emptyState.style.display = this.list.countDisplayed() > 0 ? "none" : "block";
+    }
+
+    /**
+     * Show only the items matching the typed text
+     */
+    private filterItems(value: string) {
+        const regexp = value === "" ? null : makeSearchRegExp(value);
+
+        this.list.filter((item) => regexp === null || regexp.test(`${item.textContent}`));
+
+        this.updateEmptyState();
+    }
+
+    /**
+     * Pick an option and update the select and the text field
+     *
+     * @param item Item of the option to pick, or the current one if missing
+     */
+    private setCurrent(item: HTMLElement | null = this.getCurrent()) {
         if (item) {
-            const isDisabled = item.classList.contains("disabled");
-            if (!isDisabled) {
-                item.classList.add("selected");
-                item.setAttribute("aria-selected", "true");
-                this.labelInput.setAttribute("aria-activedescendant", item.id);
-                this.scrollToDropdownItem(item);
-            }
+            this.element.value = item.dataset.value as string;
+            this.labelInput.value = item.textContent.trim();
+        } else {
+            // The value matches no option
+            this.labelInput.value = "";
         }
+        this.dispatchChange();
     }
 
-    private selectFirstDropdownItem() {
-        const items = $$(".dropdown-item", this.dropdown);
-        for (let i = 0; i < items.length; i++) {
-            if (getComputedStyle(items[i]).display !== "none") {
-                this.selectDropdownItem(items[i]);
-                return;
-            }
-        }
-    }
-
-    private selectLastDropdownItem() {
-        const items = $$(".dropdown-item", this.dropdown);
-        for (let i = items.length - 1; i >= 0; i--) {
-            if (getComputedStyle(items[i]).display !== "none") {
-                this.selectDropdownItem(items[i]);
-                return;
-            }
-        }
-    }
-
-    private selectPrevDropdownItem() {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown) as HTMLElement;
-        if (selectedItem) {
-            let previousItem = selectedItem.previousSibling as HTMLElement;
-            while (previousItem && (previousItem.style.display === "none" || previousItem.classList.contains("disabled"))) {
-                previousItem = previousItem.previousSibling as HTMLElement;
-            }
-            if (previousItem) {
-                return this.selectDropdownItem(previousItem);
-            }
-            this.selectDropdownItem(selectedItem.previousSibling as HTMLElement);
-        }
-        this.selectLastDropdownItem();
-    }
-
-    private selectNextDropdownItem() {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown) as HTMLElement;
-        if (selectedItem) {
-            let nextItem = selectedItem.nextSibling as HTMLElement;
-            while (nextItem && (nextItem.style.display === "none" || nextItem.classList.contains("disabled"))) {
-                nextItem = nextItem.nextSibling as HTMLElement;
-            }
-            if (nextItem) {
-                return this.selectDropdownItem(nextItem);
-            }
-        }
-        this.selectFirstDropdownItem();
-    }
-
-    private setCurrent(item: HTMLElement = this.getCurrent()) {
-        this.element.value = item.dataset.value as string;
-        this.labelInput.value = item.innerText.trim();
-        this.element.dispatchEvent(new Event("input", { bubbles: true }));
-        this.element.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-
+    /**
+     * Get the item of the current option
+     */
     private getCurrent() {
-        return $(`[data-value="${this.element.value}"]`, this.dropdown) as HTMLElement;
+        return this.list.find(this.element.value);
     }
 
+    /**
+     * Get the label of the current option
+     */
     private getCurrentLabel() {
-        return this.getCurrent().innerText.trim();
+        return this.getCurrent()?.textContent.trim() ?? "";
     }
 
-    private getSelected() {
-        return $(".dropdown-item.selected", this.dropdown) as HTMLElement;
-    }
+    /**
+     * Open the list with the current option selected
+     */
+    private openWithCurrent() {
+        if (this.list.open.value !== true) {
+            const current = this.getCurrent();
 
-    private selectCurrent() {
-        if (getComputedStyle(this.dropdown).display === "none") {
-            this.filterDropdown("");
-            this.updateDropdown();
-            this.selectDropdownItem(this.getCurrent());
-            this.setExpanded(true);
-            this.scrollToDropdownItem(this.getCurrent());
-        }
-    }
+            this.filterItems("");
+            this.resetSelection();
+            this.list.select(current);
+            this.list.open.value = true;
 
-    private validateDropdownItem(value: string) {
-        const items = $$(".dropdown-item", this.dropdown);
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].innerText === value) {
-                return true;
+            if (current) {
+                this.list.scrollTo(current);
             }
         }
-        return false;
+    }
+
+    /**
+     * Get the option with a label, ignoring surrounding spaces
+     *
+     * @returns Item, or `null` if there is none
+     */
+    private findDropdownItem(label: string) {
+        const current = this.getCurrent();
+
+        if (current?.textContent.trim() === label.trim()) {
+            return current;
+        }
+
+        return Array.from(this.dropdownItems).find((item) => !item.classList.contains("disabled") && item.textContent.trim() === label.trim()) ?? null;
     }
 }

@@ -1,30 +1,27 @@
-import { app } from "../../app";
-import { Request } from "../../utils/request";
+import { app } from "../../services/app";
+import { post } from "../../services/request";
 import { $, $$ } from "../../utils/selectors";
+import { Input } from "./input";
 
-export class ImagePicker {
-    readonly element: HTMLInputElement;
+/**
+ * Describes a file of the page, as listed in the images modal
+ */
+interface ImagePickerFile {
+    type?: string;
+    thumbnail?: string;
+    uri?: string;
+    filename?: string;
+}
 
-    constructor(element: HTMLInputElement) {
-        this.element = element;
-    }
-
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
-    get value() {
-        return this.element.value;
-    }
-
-    set value(value: string) {
-        this.element.value = value;
-    }
-
+/**
+ * Provides an input holding the URI of an image chosen among the ones of a page
+ */
+export class ImagePicker extends Input<HTMLInputElement> {
+    /**
+     * Load the images and show their thumbnails
+     *
+     * A click selects an image, a double click picks it
+     */
     update() {
         const parentElement = this.element.parentElement as HTMLElement;
         const emptyState = $(".image-picker-empty-state", parentElement) as HTMLElement;
@@ -48,36 +45,28 @@ export class ImagePicker {
             }
         };
 
-        new Request(
-            {
-                method: "POST",
-                url: this.element.dataset.src,
-                data: { "csrf-token": app.config.csrfToken as string },
-            },
-            (response) => {
-                const data = response.data ?? {};
-                const images = Object.values(data as Record<string, { type?: string; thumbnail?: string; uri?: string; filename?: string }>).filter((file) => file.type === "image");
+        post<Record<string, ImagePickerFile>>(this.element.dataset.src as string, {}, (response) => {
+            const images = Object.values(response.data ?? {}).filter((file) => file.type === "image");
 
-                if (images.length > 0) {
-                    const container = document.createElement("div");
-                    container.className = "image-picker-thumbnails";
+            if (images.length > 0) {
+                const container = document.createElement("div");
+                container.className = "image-picker-thumbnails";
 
-                    for (const image of images) {
-                        const thumbnail = document.createElement("div");
-                        thumbnail.className = "image-picker-thumbnail";
-                        thumbnail.style.backgroundImage = `url(${image.thumbnail})`;
-                        thumbnail.dataset.uri = image.uri;
-                        thumbnail.dataset.filename = image.filename;
-                        thumbnail.addEventListener("click", () => selectImage(thumbnail));
-                        thumbnail.addEventListener("dblclick", () => pickImage(thumbnail));
-                        container.appendChild(thumbnail);
-                    }
-
-                    parentElement.appendChild(container);
-
-                    emptyState.style.display = "none";
+                for (const image of images) {
+                    const thumbnail = document.createElement("div");
+                    thumbnail.className = "image-picker-thumbnail";
+                    thumbnail.style.backgroundImage = `url(${image.thumbnail})`;
+                    thumbnail.dataset.uri = image.uri;
+                    thumbnail.dataset.filename = image.filename;
+                    thumbnail.addEventListener("click", () => selectImage(thumbnail));
+                    thumbnail.addEventListener("dblclick", () => pickImage(thumbnail));
+                    container.appendChild(thumbnail);
                 }
-            },
-        );
+
+                parentElement.appendChild(container);
+
+                emptyState.style.display = "none";
+            }
+        });
     }
 }

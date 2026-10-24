@@ -1,3 +1,6 @@
+/**
+ * Convert a string to camel case
+ */
 export function toCamelCase(string: string) {
     return string
         .split(/[-_ ]+/)

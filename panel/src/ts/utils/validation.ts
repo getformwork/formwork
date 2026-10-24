@@ -1,3 +1,6 @@
+/**
+ * Replacements of the characters not allowed in a slug
+ */
 const slugMap: Record<string, string> = {
     "'": "-",
     "’": "-",
@@ -82,6 +85,9 @@ const slugMap: Record<string, string> = {
     Ÿ: "y",
 };
 
+/**
+ * Characters matching each letter in a search ignoring diacritics
+ */
 const diacriticsMap: Record<string, string> = {
     a: "[aáàăâǎåäãȧąāảȁạ]",
     b: "[bḃḅ]",
@@ -109,6 +115,9 @@ const diacriticsMap: Record<string, string> = {
     z: "[zźẑžżẓ]",
 };
 
+/**
+ * HTML entities of the escaped characters
+ */
 const htmlEntityMap: Record<string, string> = {
     "&": "&amp;",
     "<": "&lt;",
@@ -120,14 +129,23 @@ const htmlEntityMap: Record<string, string> = {
     "=": "&#x3D;",
 };
 
+/**
+ * Escape the characters of a string having a special meaning in a regular expression
+ */
 export function escapeRegExp(string: string) {
     return string.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
 }
 
+/**
+ * Make a regular expression string ignore diacritics
+ */
 export function makeDiacriticsRegExp(string: string) {
     return string.replace(/./g, (match) => diacriticsMap[match] || diacriticsMap[match.toLowerCase()]?.toUpperCase() || match);
 }
 
+/**
+ * Make a slug from a text
+ */
 export function makeSlug(string: string) {
     return string
         .toLowerCase()
@@ -137,10 +155,18 @@ export function makeSlug(string: string) {
         .replace(/^-+|-+$|[^a-z0-9-]/g, "");
 }
 
+/**
+ * Escape the characters of a string having a special meaning in HTML
+ */
 export function escapeHtml(string: string) {
     return string.replace(/[&<>"'`=/]/g, (match) => htmlEntityMap[match]);
 }
 
+/**
+ * Make a string a valid slug while typing
+ *
+ * Leading and trailing hyphens are kept
+ */
 export function validateSlug(slug: string) {
     return slug
         .toLowerCase()

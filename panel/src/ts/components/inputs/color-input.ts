@@ -1,36 +1,25 @@
 import { $ } from "../../utils/selectors";
+import { Input } from "./input";
 
-export class ColorInput {
-    readonly element: HTMLInputElement;
-
+/**
+ * Provides a color input that shows its value in the linked `output` element
+ */
+export class ColorInput extends Input<HTMLInputElement> {
     constructor(element: HTMLInputElement) {
-        this.element = element;
+        super(element);
 
         this.initInput();
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
-    get value() {
-        return this.element.value;
-    }
-
-    set value(value: string) {
-        this.element.value = value;
-    }
-
+    /**
+     * Show the value in the output and open the picker when the output is clicked
+     */
     private initInput() {
         const outputElement = $(`output[for="${this.element.id}"]`);
 
         if (outputElement) {
             const updateValueLabel = (element: HTMLInputElement) => {
-                outputElement.innerText = element.value;
+                outputElement.textContent = element.value;
             };
 
             this.element.addEventListener("change", () => updateValueLabel(this.element));

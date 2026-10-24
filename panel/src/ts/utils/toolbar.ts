@@ -1,6 +1,11 @@
+import { getNextIndex } from "./keyboard";
+
 /**
- * Turn an element containing buttons into an ARIA toolbar with a roving tabindex:
- * the toolbar is a single tab stop and its buttons are reached with the arrow keys.
+ * Make an element containing buttons an ARIA toolbar
+ *
+ * The toolbar is a single tab stop and its buttons are reached with the arrow keys
+ *
+ * @param labelledBy Id of the element labelling the toolbar
  */
 export function initToolbar(toolbar: HTMLElement, labelledBy?: string) {
     toolbar.setAttribute("role", "toolbar");
@@ -49,14 +54,7 @@ export function initToolbar(toolbar: HTMLElement, labelledBy?: string) {
             return;
         }
 
-        const lastIndex = buttons.length - 1;
-
-        const nextIndex = {
-            ArrowRight: index === lastIndex ? 0 : index + 1,
-            ArrowLeft: index === 0 ? lastIndex : index - 1,
-            Home: 0,
-            End: lastIndex,
-        }[event.key];
+        const nextIndex = getNextIndex(event.key, index, buttons.length - 1);
 
         if (nextIndex !== undefined) {
             event.preventDefault();

@@ -1,31 +1,35 @@
 import { $ } from "../../utils/selectors";
 import { makeSlug, validateSlug } from "../../utils/validation";
+import { Input } from "./input";
 
-export class SlugInput {
-    readonly element: HTMLInputElement;
-
+/**
+ * Provides a text input whose value is always a valid slug
+ *
+ * The slug can be generated from another field (`data-source`), automatically (`data-auto-update`)
+ * or with a button (`data-generate-slug`)
+ */
+export class SlugInput extends Input<HTMLInputElement> {
     constructor(element: HTMLInputElement) {
-        this.element = element;
+        super(element);
 
         this.initInput();
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
+    // The getter is defined again because a class defining only the setter would lose it
     get value() {
         return this.element.value;
     }
 
+    /**
+     * Set the value, making it a valid slug
+     */
     set value(value: string) {
         this.element.value = validateSlug(value);
     }
 
+    /**
+     * Generate the slug from the source field and clean the value while typing
+     */
     private initInput() {
         const source = $<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(`[id="${this.element.dataset.source}"]`);
         const autoUpdate = "autoUpdate" in this.element.dataset && this.element.dataset.autoUpdate === "true";
