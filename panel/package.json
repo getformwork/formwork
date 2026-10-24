@@ -38,6 +38,7 @@
         "@codemirror/state": "^6.7.6",
         "@codemirror/view": "^6.43.14",
         "@lezer/highlight": "^1.2.5",
+        "@preact/signals-core": "^1.14.4",
         "chartist": "^1.5.0",
         "prosemirror-commands": "^1.7.2",
         "prosemirror-history": "^1.5.1",
@@ -51,7 +52,7 @@
         "sortablejs": "^1.15.7"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.5.15",
+        "@biomejs/biome": "^2.6.2",
         "@types/sortablejs": "^1.15.9",
         "esbuild": "^0.28.2",
         "postcss": "^8.5.30",
