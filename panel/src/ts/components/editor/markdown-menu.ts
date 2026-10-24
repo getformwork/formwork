@@ -65,14 +65,16 @@ class MenuView {
 
         this.update();
 
+        // The focus goes back to the editor only for the items, the button of a menu keeps it
+        // so that the menu can be used with the keyboard
         this.dom.addEventListener("click", (e) => {
-            e.preventDefault();
-            editorView.focus();
-            items.forEach(({ command, dom }) => {
-                if (dom.contains(e.target as HTMLElement)) {
-                    command(editorView.state, editorView.dispatch, editorView);
-                }
-            });
+            const item = items.find(({ dom }) => dom.contains(e.target as HTMLElement));
+
+            if (item) {
+                e.preventDefault();
+                editorView.focus();
+                item.command(editorView.state, editorView.dispatch, editorView);
+            }
         });
     }
 
