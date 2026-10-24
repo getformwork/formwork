@@ -313,7 +313,7 @@ final class Debug
 
             case 'double':
             case 'integer':
-                return '<span class="__type-number">' . $data . '</span>';
+                return '<span class="__type-number">' . (is_float($data) && is_nan($data) ? 'NAN' : $data) . '</span>';
 
             case 'string':
                 $binary = !mb_check_encoding($data, 'UTF-8');
