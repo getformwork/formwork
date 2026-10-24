@@ -250,6 +250,16 @@ final class HtmlSanitizerTest extends TestCase
         );
     }
 
+    public function testDisallowedExternalUrisAreInheritedByEmbeddedSvg(): void
+    {
+        $html = (new HtmlSanitizer())->disallowExternalUris()->sanitize(
+            '<svg><a href="https://example.com"><text>x</text></a><a href="#local"><text>y</text></a></svg>'
+        );
+
+        $this->assertStringNotContainsString('example.com', $html);
+        $this->assertStringContainsString('#local', $html);
+    }
+
     public function testDisallowedElementsCanBeEscaped(): void
     {
         $htmlSanitizer = (new HtmlSanitizer())->sanitizeElementsMethod(SanitizeElementsMethod::Escape);

@@ -201,8 +201,9 @@ class DomSanitizer
         }
 
         if (isset($this->elementSanitizers[$domElement->nodeName])) {
-            $sanitizer = $this->elementSanitizers[$domElement->nodeName];
-            (new $sanitizer())->sanitizeNode($domElement);
+            $sanitizer = new $this->elementSanitizers[$domElement->nodeName]();
+            $sanitizer->allowExternalUris = $this->allowExternalUris;
+            $sanitizer->sanitizeNode($domElement);
             return;
         }
 
