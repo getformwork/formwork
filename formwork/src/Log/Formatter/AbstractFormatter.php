@@ -36,7 +36,7 @@ abstract class AbstractFormatter implements FormatterInterface
             $placeholder = '{' . $key . '}';
 
             if ($value === null || is_scalar($value) || $value instanceof Stringable) {
-                $replacements[$placeholder] = (string) $value;
+                $replacements[$placeholder] = is_float($value) && is_nan($value) ? 'NAN' : (string) $value;
             } elseif ($value instanceof DateTimeInterface) {
                 $replacements[$placeholder] = $value->format($dateFormat);
             } elseif ($value instanceof UnitEnum) {
