@@ -29,7 +29,7 @@
         <div class="flex-grow-1 mr-4">
             <div class="form-input-wrap">
                 <span class="form-input-icon"><?= $this->icon('search') ?></span>
-                <input class="form-input page-search" id="pages.search" type="search" placeholder="<?= $this->translate('panel.pages.pages.search') ?>">
+                <input class="form-input page-search" id="pages.search" type="search" placeholder="<?= $this->translate('panel.pages.pages.search') ?>" aria-label="<?= $this->translate('panel.pages.pages.search') ?>">
             </div>
         </div>
         <div class="whitespace-nowrap">

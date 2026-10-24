@@ -14,5 +14,5 @@
                 'hidden'           => $field->isHidden(),
                 'data-time'        => $field->hasTime() ? 'true' : 'false',
             ]) ?>>
-    <span class="form-input-action" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></span>
+    <button type="button" class="form-input-action" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></button>
 </div>

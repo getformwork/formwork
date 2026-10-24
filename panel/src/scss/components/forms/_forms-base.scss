@@ -151,13 +151,28 @@
 .form-input-action {
     position: absolute;
     top: 50%;
-    right: 0.5rem;
+    right: 0.25rem;
+    padding: 0 0.25rem;
+    border: 0;
+    border-radius: var(--border-radius);
+    background: none;
     color: var(--color-base-100);
+    cursor: pointer;
+    font: inherit;
+    line-height: inherit;
     transform: translateY(-50%);
     transition: color var(--transition-time-sm);
 
     &:hover {
         color: var(--color-accent-500);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        @include focusring;
     }
 
     .form-input:disabled + &,
@@ -179,11 +194,11 @@
 }
 
 .form-input-wrap .form-input-icon + .form-input {
-    padding-left: 1.75rem;
+    padding-left: 1.875rem;
 }
 
 .form-input-wrap .form-input:has(+ .form-input-action) {
-    padding-right: 1.625rem;
+    padding-right: 1.875rem;
 }
 
 .form-input-description {
