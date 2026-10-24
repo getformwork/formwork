@@ -36,6 +36,8 @@ final class HtmlSanitizerTest extends TestCase
         yield 'escaped text' => ['<p>1 &lt; 2 &amp;&amp; 3 &gt; 2</p>'];
         yield 'form control' => ['<form><button formaction="https://example.com/submit">Go</button></form>'];
         yield 'meta refresh without URL' => ['<meta http-equiv="refresh" content="5">'];
+        yield 'meta refresh with whitespace separator to a safe URL' => ['<meta http-equiv="refresh" content="5 url=https://example.com">'];
+        yield 'meta refresh with fractional delay to a safe URL' => ['<meta http-equiv="refresh" content="0.5;url=/relative">'];
         yield 'meta refresh to a safe URL' => ['<meta http-equiv="refresh" content="5;url=https://example.com">'];
     }
 
@@ -188,6 +190,8 @@ final class HtmlSanitizerTest extends TestCase
         yield 'encoded unsafe candidate' => ['srcset', 'java&#115;cript:alert(1) 1x', false];
         yield 'unsafe imagesrcset' => ['imagesrcset', 'ok.png 1x, javascript:alert(1) 2x', false];
         yield 'data URI candidate' => ['srcset', 'data:text/html;base64,PHNjcmlwdD4= 1x', false];
+        yield 'unsafe candidate with an unexpected descriptor' => ['srcset', 'javascript:alert(1) foo', false];
+        yield 'unsafe candidate with several descriptors' => ['srcset', 'javascript:alert(1) 2x 3x', false];
     }
 
     #[DataProvider('metaRefreshProvider')]
@@ -210,6 +214,13 @@ final class HtmlSanitizerTest extends TestCase
         yield 'without url prefix' => ['<meta http-equiv="refresh" content="0;javascript:alert(1)">', '<meta http-equiv="refresh">'];
         yield 'uppercase http-equiv' => ['<meta http-equiv="REFRESH" content="0;url=javascript:alert(1)">', '<meta http-equiv="REFRESH">'];
         yield 'quoted URL' => ['<meta http-equiv="refresh" content="0;url=\'javascript:alert(1)\'">', '<meta http-equiv="refresh">'];
+        yield 'newline before the URL' => ['<meta http-equiv="refresh" content="0;url=&#10;javascript:alert(1)">', '<meta http-equiv="refresh">'];
+        yield 'newline after the separator' => ['<meta http-equiv="refresh" content="0;&#10;javascript:alert(1)">', '<meta http-equiv="refresh">'];
+        yield 'whitespace separator' => ['<meta http-equiv="refresh" content="0 url=javascript:alert(1)">', '<meta http-equiv="refresh">'];
+        yield 'whitespace separator without url prefix' => ['<meta http-equiv="refresh" content="0 javascript:alert(1)">', '<meta http-equiv="refresh">'];
+        yield 'fractional delay' => ['<meta http-equiv="refresh" content="0.5;url=javascript:alert(1)">', '<meta http-equiv="refresh">'];
+        yield 'fractional delay with whitespace separator' => ['<meta http-equiv="refresh" content="1.5 url=javascript:alert(1)">', '<meta http-equiv="refresh">'];
+        yield 'quoted URL after spaces' => ['<meta http-equiv="refresh" content="0; url = \'javascript:alert(1)\'">', '<meta http-equiv="refresh">'];
         yield 'spaces around the equal sign' => ['<meta http-equiv="refresh" content="0;url = javascript:alert(1)">', '<meta http-equiv="refresh">'];
     }
 
@@ -278,5 +289,21 @@ final class HtmlSanitizerTest extends TestCase
     public function testEmptyStringIsAccepted(): void
     {
         $this->assertSame('', (new HtmlSanitizer())->sanitize(''));
+    }
+
+    public function testLongSrcsetIsProcessedInLinearTime(): void
+    {
+        $start = hrtime(true);
+        (new HtmlSanitizer())->sanitize('<img srcset="' . str_repeat('1', 200_000) . ' !">');
+
+        $this->assertLessThan(1.0, (hrtime(true) - $start) / 1e9);
+    }
+
+    public function testLongMetaRefreshIsProcessedInLinearTime(): void
+    {
+        $start = hrtime(true);
+        (new HtmlSanitizer())->sanitize('<meta http-equiv="refresh" content="0' . str_repeat(' ', 200_000) . 'x' . str_repeat(' ', 200_000) . '">');
+
+        $this->assertLessThan(1.0, (hrtime(true) - $start) / 1e9);
     }
 }

@@ -51,7 +51,7 @@ class HtmlSanitizer extends DomSanitizer
 
         foreach ($sources as $source) {
             if (
-                preg_match('/^\s*(\S+)(\s*\d+[wx])?\s*$/', $source, $matches)
+                preg_match('/^\s*+(\S++)(\s*+\d+[wx])?+/', $source, $matches)
                 && !$this->isSafeUri($matches[1])
             ) {
                 return false;
@@ -66,10 +66,10 @@ class HtmlSanitizer extends DomSanitizer
      */
     private function isSafeMetaRefresh(string $content): bool
     {
-        if (!preg_match('/^(?:\s*(\d+)\s*[,;](?:\s*url\s*=)?)(.+)(?:\s*)$/i', $content, $matches)) {
+        if (!preg_match('/^(?:\s*+([\d.]++)\s*+[,;]?+(?:\s*+url\s*+=)?+)(.+)(?:\s*)$/is', $content, $matches)) {
             return true;
         }
 
-        return $this->isSafeUri(trim($matches[2], '"\''));
+        return $this->isSafeUri(trim($matches[2], " \t\n\r\f\"'"));
     }
 }
