@@ -136,7 +136,7 @@ export class DateInput {
     }
 
     private isValidDate(date: string) {
-        return date && !isNaN(Date.parse(date));
+        return date && !Number.isNaN(Date.parse(date));
     }
 
     private formatDateTime(date: Date, format: string) {
@@ -602,7 +602,7 @@ class Calendar {
                 event.preventDefault();
             });
             element.addEventListener("click", () => {
-                this.day = parseInt(`${element.textContent}`);
+                this.day = parseInt(`${element.textContent}`, 10);
                 this.update();
                 this.dispatchChange();
             });

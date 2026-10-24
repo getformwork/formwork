@@ -85,7 +85,9 @@ export class Modal {
 
         this.getFirstFocusableElement(this.element)?.focus();
 
-        $$(".tooltip").forEach((tooltip) => tooltip.parentNode && tooltip.parentNode.removeChild(tooltip));
+        $$(".tooltip").forEach((tooltip) => {
+            tooltip.parentNode?.removeChild(tooltip);
+        });
 
         this.createBackdrop();
 
@@ -125,7 +127,7 @@ export class Modal {
     }
 
     onOpen(callback: ModalCallback) {
-        this.callbacks["open"] = callback;
+        this.callbacks.open = callback;
     }
 
     onBeforeClose(callback: ModalCallback) {
@@ -133,7 +135,7 @@ export class Modal {
     }
 
     onClose(callback: ModalCallback) {
-        this.callbacks["close"] = callback;
+        this.callbacks.close = callback;
     }
 
     onCommand(command: string, callback: ModalCallback) {
@@ -154,7 +156,7 @@ export class Modal {
 
     private removeBackdrop() {
         const backdrop = $(".modal-backdrop");
-        if (backdrop && backdrop.parentNode) {
+        if (backdrop?.parentNode) {
             backdrop.parentNode.removeChild(backdrop);
         }
     }
@@ -174,7 +176,11 @@ export class Modal {
             }
         });
 
-        $$("[data-command]", this.element).forEach((commandButton) => commandButton.addEventListener("click", () => this.triggerCommand(commandButton.dataset.command as string, commandButton)));
+        $$("[data-command]", this.element).forEach((commandButton) => {
+            commandButton.addEventListener("click", () => {
+                this.triggerCommand(commandButton.dataset.command as string, commandButton);
+            });
+        });
 
         const dismissButton = $("[data-dismiss]", this.element);
         dismissButton?.addEventListener("click", () => this.close({ triggerElement: dismissButton }));

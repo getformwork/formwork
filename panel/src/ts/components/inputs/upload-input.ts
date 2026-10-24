@@ -233,7 +233,9 @@ export class UploadInput {
             $(".file-thumbnail", filesItem)?.remove();
         }
 
-        const icon = icons[toCamelCase(`file-${info.type}`) as keyof typeof icons] || icons["file"];
+        // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
+        const icon = icons[toCamelCase(`file-${info.type}`) as keyof typeof icons] || icons.file;
+
         ($(".file-icon", filesItem) as HTMLElement).innerHTML = icon;
 
         const anchor = $(".file-name a", filesItem) as HTMLAnchorElement;

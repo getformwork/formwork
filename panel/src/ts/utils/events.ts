@@ -3,8 +3,9 @@ export function debounce(callback: (...args: any[]) => any, delay: number, leadi
     let timer: number | null = null;
 
     function wrapper(this: any, ...args: any[]) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        // biome-ignore lint/complexity/noUselessThisAlias: This alias is necessary to maintain the correct `this` context for the callback function
         const context = this;
+
         if (timer) {
             clearTimeout(timer);
         }
@@ -34,8 +35,10 @@ export function throttle(callback: (...args: any[]) => any, delay: number) {
             previous = now;
         }
         const remaining = previous + delay - now;
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+
+        // biome-ignore lint/complexity/noUselessThisAlias: This alias is necessary to maintain the correct `this` context for the callback function
         const context = this;
+
         if (remaining <= 0 || remaining > delay) {
             if (timer) {
                 clearTimeout(timer);
@@ -62,13 +65,11 @@ export function longClick(element: HTMLElement, callback: (event: MouseEvent) =>
         clearTimeout(timer);
     }
     element.addEventListener("mousedown", function (event: MouseEvent) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const context = this;
         if (event.button !== 0) {
             clear();
         } else {
-            callback.call(context, event);
-            timer = window.setTimeout(() => (timer = window.setInterval(callback.bind(context, event), interval)), timeout);
+            callback.call(this, event);
+            timer = window.setTimeout(() => (timer = window.setInterval(callback.bind(this, event), interval)), timeout);
         }
     });
     element.addEventListener("mouseout", clear);

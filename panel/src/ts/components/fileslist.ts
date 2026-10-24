@@ -54,7 +54,9 @@ export class FilesList {
             const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${key}]`);
 
             if (viewAs) {
-                $$<HTMLInputElement>("input", toggle).forEach((input) => (input.checked = false));
+                $$<HTMLInputElement>("input", toggle).forEach((input) => {
+                    input.checked = false;
+                });
                 ($(`input[value=${viewAs}]`, this.element) as HTMLInputElement).checked = true;
                 this.element.classList.toggle("is-thumbnails", viewAs === "thumbnails");
                 this.element.classList.toggle("is-list", viewAs === "list");
@@ -108,7 +110,9 @@ export class FilesList {
                     const start = Math.min(anchorIndex, currentIndex);
                     const end = Math.max(anchorIndex, currentIndex);
 
-                    items.forEach((element, index) => element.classList.toggle("is-selected", index >= start && index <= end));
+                    items.forEach((element, index) => {
+                        element.classList.toggle("is-selected", index >= start && index <= end);
+                    });
                     this.updateSelectionActions();
                     return;
                 }
@@ -219,7 +223,7 @@ export class FilesList {
     }
 
     private initModals() {
-        const renameFileItemModal = app.modals["renameFileItemModal"];
+        const renameFileItemModal = app.modals.renameFileItemModal;
 
         if (renameFileItemModal) {
             $('[id="renameFileItemModal.filename"]', renameFileItemModal.element)?.addEventListener("keydown", (event) => {
@@ -320,7 +324,7 @@ export class FilesList {
             });
         }
 
-        const deleteFileItemModal = app.modals["deleteFileItemModal"];
+        const deleteFileItemModal = app.modals.deleteFileItemModal;
 
         if (deleteFileItemModal) {
             deleteFileItemModal.onOpen((modal, trigger) => {
@@ -481,7 +485,9 @@ export class FilesList {
         if (selectedItems.length === 0) {
             return;
         }
-        selectedItems.forEach((element) => element.classList.remove("is-selected"));
+        selectedItems.forEach((element) => {
+            element.classList.remove("is-selected");
+        });
         this.selectionAnchor = undefined;
         this.updateSelectionActions();
     }

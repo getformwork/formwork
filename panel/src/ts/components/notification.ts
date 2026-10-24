@@ -119,6 +119,8 @@ export class Notification {
 
         if (this.options.icon) {
             this.notificationElement = create(this.text, this.type, this.options.interval);
+
+            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             this.notificationElement.insertAdjacentHTML("afterbegin", icons[this.options.icon] || "");
         } else {
             this.notificationElement = create(this.text, this.type, this.options.interval);
@@ -129,7 +131,7 @@ export class Notification {
         this.notificationElement.classList.add("fadeout");
 
         window.setTimeout(() => {
-            if (this.containerElement && this.notificationElement && this.notificationElement.parentNode) {
+            if (this.containerElement && this.notificationElement?.parentNode) {
                 this.containerElement.removeChild(this.notificationElement);
             }
         }, this.options.fadeOutDelay);

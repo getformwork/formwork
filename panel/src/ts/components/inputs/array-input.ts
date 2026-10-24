@@ -19,7 +19,9 @@ export class ArrayInput {
     }
 
     private async init(element: HTMLFieldSetElement) {
-        $$(".form-input-array-row", element).forEach((element) => this.bindItemEvents(element));
+        $$(".form-input-array-row", element).forEach((element) => {
+            this.bindItemEvents(element);
+        });
 
         $(`label[for="${element.id}"]`)?.addEventListener("click", () => $(".form-input", element)?.focus());
 

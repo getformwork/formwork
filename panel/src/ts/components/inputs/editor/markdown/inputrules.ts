@@ -28,21 +28,22 @@ export function headingRule(nodeType: NodeType, maxLevel: number) {
 
 export function buildInputRules(schema: Schema) {
     const rules = smartQuotes.concat(ellipsis, emDash);
-    let type;
-    if ((type = schema.nodes.blockquote)) {
-        rules.push(blockQuoteRule(type));
+
+    if (schema.nodes.blockquote) {
+        rules.push(blockQuoteRule(schema.nodes.blockquote));
     }
-    if ((type = schema.nodes.ordered_list)) {
-        rules.push(orderedListRule(type));
+    if (schema.nodes.ordered_list) {
+        rules.push(orderedListRule(schema.nodes.ordered_list));
     }
-    if ((type = schema.nodes.bullet_list)) {
-        rules.push(bulletListRule(type));
+    if (schema.nodes.bullet_list) {
+        rules.push(bulletListRule(schema.nodes.bullet_list));
     }
-    if ((type = schema.nodes.code_block)) {
-        rules.push(codeBlockRule(type));
+    if (schema.nodes.code_block) {
+        rules.push(codeBlockRule(schema.nodes.code_block));
     }
-    if ((type = schema.nodes.heading)) {
-        rules.push(headingRule(type, 6));
+    if (schema.nodes.heading) {
+        rules.push(headingRule(schema.nodes.heading, 6));
     }
+
     return inputRules({ rules });
 }

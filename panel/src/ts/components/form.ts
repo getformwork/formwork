@@ -163,7 +163,7 @@ export class Form {
 
     duplicateInput(element: HTMLInputLike, targetElement: HTMLElement) {
         let newNode: HTMLElement;
-        let newInput: HTMLInputLike | undefined = undefined;
+        let newInput: HTMLInputLike | undefined;
         const wrap = element.closest(".form-input-wrap");
 
         if (wrap) {
@@ -229,7 +229,7 @@ export class Form {
 
         this.element.addEventListener("submit", removeBeforeUnload);
 
-        const changesModal = app.modals["changesModal"];
+        const changesModal = app.modals.changesModal;
 
         if (changesModal) {
             changesModal.onCommand("continue", (_, button) => {
@@ -248,14 +248,14 @@ export class Form {
                     if (this.hasChanged()) {
                         event.preventDefault();
 
-                        app.modals["changesModal"].onOpen((modal) => {
+                        app.modals.changesModal.onOpen((modal) => {
                             const continueCommand = $("[data-command=continue]", modal.element);
                             if (continueCommand) {
                                 continueCommand.dataset.href = element.href;
                             }
                         });
 
-                        app.modals["changesModal"].open();
+                        app.modals.changesModal.open();
                     }
                 });
             });

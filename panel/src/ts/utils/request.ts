@@ -36,14 +36,14 @@ export class Request {
                 break;
 
             default:
-                request.send(new URLSearchParams(options.data));
+                request.send(new URLSearchParams(options.data as Record<string, string>));
                 break;
         }
 
         if (typeof callback === "function") {
             const handler = () => {
                 const response = JSON.parse(request.response);
-                const code = parseInt(response.code) || request.status;
+                const code = parseInt(response.code, 10) || request.status;
                 if (code === 400 || code === 403) {
                     // location.reload();
                 } else {
@@ -53,7 +53,5 @@ export class Request {
             request.onload = handler;
             request.onerror = handler;
         }
-
-        return request;
     }
 }

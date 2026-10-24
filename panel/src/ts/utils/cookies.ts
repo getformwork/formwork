@@ -15,5 +15,7 @@ export function setCookie(name: string, value: string, options: Record<string, s
     for (const option in options) {
         cookie += `;${option}=${options[option]}`;
     }
+
+    // biome-ignore lint/suspicious/noDocumentCookie: Setting cookies via document.cookie is intentional
     document.cookie = cookie;
 }

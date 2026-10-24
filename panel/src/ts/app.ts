@@ -36,6 +36,7 @@ interface AppConfig {
 }
 
 interface Component {
+    // biome-ignore lint/suspicious/noConfusingVoidType: The constructor returns void, not undefined
     new (app: App): void;
 }
 

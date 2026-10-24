@@ -76,12 +76,6 @@ export class Tooltip {
                 const hh = (rect.height - tooltip.offsetHeight) / 2;
 
                 switch (options.position) {
-                    case "top":
-                    default:
-                        return {
-                            top: Math.round(top - tooltip.offsetHeight + offset.y),
-                            left: Math.round(left + hw + offset.x),
-                        };
                     case "right":
                         return {
                             top: Math.round(top + hh + offset.y),
@@ -100,6 +94,11 @@ export class Tooltip {
                     case "center":
                         return {
                             top: Math.round(top + hh + offset.y),
+                            left: Math.round(left + hw + offset.x),
+                        };
+                    default:
+                        return {
+                            top: Math.round(top - tooltip.offsetHeight + offset.y),
                             left: Math.round(left + hw + offset.x),
                         };
                 }

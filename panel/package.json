@@ -25,10 +25,10 @@
         "watch:js": "pnpm build:js --watch",
         "lint": "pnpm lint:css && pnpm lint:ts",
         "lint:css": "stylelint './src/scss/**/*.scss' --fix",
-        "lint:ts": "biome check ./src/ts/**/*.ts --fix",
+        "lint:ts": "biome check './src/ts/' --fix",
         "check": "pnpm check:css && pnpm check:ts",
         "check:css": "stylelint './src/scss/**/*.scss'",
-        "check:ts": "biome check ./src/ts/**/*.ts",
+        "check:ts": "biome check './src/ts/'",
         "dump:icons": "node ./src/scripts/dump-icons.js"
     },
     "dependencies": {

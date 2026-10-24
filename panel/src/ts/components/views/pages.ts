@@ -17,9 +17,9 @@ export class Pages {
 
         const searchInput = $(".page-search") as HTMLInputElement;
 
-        const newPageModal = app.modals["newPageModal"];
-        const deletePageItemModal = app.modals["deletePageItemModal"];
-        const duplicatePageModal = app.modals["duplicatePageModal"];
+        const newPageModal = app.modals.newPageModal;
+        const deletePageItemModal = app.modals.deletePageItemModal;
+        const duplicatePageModal = app.modals.duplicatePageModal;
 
         $$(".pages-tree").forEach((element) => {
             if (element.dataset.orderableChildren === "true") {
@@ -346,7 +346,7 @@ export class Pages {
                     const data = {
                         "csrf-token": app.config.csrfToken as string,
                         page: event.item.dataset.route,
-                        before: (event.item.nextElementSibling! as HTMLElement).dataset.route,
+                        before: (event.item.nextElementSibling as HTMLElement).dataset.route,
                         parent: element.dataset.parent,
                     };
 

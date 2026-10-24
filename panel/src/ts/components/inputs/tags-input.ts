@@ -74,14 +74,16 @@ export class TagsInput {
         this.element.value = value;
         this.tags = value.split(", ").map((tag) => tag.trim());
         this.list.innerText = "";
-        this.tags.forEach((tag) => this.insertTag(tag, this.list));
+        this.tags.forEach((tag) => {
+            this.insertTag(tag, this.list);
+        });
         this.updatePlaceholder();
         this.updateDropdown();
     }
 
     private async createField() {
         if ("limit" in this.element.dataset) {
-            this.options.limit = parseInt(this.element.dataset.limit as string);
+            this.options.limit = parseInt(this.element.dataset.limit as string, 10);
         }
 
         if (!("orderable" in this.element.dataset)) {
@@ -191,6 +193,7 @@ export class TagsInput {
             img.className = "dropdown-thumb";
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.icon) {
+            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             item.insertAdjacentHTML("afterbegin", icons[option.icon]);
         }
 
@@ -452,7 +455,9 @@ export class TagsInput {
                 this.removeTag(value);
                 parent.removeChild(tag);
 
-                $$(".tooltip").forEach((tooltip) => tooltip.remove());
+                $$(".tooltip").forEach((tooltip) => {
+                    tooltip.remove();
+                });
 
                 if (keyboardActivation) {
                     // The focused button has been removed, keep keyboard focus in the field
@@ -528,7 +533,7 @@ export class TagsInput {
         let visibleItems = 0;
         $$(".dropdown-item", this.dropdown).forEach((element) => {
             if (value === "") {
-                return true;
+                return;
             }
             const text = `${element.textContent}`;
             const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "i");
@@ -554,8 +559,8 @@ export class TagsInput {
         const dropdownHeight = this.dropdown.clientHeight;
         const dropdownScrollBottom = dropdownScrollTop + dropdownHeight;
         const dropdownStyle = getComputedStyle(this.dropdown);
-        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop);
-        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom);
+        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop, 10);
+        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom, 10);
         const itemTop = item.offsetTop;
         const itemHeight = item.clientHeight;
         const itemBottom = itemTop + itemHeight;

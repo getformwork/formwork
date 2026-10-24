@@ -51,7 +51,7 @@ class MenuView {
                     this.dropdowns[dropdown] = el;
                     target.appendChild(el);
                 }
-                target = this.dropdowns[dropdown].querySelector(".dropdown-menu")!;
+                target = this.dropdowns[dropdown].querySelector(".dropdown-menu") as HTMLElement;
             }
 
             target.appendChild(dom);
@@ -242,8 +242,8 @@ export function menuPlugin(id: string) {
         view(editorView: EditorView) {
             const menuView = new MenuView(id, items, editorView);
 
-            const toolbar = editorView.dom.parentNode!.querySelector(".editor-toolbar");
-            toolbar!.prepend(menuView.dom);
+            const toolbar = editorView.dom.parentNode?.querySelector(".editor-toolbar");
+            toolbar?.prepend(menuView.dom);
 
             return menuView;
         },
@@ -256,7 +256,10 @@ function createButton(icon: keyof typeof icons, title: string) {
     btn.className = `button toolbar-button`;
     btn.dataset.tooltip = title;
     btn.ariaLabel = title;
+
+    // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
     btn.innerHTML = icons[icon] || "";
+
     return btn;
 }
 
@@ -291,12 +294,12 @@ function createDropdown(id: string) {
 function initModals() {
     const { linkModal } = app.modals;
 
-    $$('[id="linkModal.text"], [id="linkModal.uri"]', linkModal.element).forEach((input) =>
+    $$('[id="linkModal.text"], [id="linkModal.uri"]', linkModal.element).forEach((input) => {
         input.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 linkModal.triggerCommand("insert-link");
                 event.preventDefault();
             }
-        }),
-    );
+        });
+    });
 }

@@ -76,7 +76,9 @@ function initButton(button: HTMLElement) {
 
 function open(button: HTMLElement, dropdown: HTMLElement) {
     // A tooltip of the button would cover the first items of the menu
-    $$(".tooltip").forEach((tooltip) => tooltip.remove());
+    $$(".tooltip").forEach((tooltip) => {
+        tooltip.remove();
+    });
 
     const resizeHandler = throttle(() => setDropdownPosition(dropdown), 100);
 
@@ -89,8 +91,12 @@ function open(button: HTMLElement, dropdown: HTMLElement) {
 }
 
 function closeAll() {
-    $$(".dropdown-menu").forEach((element) => (element.style.display = ""));
-    $$(".dropdown-button[aria-expanded=true]").forEach((button) => button.setAttribute("aria-expanded", "false"));
+    $$(".dropdown-menu").forEach((element) => {
+        element.style.display = "";
+    });
+    $$(".dropdown-button[aria-expanded=true]").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+    });
 }
 
 function getItems(dropdown: HTMLElement): HTMLElement[] {

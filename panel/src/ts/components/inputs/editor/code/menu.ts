@@ -10,7 +10,10 @@ function createButton(icon: keyof typeof icons, title: string) {
     btn.className = `button toolbar-button`;
     btn.dataset.tooltip = title;
     btn.ariaLabel = title;
+
+    // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
     btn.innerHTML = icons[icon] || "";
+
     return btn;
 }
 
@@ -39,7 +42,7 @@ class Menu {
             dom.disabled = !enabler(this.view);
         });
 
-        const toolbar = this.view.dom.parentNode!.querySelector(".editor-toolbar")!;
+        const toolbar = this.view.dom.parentNode?.querySelector(".editor-toolbar") as HTMLElement;
 
         toolbar.insertBefore(this.dom, toolbar.firstChild);
 
@@ -60,7 +63,9 @@ class Menu {
 
     update(update: ViewUpdate) {
         if (update.docChanged) {
-            this.items.forEach(({ dom, enabler }) => (dom.disabled = !enabler(this.view)));
+            this.items.forEach(({ dom, enabler }) => {
+                dom.disabled = !enabler(this.view);
+            });
         }
     }
 }

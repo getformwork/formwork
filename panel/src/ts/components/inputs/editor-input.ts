@@ -237,7 +237,7 @@ export class EditorInput {
                 this.editor.editable = !value;
             }
         });
-        const toggleButton = $("[data-command=toggle-markdown]", this.container!) as HTMLButtonElement;
+        const toggleButton = $("[data-command=toggle-markdown]", this.container as HTMLElement) as HTMLButtonElement;
         toggleButton.disabled = value;
     }
 

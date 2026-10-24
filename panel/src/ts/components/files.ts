@@ -13,7 +13,7 @@ export class Files {
         const fileForm = $("[data-form=file-form]");
 
         if (fileForm) {
-            const renameFileModal = app.modals["renameFileModal"];
+            const renameFileModal = app.modals.renameFileModal;
 
             if (renameFileModal) {
                 renameFileModal.form?.element.addEventListener("keydown", (event) => {

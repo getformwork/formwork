@@ -95,18 +95,18 @@ export class DurationInput {
     private updateHiddenInput() {
         const intervals: Partial<Record<TimeInterval, number>> = {};
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
-            intervals[i] = parseInt(input.value);
+            intervals[i] = parseInt(input.value, 10);
         });
         let seconds = this.intervalsToSeconds(intervals);
         if (this.element.step) {
-            const step = parseInt(this.element.step) * TIME_INTERVALS[this.options.unit];
+            const step = parseInt(this.element.step, 10) * TIME_INTERVALS[this.options.unit];
             seconds = Math.floor(seconds / step) * step;
         }
         if (this.element.min) {
-            seconds = Math.max(seconds, parseInt(this.element.min));
+            seconds = Math.max(seconds, parseInt(this.element.min, 10));
         }
         if (this.element.max) {
-            seconds = Math.min(seconds, parseInt(this.element.max));
+            seconds = Math.min(seconds, parseInt(this.element.max, 10));
         }
         this.element.value = `${Math.round(seconds / TIME_INTERVALS[this.options.unit])}`;
         this.element.dispatchEvent(new Event("input", { bubbles: true }));
@@ -114,7 +114,7 @@ export class DurationInput {
     }
 
     private updateInnerInputs() {
-        const intervals = this.secondsToIntervals(parseInt(this.element.value) * TIME_INTERVALS[this.options.unit]);
+        const intervals = this.secondsToIntervals(parseInt(this.element.value, 10) * TIME_INTERVALS[this.options.unit]);
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
             input.value = `${intervals[i] || 0}`;
         });
@@ -128,7 +128,7 @@ export class DurationInput {
 
     private updateLabels() {
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
-            (this.labels[i] as HTMLLabelElement).innerText = this.options.labels[i][parseInt(input.value) === 1 ? 0 : 1];
+            (this.labels[i] as HTMLLabelElement).innerText = this.options.labels[i][parseInt(input.value, 10) === 1 ? 0 : 1];
         });
     }
 
@@ -159,7 +159,7 @@ export class DurationInput {
                 while (innerInput.value.charAt(0) === "0" && innerInput.value.length > 1 && !innerInput.value.charAt(1).match(/[.,]/)) {
                     innerInput.value = innerInput.value.slice(1);
                 }
-                while (parseInt(innerInput.value) > Number.MAX_SAFE_INTEGER) {
+                while (parseInt(innerInput.value, 10) > Number.MAX_SAFE_INTEGER) {
                     innerInput.value = innerInput.value.slice(0, -1);
                 }
                 this.updateInnerInputsLength();
@@ -186,7 +186,7 @@ export class DurationInput {
             });
 
             const label = document.createElement("label");
-            const labelText = this.options.labels[name][parseInt(innerInput.value) === 1 ? 0 : 1];
+            const labelText = this.options.labels[name][parseInt(innerInput.value, 10) === 1 ? 0 : 1];
 
             label.className = "form-label";
             label.innerText = labelText;
@@ -224,8 +224,8 @@ export class DurationInput {
             this.options.unit = this.element.dataset.unit as TimeInterval;
         }
 
-        const valueSeconds = parseInt(this.element.value) * TIME_INTERVALS[this.options.unit];
-        const stepSeconds = parseInt(this.element.step) * TIME_INTERVALS[this.options.unit];
+        const valueSeconds = parseInt(this.element.value, 10) * TIME_INTERVALS[this.options.unit];
+        const stepSeconds = parseInt(this.element.step, 10) * TIME_INTERVALS[this.options.unit];
         const field = this.createInnerInputs(this.secondsToIntervals(valueSeconds || 0), this.secondsToIntervals(stepSeconds || 1));
         (this.element.parentNode as ParentNode).replaceChild(field, this.element);
         field.appendChild(this.element);

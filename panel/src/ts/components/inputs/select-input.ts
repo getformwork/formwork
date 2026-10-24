@@ -239,6 +239,8 @@ export class SelectInput {
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.dataset.icon) {
             const icon = toCamelCase(option.dataset.icon) as keyof typeof icons;
+
+            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             item.insertAdjacentHTML("afterbegin", icons[icon]);
         }
 
@@ -449,8 +451,8 @@ export class SelectInput {
         const dropdownHeight = this.dropdown.clientHeight;
         const dropdownScrollBottom = dropdownScrollTop + dropdownHeight;
         const dropdownStyle = getComputedStyle(this.dropdown);
-        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop);
-        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom);
+        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop, 10);
+        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom, 10);
         const itemTop = item.offsetTop;
         const itemHeight = item.clientHeight;
         const itemBottom = itemTop + itemHeight;

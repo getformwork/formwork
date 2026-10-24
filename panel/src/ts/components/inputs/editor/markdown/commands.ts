@@ -122,14 +122,14 @@ export const insertImage: Command = (state, dispatch, view) => {
             const selected = $(".image-picker-thumbnail.selected", modal.element);
 
             if (selected && view) {
-                const baseUri = $("textarea", view.dom.parentNode!)!.dataset.baseUri;
+                const baseUri = $("textarea", view.dom.parentNode as HTMLElement)?.dataset.baseUri;
                 const filename = selected.dataset.filename;
                 view.dispatch(
                     state.tr.replaceSelectionWith(
                         schema.nodes.image.createAndFill({
                             src: `${baseUri}${filename}`,
                             alt: "",
-                        })!,
+                        }) as Node,
                     ),
                 );
                 view.focus();
@@ -186,8 +186,7 @@ export function getMarkRange(state: EditorState, markType: MarkType): { from: nu
     let to = $from.pos;
 
     const parent = $from.parent;
-    let found = false;
-    let foundMark: Mark;
+    let foundMark: Mark | undefined;
 
     parent.forEach((node, offset) => {
         if (!node.isText) {
@@ -200,19 +199,18 @@ export function getMarkRange(state: EditorState, markType: MarkType): { from: nu
                 if (nodeStart <= $from.pos && nodeEnd >= $from.pos) {
                     from = nodeStart;
                     to = nodeEnd;
-                    found = true;
                     foundMark = mark;
                 }
             }
         });
     });
 
-    return found
+    return foundMark
         ? {
               from: from,
               to: to,
-              mark: foundMark!,
-              node: state.doc.nodeAt(from)!,
+              mark: foundMark,
+              node: state.doc.nodeAt(from) as Node,
           }
         : null;
 }
