@@ -94,16 +94,14 @@ export class DateInput extends InputBase<HTMLInputElement> {
     }
 
     /**
-     * Get the date as `YYYY-MM-DDThh:mm`, or an empty string if there is no date
-     *
-     * Seconds are included only if they are not zero
+     * Get the date as `YYYY-MM-DDThh:mm:ss`, or an empty string if there is no date
      */
     get value() {
         if (!this.element.value) {
             return "";
         }
 
-        return this.formatDateTime(this.calendar.date, "YYYY-MM-DD[T]hh:mm:ss").replace(/:00$/, "");
+        return this.formatDateTime(this.calendar.date, "YYYY-MM-DD[T]hh:mm:ss");
     }
 
     /**
