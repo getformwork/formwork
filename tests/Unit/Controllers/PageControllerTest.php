@@ -70,7 +70,7 @@ final class PageControllerTest extends TestCase
             'error/error.md'    => "---\ntitle: Not found\n---\nThis page does not exist\n",
         ]);
 
-        $this->cache = new ArrayCache('pages');
+        $this->cache = new ArrayCache();
         $this->statisticsPath = TESTS_TMP_PATH . '/statistics';
 
         $request = new Request([], [], [], [], ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET', 'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) Firefox/120.0']);
@@ -246,8 +246,8 @@ final class PageControllerTest extends TestCase
 
     public function testCachedPagesAreNotRenderedAgain(): void
     {
-        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
-        $second = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
+        $second = $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
 
         $this->assertSame($response->content(), $second->content());
         $this->assertSame(1, $this->renderedPages);
@@ -255,8 +255,8 @@ final class PageControllerTest extends TestCase
 
     public function testCachingIsOffByDefault(): void
     {
-        $this->load('/about/', system: ['cache' => ['enabled' => false]]);
-        $this->load('/about/', system: ['cache' => ['enabled' => false]]);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => false]]]);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => false]]]);
 
         $this->assertSame(2, $this->renderedPages);
         $this->assertSame(0, $this->cache->count());
@@ -264,7 +264,7 @@ final class PageControllerTest extends TestCase
 
     public function testCachedPagesCarryValidators(): void
     {
-        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
 
         $this->assertMatchesRegularExpression('/^"[0-9a-f]{64}"$/', (string) $response->headers()->get('ETag'));
         $this->assertNotNull($response->headers()->get('Last-Modified'));
@@ -272,32 +272,32 @@ final class PageControllerTest extends TestCase
 
     public function testRequestsWithAQueryStringAreNotCached(): void
     {
-        $this->load('/about/', system: ['cache' => ['enabled' => true]], query: ['utm_source' => 'newsletter']);
-        $this->load('/about/', system: ['cache' => ['enabled' => true]], query: ['utm_source' => 'newsletter']);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]], query: ['utm_source' => 'newsletter']);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]], query: ['utm_source' => 'newsletter']);
 
         $this->assertSame(2, $this->renderedPages);
     }
 
     public function testPostRequestsAreNotCached(): void
     {
-        $this->load('/about/', system: ['cache' => ['enabled' => true]], server: ['REQUEST_METHOD' => 'POST']);
-        $this->load('/about/', system: ['cache' => ['enabled' => true]], server: ['REQUEST_METHOD' => 'POST']);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]], server: ['REQUEST_METHOD' => 'POST']);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]], server: ['REQUEST_METHOD' => 'POST']);
 
         $this->assertSame(2, $this->renderedPages);
     }
 
     public function testErrorPagesAreNotCached(): void
     {
-        $this->load('/does-not-exist/', system: ['cache' => ['enabled' => true]]);
-        $this->load('/does-not-exist/', system: ['cache' => ['enabled' => true]]);
+        $this->load('/does-not-exist/', system: ['cache' => ['pages' => ['enabled' => true]]]);
+        $this->load('/does-not-exist/', system: ['cache' => ['pages' => ['enabled' => true]]]);
 
         $this->assertSame(0, $this->cache->count());
     }
 
     public function testDifferentRoutesUseDifferentCacheEntries(): void
     {
-        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
-        $home = $this->load('/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
+        $home = $this->load('/', system: ['cache' => ['pages' => ['enabled' => true]]]);
 
         $this->assertNotSame($response->content(), $home->content());
         $this->assertSame(2, $this->cache->count());
@@ -305,7 +305,7 @@ final class PageControllerTest extends TestCase
 
     public function testCachedPagesAreInvalidatedWhenTheContentChanges(): void
     {
-        $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
         $this->assertSame(1, $this->renderedPages);
 
         $content = (string) $this->site->contentPath();
@@ -313,17 +313,42 @@ final class PageControllerTest extends TestCase
         touch($content . 'about/page.md', time() + 10);
         touch($content, time() + 10);
 
-        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
 
         $this->assertSame(2, $this->renderedPages);
         $this->assertStringContainsString('Updated content', $response->content());
+    }
+
+    public function testPagesCanSetTheirOwnCacheTtl(): void
+    {
+        FileSystem::createDirectory($this->site->contentPath() . 'timed');
+        FileSystem::write($this->site->contentPath() . 'timed/page.md', "---\ntitle: Timed\ncache:\n    ttl: 60\n---\nTimed content\n");
+
+        $this->load('/timed/', system: ['cache' => ['pages' => ['enabled' => true]]]);
+
+        $item = $this->cache->getItem(rawurlencode('/timed/'));
+        $this->assertNotNull($item);
+        $this->assertSame(60, $item->expirationTime() - $item->cachedTime());
+    }
+
+    public function testDeprecatedPageCacheTimeIsStillUsed(): void
+    {
+        FileSystem::createDirectory($this->site->contentPath() . 'timed');
+        FileSystem::write($this->site->contentPath() . 'timed/page.md', "---\ntitle: Timed\ncache:\n    time: 60\n---\nTimed content\n");
+
+        $deprecations = $this->captureDeprecations(fn() => $this->load('/timed/', system: ['cache' => ['pages' => ['enabled' => true]]]));
+
+        $this->assertContains('The "cache.time" page option is deprecated since Formwork 2.4.0. Use "cache.ttl" instead.', $deprecations);
+        $item = $this->cache->getItem(rawurlencode('/timed/'));
+        $this->assertNotNull($item);
+        $this->assertSame(60, $item->expirationTime() - $item->cachedTime());
     }
 
     public function testCorruptedCacheEntriesAreDiscarded(): void
     {
         $this->cache->set(rawurlencode('/about/'), 'not a response');
 
-        $response = $this->load('/about/', system: ['cache' => ['enabled' => true]]);
+        $response = $this->load('/about/', system: ['cache' => ['pages' => ['enabled' => true]]]);
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertStringContainsString('About us', $response->content());

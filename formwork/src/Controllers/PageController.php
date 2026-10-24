@@ -128,7 +128,7 @@ final class PageController extends AbstractController
      */
     private function shouldClearCacheForScheduledPublication(Page $page): bool
     {
-        if (!$this->config->getBool('system.cache.enabled')) {
+        if (!$this->isCacheEnabled()) {
             return false;
         }
 
@@ -179,10 +179,31 @@ final class PageController extends AbstractController
         $response = new Response($output, $page->responseStatus(), $page->headers() + $headers);
 
         if ($cacheable) {
-            $this->cache->set($cacheKey, $response, $page->get('cache.time'));
+            $this->cache->set($cacheKey, $response, $this->getPageCacheTtl($page));
         }
 
         return $response;
+    }
+
+    /**
+     * Return whether the pages cache is enabled
+     */
+    private function isCacheEnabled(): bool
+    {
+        return $this->config->getBool('system.cache.pages.enabled');
+    }
+
+    /**
+     * Get the cache time-to-live set by the page, if any
+     */
+    private function getPageCacheTtl(Page $page): ?int
+    {
+        if (($ttl = $page->get('cache.ttl')) === null && ($ttl = $page->get('cache.time')) !== null) {
+            /** @todo Remove in Formwork 3.0 */
+            trigger_error('The "cache.time" page option is deprecated since Formwork 2.4.0. Use "cache.ttl" instead.', E_USER_DEPRECATED);
+        }
+
+        return is_int($ttl) ? $ttl : null;
     }
 
     /**
@@ -190,7 +211,7 @@ final class PageController extends AbstractController
      */
     private function isPageCacheable(Page $page): bool
     {
-        if (!$this->config->getBool('system.cache.enabled')) {
+        if (!$this->isCacheEnabled()) {
             return false;
         }
 

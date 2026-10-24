@@ -28,7 +28,7 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
         $cacheFile = $this->getConfigCacheFile();
 
         if ($this->validateConfigCacheFile($cacheFile)) {
-            $config = new Config(require $cacheFile, resolved: true);
+            $data = require $cacheFile;
         } else {
             $config = new Config();
 
@@ -44,10 +44,15 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
                 '%SYSTEM_PATH%' => $this->app->systemPath(),
             ]);
 
+            $data = $config->toArray();
+
             if (PHP_SAPI !== 'cli' && $cacheFile !== null) {
-                Php::encodeToFile($config->toArray(), $cacheFile);
+                Php::encodeToFile($data, $cacheFile);
             }
         }
+
+        // Replace deprecated options after caching, so that deprecations are triggered on every request
+        $config = new Config($this->replaceDeprecatedOptions($data), resolved: true);
 
         date_default_timezone_set($config->getString('system.date.timezone'));
 
@@ -95,5 +100,33 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
             && FileSystem::exists($cacheFile)
             && !FileSystem::directoryModifiedSince($this->app->rootPath() . '/site/config/', FileSystem::lastModifiedTime($cacheFile))
             && !FileSystem::directoryModifiedSince($this->app->systemPath() . '/config/', FileSystem::lastModifiedTime($cacheFile));
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     *
+     * @todo Remove in Formwork 3.0
+     */
+    private function replaceDeprecatedOptions(array $data): array
+    {
+        // Options of the pages cache before Formwork 2.4.0
+        foreach (['enabled' => 'enabled', 'path' => 'path', 'time' => 'ttl'] as $deprecated => $replacement) {
+            if (!isset($data['system']['cache']) || !is_array($data['system']['cache']) || !array_key_exists($deprecated, $data['system']['cache']) || is_array($data['system']['cache'][$deprecated])) {
+                continue;
+            }
+
+            trigger_error(sprintf('The "system.cache.%s" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.%s" instead.', $deprecated, $replacement), E_USER_DEPRECATED);
+
+            if (!isset($data['system']['cache']['pages']) || !is_array($data['system']['cache']['pages'])) {
+                $data['system']['cache']['pages'] = [];
+            }
+
+            $data['system']['cache']['pages'][$replacement] = $data['system']['cache'][$deprecated];
+            unset($data['system']['cache'][$deprecated]);
+        }
+
+        return $data;
     }
 }

@@ -3,7 +3,7 @@
 namespace Formwork\Commands;
 
 use Formwork\Backup\Backupper;
-use Formwork\Cache\AbstractCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Cms\App;
 use Formwork\Updater\Updater;
 use League\CLImate\CLImate;
@@ -199,13 +199,15 @@ final class UpdatesCommand implements CommandInterface
         }
         $this->climate->br();
 
-        if ($this->app->config()->getBool('system.cache.enabled')) {
-            $this->climate->out('Clearing cache...');
-            /** @var AbstractCache $cache */
-            $cache = $this->app->getService('cache.pages');
+        $this->climate->out('Clearing cache...');
+
+        /** @var CacheManager $cacheManager */
+        $cacheManager = $this->app->getService(CacheManager::class);
+        foreach ($cacheManager->getAll() as $cache) {
             $cache->clear();
-            $this->climate->br();
         }
+
+        $this->climate->br();
 
         $this->climate->out("<bold>Formwork</bold> has been updated successfully to <bold><green>{$release['tag']}</green></bold>.");
     }
