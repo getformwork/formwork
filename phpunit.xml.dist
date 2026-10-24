@@ -31,4 +31,8 @@
     </source>
 
     <coverage ignoreDeprecatedCodeUnits="true" />
+
+    <php>
+        <ini name="memory_limit" value="512M" />
+    </php>
 </phpunit>
