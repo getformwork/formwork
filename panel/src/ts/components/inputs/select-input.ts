@@ -43,6 +43,9 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
     // Whether a key has been typed since the text field got the focus
     private isTyping = false;
 
+    // Whether Escape has just closed the list, so that the key is not left to the page
+    private isEscapeHandled = false;
+
     private readonly uid = ++instanceCount;
 
     private optionCount = 0;
@@ -309,6 +312,7 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
             const img = document.createElement("img");
             img.src = option.dataset.thumb;
             img.className = "dropdown-thumb";
+            img.alt = "";
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.dataset.icon) {
             const icon = toCamelCase(option.dataset.icon) as keyof typeof icons;
@@ -345,7 +349,7 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
             const keyboardActivation = event.detail === 0;
             if (mousedownCaptured || keyboardActivation) {
                 this.setCurrent(item);
-                this.labelInput.blur();
+                this.close();
             }
             mousedownCaptured = false;
             event.preventDefault();
@@ -430,7 +434,13 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
         });
 
         this.labelInput.addEventListener("mousedown", (event) => {
-            this.labelInput.focus();
+            if (document.activeElement === this.labelInput) {
+                // The list is not opened by the focus, which the text field already has
+                this.openWithCurrent();
+            } else {
+                this.labelInput.focus();
+            }
+
             event.preventDefault();
         });
 
@@ -481,6 +491,14 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
                 break;
 
             case "Escape":
+                // A list that is open is closed, otherwise Escape is left to the page (e.g. a modal)
+                if (this.list.open.value === true) {
+                    this.cancel();
+                    this.isEscapeHandled = true;
+                    event.preventDefault();
+                }
+                break;
+
             case "ArrowLeft":
             case "ArrowRight":
                 break;
@@ -496,13 +514,15 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
     }
 
     /**
-     * Filter the items by the typed text, close the text field with Escape
+     * Filter the items by the typed text, keep an Escape that closed the list from reaching other listeners
      */
     private handleKeyup(event: KeyboardEvent) {
         switch (event.key) {
             case "Escape":
-                this.labelInput.blur();
-                event.stopPropagation();
+                if (this.isEscapeHandled) {
+                    this.isEscapeHandled = false;
+                    event.stopPropagation();
+                }
                 break;
 
             case "ArrowUp":
@@ -547,7 +567,24 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
             this.setCurrent(selected);
         }
 
-        this.labelInput.blur();
+        this.close();
+    }
+
+    /**
+     * Close the list picking the option whose label has been typed, keeping the focus
+     */
+    private close() {
+        this.commitLabel();
+        this.isTyping = false;
+    }
+
+    /**
+     * Close the list discarding the typed text, keeping the focus
+     */
+    private cancel() {
+        this.labelInput.value = this.getCurrentLabel();
+        this.list.open.value = false;
+        this.isTyping = false;
     }
 
     /**

@@ -1,5 +1,5 @@
 import { effect, signal } from "@preact/signals-core";
-import { $$ } from "../../utils/selectors";
+import { $, $$ } from "../../utils/selectors";
 
 /**
  * Handles the collapsible sections, whose state is remembered
@@ -16,8 +16,11 @@ export class Sections {
 
             const collapsed = signal(state ? state === "collapsed" : section.classList.contains("collapsed"));
 
+            const toggleButton = $(".section-toggle", element);
+
             effect(() => {
                 section.classList.toggle("collapsed", collapsed.value);
+                toggleButton?.setAttribute("aria-expanded", String(!collapsed.value));
             });
 
             element.addEventListener("click", () => {

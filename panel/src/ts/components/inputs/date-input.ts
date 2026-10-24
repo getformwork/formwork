@@ -120,7 +120,10 @@ export class DateInput extends InputBase<HTMLInputElement> {
     }
 
     /**
-     * Show the calendar when the input is focused and handle the keyboard
+     * Show the calendar when the input is focused or clicked and handle the keyboard
+     *
+     * Backspace clears the date and Escape hides the calendar, keeping the focus; the calendar is
+     * shown again with the arrows, Enter or Space
      */
     private initInput() {
         this.element.readOnly = true;
@@ -136,19 +139,32 @@ export class DateInput extends InputBase<HTMLInputElement> {
             this.calendar.hide();
         });
 
+        this.element.addEventListener("click", () => {
+            this.calendar.show();
+        });
+
         this.element.addEventListener("keydown", (event: KeyboardEvent) => {
             switch (event.key) {
                 case "Backspace":
                     this.element.value = "";
-                    this.element.blur();
+                    this.calendar.hide();
                     this.dispatchChange();
                     break;
                 case "Escape":
-                    this.element.blur();
+                    this.calendar.hide();
                     break;
                 case "Tab":
-                    this.element.blur();
                     return;
+                case "ArrowDown":
+                case "ArrowUp":
+                case "Enter":
+                case " ":
+                    // The key only shows a calendar that is hidden, it does not change the date as well
+                    if (!this.calendar.visible) {
+                        this.calendar.show();
+                        event.stopPropagation();
+                    }
+                    break;
             }
             event.preventDefault();
         });

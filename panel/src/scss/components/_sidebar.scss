@@ -35,6 +35,9 @@
 
 body:has(.sidebar.show) {
     overflow: hidden;
+    @media (min-width: #{map.get($breakpoints, "md")}) {
+        overflow: visible;
+    }
 }
 
 .sidebar-wrapper {

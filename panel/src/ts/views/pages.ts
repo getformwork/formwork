@@ -31,8 +31,12 @@ export function initPagesTree() {
 function renderTree(tree: PagesTree) {
     effect(() => {
         for (const item of tree.items.value) {
+            const isExpanded = tree.filtering.value || tree.expanded.value.has(item);
+
             item.classList.toggle("has-children", tree.parents.value.has(item));
-            item.classList.toggle("is-expanded", tree.filtering.value || tree.expanded.value.has(item));
+            item.classList.toggle("is-expanded", isExpanded);
+
+            $(".pages-tree-children-toggle button", item)?.setAttribute("aria-expanded", String(isExpanded));
         }
     });
 }

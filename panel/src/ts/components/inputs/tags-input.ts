@@ -14,7 +14,7 @@ import { InputBase } from "./input";
  */
 export interface TagsInputOptions {
     labels: { [key: string]: string };
-    addKeyCodes: string[];
+    addKeys: string[];
     limit: number;
     accept: "options" | "any";
     orderable: boolean;
@@ -62,7 +62,7 @@ export class TagsInput extends InputBase<HTMLInputElement> {
             labels: {
                 remove: app.translation.get("fields.tags.remove", "Remove"),
             },
-            addKeyCodes: ["Comma"],
+            addKeys: [","],
             limit: Infinity,
             accept: "options" as "options" | "any",
             orderable: true,
@@ -240,6 +240,7 @@ export class TagsInput extends InputBase<HTMLInputElement> {
             const img = document.createElement("img");
             img.src = option.thumb;
             img.className = "dropdown-thumb";
+            img.alt = "";
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.icon) {
             // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
@@ -386,7 +387,7 @@ export class TagsInput extends InputBase<HTMLInputElement> {
         this.innerInput.classList.remove("form-input-invalid");
 
         const isDropdownOpen = this.dropdown?.open.value === true;
-        const isAddKey = this.options.addKeyCodes.includes(event.code);
+        const isAddKey = this.options.addKeys.includes(event.key);
 
         // A typed tag is replaced by the selected suggestion
         if (isDropdownOpen && (isAddKey || event.key === "Enter")) {
