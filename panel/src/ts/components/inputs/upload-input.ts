@@ -218,12 +218,14 @@ export class UploadInput {
         if (info.type === "image") {
             const img = document.createElement("img");
             img.className = "file-thumbnail";
+            img.alt = "";
             img.src = info.thumbnail;
             img.loading = "lazy";
             $(".file-thumbnail", filesItem)?.replaceWith(img);
         } else if (info.type === "video") {
             const video = document.createElement("video");
             video.classList.add("file-thumbnail");
+            video.ariaHidden = "true";
             video.src = info.thumbnail;
             video.preload = "metadata";
             $(".file-thumbnail", filesItem)?.replaceWith(video);

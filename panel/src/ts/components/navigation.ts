@@ -2,9 +2,19 @@ import { $ } from "../utils/selectors";
 
 export class Navigation {
     constructor() {
-        if ($(".sidebar-toggle")) {
-            $(".sidebar-toggle")?.addEventListener("click", () => {
-                if (($(".sidebar") as HTMLElement).classList.toggle("show")) {
+        const toggle = $<HTMLElement>(".sidebar-toggle");
+        const sidebar = $<HTMLElement>(".sidebar");
+
+        if (toggle && sidebar) {
+            sidebar.id ||= "panel-sidebar";
+            toggle.setAttribute("aria-controls", sidebar.id);
+            toggle.setAttribute("aria-expanded", "false");
+
+            const setOpen = (open: boolean) => {
+                sidebar.classList.toggle("show", open);
+                toggle.setAttribute("aria-expanded", String(open));
+
+                if (open) {
                     if (!$(".sidebar-backdrop")) {
                         const backdrop = document.createElement("div");
                         backdrop.className = "sidebar-backdrop hide-from-md";
@@ -15,6 +25,15 @@ export class Navigation {
                     if (backdrop) {
                         (backdrop.parentNode as ParentNode).removeChild(backdrop);
                     }
+                }
+            };
+
+            toggle.addEventListener("click", () => setOpen(!sidebar.classList.contains("show")));
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && sidebar.classList.contains("show")) {
+                    setOpen(false);
+                    toggle.focus();
                 }
             });
         }

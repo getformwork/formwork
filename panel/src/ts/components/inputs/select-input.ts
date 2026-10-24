@@ -18,6 +18,8 @@ interface SelectInputOptions {
     };
 }
 
+let instanceCount = 0;
+
 export class SelectInput {
     readonly options: SelectInputOptions;
 
@@ -28,6 +30,10 @@ export class SelectInput {
     private labelInput: HTMLInputElement;
 
     private emptyState: HTMLDivElement;
+
+    private readonly uid = ++instanceCount;
+
+    private optionCount = 0;
 
     constructor(element: HTMLSelectElement, options: Partial<SelectInputOptions>) {
         const defaults: SelectInputOptions = {
@@ -96,6 +102,18 @@ export class SelectInput {
         this.labelInput.classList.add("form-select");
         this.labelInput.id = selectId;
 
+        const describedBy = this.element.getAttribute("aria-describedby");
+
+        if (describedBy) {
+            this.labelInput.setAttribute("aria-describedby", describedBy);
+        }
+
+        // The text input acts as the combobox, its dropdown is the listbox
+        this.labelInput.setAttribute("role", "combobox");
+        this.labelInput.setAttribute("aria-autocomplete", "list");
+        this.labelInput.setAttribute("aria-haspopup", "listbox");
+        this.labelInput.setAttribute("aria-expanded", "false");
+
         this.element.removeAttribute("id");
 
         this.element.ariaHidden = "true";
@@ -137,6 +155,12 @@ export class SelectInput {
         wrap.appendChild(this.element);
 
         this.createDropdown(list, wrap as HTMLElement);
+
+        const labelId = this.labelInput.labels?.[0]?.id;
+
+        if (labelId) {
+            this.dropdown.setAttribute("aria-labelledby", labelId);
+        }
     }
 
     addOption({ label, value, disabled, thumb, icon }: { label: string; value: string; disabled?: boolean; thumb?: string; icon?: string }) {
@@ -192,6 +216,9 @@ export class SelectInput {
     private addDropdownItem(option: SelectInputListItem) {
         const item = document.createElement("div");
         item.className = "dropdown-item";
+        item.id = `${this.dropdown.id}-option-${++this.optionCount}`;
+        item.setAttribute("role", "option");
+        item.setAttribute("aria-selected", String(option.selected));
 
         item.innerText = option.label;
         item.dataset.value = option.value;
@@ -202,6 +229,7 @@ export class SelectInput {
 
         if (option.disabled) {
             item.classList.add("disabled");
+            item.setAttribute("aria-disabled", "true");
         }
 
         if (option.dataset.thumb) {
@@ -251,6 +279,9 @@ export class SelectInput {
         this.dropdown.className = "dropdown-list";
 
         this.dropdown.dataset.for = this.labelInput.id;
+        this.dropdown.id = `${this.labelInput.id || `select-${this.uid}`}-listbox`;
+        this.dropdown.setAttribute("role", "listbox");
+        this.labelInput.setAttribute("aria-controls", this.dropdown.id);
 
         this.emptyState.className = "dropdown-empty";
         this.emptyState.style.display = "none";
@@ -281,7 +312,7 @@ export class SelectInput {
             if (!this.validateDropdownItem(this.labelInput.value)) {
                 this.labelInput.value = this.getCurrentLabel();
             }
-            this.dropdown.style.display = "none";
+            this.setExpanded(false);
         });
 
         this.labelInput.addEventListener("keydown", (event) => {
@@ -349,7 +380,7 @@ export class SelectInput {
                 case "Enter":
                     return true;
                 default:
-                    this.dropdown.style.display = "block";
+                    this.setExpanded(true);
                     this.filterDropdown(value);
                     if (value.length > 0) {
                         this.selectFirstDropdownItem();
@@ -365,12 +396,24 @@ export class SelectInput {
                 visibleItems++;
             }
             element.classList.remove("selected");
+            element.setAttribute("aria-selected", "false");
         });
+
+        this.labelInput.removeAttribute("aria-activedescendant");
 
         if (visibleItems > 0) {
             this.emptyState.style.display = "none";
         } else {
             this.emptyState.style.display = "block";
+        }
+    }
+
+    private setExpanded(expanded: boolean) {
+        this.dropdown.style.display = expanded ? "block" : "none";
+        this.labelInput.setAttribute("aria-expanded", String(expanded));
+
+        if (!expanded) {
+            this.labelInput.removeAttribute("aria-activedescendant");
         }
     }
 
@@ -422,11 +465,14 @@ export class SelectInput {
         const selectedItem = $(".dropdown-item.selected", this.dropdown);
         if (selectedItem) {
             selectedItem.classList.remove("selected");
+            selectedItem.setAttribute("aria-selected", "false");
         }
         if (item) {
             const isDisabled = item.classList.contains("disabled");
             if (!isDisabled) {
                 item.classList.add("selected");
+                item.setAttribute("aria-selected", "true");
+                this.labelInput.setAttribute("aria-activedescendant", item.id);
                 this.scrollToDropdownItem(item);
             }
         }
@@ -505,7 +551,7 @@ export class SelectInput {
             this.filterDropdown("");
             this.updateDropdown();
             this.selectDropdownItem(this.getCurrent());
-            this.dropdown.style.display = "block";
+            this.setExpanded(true);
             this.scrollToDropdownItem(this.getCurrent());
         }
     }

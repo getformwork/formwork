@@ -56,6 +56,12 @@ export class Tooltip {
         const container = options.container;
 
         this.delayTimer = window.setTimeout(() => {
+            // Do not show a tooltip for an element that has been removed
+            // or cover the menu opened by the reference element
+            if (!options.referenceElement.isConnected || options.referenceElement.getAttribute("aria-expanded") === "true") {
+                return;
+            }
+
             const getRelativePosition = (tooltip: HTMLElement) => {
                 const offset = options.offset;
 

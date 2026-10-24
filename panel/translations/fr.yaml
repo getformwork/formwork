@@ -25,6 +25,7 @@ panel.dashboard.statistics.uniqueVisitors: Visiteurs uniques
 panel.dashboard.statistics.visits: Visites
 panel.dashboard.welcome: Bienvenue
 panel.dragToReorder: Glisser pour réorganiser
+panel.dropdown.moreOptions: Plus d'options
 panel.editor.bold: Gras
 panel.editor.bulletList: Liste à puce
 panel.editor.code: Code

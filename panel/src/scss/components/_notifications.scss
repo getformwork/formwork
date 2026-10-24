@@ -68,3 +68,8 @@
     background-color: var(--color-danger-500);
     color: var(--color-white);
 }
+
+.notification:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: -4px;
+}

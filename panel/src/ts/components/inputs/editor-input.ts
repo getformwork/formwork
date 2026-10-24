@@ -1,6 +1,7 @@
 import { app } from "../../app";
 import { debounce } from "../../utils/events";
 import { $ } from "../../utils/selectors";
+import { initToolbar } from "../../utils/toolbar";
 import { escapeRegExp } from "../../utils/validation";
 import { markdown } from "../icons";
 
@@ -129,9 +130,19 @@ export class EditorInput {
             });
         });
 
-        $(`label[for="${textarea.id}"]`)?.addEventListener("click", () => {
-            this.editorPromise.then(() => this.editor?.view.focus());
-        });
+        const label = $(`label[for="${textarea.id}"]`);
+
+        const toolbar = $<HTMLElement>(".editor-toolbar", this.container);
+
+        if (label) {
+            label.addEventListener("click", () => {
+                this.editorPromise.then(() => this.editor?.view.focus());
+            });
+        }
+
+        if (toolbar) {
+            initToolbar(toolbar, label?.id);
+        }
     }
 
     async switchToMarkdown() {
@@ -147,6 +158,7 @@ export class EditorInput {
             placeholder: this.element.placeholder,
             attributes: {
                 spellcheck: this.options.spellcheck ? "true" : "false",
+                ...this.accessibilityAttributes(),
             },
         });
         this.element.style.display = "none";
@@ -169,6 +181,37 @@ export class EditorInput {
         this.element.style.display = "none";
         this.element.classList.remove("is-loading");
         this.editor.view.dom.style.height = `${this.options.height}px`;
+    }
+
+    private accessibilityAttributes(): Record<string, string> {
+        const attributes: Record<string, string> = {
+            role: "textbox",
+            "aria-multiline": "true",
+        };
+
+        const labelId = $(`label[for="${this.id}"]`)?.id;
+
+        if (labelId) {
+            attributes["aria-labelledby"] = labelId;
+        } else if (this.element.ariaLabel) {
+            attributes["aria-label"] = this.element.ariaLabel;
+        }
+
+        const describedBy = this.element.getAttribute("aria-describedby");
+
+        if (describedBy) {
+            attributes["aria-describedby"] = describedBy;
+        }
+
+        if (this.element.required) {
+            attributes["aria-required"] = "true";
+        }
+
+        if (this.element.readOnly) {
+            attributes["aria-readonly"] = "true";
+        }
+
+        return attributes;
     }
 
     get name() {

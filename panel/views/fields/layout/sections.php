@@ -29,7 +29,7 @@
     </div>
     <?php $this->end() ?>
     <?php if (!$layout->tabs()->isEmpty()): ?>
-        <div class="<?= $this->classes(['tabs-panel', 'visible' => $layout->tabs()->first()->name() === $tabName]) ?>" role="tabpanel" aria-labelledby="tab-<?= $this->escapeAttr($tabName) ?>" data-tab="<?= $this->escapeAttr($tabName) ?>">
+        <div class="<?= $this->classes(['tabs-panel', 'visible' => $layout->tabs()->first()->name() === $tabName]) ?>" id="tabpanel-<?= $this->escapeAttr($tabName) ?>" role="tabpanel" aria-labelledby="tab-<?= $this->escapeAttr($tabName) ?>" data-tab="<?= $this->escapeAttr($tabName) ?>">
             <?= $this->block('sections') ?>
         </div>
     <?php else: ?>

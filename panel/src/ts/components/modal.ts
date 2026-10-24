@@ -14,7 +14,11 @@ type ModalCallback = (modal: Modal, triggerElement?: HTMLElement) => void;
 
 type ModalState = "open" | "closed";
 
+const focusableSelector = ["a[href]", "button:not([disabled])", "input:not([disabled]):not([type=hidden])", "select:not([disabled])", "textarea:not([disabled])", "[contenteditable=true]", "[tabindex]:not([tabindex='-1'])"].join(",");
+
 export class Modal {
+    private static readonly openModals: Modal[] = [];
+
     readonly element: HTMLElement;
 
     readonly form: Form | null;
@@ -24,6 +28,8 @@ export class Modal {
     private readonly callbacks: { [name: string]: ModalCallback } = {};
 
     private state: ModalState = "closed";
+
+    private returnFocusElement: HTMLElement | null = null;
 
     constructor(element: HTMLElement) {
         this.element = element;
@@ -71,6 +77,10 @@ export class Modal {
             }
         }
 
+        if (this.isClosed) {
+            this.returnFocusElement = this.resolveReturnFocusElement(options.triggerElement ?? (document.activeElement as HTMLElement | null));
+        }
+
         (document.activeElement as HTMLElement | null)?.blur(); // Don't retain focus on any element
 
         this.getFirstFocusableElement(this.element)?.focus();
@@ -78,6 +88,10 @@ export class Modal {
         $$(".tooltip").forEach((tooltip) => tooltip.parentNode && tooltip.parentNode.removeChild(tooltip));
 
         this.createBackdrop();
+
+        if (this.isClosed) {
+            Modal.openModals.push(this);
+        }
 
         this.state = "open";
 
@@ -95,7 +109,15 @@ export class Modal {
 
         this.state = "closed";
 
+        const index = Modal.openModals.indexOf(this);
+
+        if (index !== -1) {
+            Modal.openModals.splice(index, 1);
+        }
+
         this.dispatchCallback("close", options.triggerElement);
+
+        this.restoreFocus();
     }
 
     onBeforeOpen(callback: ModalCallback) {
@@ -158,8 +180,20 @@ export class Modal {
         dismissButton?.addEventListener("click", () => this.close({ triggerElement: dismissButton }));
 
         document.addEventListener("keyup", (event) => {
-            if (event.key === "Escape") {
+            if (event.key === "Escape" && this.isOpen) {
                 this.close();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Tab" && this.isTopmost) {
+                this.trapFocus(event);
+            }
+        });
+
+        document.addEventListener("focusin", (event) => {
+            if (this.isTopmost && !this.element.contains(event.target as Node)) {
+                this.getFirstFocusableElement(this.element).focus();
             }
         });
 
@@ -181,6 +215,56 @@ export class Modal {
                 this.getFirstFocusableElement(this.element).focus();
             }
         });
+    }
+
+    private get isTopmost() {
+        return this.isOpen && Modal.openModals[Modal.openModals.length - 1] === this;
+    }
+
+    private getFocusableElements(): HTMLElement[] {
+        return Array.from($$<HTMLElement>(focusableSelector, this.element)).filter((element) => element.getClientRects().length > 0);
+    }
+
+    private trapFocus(event: KeyboardEvent) {
+        const focusable = this.getFocusableElements();
+
+        if (focusable.length === 0) {
+            event.preventDefault();
+            return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && (active === first || !this.element.contains(active))) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && (active === last || !this.element.contains(active))) {
+            event.preventDefault();
+            first.focus();
+        }
+    }
+
+    private resolveReturnFocusElement(element: HTMLElement | null): HTMLElement | null {
+        // When the trigger lives in a dropdown menu, return focus to the button that opens that menu
+        const menu = element?.closest<HTMLElement>(".dropdown-menu");
+
+        if (menu?.id) {
+            return $<HTMLElement>(`[data-dropdown="${menu.id}"]`) ?? element;
+        }
+
+        return element;
+    }
+
+    private restoreFocus() {
+        const element = this.returnFocusElement;
+
+        this.returnFocusElement = null;
+
+        if (element?.isConnected && element.getClientRects().length > 0) {
+            element.focus();
+        }
     }
 
     private getFirstFocusableElement(parent: HTMLElement = document.body): HTMLElement {

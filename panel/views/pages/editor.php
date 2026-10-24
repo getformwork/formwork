@@ -57,7 +57,7 @@
                     <?php else: ?>
                         <button type="submit" class="button button-accent mb-0"><?= $this->icon('check-circle') ?> <?= $this->translate('panel.pages.save') ?></button>
                     <?php endif ?>
-                    <button type="button" class="button button-accent dropdown-button caret" data-dropdown="dropdown-save-options"></button>
+                    <button type="button" class="button button-accent dropdown-button caret" title="<?= $this->translate('panel.dropdown.moreOptions') ?>" aria-label="<?= $this->translate('panel.dropdown.moreOptions') ?>" data-dropdown="dropdown-save-options"></button>
                 </div>
                 <div class="dropdown-menu" id="dropdown-save-options">
                     <?php if ($history?->isJustCreated()): ?>
