@@ -14,5 +14,5 @@
                 'hidden'           => $field->isHidden(),
                 'data-time'        => $field->hasTime() ? 'true' : 'false',
             ]) ?>>
-    <button type="button" class="form-input-action" data-reset="<?= $field->name() ?>"><?= $this->icon('times-circle') ?></button>
+    <button type="button" class="form-input-action" data-reset="<?= $field->name() ?>" title="<?= $this->translate('date.noDate') ?>" aria-label="<?= $this->translate('date.noDate') ?>"><?= $this->icon('times-circle') ?></button>
 </div>

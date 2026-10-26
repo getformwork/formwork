@@ -109,9 +109,9 @@ export function formatDateTime(date: Date, format: string, options: DateFormatOp
             case "DD":
                 return pad(date.getDate());
             case "DDD":
-                return options.labels.weekdays.short[mod(date.getDay() + options.weekStarts, 7)];
+                return options.labels.weekdays.short[date.getDay()];
             case "DDDD":
-                return options.labels.weekdays.long[mod(date.getDay() + options.weekStarts, 7)];
+                return options.labels.weekdays.long[date.getDay()];
             case "W":
                 return getWeekOfYear(date);
             case "WW":

@@ -43,17 +43,19 @@ const isLeapYear = (year: number) => (year % 4 === 0 && year % 100 !== 0) || yea
 export const daysInMonth = (month: number, year: number) => (month === 1 && isLeapYear(year) ? 29 : [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month]);
 
 /**
- * Go to the previous year
+ * Go to the previous year, using the last day of the month if the current day does not exist
  */
 const prevYear: CalendarOperation = (state) => {
     state.year--;
+    state.day = Math.min(state.day, daysInMonth(state.month, state.year));
 };
 
 /**
- * Go to the next year
+ * Go to the next year, using the last day of the month if the current day does not exist
  */
 const nextYear: CalendarOperation = (state) => {
     state.year++;
+    state.day = Math.min(state.day, daysInMonth(state.month, state.year));
 };
 
 /**
