@@ -69,11 +69,11 @@ return function (App $app) {
                     throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
                 }
 
-                if ($field->has('min') && strlen((string) $value) < $field->minLength()) {
+                if ($field->has('minLength') && strlen((string) $value) < $field->minLength()) {
                     throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->minLength()), 'valueTooShort', ['minLength' => $field->minLength()]);
                 }
 
-                if ($field->has('max') && strlen((string) $value) > $field->maxLength()) {
+                if ($field->has('maxLength') && strlen((string) $value) > $field->maxLength()) {
                     throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->maxLength()), 'valueTooLong', ['maxLength' => $field->maxLength()]);
                 }
 
