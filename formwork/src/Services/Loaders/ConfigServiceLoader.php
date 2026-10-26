@@ -127,6 +127,22 @@ final class ConfigServiceLoader implements ServiceLoaderInterface
             unset($data['system']['cache'][$deprecated]);
         }
 
+        // Handler of the pages cache before Formwork 2.4.0
+        if (isset($data['system']['cache']['namespaces']) && is_array($data['system']['cache']['namespaces'])) {
+            $namespaces = $data['system']['cache']['namespaces'];
+            unset($data['system']['cache']['namespaces']);
+
+            trigger_error('The "system.cache.namespaces" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.handler" instead.', E_USER_DEPRECATED);
+
+            if (isset($namespaces['pages']['handler']) && is_string($namespaces['pages']['handler'])) {
+                if (!isset($data['system']['cache']['pages']) || !is_array($data['system']['cache']['pages'])) {
+                    $data['system']['cache']['pages'] = [];
+                }
+
+                $data['system']['cache']['pages']['handler'] = $namespaces['pages']['handler'];
+            }
+        }
+
         return $data;
     }
 }

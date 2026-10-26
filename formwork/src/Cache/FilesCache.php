@@ -3,6 +3,7 @@
 namespace Formwork\Cache;
 
 use DateInterval;
+use Generator;
 use Formwork\Cache\Exceptions\InvalidKeyException;
 use Formwork\Parsers\Php;
 use Formwork\Utils\FileSystem;
@@ -81,9 +82,9 @@ class FilesCache extends AbstractCache implements CountableCache
 
     public function clear(): bool
     {
-        if (FileSystem::exists($this->path)) {
-            FileSystem::delete($this->path, recursive: true);
-            FileSystem::createDirectory($this->path, recursive: true);
+        // Only cache files are deleted, as the path may contain other files
+        foreach ($this->listCacheFiles() as $file) {
+            FileSystem::delete(FileSystem::joinPaths($this->path, $file));
         }
         return true;
     }
@@ -100,10 +101,7 @@ class FilesCache extends AbstractCache implements CountableCache
 
     public function count(): int
     {
-        if (!FileSystem::exists($this->path)) {
-            return 0;
-        }
-        return count(iterator_to_array(FileSystem::listFiles($this->path)));
+        return count(iterator_to_array($this->listCacheFiles()));
     }
 
     /**
@@ -138,6 +136,23 @@ class FilesCache extends AbstractCache implements CountableCache
         }
 
         return $cacheItem;
+    }
+
+    /**
+     * List the names of the files in the cache path which are cache files
+     *
+     * @return Generator<int, string>
+     */
+    protected function listCacheFiles(): Generator
+    {
+        if (!FileSystem::isDirectory($this->path, assertExists: false)) {
+            return;
+        }
+        foreach (FileSystem::listFiles($this->path, includeHidden: true) as $file) {
+            if (preg_match('/^[0-9a-f]{64}$/', $file) === 1) {
+                yield $file;
+            }
+        }
     }
 
     protected function getFile(string $key): string

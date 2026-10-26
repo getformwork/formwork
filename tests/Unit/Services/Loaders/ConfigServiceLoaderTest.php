@@ -187,6 +187,23 @@ final class ConfigServiceLoaderTest extends TestCase
         $this->assertSame('files', $config->getString('system.cache.pages.handler'));
     }
 
+    public function testDeprecatedCacheNamespacesAreMigratedToThePagesCache(): void
+    {
+        $this->createCache('namespaces.test', 'UTC', time() + 10, ['cache' => ['namespaces' => ['pages' => ['handler' => 'array']]]]);
+
+        $deprecations = $this->captureDeprecations(function () use (&$config): void {
+            $config = $this->load('namespaces.test');
+        });
+
+        $this->assertSame([
+            'The "system.cache.namespaces" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.handler" instead.',
+        ], $deprecations);
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertFalse($config->has('system.cache.namespaces'));
+        $this->assertSame('array', $config->getString('system.cache.pages.handler'));
+    }
+
     public function testConfigWithoutDeprecatedOptionsTriggersNoDeprecations(): void
     {
         $deprecations = $this->captureDeprecations(function (): void {

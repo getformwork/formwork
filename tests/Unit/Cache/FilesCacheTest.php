@@ -227,6 +227,26 @@ final class FilesCacheTest extends CacheTestCase
         $this->assertSame(1, $filesCache->count());
     }
 
+    public function testClearAndCountIgnoreFilesNotCreatedByTheCache(): void
+    {
+        $filesCache = $this->createCache();
+        $filesCache->setMultiple(['a' => 1, 'b' => 2]);
+
+        $foreignFile = $this->path . '/notes.txt';
+        $foreignDirectory = $this->path . '/' . str_repeat('a', 64) . '-dir';
+        file_put_contents($foreignFile, 'keep');
+        mkdir($foreignDirectory);
+
+        $this->assertSame(2, $filesCache->count());
+
+        $filesCache->clear();
+
+        $this->assertSame(0, $filesCache->count());
+        $this->assertFileExists($foreignFile);
+        $this->assertDirectoryExists($foreignDirectory);
+        $this->assertNull($filesCache->get('a'));
+    }
+
     public function testStdClassValuesRoundTrip(): void
     {
         $filesCache = $this->createCache();
