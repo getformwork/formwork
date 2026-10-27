@@ -5,7 +5,7 @@ import * as esbuild from "esbuild";
 const watch = process.argv.includes("--watch");
 
 const options = {
-    entryPoints: { "app.min": "./src/ts/app.ts" },
+    entryPoints: { "app.min": "./src/ts/index.ts" },
     bundle: true,
     format: "esm",
     target: "es2020",

@@ -21,7 +21,7 @@
                     'data-auto-update' => $field->autoUpdate() ? 'true' : 'false',
                 ]) ?>>
         <?php if (!$field->autoUpdate()): ?>
-            <span class="form-input-action" data-generate-slug="<?= $field->name() ?>" title="<?= $this->translate('panel.pages.changeSlug.generate') ?>"><?= $this->icon('sparks') ?></span>
+            <button type="button" class="form-input-action" data-generate-slug="<?= $field->name() ?>" title="<?= $this->translate('panel.pages.changeSlug.generate') ?>" aria-label="<?= $this->translate('panel.pages.changeSlug.generate') ?>"><?= $this->icon('sparks') ?></button>
         <?php endif ?>
     </div>
 </div>

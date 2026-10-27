@@ -1,10 +1,15 @@
-import { app } from "../../app";
+import { effect, signal } from "@preact/signals-core";
+import { app } from "../../services/app";
 import { debounce } from "../../utils/events";
 import { $ } from "../../utils/selectors";
 import { initToolbar } from "../../utils/toolbar";
 import { escapeRegExp } from "../../utils/validation";
-import { markdown } from "../icons";
+import { markdown } from "../ui/icons";
+import { InputBase } from "./input";
 
+/**
+ * Describes the editor view used by the input
+ */
 interface EditorView {
     view: { dom: HTMLElement; focus(): void };
     content: string;
@@ -12,14 +17,27 @@ interface EditorView {
     destroy(): void;
 }
 
+/**
+ * Make the relative image paths of a Markdown text absolute
+ *
+ * @param baseUri Base URI prepended to the relative paths
+ */
 function addBaseUri(markdown: string, baseUri: string) {
     return markdown.replace(/(!\[.*\])\((?!https?:\/\/)([^)]+)\)/g, `$1(${baseUri}$2)`);
 }
 
+/**
+ * Make the image paths of a Markdown text relative
+ *
+ * @param baseUri Base URI removed from the paths
+ */
 function removeBaseUri(markdown: string, baseUri: string) {
     return markdown.replace(new RegExp(`(!\\[.*\\])\\(${escapeRegExp(baseUri)}([^)]+)\\)`, "g"), "$1($2)");
 }
 
+/**
+ * Get the height of a textarea
+ */
 function getTextareaHeight(textarea: HTMLTextAreaElement): number {
     const clone = textarea.cloneNode() as HTMLTextAreaElement;
     clone.style.visibility = "hidden";
@@ -30,6 +48,9 @@ function getTextareaHeight(textarea: HTMLTextAreaElement): number {
     return height;
 }
 
+/**
+ * Holds the options of an editor input
+ */
 interface EditorInputOptions {
     baseUri: string;
     height: number;
@@ -37,21 +58,44 @@ interface EditorInputOptions {
     inputEventHandler: (value: string) => void;
 }
 
-export class EditorInput {
-    readonly element: HTMLTextAreaElement;
-
+/**
+ * Provides an input with a Markdown or code editor in place of a textarea
+ *
+ * The editor mode is chosen with a button of the toolbar and remembered. Editors are loaded on
+ * demand
+ */
+export class EditorInput extends InputBase<HTMLTextAreaElement> {
+    /**
+     * Id of the textarea
+     */
     readonly id: string;
 
+    /**
+     * Options of the editor
+     */
     readonly options: EditorInputOptions;
 
-    private container: HTMLElement | null;
+    /**
+     * Element wrapping toolbar and editor
+     */
+    private container: HTMLElement;
 
+    /**
+     * Current editor
+     */
     private editor: EditorView | undefined;
 
-    private editorPromise: Promise<void>;
+    /**
+     * Promise resolved when the current editor is loaded
+     */
+    private editorPromise!: Promise<void>;
 
+    /**
+     * Create the editor input
+     */
     constructor(textarea: HTMLTextAreaElement, options: Partial<EditorInputOptions> = {}) {
-        this.element = textarea;
+        super(textarea);
+
         this.id = textarea.id;
 
         const defaults: EditorInputOptions = {
@@ -60,83 +104,102 @@ export class EditorInput {
             spellcheck: true,
             inputEventHandler: (value: string) => {
                 this.element.value = removeBaseUri(value, this.options.baseUri);
-                debounce(
-                    () => {
-                        this.element.dispatchEvent(new Event("input", { bubbles: true }));
-                        this.element.dispatchEvent(new Event("change", { bubbles: true }));
-                    },
-                    500,
-                    true,
-                )();
+                debounce(() => this.dispatchChange(), 500, true)();
             },
         };
 
         this.options = { ...defaults, ...options };
 
-        this.container = (textarea.parentNode as HTMLElement)?.classList.contains("editor-wrap") ? (textarea.parentNode as HTMLElement) : null;
+        this.container = this.getContainer();
 
-        if (!this.container) {
-            this.container = document.createElement("div");
-            this.container.classList.add("editor-wrap");
-            textarea.parentNode?.insertBefore(this.container, textarea);
-            const toolbar = document.createElement("div");
-            toolbar.classList.add("editor-toolbar");
+        this.bindModeToggle();
+        this.bindLabel();
+    }
 
-            const toggleButton = document.createElement("button");
-            toggleButton.type = "button";
-            toggleButton.classList.add("button", "toolbar-button", "editor-toggle-markdown");
-            toggleButton.dataset.command = "toggle-markdown";
-            toggleButton.title = app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown");
-            toggleButton.ariaLabel = app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown");
-            toggleButton.disabled = this.element.disabled;
-            toggleButton.innerHTML = markdown;
-            toolbar.appendChild(toggleButton);
+    /**
+     * Get the element wrapping the textarea, creating it with the toolbar if the textarea has none
+     */
+    private getContainer() {
+        const textarea = this.element;
 
-            this.container.appendChild(toolbar);
-            this.container.appendChild(textarea);
-
-            this.options.height -= toolbar.offsetHeight;
-            this.element.style.height = `${this.options.height}px`;
+        if ((textarea.parentNode as HTMLElement)?.classList.contains("editor-wrap")) {
+            return textarea.parentNode as HTMLElement;
         }
 
+        const container = document.createElement("div");
+        container.classList.add("editor-wrap");
+        textarea.parentNode?.insertBefore(container, textarea);
+
+        const toolbar = document.createElement("div");
+        toolbar.classList.add("editor-toolbar");
+        toolbar.appendChild(this.createToggleButton());
+
+        container.appendChild(toolbar);
+        container.appendChild(textarea);
+
+        this.options.height -= toolbar.offsetHeight;
+        textarea.style.height = `${this.options.height}px`;
+
+        return container;
+    }
+
+    /**
+     * Create the button of the toolbar that switches between the Markdown and the code editor
+     */
+    private createToggleButton() {
+        const title = app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown");
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.classList.add("button", "toolbar-button", "editor-toggle-markdown");
+        button.dataset.command = "toggle-markdown";
+        button.title = title;
+        button.ariaLabel = title;
+        button.disabled = this.element.disabled;
+        button.innerHTML = markdown;
+
+        return button;
+    }
+
+    /**
+     * Show the editor of the mode remembered, and switch it with the button of the toolbar
+     */
+    private bindModeToggle() {
         const formName = this.element.form?.dataset.form;
 
         const key = formName ? `${formName}.${this.name}` : this.name;
 
-        const mode = window.localStorage.getItem(`formwork.editorMode[${key}]`);
+        const mode = signal<"markdown" | "code">(window.localStorage.getItem(`formwork.editorMode[${key}]`) === "code" ? "code" : "markdown");
 
         const toggleButton = $("[data-command=toggle-markdown]", this.container) as HTMLButtonElement;
 
-        if (mode === "code") {
-            this.editorPromise = this.switchToCode();
-            toggleButton.classList.add("is-active");
-        } else {
-            this.editorPromise = this.switchToMarkdown();
-            toggleButton.classList.remove("is-active");
-        }
+        effect(() => {
+            toggleButton.classList.toggle("is-active", mode.value === "code");
+            this.editorPromise = mode.value === "code" ? this.switchToCode() : this.switchToMarkdown();
+        });
 
         toggleButton.addEventListener("click", () => {
             toggleButton.disabled = true;
-            if (toggleButton.classList.toggle("is-active")) {
-                this.editorPromise = this.switchToCode();
-                window.localStorage.setItem(`formwork.editorMode[${key}]`, "code");
-            } else {
-                this.editorPromise = this.switchToMarkdown();
-                window.localStorage.setItem(`formwork.editorMode[${key}]`, "markdown");
-            }
-            this.editorPromise.then(() => {
+            mode.value = mode.value === "code" ? "markdown" : "code";
+            window.localStorage.setItem(`formwork.editorMode[${key}]`, mode.value);
+            void this.editorPromise.then(() => {
                 this.editor?.view.focus();
                 toggleButton.disabled = false;
             });
         });
+    }
 
-        const label = $(`label[for="${textarea.id}"]`);
+    /**
+     * Focus the editor when the label is clicked and make the toolbar accessible
+     */
+    private bindLabel() {
+        const label = $(`label[for="${this.id}"]`);
 
         const toolbar = $<HTMLElement>(".editor-toolbar", this.container);
 
         if (label) {
             label.addEventListener("click", () => {
-                this.editorPromise.then(() => this.editor?.view.focus());
+                void this.editorPromise.then(() => this.editor?.view.focus());
             });
         }
 
@@ -145,44 +208,58 @@ export class EditorInput {
         }
     }
 
+    /**
+     * Switch to the Markdown editor
+     */
     async switchToMarkdown() {
-        if (!this.container) {
-            return;
-        }
-        this.editor?.destroy();
-        this.element.classList.add("is-loading");
-        this.element.style.display = "";
-        const { MarkdownView } = await import("./editor/markdown/view");
-        this.editor = new MarkdownView(this.name, this.container, addBaseUri(this.element.value, this.options.baseUri), this.options.inputEventHandler, {
-            editable: !(this.element.disabled || this.element.readOnly),
-            placeholder: this.element.placeholder,
-            attributes: {
-                spellcheck: this.options.spellcheck ? "true" : "false",
-                ...this.accessibilityAttributes(),
-            },
+        await this.switchEditor(async () => {
+            const { MarkdownView } = await import("../editor/markdown-view");
+
+            return new MarkdownView(this.name, this.container, addBaseUri(this.element.value, this.options.baseUri), this.options.inputEventHandler, {
+                editable: !(this.element.disabled || this.element.readOnly),
+                placeholder: this.element.placeholder,
+                attributes: {
+                    spellcheck: this.options.spellcheck ? "true" : "false",
+                    ...this.accessibilityAttributes(),
+                },
+            });
         });
-        this.element.style.display = "none";
-        this.element.classList.remove("is-loading");
-        this.editor.view.dom.style.height = `${this.options.height}px`;
     }
 
+    /**
+     * Switch to the code editor
+     */
     async switchToCode() {
-        if (!this.container) {
-            return;
-        }
+        await this.switchEditor(async () => {
+            const { CodeView } = await import("../editor/code-view");
+
+            return new CodeView(this.container, removeBaseUri(this.element.value, this.options.baseUri), this.options.inputEventHandler, {
+                editable: !(this.element.disabled || this.element.readOnly),
+                placeholder: this.element.placeholder,
+            });
+        });
+    }
+
+    /**
+     * Replace the current editor with a new one, hiding the textarea
+     *
+     * @param createEditor Function creating the new editor, which loads its code on demand
+     */
+    private async switchEditor(createEditor: () => Promise<EditorView>) {
         this.editor?.destroy();
         this.element.classList.add("is-loading");
         this.element.style.display = "";
-        const { CodeView } = await import("./editor/code/view");
-        this.editor = new CodeView(this.container, removeBaseUri(this.element.value, this.options.baseUri), this.options.inputEventHandler, {
-            editable: !(this.element.disabled || this.element.readOnly),
-            placeholder: this.element.placeholder,
-        });
+
+        this.editor = await createEditor();
+
         this.element.style.display = "none";
         this.element.classList.remove("is-loading");
         this.editor.view.dom.style.height = `${this.options.height}px`;
     }
 
+    /**
+     * Get the accessibility attributes of the editor
+     */
     private accessibilityAttributes(): Record<string, string> {
         const attributes: Record<string, string> = {
             role: "textbox",
@@ -214,36 +291,40 @@ export class EditorInput {
         return attributes;
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
+    /**
+     * Get the content of the editor
+     */
     get value(): string {
         return this.editor?.content ?? this.element.value;
     }
 
+    /**
+     * Return whether the editor is read-only
+     */
     get disabled(): boolean {
         return this.editor ? !this.editor.editable : this.element.disabled;
     }
 
+    /**
+     * Make the editor read-only or editable
+     */
     set disabled(value: boolean) {
         this.element.disabled = value;
-        this.editorPromise.then(() => {
+        void this.editorPromise.then(() => {
             if (this.editor) {
                 this.editor.editable = !value;
             }
         });
-        const toggleButton = $("[data-command=toggle-markdown]", this.container as HTMLElement) as HTMLButtonElement;
+        const toggleButton = $("[data-command=toggle-markdown]", this.container) as HTMLButtonElement;
         toggleButton.disabled = value;
     }
 
+    /**
+     * Set the content of the editor
+     */
     set value(value: string) {
         this.element.value = value;
-        this.editorPromise.then(() => {
+        void this.editorPromise.then(() => {
             if (this.editor) {
                 this.editor.content = value;
             }

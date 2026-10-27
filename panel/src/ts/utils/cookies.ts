@@ -1,3 +1,6 @@
+/**
+ * Get the cookies of the page
+ */
 export function getCookies() {
     const result: Record<string, string> = {};
     const cookies = document.cookie.split(";");
@@ -10,6 +13,11 @@ export function getCookies() {
     return result;
 }
 
+/**
+ * Set a cookie
+ *
+ * @param options Attributes of the cookie, e.g. `path` or `max-age`
+ */
 export function setCookie(name: string, value: string, options: Record<string, string | number>) {
     let cookie = `${name}=${value}`;
     for (const option in options) {

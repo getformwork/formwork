@@ -1,36 +1,26 @@
 import { $ } from "../../utils/selectors";
+import { Input } from "./input";
 
-export class RangeInput {
-    readonly element: HTMLInputElement;
-
+/**
+ * Provides a range input that shows its progress, its value in the linked `output` element and,
+ * optionally, ticks
+ */
+export class RangeInput extends Input<HTMLInputElement> {
     constructor(element: HTMLInputElement) {
-        this.element = element;
+        super(element);
 
         this.initInput();
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
-    get value() {
-        return this.element.value;
-    }
-
-    set value(value: string) {
-        this.element.value = value;
-    }
-
+    /**
+     * Update progress and output when the value changes and add the ticks
+     */
     private initInput() {
         const updateValueLabel = (element: HTMLInputElement) => {
             element.style.setProperty("--progress", `${Math.round((parseInt(element.value, 10) / (parseInt(element.max, 10) - parseInt(element.min, 10))) * 100)}%`);
             const outputElement = $(`output[for="${element.id}"]`);
             if (outputElement) {
-                outputElement.innerText = element.value;
+                outputElement.textContent = element.value;
             }
         };
 

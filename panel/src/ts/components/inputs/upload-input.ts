@@ -1,30 +1,74 @@
-import { app } from "../../app";
-import { Request } from "../../utils/request";
+import { batch, effect, signal } from "@preact/signals-core";
+import type { Form } from "../../services/form";
+import { post } from "../../services/request";
 import { $ } from "../../utils/selectors";
 import { toCamelCase } from "../../utils/strings";
 import { escapeHtml } from "../../utils/validation";
-import { FilesList } from "../fileslist";
-import type { Form } from "../form";
-import * as icons from "../icons";
-import { Notification } from "../notification";
-import { SelectInput } from "./select-input";
-import { TagsInput } from "./tags-input";
+import { addToFileInputs } from "../files/file-inputs";
+import { FilesList } from "../files/files-list";
+import * as icons from "../ui/icons";
+import { Notification } from "../ui/notification";
+import { InputBase } from "./input";
 
-export class UploadInput {
-    readonly element: HTMLInputElement;
+/**
+ * Describes a file sent by the server after it has been uploaded
+ */
+interface UploadedFile {
+    name: string;
+    type: string;
+    thumbnail?: string;
+    uri: string;
+    hash: string;
+    mimeType: string;
+    lastModifiedTime: string;
+    size: string;
+    actions: Record<"info" | "rename" | "replace" | "delete", string>;
+}
 
+/**
+ * Provides a file input with a drop target
+ *
+ * Files can be uploaded as soon as they are chosen (`data-auto-upload`) and are added to the list
+ * of files and to the inputs of the form
+ */
+export class UploadInput extends InputBase<HTMLInputElement> {
+    /**
+     * Form containing the input
+     */
     private readonly form: Form;
+    /**
+     * Whether the form has been submitted
+     */
     private isSubmitted: boolean = false;
+
+    /**
+     * Files chosen
+     */
+    private readonly files = signal<File[]>([]);
+    /**
+     * Whether the files are being uploaded
+     */
+    private readonly uploading = signal(false);
+    /**
+     * Whether files are being dragged over the drop target
+     */
+    private readonly dragging = signal(false);
 
     private readonly label: HTMLElement;
     private readonly dropTarget: HTMLElement;
     private readonly dropTargetLabel: HTMLElement;
     private readonly defaultDropLabel: string;
 
+    /**
+     * List of files of the page
+     */
     private readonly filesList!: FilesList;
 
+    /**
+     * Create the upload input
+     */
     constructor(element: HTMLInputElement, form: Form) {
-        this.element = element;
+        super(element);
 
         this.form = form;
 
@@ -33,35 +77,40 @@ export class UploadInput {
         this.dropTargetLabel = $("span", this.dropTarget) as HTMLElement;
         this.defaultDropLabel = this.dropTargetLabel.innerHTML ?? "";
 
-        this.initInput();
+        effect(() => {
+            this.dropTarget.classList.toggle("drag", this.dragging.value);
+        });
+
+        effect(() => this.renderDropTargetLabel(this.files.value, this.uploading.value));
+
+        this.bindFormEvents();
+        this.bindDropTarget();
 
         const filesList = $(`.files-list[data-for="${this.element.id}"]`) as HTMLElement;
+        const autoUpload = this.element.dataset.autoUpload === "true";
 
         if (filesList) {
             this.filesList = new FilesList(filesList, this.form);
-            this.initFilesList();
-        } else if (this.element.dataset.autoUpload === "true") {
-            this.element.addEventListener("change", () => {
-                if (!this.form.hasChanged(false)) {
-                    this.form.element.requestSubmit($("[type=submit]", this.form.element));
-                }
-            });
+
+            if (autoUpload) {
+                this.uploadOnChange();
+            }
+        } else if (autoUpload) {
+            this.submitOnChange();
         }
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
+    /**
+     * Get the value of the native input
+     */
     get value(): string {
         return this.element.value;
     }
 
-    private initInput() {
+    /**
+     * Update the files shown when they change, and block the input once the form is submitted
+     */
+    private bindFormEvents() {
         this.label?.addEventListener("click", (event) => {
             this.dropTarget.focus();
             event.preventDefault();
@@ -74,30 +123,33 @@ export class UploadInput {
             this.isSubmitted = true;
             this.updateDropTargetLabel();
         });
+    }
 
-        this.dropTarget.addEventListener("drag", (event) => event.preventDefault());
-        this.dropTarget.addEventListener("dragstart", (event) => event.preventDefault());
-        this.dropTarget.addEventListener("dragend", (event) => event.preventDefault());
-        this.dropTarget.addEventListener("dragover", (event) => {
-            this.dropTarget.classList.add("drag");
-            event.preventDefault();
-        });
-        this.dropTarget.addEventListener("dragenter", (event) => {
-            this.dropTarget.classList.add("drag");
-            event.preventDefault();
-        });
+    /**
+     * Let the user choose the files by dropping them on the drop target or by pressing Enter
+     */
+    private bindDropTarget() {
+        for (const type of ["drag", "dragstart", "dragend"]) {
+            this.dropTarget.addEventListener(type, (event) => event.preventDefault());
+        }
+
+        for (const type of ["dragover", "dragenter"]) {
+            this.dropTarget.addEventListener(type, (event) => {
+                this.dragging.value = true;
+                event.preventDefault();
+            });
+        }
+
         this.dropTarget.addEventListener("dragleave", (event) => {
-            this.dropTarget.classList.remove("drag");
+            this.dragging.value = false;
             event.preventDefault();
         });
 
         this.dropTarget.addEventListener("drop", (event) => {
             event.preventDefault();
-            this.dropTarget.classList.remove("drag");
-            if (this.isSubmitted) {
-                return;
-            }
-            if (event.dataTransfer) {
+            this.dragging.value = false;
+
+            if (!this.isSubmitted && event.dataTransfer) {
                 this.element.files = event.dataTransfer.files;
                 // Firefox won't trigger a change event, so we explicitly do that
                 this.element.dispatchEvent(new Event("change"));
@@ -117,81 +169,101 @@ export class UploadInput {
         });
     }
 
-    private initFilesList() {
-        if (this.element.dataset.autoUpload === "true") {
-            this.element.addEventListener("change", () => {
-                if (!this.element.files) {
-                    return;
-                }
-
-                let files = Array.from(this.element.files);
-
-                this.updateDropTargetLabel(files, true);
-
-                for (const file of files) {
-                    const formData = new FormData();
-                    formData.append("csrf-token", app.config.csrfToken as string);
-                    formData.append(this.element.name, file);
-
-                    new Request(
-                        {
-                            method: "POST",
-                            data: formData,
-                        },
-                        (response) => {
-                            const notification = new Notification(response.message, response.status);
-
-                            if (response.status === "success") {
-                                const data = response.data[0];
-                                const template = $("template[id=files-item]") as HTMLTemplateElement;
-                                this.addFilesItem(data, template);
-                                this.filesList.sort(".file-name");
-                                this.filesList.element.hidden = false;
-
-                                for (const name in this.form.inputs) {
-                                    const input = this.form.inputs[name];
-                                    if (input instanceof SelectInput && (input.element.classList.contains("form-file") || (input.element.classList.contains("form-image") && data.type === "image"))) {
-                                        input.addOption({
-                                            label: data.name,
-                                            value: data.name,
-                                            thumb: data.type === "image" ? data.thumbnail : undefined,
-                                            icon: `file-${data.type}`,
-                                        });
-                                        input.sortDropdownItems();
-                                    }
-
-                                    if (input instanceof TagsInput && (input.element.classList.contains("form-files") || (input.element.classList.contains("form-images") && data.type === "image"))) {
-                                        input.addDropdownItem({
-                                            label: data.name,
-                                            value: data.name,
-                                            thumb: data.type === "image" ? data.thumbnail : undefined,
-                                            icon: toCamelCase(`file-${data.type}`) as keyof typeof icons,
-                                        });
-                                        input.sortDropdownItems();
-                                    }
-                                }
-                            }
-
-                            this.element.value = "";
-
-                            files = files.filter((f) => f !== file);
-                            this.updateDropTargetLabel(files, true);
-
-                            notification.show();
-                        },
-                    );
-                }
-            });
-        }
+    /**
+     * Submit the form as soon as a file is chosen, if the form has no other changes
+     */
+    private submitOnChange() {
+        this.element.addEventListener("change", () => {
+            if (!this.form.hasChanged(false)) {
+                this.form.element.requestSubmit($("[type=submit]", this.form.element));
+            }
+        });
     }
 
+    /**
+     * Upload the files as soon as they are chosen
+     */
+    private uploadOnChange() {
+        this.element.addEventListener("change", () => {
+            if (!this.element.files) {
+                return;
+            }
+
+            const files = Array.from(this.element.files);
+
+            // Files still being uploaded
+            const pending = new Set(files);
+
+            this.updateDropTargetLabel(files, true);
+
+            for (const file of files) {
+                this.upload(file, () => {
+                    this.element.value = "";
+
+                    pending.delete(file);
+                    this.updateDropTargetLabel(Array.from(pending), true);
+                });
+            }
+        });
+    }
+
+    /**
+     * Upload a file and add it to the list of files and to the inputs of the form
+     *
+     * @param file   File to upload
+     * @param finish Function called when the upload is done, before the notification is shown
+     */
+    private upload(file: File, finish: () => void) {
+        const formData = new FormData();
+        formData.append(this.element.name, file);
+
+        post<UploadedFile[]>(window.location.href, formData, (response) => {
+            const notification = new Notification(response.message, response.status);
+
+            if (response.status === "success") {
+                const data = response.data[0];
+
+                this.addFilesItem(data, $("template[id=files-item]") as HTMLTemplateElement);
+                this.filesList.sort(".file-name");
+                this.filesList.element.hidden = false;
+
+                addToFileInputs(this.form, data);
+            }
+
+            finish();
+
+            notification.show();
+        });
+    }
+
+    /**
+     * Format a file size with the most suitable unit
+     *
+     * @param size Size in bytes
+     */
     private formatFileSize(size: number) {
         const units = ["B", "KB", "MB", "GB", "TB"];
         const exp = Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1);
         return `${(size / 1024 ** exp).toFixed(2)} ${units[exp]}`;
     }
 
+    /**
+     * Update the files shown in the drop target
+     *
+     * @param files     Files to show
+     * @param uploading Whether the files are being uploaded
+     */
     private updateDropTargetLabel(files: File[] = Array.from(this.element.files ?? []), uploading: boolean = this.isSubmitted) {
+        batch(() => {
+            this.files.value = files;
+            this.uploading.value = uploading;
+        });
+    }
+
+    /**
+     * Render the files in the drop target, or its default text if there are none
+     */
+    private renderDropTargetLabel(files: File[], uploading: boolean) {
         if (files.length) {
             const filenames: string[] = [];
             for (const file of files) {
@@ -209,29 +281,19 @@ export class UploadInput {
         }
     }
 
-    private addFilesItem(info: { [key: string]: any }, template: HTMLTemplateElement) {
+    /**
+     * Add the item of an uploaded file to the list of files
+     *
+     * @param info     File data sent by the server
+     * @param template Template of the item
+     */
+    private addFilesItem(info: UploadedFile, template: HTMLTemplateElement) {
         const node = template.content.cloneNode(true) as HTMLElement;
         const filesItem = $(".files-item", node) as HTMLElement;
 
         filesItem.dataset.filename = info.name;
 
-        if (info.type === "image") {
-            const img = document.createElement("img");
-            img.className = "file-thumbnail";
-            img.alt = "";
-            img.src = info.thumbnail;
-            img.loading = "lazy";
-            $(".file-thumbnail", filesItem)?.replaceWith(img);
-        } else if (info.type === "video") {
-            const video = document.createElement("video");
-            video.classList.add("file-thumbnail");
-            video.ariaHidden = "true";
-            video.src = info.thumbnail;
-            video.preload = "metadata";
-            $(".file-thumbnail", filesItem)?.replaceWith(video);
-        } else {
-            $(".file-thumbnail", filesItem)?.remove();
-        }
+        this.setThumbnail(filesItem, info);
 
         // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
         const icon = icons[toCamelCase(`file-${info.type}`) as keyof typeof icons] || icons.file;
@@ -248,24 +310,51 @@ export class UploadInput {
         ($(".dropdown-button", filesItem) as HTMLElement).dataset.dropdown = `dropdown-${info.hash}`;
         ($(".dropdown-menu", filesItem) as HTMLElement).id = `dropdown-${info.hash}`;
 
-        const infoFileCommand = $("[data-command=infoFile]", filesItem) as HTMLAnchorElement;
-        const previewFileCommand = $("[data-command=previewFile]", filesItem) as HTMLAnchorElement;
-        const renameFileCommand = $("[data-command=renameFile]", filesItem) as HTMLElement;
-        const replaceFileCommand = $("[data-command=replaceFile]", filesItem) as HTMLElement;
-        const deleteFileCommand = $("[data-command=deleteFile]", filesItem) as HTMLElement;
+        this.setCommands(filesItem, info);
 
-        infoFileCommand.href = info.actions.info;
+        $(".files-items", this.filesList.element)?.appendChild(node);
+    }
+
+    /**
+     * Show the thumbnail of an image or a video in an item, and remove it for the other files
+     */
+    private setThumbnail(filesItem: HTMLElement, info: UploadedFile) {
+        if (info.type === "image") {
+            const img = document.createElement("img");
+            img.className = "file-thumbnail";
+            img.alt = "";
+            img.src = info.thumbnail ?? "";
+            img.loading = "lazy";
+            $(".file-thumbnail", filesItem)?.replaceWith(img);
+        } else if (info.type === "video") {
+            const video = document.createElement("video");
+            video.classList.add("file-thumbnail");
+            video.ariaHidden = "true";
+            video.src = info.thumbnail ?? "";
+            video.preload = "metadata";
+            $(".file-thumbnail", filesItem)?.replaceWith(video);
+        } else {
+            $(".file-thumbnail", filesItem)?.remove();
+        }
+    }
+
+    /**
+     * Set the links and actions of the commands of an item
+     */
+    private setCommands(filesItem: HTMLElement, info: UploadedFile) {
+        const previewFileCommand = $("[data-command=previewFile]", filesItem) as HTMLAnchorElement;
+        const replaceFileCommand = $("[data-command=replaceFile]", filesItem) as HTMLElement;
+
+        ($("[data-command=infoFile]", filesItem) as HTMLAnchorElement).href = info.actions.info;
 
         previewFileCommand.href = info.uri;
         previewFileCommand.target = `formwork-preview-file-${info.hash}`;
 
-        renameFileCommand.dataset.action = info.actions.rename;
+        ($("[data-command=renameFile]", filesItem) as HTMLElement).dataset.action = info.actions.rename;
 
         replaceFileCommand.dataset.action = info.actions.replace;
         replaceFileCommand.dataset.mimetype = `${info.mimeType}`;
 
-        deleteFileCommand.dataset.action = info.actions.delete;
-
-        $(".files-items", this.filesList.element)?.appendChild(node);
+        ($("[data-command=deleteFile]", filesItem) as HTMLElement).dataset.action = info.actions.delete;
     }
 }

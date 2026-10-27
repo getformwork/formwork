@@ -5,7 +5,7 @@
         <div class="flex-grow-1 mr-4">
             <div class="form-input-wrap">
                 <span class="form-input-icon"><?= $this->icon('search') ?></span>
-                <input class="form-input files-search" id="files.search" type="search" placeholder="<?= $this->translate('panel.files.search') ?>">
+                <input class="form-input files-search" id="files.search" type="search" placeholder="<?= $this->translate('panel.files.search') ?>" aria-label="<?= $this->translate('panel.files.search') ?>">
             </div>
         </div>
         <div class="files-selection-actions mr-4" hidden>

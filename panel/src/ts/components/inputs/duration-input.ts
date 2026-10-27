@@ -1,37 +1,72 @@
-import { app } from "../../app";
-import { getSafeInteger } from "../../utils/numbers";
+import { effect, type Signal, signal } from "@preact/signals-core";
+import { app } from "../../services/app";
+import { intervalsToSeconds, secondsToIntervals, TIME_INTERVALS, type TimeInterval, type TimeIntervals } from "../../utils/duration";
 import { $ } from "../../utils/selectors";
+import { Input } from "./input";
 
-const TIME_INTERVALS = {
-    years: 60 * 60 * 24 * 365,
-    months: 60 * 60 * 24 * 30,
-    weeks: 60 * 60 * 24 * 7,
-    days: 60 * 60 * 24,
-    hours: 60 * 60,
-    minutes: 60,
-    seconds: 1,
-};
-
-type TimeInterval = keyof typeof TIME_INTERVALS;
+/**
+ * Represents the singular and plural name of a time interval
+ */
 type TimeIntervalLabel = [singular: string, plural: string];
 
-interface DurationInputOptions {
+/**
+ * Remove the leading zeros of a number and the digits that make it larger than the largest safe
+ * integer
+ */
+function cleanNumber(text: string) {
+    let cleaned = text;
+
+    while (cleaned.charAt(0) === "0" && cleaned.length > 1 && !cleaned.charAt(1).match(/[.,]/)) {
+        cleaned = cleaned.slice(1);
+    }
+
+    while (parseInt(cleaned, 10) > Number.MAX_SAFE_INTEGER) {
+        cleaned = cleaned.slice(0, -1);
+    }
+
+    return cleaned;
+}
+
+/**
+ * Holds the options of a duration input
+ */
+export interface DurationInputOptions {
     unit: TimeInterval;
     intervals: TimeInterval[];
     labels: Record<TimeInterval, TimeIntervalLabel>;
 }
 
-export class DurationInput {
-    readonly element: HTMLInputElement;
-
+/**
+ * Provides a duration input with a field for each time interval
+ *
+ * The native input is hidden and holds the total, constrained by its `step`, `min` and `max`
+ */
+export class DurationInput extends Input<HTMLInputElement> {
+    /**
+     * Options of the input
+     */
     readonly options: DurationInputOptions;
 
+    /**
+     * Element wrapping the fields
+     */
     private field!: HTMLElement;
 
+    /**
+     * Field of each interval
+     */
     private innerInputs: Partial<Record<TimeInterval, HTMLInputElement>> = {};
-    private labels: Partial<Record<TimeInterval, HTMLLabelElement>> = {};
 
-    constructor(element: HTMLInputElement, options: Partial<DurationInputOptions>) {
+    // Text of the inner inputs, the width of the inputs and their labels are derived from it
+    /**
+     * Text of each field, used for its width and label
+     */
+    private texts: Partial<Record<TimeInterval, Signal<string>>> = {};
+
+    /**
+     * Create the duration input
+     */
+    constructor(element: HTMLInputElement, options: Partial<DurationInputOptions> = {}) {
         const defaults: DurationInputOptions = {
             unit: "seconds",
             intervals: ["years", "months", "weeks", "days", "hours", "minutes", "seconds"],
@@ -46,58 +81,35 @@ export class DurationInput {
             },
         };
 
-        this.element = element;
+        super(element);
 
         this.options = { ...defaults, ...options };
 
         this.createField();
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
+    // The getter is defined again because a class defining only the setter would lose it
     get value() {
         return this.element.value;
     }
 
+    /**
+     * Set the total and show it in the fields
+     */
     set value(value: string) {
         this.element.value = value;
         this.updateInnerInputs();
-        this.updateInnerInputsLength();
-        this.updateLabels();
     }
 
-    private secondsToIntervals(seconds: number, intervalNames: TimeInterval[] = this.options.intervals) {
-        const intervals: Partial<Record<TimeInterval, number>> = {};
-        seconds = getSafeInteger(seconds);
-        (Object.keys(TIME_INTERVALS) as TimeInterval[]).forEach((t) => {
-            if (intervalNames.includes(t)) {
-                intervals[t] = Math.floor(seconds / TIME_INTERVALS[t]);
-                seconds -= intervals[t] * TIME_INTERVALS[t];
-            }
-        });
-        return intervals;
-    }
-
-    private intervalsToSeconds(intervals: Partial<Record<TimeInterval, number>>) {
-        let seconds = 0;
-        (Object.entries(intervals) as [TimeInterval, number][]).forEach(([interval, value]) => {
-            seconds += value * TIME_INTERVALS[interval];
-        });
-        return getSafeInteger(seconds);
-    }
-
+    /**
+     * Update the native input from the fields
+     */
     private updateHiddenInput() {
-        const intervals: Partial<Record<TimeInterval, number>> = {};
+        const intervals: TimeIntervals = {};
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
             intervals[i] = parseInt(input.value, 10);
         });
-        let seconds = this.intervalsToSeconds(intervals);
+        let seconds = intervalsToSeconds(intervals);
         if (this.element.step) {
             const step = parseInt(this.element.step, 10) * TIME_INTERVALS[this.options.unit];
             seconds = Math.floor(seconds / step) * step;
@@ -109,99 +121,52 @@ export class DurationInput {
             seconds = Math.min(seconds, parseInt(this.element.max, 10));
         }
         this.element.value = `${Math.round(seconds / TIME_INTERVALS[this.options.unit])}`;
-        this.element.dispatchEvent(new Event("input", { bubbles: true }));
-        this.element.dispatchEvent(new Event("change", { bubbles: true }));
+        this.dispatchChange();
     }
 
+    /**
+     * Update the fields from the native input
+     */
     private updateInnerInputs() {
-        const intervals = this.secondsToIntervals(parseInt(this.element.value, 10) * TIME_INTERVALS[this.options.unit]);
+        const intervals = secondsToIntervals(parseInt(this.element.value, 10) * TIME_INTERVALS[this.options.unit], this.options.intervals);
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
             input.value = `${intervals[i] || 0}`;
         });
+        this.updateTexts();
     }
 
-    private updateInnerInputsLength() {
-        Object.values(this.innerInputs).forEach((input) => {
-            input.style.width = `${Math.max(3, input.value.length + 2)}ch`;
-        });
-    }
-
-    private updateLabels() {
+    /**
+     * Update the texts from the fields
+     */
+    private updateTexts() {
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
-            (this.labels[i] as HTMLLabelElement).innerText = this.options.labels[i][parseInt(input.value, 10) === 1 ? 0 : 1];
+            (this.texts[i] as Signal<string>).value = input.value;
         });
     }
 
-    private createInnerInputs(intervals: Partial<Record<TimeInterval, number>>, steps: Partial<Record<TimeInterval, number>>) {
+    /**
+     * Create a field and a label for each interval
+     *
+     * @param intervals Initial value of each field
+     * @param steps     Step of each field
+     */
+    private createInnerInputs(intervals: TimeIntervals, steps: TimeIntervals) {
         this.field = document.createElement("div");
         this.field.className = "form-input-duration-wrap";
 
-        let innerInput: HTMLInputElement;
+        let lastInput: HTMLInputElement | undefined;
 
         for (const name of this.options.intervals) {
-            innerInput = document.createElement("input");
-            innerInput.id = `${this.element.id}.${name}`;
-            innerInput.className = "form-input";
+            const wrap = this.createInterval(name, intervals[name] || 0, steps[name] as number);
 
-            const wrap = document.createElement("span");
-            wrap.className = `duration-${name}`;
-            innerInput.type = "number";
-            innerInput.value = `${intervals[name] || 0}`;
-            innerInput.style.width = `${Math.max(3, innerInput.value.length + 2)}ch`;
-            if ((steps[name] as number) > 1) {
-                innerInput.step = `${steps[name]}`;
-            }
-            if (this.element.disabled) {
-                innerInput.disabled = true;
-            }
-            this.innerInputs[name] = innerInput;
-            innerInput.addEventListener("input", () => {
-                while (innerInput.value.charAt(0) === "0" && innerInput.value.length > 1 && !innerInput.value.charAt(1).match(/[.,]/)) {
-                    innerInput.value = innerInput.value.slice(1);
-                }
-                while (parseInt(innerInput.value, 10) > Number.MAX_SAFE_INTEGER) {
-                    innerInput.value = innerInput.value.slice(0, -1);
-                }
-                this.updateInnerInputsLength();
-                this.updateHiddenInput();
-                this.updateLabels();
-            });
-            innerInput.addEventListener("blur", () => {
-                this.updateHiddenInput();
-                this.updateInnerInputs();
-                this.updateInnerInputsLength();
-                this.updateLabels();
-            });
+            lastInput = $("input", wrap) as HTMLInputElement;
 
-            innerInput.addEventListener("focus", () => this.field.classList.add("focused"));
-
-            innerInput.addEventListener("blur", () => this.field.classList.remove("focused"));
-
-            wrap.addEventListener("mousedown", function (event: MouseEvent) {
-                const input = $("input", this);
-                if (input && event.target !== input) {
-                    input.focus();
-                    event.preventDefault();
-                }
-            });
-
-            const label = document.createElement("label");
-            const labelText = this.options.labels[name][parseInt(innerInput.value, 10) === 1 ? 0 : 1];
-
-            label.className = "form-label";
-            label.innerText = labelText;
-            label.htmlFor = innerInput.id;
-
-            this.labels[name] = label;
-
-            wrap.appendChild(innerInput);
-            wrap.appendChild(label);
             this.field.appendChild(wrap);
         }
 
-        this.field.addEventListener("mousedown", function (event: MouseEvent) {
-            if (event.target === this) {
-                innerInput.focus();
+        this.field.addEventListener("mousedown", (event: MouseEvent) => {
+            if (event.target === this.field) {
+                lastInput?.focus();
                 event.preventDefault();
             }
         });
@@ -209,6 +174,81 @@ export class DurationInput {
         return this.field;
     }
 
+    /**
+     * Create the field and the label of an interval
+     *
+     * @param name  Name of the interval
+     * @param value Initial value of the field
+     * @param step  Step of the field
+     */
+    private createInterval(name: TimeInterval, value: number, step: number) {
+        const wrap = document.createElement("span");
+        wrap.className = `duration-${name}`;
+
+        const input = document.createElement("input");
+        input.id = `${this.element.id}.${name}`;
+        input.className = "form-input";
+        input.type = "number";
+        input.value = `${value}`;
+
+        if (step > 1) {
+            input.step = `${step}`;
+        }
+
+        if (this.element.disabled) {
+            input.disabled = true;
+        }
+
+        this.innerInputs[name] = input;
+
+        // The width of the field and its label depend on the text
+        const text = signal(input.value);
+        this.texts[name] = text;
+
+        input.addEventListener("input", () => {
+            const cleaned = cleanNumber(input.value);
+
+            if (cleaned !== input.value) {
+                input.value = cleaned;
+            }
+
+            text.value = input.value;
+            this.updateHiddenInput();
+        });
+
+        input.addEventListener("focus", () => this.field.classList.add("focused"));
+
+        input.addEventListener("blur", () => {
+            this.updateHiddenInput();
+            this.updateInnerInputs();
+            this.field.classList.remove("focused");
+        });
+
+        wrap.addEventListener("mousedown", (event: MouseEvent) => {
+            if (event.target !== input) {
+                input.focus();
+                event.preventDefault();
+            }
+        });
+
+        const label = document.createElement("label");
+        label.className = "form-label";
+        label.htmlFor = input.id;
+
+        effect(() => {
+            input.style.width = `${Math.max(3, text.value.length + 2)}ch`;
+            label.textContent = this.options.labels[name][parseInt(text.value, 10) === 1 ? 0 : 1];
+        });
+
+        wrap.appendChild(input);
+        wrap.appendChild(label);
+
+        return wrap;
+    }
+
+    /**
+     * Replace the native input with the fields
+     */
     private createField() {
         this.element.className = "";
         this.element.readOnly = true;
@@ -226,7 +266,7 @@ export class DurationInput {
 
         const valueSeconds = parseInt(this.element.value, 10) * TIME_INTERVALS[this.options.unit];
         const stepSeconds = parseInt(this.element.step, 10) * TIME_INTERVALS[this.options.unit];
-        const field = this.createInnerInputs(this.secondsToIntervals(valueSeconds || 0), this.secondsToIntervals(stepSeconds || 1));
+        const field = this.createInnerInputs(secondsToIntervals(valueSeconds || 0, this.options.intervals), secondsToIntervals(stepSeconds || 1, this.options.intervals));
         (this.element.parentNode as ParentNode).replaceChild(field, this.element);
         field.appendChild(this.element);
         $(`label[for="${this.element.id}"]`)?.addEventListener("click", () => $(".form-input", field)?.focus());

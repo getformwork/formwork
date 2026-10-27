@@ -18,6 +18,10 @@
     display: flex;
 }
 
+body:has(.modal.open) {
+    overflow: hidden;
+}
+
 .modal-header,
 .modal-content,
 .modal-footer {

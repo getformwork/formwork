@@ -1,19 +1,28 @@
+import { effect, signal } from "@preact/signals-core";
 import type { SortableEvent } from "sortablejs";
-import { app } from "../../app";
+import { app } from "../../services/app";
 import { debounce } from "../../utils/events";
-import { $, $$ } from "../../utils/selectors";
+import { makeSearchRegExp } from "../../utils/search";
+import { $$ } from "../../utils/selectors";
 import { toCamelCase } from "../../utils/strings";
-import { escapeRegExp, makeDiacriticsRegExp } from "../../utils/validation";
-import * as icons from "../icons";
+import * as icons from "../ui/icons";
+import { DropdownList } from "./dropdown-list";
+import { InputBase } from "./input";
 
-interface TagsInputOptions {
+/**
+ * Holds the options of a tags input
+ */
+export interface TagsInputOptions {
     labels: { [key: string]: string };
-    addKeyCodes: string[];
+    addKeys: string[];
     limit: number;
     accept: "options" | "any";
     orderable: boolean;
 }
 
+/**
+ * Describes a suggested tag
+ */
 interface TagsInputDropdownItem {
     label: string;
     value: string;
@@ -21,30 +30,45 @@ interface TagsInputDropdownItem {
     thumb?: string;
 }
 
-export class TagsInput {
-    readonly element: HTMLInputElement;
+/**
+ * Get the tags of a value, ignoring the empty ones
+ */
+function parseTags(value: string) {
+    return value
+        .split(", ")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "");
+}
 
+/**
+ * Provides an input with a list of tags followed by a text field
+ *
+ * Tags are added with Enter or comma and removed with Backspace. With `data-options` the field
+ * suggests tags while typing. The value is the list of tags separated by commas
+ */
+export class TagsInput extends InputBase<HTMLInputElement> {
     private options: TagsInputOptions;
-    private tags: string[] = [];
+    private readonly tags = signal<string[]>([]);
+    private readonly tagValues = new WeakMap<HTMLElement, string>();
     private placeholder: string = "";
-    private dropdown: HTMLElement | undefined;
+    private dropdown: DropdownList | undefined;
 
     private field: HTMLDivElement;
     private list: HTMLSpanElement;
     private innerInput: HTMLInputElement;
 
-    constructor(element: HTMLInputElement, options: Partial<TagsInputOptions>) {
+    constructor(element: HTMLInputElement, options: Partial<TagsInputOptions> = {}) {
         const defaults = {
             labels: {
                 remove: app.translation.get("fields.tags.remove", "Remove"),
             },
-            addKeyCodes: ["Comma"],
+            addKeys: [","],
             limit: Infinity,
             accept: "options" as "options" | "any",
             orderable: true,
         };
 
-        this.element = element;
+        super(element);
 
         this.options = { ...defaults, ...options };
 
@@ -58,38 +82,73 @@ export class TagsInput {
         this.registerInputEvents();
     }
 
-    get name() {
-        return this.element.name;
-    }
-
-    set name(value: string) {
-        this.element.name = value;
-    }
-
+    /**
+     * Get the tags separated by commas
+     */
     get value() {
         return this.element.value;
     }
 
+    /**
+     * Set the tags
+     */
     set value(value: string) {
         this.element.value = value;
-        this.tags = value.split(", ").map((tag) => tag.trim());
-        this.list.innerText = "";
-        this.tags.forEach((tag) => {
-            this.insertTag(tag, this.list);
-        });
+        this.list.replaceChildren();
+        this.tags.value = parseTags(value);
         this.updatePlaceholder();
         this.updateDropdown();
     }
 
-    private async createField() {
-        if ("limit" in this.element.dataset) {
-            this.options.limit = parseInt(this.element.dataset.limit as string, 10);
+    /**
+     * Create the field with the tags and the text field
+     */
+    private createField() {
+        this.readDataAttributes();
+        this.replaceElement();
+
+        this.tags.value = parseTags(this.element.value);
+
+        effect(() => this.renderTags(this.tags.value));
+
+        if (this.innerInput.placeholder) {
+            this.placeholder = this.innerInput.placeholder;
+            this.updatePlaceholder();
         }
 
-        if (!("orderable" in this.element.dataset)) {
+        this.field.addEventListener("mousedown", (event) => {
+            this.innerInput.focus();
+            event.preventDefault();
+        });
+
+        if (this.options.orderable) {
+            void this.makeSortable();
+        }
+    }
+
+    /**
+     * Read the options set by the `data-*` attributes of the native input
+     */
+    private readDataAttributes() {
+        const { dataset } = this.element;
+
+        if ("limit" in dataset) {
+            this.options.limit = parseInt(dataset.limit as string, 10);
+        }
+
+        if ("accept" in dataset) {
+            this.options.accept = (dataset.accept ?? "options") as "options" | "any";
+        }
+
+        if (!("orderable" in dataset)) {
             this.options.orderable = false;
         }
+    }
 
+    /**
+     * Replace the native input with the field, hiding it from users and assistive technologies
+     */
+    private replaceElement() {
         this.field.className = "form-input-tags-wrap";
 
         this.innerInput.className = "form-input";
@@ -119,78 +178,69 @@ export class TagsInput {
         this.field.appendChild(this.list);
         this.field.appendChild(this.innerInput);
         this.field.appendChild(this.element);
-
-        if (this.element.value) {
-            this.tags = this.element.value.split(", ");
-            this.tags.forEach((value, index) => {
-                value = value.trim();
-                this.tags[index] = value;
-                this.insertTag(value, this.list);
-            });
-        }
-
-        if (this.innerInput.placeholder) {
-            this.placeholder = this.innerInput.placeholder;
-            this.updatePlaceholder();
-        } else {
-            this.placeholder = "";
-        }
-
-        this.field.addEventListener("mousedown", (event) => {
-            this.innerInput.focus();
-            event.preventDefault();
-        });
-
-        if (this.options.orderable) {
-            const { default: Sortable } = await import("sortablejs");
-
-            Sortable.create(this.list, {
-                forceFallback: true,
-                animation: 150,
-                filter: ".tag-remove",
-                preventOnFilter: false,
-
-                onChoose: () => {
-                    if (this.dropdown) {
-                        this.dropdown.style.display = "none";
-                    }
-                },
-
-                onStart: () => {
-                    this.field.classList.add("is-dragging");
-                },
-
-                onEnd: (event: SortableEvent) => {
-                    this.field.classList.remove("is-dragging");
-                    const newIndex = event.newIndex;
-                    const oldIndex = event.oldIndex;
-                    this.innerInput.blur();
-                    this.innerInput.focus();
-                    if (newIndex === oldIndex || newIndex === undefined || oldIndex === undefined) {
-                        return;
-                    }
-                    this.tags.splice(newIndex, 0, this.tags.splice(oldIndex, 1)[0]);
-                    this.updateTags();
-                },
-            });
-        }
     }
 
+    /**
+     * Let the user reorder the tags by dragging them (Sortable is loaded on demand)
+     */
+    private async makeSortable() {
+        const { default: Sortable } = await import("sortablejs");
+
+        Sortable.create(this.list, {
+            forceFallback: true,
+            animation: 150,
+            filter: ".tag-remove",
+            preventOnFilter: false,
+
+            onChoose: () => {
+                if (this.dropdown) {
+                    this.dropdown.open.value = false;
+                }
+            },
+
+            onStart: () => this.field.classList.add("is-dragging"),
+
+            onEnd: ({ oldIndex, newIndex }: SortableEvent) => {
+                this.field.classList.remove("is-dragging");
+                this.innerInput.blur();
+                this.innerInput.focus();
+
+                if (oldIndex !== undefined && newIndex !== undefined && oldIndex !== newIndex) {
+                    this.moveTag(oldIndex, newIndex);
+                }
+            },
+        });
+    }
+
+    /**
+     * Move a tag to another position
+     */
+    private moveTag(oldIndex: number, newIndex: number) {
+        const tags = [...this.tags.value];
+        tags.splice(newIndex, 0, tags.splice(oldIndex, 1)[0]);
+        this.tags.value = tags;
+        this.updateTags();
+    }
+
+    /**
+     * Add a suggested tag
+     */
     addDropdownItem(option: TagsInputDropdownItem) {
         if (!this.dropdown) {
-            this.createDropdown();
+            return;
         }
 
         const item = document.createElement("div");
 
         item.className = "dropdown-item";
-        item.innerText = option.label;
+        item.textContent = option.label;
         item.dataset.value = option.value;
 
         if (option.thumb) {
             const img = document.createElement("img");
             img.src = option.thumb;
             img.className = "dropdown-thumb";
+            img.alt = "";
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.icon) {
             // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
@@ -202,133 +252,111 @@ export class TagsInput {
                 this.addTag(item.dataset.value);
             }
         });
-        this.dropdown?.appendChild(item);
+
+        this.dropdown.element.appendChild(item);
     }
 
+    /**
+     * Remove a suggested tag and the tag if added
+     */
     removeDropdownItem(value: string) {
-        const item = $(`.dropdown-item[data-value="${value}"]`, this.dropdown);
-        if (item) {
-            this.dropdown?.removeChild(item);
-        }
+        this.dropdown?.find(value)?.remove();
         this.updateDropdown();
         this.removeTag(value);
-        $$(".tag", this.list).forEach((tag) => {
-            if (tag.textContent === value) {
-                this.list.removeChild(tag);
+    }
+
+    /**
+     * Sort the suggested tags by value
+     */
+    sortDropdownItems() {
+        this.dropdown?.sort();
+    }
+
+    /**
+     * Create the list of the suggested tags, if the native input has the `data-options` attribute
+     */
+    private createDropdown() {
+        if (!("options" in this.element.dataset)) {
+            return;
+        }
+
+        const suggestions: { [key: string | number]: string | TagsInputDropdownItem } = JSON.parse(this.element.dataset.options ?? "{}");
+        const isAssociative = !Array.isArray(suggestions);
+
+        this.dropdown = new DropdownList(document.createElement("div"), false);
+        this.dropdown.element.className = "dropdown-list";
+
+        for (const key in suggestions) {
+            const suggestion = suggestions[key];
+            const { value, icon, thumb } = typeof suggestion === "object" ? suggestion : { value: suggestion, icon: undefined, thumb: undefined };
+
+            this.addDropdownItem({
+                label: value,
+                value: isAssociative ? key : value,
+                icon: icon ? (toCamelCase(icon) as keyof typeof icons) : undefined,
+                thumb,
+            });
+        }
+
+        this.field.appendChild(this.dropdown.element);
+
+        this.bindDropdownEvents();
+    }
+
+    /**
+     * Open the list when the text field is focused, close it when it is blurred, and filter it while typing
+     */
+    private bindDropdownEvents() {
+        this.innerInput.addEventListener("focus", () => {
+            if (this.dropdown && !this.dropdown.open.value) {
+                this.updateDropdown();
+                this.dropdown.element.scrollTop = 0;
             }
         });
+
+        this.innerInput.addEventListener("blur", () => {
+            if (this.dropdown?.open.value) {
+                this.updateDropdown();
+                this.dropdown.open.value = false;
+            }
+        });
+
+        this.innerInput.addEventListener(
+            "keyup",
+            debounce((event: KeyboardEvent) => this.handleDropdownKeyup(event), 100),
+        );
     }
 
-    sortDropdownItems() {
-        const items = $$(".dropdown-item", this.dropdown);
-        const sorted = Array.from(items).sort((a, b) => (a.dataset.value as string).localeCompare(b.dataset.value as string));
-        for (const item of sorted) {
-            this.dropdown?.appendChild(item);
+    /**
+     * Filter the suggested tags by the typed text, close the list with Escape
+     */
+    private handleDropdownKeyup(event: KeyboardEvent) {
+        switch (event.key) {
+            case "Escape":
+                if (this.dropdown) {
+                    this.dropdown.open.value = false;
+                }
+                break;
+
+            case "ArrowUp":
+            case "ArrowDown":
+                break;
+
+            default: {
+                const value = this.innerInput.value.trim();
+
+                this.filterDropdown(value);
+
+                if (value.length > 0) {
+                    this.dropdown?.selectFirst();
+                }
+            }
         }
     }
 
-    private createDropdown() {
-        if ("options" in this.element.dataset) {
-            const list: { [key: string | number]: string | TagsInputDropdownItem } = JSON.parse(this.element.dataset.options ?? "{}");
-            const isAssociative = !Array.isArray(list);
-
-            if ("accept" in this.element.dataset) {
-                this.options.accept = (this.element.dataset.accept ?? "options") as "options" | "any";
-            }
-
-            this.dropdown = document.createElement("div");
-            this.dropdown.className = "dropdown-list";
-            this.dropdown.style.display = "none";
-
-            for (const key in list) {
-                const { value, icon, thumb } = typeof list[key] === "object" ? list[key] : { value: list[key], icon: undefined, thumb: undefined };
-
-                this.addDropdownItem({
-                    label: value,
-                    value: isAssociative ? key : value,
-                    icon: icon ? (toCamelCase(icon) as keyof typeof icons) : undefined,
-                    thumb,
-                });
-            }
-
-            this.field.appendChild(this.dropdown);
-
-            this.innerInput.addEventListener("focus", () => {
-                if (this.dropdown && getComputedStyle(this.dropdown).display === "none") {
-                    this.updateDropdown();
-                    this.dropdown.scrollTop = 0;
-                }
-            });
-
-            this.innerInput.addEventListener("blur", () => {
-                if (this.dropdown && getComputedStyle(this.dropdown).display !== "none") {
-                    this.updateDropdown();
-                    this.dropdown.style.display = "none";
-                }
-            });
-
-            this.innerInput.addEventListener("keydown", (event) => {
-                switch (event.key) {
-                    case "Backspace":
-                        this.updateDropdown();
-                        break;
-                    case "Enter":
-                        if (this.dropdown && getComputedStyle(this.dropdown).display !== "none") {
-                            this.addTagFromSelectedDropdownItem();
-                            if (this.innerInput.value !== "") {
-                                event.preventDefault();
-                            }
-                        }
-                        break;
-                    case "ArrowUp":
-                        if (this.dropdown && getComputedStyle(this.dropdown).display !== "none") {
-                            this.selectPrevDropdownItem();
-                            event.preventDefault();
-                        }
-                        break;
-                    case "ArrowDown":
-                        if (this.dropdown && getComputedStyle(this.dropdown).display !== "none") {
-                            this.selectNextDropdownItem();
-                            event.preventDefault();
-                        }
-                        break;
-                    default:
-                        if (this.options.addKeyCodes.includes(event.code)) {
-                            if (this.dropdown && getComputedStyle(this.dropdown).display !== "none") {
-                                this.addTagFromSelectedDropdownItem();
-                                event.preventDefault();
-                            }
-                        }
-                }
-            });
-
-            this.innerInput.addEventListener(
-                "keyup",
-                debounce((event: KeyboardEvent) => {
-                    const value = this.innerInput.value.trim();
-                    switch (event.key) {
-                        case "Escape":
-                            if (this.dropdown) {
-                                this.dropdown.style.display = "none";
-                            }
-                            break;
-                        case "ArrowUp":
-                        case "ArrowDown":
-                            return true;
-                        default:
-                            if (this.tags.length >= this.options.limit) {
-                                event.preventDefault();
-                            }
-                            this.filterDropdown(value);
-                            if (value.length > 0) {
-                                this.selectFirstDropdownItem();
-                            }
-                    }
-                }, 100),
-            );
-        }
-    }
-
+    /**
+     * Bind the keyboard and focus events of the text field
+     */
     private registerInputEvents() {
         this.innerInput.addEventListener("focus", () => this.field.classList.add("focused"));
 
@@ -349,63 +377,75 @@ export class TagsInput {
             }
         });
 
-        this.innerInput.addEventListener("keydown", (event) => {
-            this.innerInput.classList.remove("form-input-invalid");
-            const value = this.innerInput.value.trim();
-            switch (event.key) {
-                case "Backspace":
-                    if (value === "") {
-                        this.removeTag(this.tags[this.tags.length - 1]);
-                        const lastTag = this.list.childNodes[this.list.childNodes.length - 1];
-                        if (lastTag) {
-                            this.list.removeChild(lastTag);
-                        }
-                        event.preventDefault();
-                    }
-                    break;
-                case "Enter":
-                case "Comma":
-                    if (value !== "") {
-                        event.preventDefault();
-                        if (this.tags.length >= this.options.limit || this.tags.includes(value)) {
-                            this.innerInput.classList.add("form-input-invalid");
-                        } else {
-                            this.addTag(value);
-                        }
-                    }
-                    break;
-                case "Escape":
-                    this.clearInput();
-                    this.innerInput.blur();
-                    event.preventDefault();
-                    break;
-                default:
-                    if (this.options.addKeyCodes.includes(event.key)) {
-                        event.preventDefault();
-                        if (value !== "") {
-                            if (this.tags.length >= this.options.limit || this.tags.includes(value)) {
-                                this.innerInput.classList.add("form-input-invalid");
-                            } else {
-                                this.addTag(value);
-                            }
-                        }
-                        break;
-                    }
-                    break;
-            }
-        });
+        this.innerInput.addEventListener("keydown", (event) => this.handleKeydown(event));
     }
 
+    /**
+     * Add or remove tags and move through the suggestions with the keyboard
+     */
+    private handleKeydown(event: KeyboardEvent) {
+        this.innerInput.classList.remove("form-input-invalid");
+
+        const isDropdownOpen = this.dropdown?.open.value === true;
+        const isAddKey = this.options.addKeys.includes(event.key);
+
+        // A typed tag is replaced by the selected suggestion
+        if (isDropdownOpen && (isAddKey || event.key === "Enter")) {
+            this.addTagFromSelectedDropdownItem();
+        }
+
+        const value = this.innerInput.value.trim();
+
+        if (event.key === "Backspace") {
+            this.updateDropdown();
+            if (value === "") {
+                this.removeTag(this.tags.value[this.tags.value.length - 1]);
+                event.preventDefault();
+            }
+        } else if (event.key === "Escape") {
+            this.clearInput();
+            this.innerInput.blur();
+            event.preventDefault();
+        } else if (isDropdownOpen && event.key === "ArrowUp") {
+            this.dropdown?.selectPrevious();
+            event.preventDefault();
+        } else if (isDropdownOpen && event.key === "ArrowDown") {
+            this.dropdown?.selectNext();
+            event.preventDefault();
+        } else if (isAddKey || (event.key === "Enter" && value !== "")) {
+            event.preventDefault();
+            if (value !== "") {
+                this.addTypedTag(value);
+            }
+        }
+    }
+
+    /**
+     * Add a tag typed by the user, marking the text field as invalid if the tag cannot be added
+     */
+    private addTypedTag(value: string) {
+        if (this.tags.value.length >= this.options.limit || this.tags.value.includes(value)) {
+            this.innerInput.classList.add("form-input-invalid");
+        } else {
+            this.addTag(value);
+        }
+    }
+
+    /**
+     * Update the native input and notify the form
+     */
     private updateTags() {
-        this.element.value = this.tags.join(", ");
-        this.element.dispatchEvent(new Event("input", { bubbles: true }));
-        this.element.dispatchEvent(new Event("change", { bubbles: true }));
+        this.element.value = this.tags.value.join(", ");
+        this.dispatchChange();
         this.updatePlaceholder();
     }
 
+    /**
+     * Show the placeholder if there are no tags
+     */
     private updatePlaceholder() {
         if (this.placeholder.length > 0) {
-            if (this.tags.length === 0) {
+            if (this.tags.value.length === 0) {
                 this.innerInput.placeholder = this.placeholder;
                 this.innerInput.size = this.placeholder.length;
             } else {
@@ -415,26 +455,59 @@ export class TagsInput {
         }
     }
 
+    /**
+     * Return whether a tag can be added
+     *
+     * A tag cannot be added if the limit is reached or if it is a duplicate, and, when only the
+     * suggested tags are accepted, if it is not one of them
+     */
     private validateTag(value: string) {
-        if (this.tags.length >= this.options.limit) {
+        if (this.tags.value.length >= this.options.limit) {
             return false;
         }
-        if (!this.tags.includes(value)) {
+        if (!this.tags.value.includes(value)) {
             if (this.dropdown && this.options.accept === "options") {
-                return $(`[data-value="${value}"]`, this.dropdown) !== null;
+                return this.dropdown.find(value) !== null;
             }
             return true;
         }
         return false;
     }
 
-    private insertTag(value: string, parent: HTMLElement) {
+    /**
+     * Render the tags, reusing the elements of the existing ones
+     */
+    private renderTags(tags: string[]) {
+        const unused = new Map<string, HTMLElement[]>();
+
+        for (const tag of Array.from(this.list.children) as HTMLElement[]) {
+            const value = this.tagValues.get(tag) as string;
+            unused.set(value, [...(unused.get(value) ?? []), tag]);
+        }
+
+        tags.forEach((value, index) => {
+            const tag = unused.get(value)?.shift() ?? this.createTag(value);
+
+            if (this.list.children[index] !== tag) {
+                this.list.insertBefore(tag, this.list.children[index] ?? null);
+            }
+        });
+
+        for (const tag of Array.from(unused.values()).flat()) {
+            tag.remove();
+        }
+    }
+
+    /**
+     * Create the element of a tag
+     */
+    private createTag(value: string) {
         const tag = document.createElement("span");
         const tagRemove = document.createElement("button");
         tag.className = "tag";
-        tag.innerText = value;
+        tag.textContent = value;
+        this.tagValues.set(tag, value);
         tag.style.marginRight = ".25rem";
-        parent.appendChild(tag);
 
         tagRemove.type = "button";
         tagRemove.className = "tag-remove";
@@ -453,7 +526,6 @@ export class TagsInput {
             const keyboardActivation = event.detail === 0;
             if (mousedownCaptured || keyboardActivation) {
                 this.removeTag(value);
-                parent.removeChild(tag);
 
                 $$(".tooltip").forEach((tooltip) => {
                     tooltip.remove();
@@ -469,12 +541,16 @@ export class TagsInput {
             event.stopPropagation();
         });
         tag.appendChild(tagRemove);
+
+        return tag;
     }
 
+    /**
+     * Add a tag if valid and clear the text field
+     */
     private addTag(value: string) {
         if (this.validateTag(value)) {
-            this.tags.push(value);
-            this.insertTag(value, this.list);
+            this.tags.value = [...this.tags.value, value];
             this.updateTags();
         } else {
             this.updatePlaceholder();
@@ -483,158 +559,65 @@ export class TagsInput {
         this.updateDropdown();
     }
 
+    /**
+     * Remove a tag
+     */
     private removeTag(value: string) {
-        const index = this.tags.indexOf(value);
+        const index = this.tags.value.indexOf(value);
         if (index > -1) {
-            this.tags.splice(index, 1);
+            this.tags.value = this.tags.value.filter((_, tagIndex) => tagIndex !== index);
             this.updateTags();
         }
         this.updateDropdown();
     }
 
+    /**
+     * Clear the text field
+     */
     private clearInput() {
         this.innerInput.value = "";
         this.updatePlaceholder();
     }
 
+    /**
+     * Show the suggested tags that are not tags yet
+     */
     private updateDropdown() {
         if (!this.dropdown) {
             return;
         }
-        if (this.tags.length >= this.options.limit) {
-            this.dropdown.style.display = "none";
+        if (this.tags.value.length >= this.options.limit) {
+            this.dropdown.open.value = false;
             return;
         }
-        let visibleItems = 0;
-        $$(".dropdown-item", this.dropdown).forEach((element) => {
-            if (!this.tags.includes(element.dataset.value as string)) {
-                element.style.display = "block";
-                visibleItems++;
-            } else {
-                element.style.display = "none";
-            }
-            element.classList.remove("selected");
-        });
-        if (visibleItems > 0 && this.innerInput === document.activeElement) {
-            this.dropdown.style.display = "block";
-        } else {
-            this.dropdown.style.display = "none";
-        }
+        const visibleItems = this.dropdown.filter((item) => !this.tags.value.includes(item.dataset.value as string));
+        this.dropdown.selected.value = null;
+        this.dropdown.open.value = visibleItems > 0 && this.innerInput === document.activeElement;
     }
 
+    /**
+     * Show only the suggested tags that are not tags yet and match the typed text
+     */
     private filterDropdown(value: string) {
         if (!this.dropdown) {
             return;
         }
-        if (value === "" && this.tags.length < this.options.limit) {
-            this.dropdown.style.display = "block";
+        if (this.tags.value.length >= this.options.limit) {
+            this.dropdown.open.value = false;
             return;
         }
-        let visibleItems = 0;
-        $$(".dropdown-item", this.dropdown).forEach((element) => {
-            if (value === "") {
-                return;
-            }
-            const text = `${element.textContent}`;
-            const regexp = new RegExp(`(^|\\b)${makeDiacriticsRegExp(escapeRegExp(value))}`, "i");
-            if (text.match(regexp) !== null && element.style.display !== "none") {
-                element.style.display = "block";
-                visibleItems++;
-            } else {
-                element.style.display = "none";
-            }
-        });
-        if (visibleItems > 0) {
-            this.dropdown.style.display = "block";
-        } else {
-            this.dropdown.style.display = "none";
-        }
+        const regexp = value === "" ? null : makeSearchRegExp(value);
+        const visibleItems = this.dropdown.filter((item) => !this.tags.value.includes(item.dataset.value as string) && (regexp === null || regexp.test(`${item.textContent}`)));
+        this.dropdown.open.value = visibleItems > 0;
     }
 
-    private scrollToDropdownItem(item: HTMLElement) {
-        if (!this.dropdown) {
-            return;
-        }
-        const dropdownScrollTop = this.dropdown.scrollTop;
-        const dropdownHeight = this.dropdown.clientHeight;
-        const dropdownScrollBottom = dropdownScrollTop + dropdownHeight;
-        const dropdownStyle = getComputedStyle(this.dropdown);
-        const dropdownPaddingTop = parseInt(dropdownStyle.paddingTop, 10);
-        const dropdownPaddingBottom = parseInt(dropdownStyle.paddingBottom, 10);
-        const itemTop = item.offsetTop;
-        const itemHeight = item.clientHeight;
-        const itemBottom = itemTop + itemHeight;
-        if (itemTop < dropdownScrollTop) {
-            this.dropdown.scrollTop = itemTop - dropdownPaddingTop;
-        } else if (itemBottom > dropdownScrollBottom) {
-            this.dropdown.scrollTop = itemBottom - dropdownHeight + dropdownPaddingBottom;
-        }
-    }
-
+    /**
+     * Set the text field to the value of the selected suggestion
+     */
     private addTagFromSelectedDropdownItem() {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
+        const selectedItem = this.dropdown?.selected.value;
         if (selectedItem && getComputedStyle(selectedItem).display !== "none") {
             this.innerInput.value = selectedItem.dataset.value as string;
         }
-    }
-
-    private selectDropdownItem(item: HTMLElement) {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
-        if (selectedItem) {
-            selectedItem.classList.remove("selected");
-        }
-        if (item) {
-            item.classList.add("selected");
-            this.scrollToDropdownItem(item);
-        }
-    }
-
-    private selectFirstDropdownItem() {
-        const items = $$(".dropdown-item", this.dropdown);
-        for (let i = 0; i < items.length; i++) {
-            if (getComputedStyle(items[i]).display !== "none") {
-                this.selectDropdownItem(items[i]);
-                return;
-            }
-        }
-    }
-
-    private selectLastDropdownItem() {
-        const items = $$(".dropdown-item", this.dropdown);
-        for (let i = items.length - 1; i >= 0; i--) {
-            if (getComputedStyle(items[i]).display !== "none") {
-                this.selectDropdownItem(items[i]);
-                return;
-            }
-        }
-    }
-
-    private selectPrevDropdownItem() {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
-        if (selectedItem) {
-            let previousItem = selectedItem.previousSibling as HTMLElement;
-            while (previousItem && previousItem.style.display === "none") {
-                previousItem = previousItem.previousSibling as HTMLElement;
-            }
-            if (previousItem) {
-                return this.selectDropdownItem(previousItem);
-            }
-            this.selectDropdownItem(selectedItem.previousSibling as HTMLElement);
-        }
-        this.selectLastDropdownItem();
-    }
-
-    private selectNextDropdownItem() {
-        const selectedItem = $(".dropdown-item.selected", this.dropdown);
-        if (selectedItem) {
-            let nextItem = selectedItem.nextSibling as HTMLElement;
-            while (nextItem && nextItem.style.display === "none") {
-                nextItem = nextItem.nextSibling as HTMLElement;
-            }
-            if (nextItem) {
-                return this.selectDropdownItem(nextItem);
-            }
-        }
-        this.selectFirstDropdownItem();
     }
 }
