@@ -2,6 +2,8 @@
 
 namespace Formwork\Images\ColorProfile;
 
+use Formwork\Images\Binary\ByteReader;
+use Formwork\Images\Binary\Bytes;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use UnexpectedValueException;
@@ -31,11 +33,15 @@ class ColorProfile
     public function __construct(
         protected string $data,
     ) {
-        if (strpos($this->data, self::ICC_PROFILE_SIGNATURE) !== self::ICC_PROFILE_SIGNATURE_OFFSET) {
+        if (substr($this->data, self::ICC_PROFILE_SIGNATURE_OFFSET, strlen(self::ICC_PROFILE_SIGNATURE)) !== self::ICC_PROFILE_SIGNATURE) {
             throw new InvalidArgumentException('Invalid ICC profile data');
         }
 
-        $this->tags = $this->getTags();
+        try {
+            $this->tags = $this->getTags();
+        } catch (UnexpectedValueException $unexpectedValueException) {
+            throw new InvalidArgumentException('Invalid ICC profile data', previous: $unexpectedValueException);
+        }
     }
 
     /**
@@ -144,7 +150,7 @@ class ColorProfile
      */
     public function renderingIntent(): RenderingIntent
     {
-        $renderingIntent = $this->unpack('N', $this->data, 64)[1];
+        $renderingIntent = Bytes::unpack($this->data, 64, 4);
         return match ($renderingIntent) {
             0       => RenderingIntent::Perceptual,
             1       => RenderingIntent::MediaRelative,
@@ -181,21 +187,32 @@ class ColorProfile
     /**
      * Get the color profile tags
      *
-     * @return array<string, mixed>
+     * @throws UnexpectedValueException If the tag table is truncated or a tag is outside the profile
+     *
+     * @return array<string, array{offset: int, length: int}>
      */
     protected function getTags(): array
     {
         $tags = [];
-        $position = 128;
-        $count = $this->unpack('N', $this->data, $position)[1];
-        $position += 4;
-        for ($i = 0; $i < $count; $i++) {
-            $info = $this->unpack('Z4tag/Noffset/Nlength', $this->data, $position);
-            /** @var string */
-            $tag = array_shift($info);
-            $tags[$tag] = $info;
-            $position += 12;
+        $reader = new ByteReader($this->data, 128);
+        $count = $reader->uint(4);
+
+        if ($count * 12 > $reader->remaining()) {
+            throw new UnexpectedValueException('Unexpected end of data');
         }
+
+        for ($i = 0; $i < $count; $i++) {
+            $tag = $reader->bytes(4);
+            $offset = $reader->uint(4);
+            $length = $reader->uint(4);
+
+            if ($offset + $length > strlen($this->data)) {
+                throw new UnexpectedValueException(sprintf('Tag "%s" is outside the profile', $tag));
+            }
+
+            $tags[$tag] = ['offset' => $offset, 'length' => $length];
+        }
+
         return $tags;
     }
 
@@ -209,40 +226,60 @@ class ColorProfile
         }
         ['offset' => $offset, 'length' => $length] = $this->tags[$name];
         $value = substr($this->data, $offset, $length);
-        $type = substr($value, 0, 4);
-        return match ($type) {
-            'text'  => substr($value, 8),
-            'desc'  => $this->unpack('Z*', $value, 12)[1],
-            'mluc'  => array_values($this->parseMlucString($value))[0] ?? $default,
-            default => $default,
-        };
+        try {
+            return match (substr($value, 0, 4)) {
+                'text'  => rtrim(substr($value, 8), "\x00"),
+                'desc'  => $this->parseDescString($value),
+                'mluc'  => array_values($this->parseMlucString($value))[0] ?? $default,
+                default => $default,
+            };
+        } catch (UnexpectedValueException) {
+            return $default;
+        }
+    }
+
+    /**
+     * Parse a textDescriptionType string
+     *
+     * @throws UnexpectedValueException If the string is truncated
+     */
+    protected function parseDescString(string $data): string
+    {
+        $reader = new ByteReader($data, 8);
+        $length = $reader->uint(4);
+
+        return rtrim($reader->bytes(min($length, $reader->remaining())), "\x00");
     }
 
     /**
      * Parse a multi-lingual Unicode string
      *
      * @throws InvalidArgumentException If the mluc tag is invalid
-     * @throws UnexpectedValueException If the mluc string cannot be converted to UTF-8
+     * @throws UnexpectedValueException If the mluc string is truncated or cannot be converted to UTF-8
      *
      * @return array<string, string>
      */
     protected function parseMlucString(string $data): array
     {
         $result = [];
-        $position = 0;
-        $type = substr($data, 0, 4);
-        if ($type !== 'mluc') {
+
+        if (substr($data, 0, 4) !== 'mluc') {
             throw new InvalidArgumentException('Invalid mluc tag');
         }
-        $position += 8;
-        $records = $this->unpack('N', $data, $position)[1];
-        $position += 8;
+
+        $reader = new ByteReader($data, 8);
+        $records = $reader->uint(4);
+        $reader->skip(4);
+
         for ($i = 0; $i < $records; $i++) {
-            $langCode = substr($data, $position, 4);
-            $position += 4;
-            $stringLength = $this->unpack('N', $data, $position)[1];
-            $position += 4;
-            $stringOffset = $this->unpack('N', $data, $position)[1];
+            $langCode = $reader->bytes(4);
+            $stringLength = $reader->uint(4);
+            $stringOffset = $reader->uint(4);
+
+            if ($stringOffset + $stringLength > strlen($data)) {
+                throw new UnexpectedValueException('Unexpected end of data');
+            }
+
             $value = mb_convert_encoding(substr($data, $stringOffset, $stringLength), 'UTF-8', 'UTF-16BE');
             // @phpstan-ignore identical.alwaysFalse
             if ($value === false) {
@@ -250,18 +287,7 @@ class ColorProfile
             }
             $result[$langCode] = $value;
         }
-        return $result;
-    }
 
-    /**
-     * Unpack data from a binary string
-     *
-     * @throws UnexpectedValueException If the string cannot be unpacked
-     *
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
+        return $result;
     }
 }
