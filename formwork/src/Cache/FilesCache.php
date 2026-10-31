@@ -3,8 +3,8 @@
 namespace Formwork\Cache;
 
 use DateInterval;
+use Generator;
 use Formwork\Cache\Exceptions\InvalidKeyException;
-use Formwork\Cache\Exceptions\InvalidNamespaceException;
 use Formwork\Parsers\Php;
 use Formwork\Utils\FileSystem;
 use Throwable;
@@ -13,27 +13,13 @@ use UnexpectedValueException;
 class FilesCache extends AbstractCache implements CountableCache
 {
     /**
-     * Cache path
-     */
-    protected string $path;
-
-    /**
      * @param string                $path       Cache path
-     * @param non-empty-string      $namespace  Cache namespace
      * @param DateInterval|int|null $defaultTtl Cached data time-to-live
-     *
-     * @throws InvalidNamespaceException If the namespace is not valid
      */
     public function __construct(
-        string $path,
-        protected string $namespace,
+        protected string $path,
         protected int|DateInterval|null $defaultTtl = null,
-    ) {
-        if (!$this->isValidNamespace($this->namespace)) {
-            throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
-        }
-        $this->path = FileSystem::joinPaths($path, $this->namespace);
-    }
+    ) {}
 
     /**
      * Return the cache path
@@ -41,11 +27,6 @@ class FilesCache extends AbstractCache implements CountableCache
     public function path(): string
     {
         return $this->path;
-    }
-
-    public function namespace(): string
-    {
-        return $this->namespace;
     }
 
     public function defaultTtl(): int|DateInterval|null
@@ -101,9 +82,9 @@ class FilesCache extends AbstractCache implements CountableCache
 
     public function clear(): bool
     {
-        if (FileSystem::exists($this->path)) {
-            FileSystem::delete($this->path, recursive: true);
-            FileSystem::createDirectory($this->path, recursive: true);
+        // Only cache files are deleted, as the path may contain other files
+        foreach ($this->listCacheFiles() as $file) {
+            FileSystem::delete(FileSystem::joinPaths($this->path, $file));
         }
         return true;
     }
@@ -120,10 +101,7 @@ class FilesCache extends AbstractCache implements CountableCache
 
     public function count(): int
     {
-        if (!FileSystem::exists($this->path)) {
-            return 0;
-        }
-        return count(iterator_to_array(FileSystem::listFiles($this->path)));
+        return count(iterator_to_array($this->listCacheFiles()));
     }
 
     /**
@@ -158,6 +136,23 @@ class FilesCache extends AbstractCache implements CountableCache
         }
 
         return $cacheItem;
+    }
+
+    /**
+     * List the names of the files in the cache path which are cache files
+     *
+     * @return Generator<int, string>
+     */
+    protected function listCacheFiles(): Generator
+    {
+        if (!FileSystem::isDirectory($this->path, assertExists: false)) {
+            return;
+        }
+        foreach (FileSystem::listFiles($this->path, includeHidden: true) as $file) {
+            if (preg_match('/^[0-9a-f]{64}$/', $file) === 1) {
+                yield $file;
+            }
+        }
     }
 
     protected function getFile(string $key): string

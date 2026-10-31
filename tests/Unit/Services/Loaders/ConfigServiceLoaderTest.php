@@ -136,7 +136,7 @@ final class ConfigServiceLoaderTest extends TestCase
 
     public function testFreshCacheFileIsUsed(): void
     {
-        $this->plantCache('cached.test', 'Pacific/Auckland', time() + 10);
+        $this->createCache('cached.test', 'Pacific/Auckland', time() + 10);
 
         $config = $this->load('cached.test');
 
@@ -147,7 +147,7 @@ final class ConfigServiceLoaderTest extends TestCase
     public function testStaleCacheFileIsIgnored(): void
     {
         /** @todo use something like `time() - 100000` instead of `1` after the cache paths are not hardcoded anymore in the loader */
-        $this->plantCache('stale.test', 'Pacific/Auckland', 1);
+        $this->createCache('stale.test', 'Pacific/Auckland', 1);
 
         $config = $this->load('stale.test');
 
@@ -156,11 +156,61 @@ final class ConfigServiceLoaderTest extends TestCase
 
     public function testCacheOfAnotherHostIsNotUsed(): void
     {
-        $this->plantCache('one.test', 'Pacific/Auckland', time() + 10);
+        $this->createCache('one.test', 'Pacific/Auckland', time() + 10);
 
         $config = $this->load('two.test');
 
         $this->assertNotSame('Pacific/Auckland', $config->getString('system.date.timezone'));
+    }
+
+    public function testDeprecatedCacheOptionsReplaceThePagesCacheOptions(): void
+    {
+        $this->createCache('deprecated.test', 'UTC', time() + 10, ['cache' => ['enabled' => true, 'path' => '/old/path', 'time' => 120]]);
+
+        $deprecations = $this->captureDeprecations(function () use (&$config): void {
+            $config = $this->load('deprecated.test');
+        });
+
+        $this->assertSame([
+            'The "system.cache.enabled" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.enabled" instead.',
+            'The "system.cache.path" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.path" instead.',
+            'The "system.cache.time" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.ttl" instead.',
+        ], $deprecations);
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertFalse($config->has('system.cache.enabled'));
+        $this->assertFalse($config->has('system.cache.path'));
+        $this->assertFalse($config->has('system.cache.time'));
+        $this->assertTrue($config->getBool('system.cache.pages.enabled'));
+        $this->assertSame('/old/path', $config->getString('system.cache.pages.path'));
+        $this->assertSame(120, $config->getInt('system.cache.pages.ttl'));
+        $this->assertSame('files', $config->getString('system.cache.pages.handler'));
+    }
+
+    public function testDeprecatedCacheNamespacesAreMigratedToThePagesCache(): void
+    {
+        $this->createCache('namespaces.test', 'UTC', time() + 10, ['cache' => ['namespaces' => ['pages' => ['handler' => 'array']]]]);
+
+        $deprecations = $this->captureDeprecations(function () use (&$config): void {
+            $config = $this->load('namespaces.test');
+        });
+
+        $this->assertSame([
+            'The "system.cache.namespaces" configuration option is deprecated since Formwork 2.4.0. Use "system.cache.pages.handler" instead.',
+        ], $deprecations);
+
+        $this->assertInstanceOf(Config::class, $config);
+        $this->assertFalse($config->has('system.cache.namespaces'));
+        $this->assertSame('array', $config->getString('system.cache.pages.handler'));
+    }
+
+    public function testConfigWithoutDeprecatedOptionsTriggersNoDeprecations(): void
+    {
+        $deprecations = $this->captureDeprecations(function (): void {
+            $this->load('uncached.test');
+        });
+
+        $this->assertSame([], $deprecations);
     }
 
     public function testSessionIsConfiguredFromTheLoadedConfig(): void
@@ -221,7 +271,10 @@ final class ConfigServiceLoaderTest extends TestCase
         }
     }
 
-    private function plantCache(string $host, string $timezone, int $modifiedTime): void
+    /**
+     * @param array<string, mixed> $system
+     */
+    private function createCache(string $host, string $timezone, int $modifiedTime, array $system = []): void
     {
         $this->ensureCacheDirectory();
 
@@ -236,6 +289,7 @@ final class ConfigServiceLoaderTest extends TestCase
         ]);
         $data = $config->toArray();
         $data['system']['date']['timezone'] = $timezone;
+        $data['system'] = array_replace_recursive($data['system'], $system);
 
         FileSystem::write($file, '<?php return ' . var_export($data, true) . ';');
         touch($file, $modifiedTime);

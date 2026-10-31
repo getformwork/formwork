@@ -5,11 +5,10 @@ namespace Formwork\Cache;
 use DateInterval;
 use DateTimeImmutable;
 use Formwork\Cache\Exceptions\InvalidKeyException;
+use Psr\SimpleCache\CacheInterface;
 
-abstract class AbstractCache implements NamespacedCacheInterface
+abstract class AbstractCache implements CacheInterface
 {
-    public const string NAMESPACE_REGEX = '/^[a-z0-9]+$/D';
-
     public const string RESERVED_KEY_CHARACTERS = '{}()/\@:';
 
     /**
@@ -203,14 +202,6 @@ abstract class AbstractCache implements NamespacedCacheInterface
      * @throws InvalidKeyException If the key is not valid
      */
     abstract public function getItem(string $key): ?CacheItemInterface;
-
-    /**
-     * Return whether a cache namespace is valid
-     */
-    protected function isValidNamespace(string $namespace): bool
-    {
-        return $namespace !== '' && (bool) preg_match(self::NAMESPACE_REGEX, $namespace);
-    }
 
     /**
      * Return whether a cache key is valid

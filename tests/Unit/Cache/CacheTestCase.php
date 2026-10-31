@@ -8,8 +8,6 @@ use Formwork\Cache\AbstractCache;
 use Formwork\Cache\CacheItem;
 use Formwork\Cache\CountableCache;
 use Formwork\Cache\Exceptions\InvalidKeyException;
-use Formwork\Cache\Exceptions\InvalidNamespaceException;
-use Formwork\Cache\NamespacedCacheInterface;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\SimpleCache\CacheInterface;
@@ -26,69 +24,16 @@ abstract class CacheTestCase extends TestCase
         $cache = $this->createCache();
 
         $this->assertInstanceOf(CacheInterface::class, $cache);
-        $this->assertInstanceOf(NamespacedCacheInterface::class, $cache);
         $this->assertInstanceOf(CountableCache::class, $cache);
     }
 
-    public function testNamespaceAndDefaultTtlAreExposed(): void
+    public function testDefaultTtlIsExposed(): void
     {
         $dateInterval = new DateInterval('PT5M');
 
-        $this->assertSame('test', $this->createCache()->namespace());
         $this->assertNull($this->createCache()->defaultTtl());
-        $this->assertSame(60, $this->createCache('test', 60)->defaultTtl());
-        $this->assertSame($dateInterval, $this->createCache('test', $dateInterval)->defaultTtl());
-    }
-
-    #[DataProvider('validNamespaceProvider')]
-    public function testValidNamespacesAreAccepted(string $namespace): void
-    {
-        $this->assertSame($namespace, $this->createCache($namespace)->namespace());
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function validNamespaceProvider(): iterable
-    {
-        yield 'lowercase letters' => ['pages'];
-        yield 'digits' => ['123'];
-        yield 'letters and digits' => ['cache2'];
-        yield 'single character' => ['a'];
-    }
-
-    #[DataProvider('invalidNamespaceProvider')]
-    public function testInvalidNamespacesAreRejected(string $namespace): void
-    {
-        $this->expectException(InvalidNamespaceException::class);
-        $this->createCache($namespace);
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function invalidNamespaceProvider(): iterable
-    {
-        yield 'empty' => [''];
-        yield 'uppercase' => ['Pages'];
-        yield 'hyphen' => ['my-cache'];
-        yield 'underscore' => ['my_cache'];
-        yield 'dot' => ['my.cache'];
-        yield 'space' => ['my cache'];
-        yield 'slash' => ['a/b'];
-        yield 'backslash' => ['a\b'];
-        yield 'parent directory' => ['..'];
-        yield 'path traversal' => ['../escape'];
-        yield 'trailing newline' => ["cache\n"];
-        yield 'null byte' => ["cache\0"];
-        yield 'non ASCII letters' => ['caché'];
-    }
-
-    public function testInvalidNamespaceExceptionsArePsrExceptions(): void
-    {
-        $invalidNamespaceException = $this->captureException(InvalidNamespaceException::class, fn() => $this->createCache('Invalid'));
-        $this->assertInstanceOf(PsrInvalidArgumentException::class, $invalidNamespaceException);
-        $this->assertStringContainsString('"Invalid"', $invalidNamespaceException->getMessage());
+        $this->assertSame(60, $this->createCache(60)->defaultTtl());
+        $this->assertSame($dateInterval, $this->createCache($dateInterval)->defaultTtl());
     }
 
     public function testMissingItemsReturnTheDefault(): void
@@ -368,7 +313,7 @@ abstract class CacheTestCase extends TestCase
 
     public function testDefaultTtlIsUsedWhenNoTtlIsGiven(): void
     {
-        $cache = $this->createCache('test', 300);
+        $cache = $this->createCache(300);
 
         $cache->set('key', 'value');
 
@@ -379,7 +324,7 @@ abstract class CacheTestCase extends TestCase
 
     public function testDefaultTtlAsDateIntervalIsUsedWhenNoTtlIsGiven(): void
     {
-        $cache = $this->createCache('test', new DateInterval('PT10M'));
+        $cache = $this->createCache(new DateInterval('PT10M'));
 
         $cache->set('key', 'value');
 
@@ -390,7 +335,7 @@ abstract class CacheTestCase extends TestCase
 
     public function testExplicitTtlOverridesTheDefaultTtl(): void
     {
-        $cache = $this->createCache('test', 300);
+        $cache = $this->createCache(300);
 
         $cache->set('key', 'value', 50);
 
@@ -595,23 +540,6 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->hasMultiple([]));
     }
 
-    public function testNamespacesDoNotShareItems(): void
-    {
-        $first = $this->createCache('first');
-        $second = $this->createCache('second');
-
-        $first->set('key', 'first value');
-        $second->set('key', 'second value');
-
-        $this->assertSame('first value', $first->get('key'));
-        $this->assertSame('second value', $second->get('key'));
-
-        $first->clear();
-
-        $this->assertFalse($first->has('key'));
-        $this->assertSame('second value', $second->get('key'));
-    }
-
     public function testDeprecatedFetchReadsValues(): void
     {
         $cache = $this->createCache();
@@ -682,7 +610,7 @@ abstract class CacheTestCase extends TestCase
     /**
      * @return AbstractCache&CountableCache
      */
-    abstract protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): AbstractCache;
+    abstract protected function createCache(int|DateInterval|null $defaultTtl = null): AbstractCache;
 
     /**
      * Make the given item expired as if its time-to-live had elapsed

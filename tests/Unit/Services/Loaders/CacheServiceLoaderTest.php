@@ -4,7 +4,6 @@ namespace Formwork\Tests\Unit\Services\Loaders;
 
 use Formwork\Cache\ArrayCache;
 use Formwork\Cache\CacheManager;
-use Formwork\Cache\Exceptions\InvalidNamespaceException;
 use Formwork\Cache\FilesCache;
 use Formwork\Config\Config;
 use Formwork\Services\Container;
@@ -13,38 +12,74 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(CacheServiceLoader::class)]
 #[UsesTempDirectory]
 final class CacheServiceLoaderTest extends TestCase
 {
-    public function testFilesCacheIsTheDefaultHandler(): void
+    public function testEveryConfiguredCacheIsAddedToTheManager(): void
     {
-        $cache = $this->loader('pages')->load($this->container());
+        $cacheManager = $this->manager([
+            'pages' => $this->filesOptions(TESTS_TMP_PATH . '/pages'),
+            'other' => $this->arrayOptions(),
+        ]);
+
+        $this->assertSame(['pages', 'other'], array_keys($cacheManager->getAll()));
+    }
+
+    public function testFilesCachesUseTheGivenPath(): void
+    {
+        $cache = $this->manager(['pages' => $this->filesOptions(TESTS_TMP_PATH . '/pages')])->get('pages');
 
         $this->assertInstanceOf(FilesCache::class, $cache);
-        $this->assertSame('pages', $cache->namespace());
+        $this->assertSame(TESTS_TMP_PATH . '/pages', $cache->path());
     }
 
-    public function testHandlerCanBeChosenInTheConfiguration(): void
+    #[DataProvider('requiredOptionProvider')]
+    public function testRequiredOptionsMustBeDefined(string $option): void
     {
-        $cache = $this->loader('pages', config: ['cache' => ['namespaces' => ['pages' => ['handler' => 'array']]]])->load($this->container());
+        $options = $this->filesOptions(TESTS_TMP_PATH . '/cache');
+        unset($options[$option]);
 
-        $this->assertInstanceOf(ArrayCache::class, $cache);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Cache "plugin" requires a "%s" option', $option));
+
+        $this->manager(['plugin' => $options]);
     }
 
-    public function testHandlerParameterWinsOverTheConfiguration(): void
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function requiredOptionProvider(): iterable
     {
-        $cache = $this->loader('pages', handler: 'array', config: ['cache' => ['namespaces' => ['pages' => ['handler' => 'files']]]])->load($this->container());
-
-        $this->assertInstanceOf(ArrayCache::class, $cache);
+        foreach (['enabled', 'handler', 'ttl', 'path'] as $option) {
+            yield $option => [$option];
+        }
     }
 
-    public function testConfigurationOfOtherNamespacesIsIgnored(): void
+    public function testPathIsNotRequiredByOtherHandlers(): void
     {
-        $cache = $this->loader('pages', config: ['cache' => ['namespaces' => ['other' => ['handler' => 'array']]]])->load($this->container());
+        $this->assertInstanceOf(ArrayCache::class, $this->manager(['plugin' => $this->arrayOptions()])->get('plugin'));
+    }
 
-        $this->assertInstanceOf(FilesCache::class, $cache);
+    public function testEmptyPathsAreRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid "path" option for cache "pages": expected non-empty string, string given');
+
+        $this->manager(['pages' => $this->filesOptions('')]);
+    }
+
+    public function testCachesCannotShareThePath(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cache "second" uses the same path of cache "first"');
+
+        $this->manager([
+            'first'  => $this->filesOptions(TESTS_TMP_PATH . '/shared'),
+            'second' => $this->filesOptions(TESTS_TMP_PATH . '/shared/'),
+        ]);
     }
 
     public function testUnknownHandlersAreRejected(): void
@@ -52,73 +87,103 @@ final class CacheServiceLoaderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cache handler "redis" is not supported');
 
-        $this->loader('pages', handler: 'redis')->load($this->container());
+        $this->manager(['pages' => $this->arrayOptions(['handler' => 'redis'])]);
     }
 
     public function testHandlerNamesAreMatchedExactly(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->loader('pages', handler: 'ARRAY')->load($this->container());
+        $this->manager(['pages' => $this->arrayOptions(['handler' => 'ARRAY'])]);
     }
 
-    public function testDefaultTimeToLiveComesFromTheConfiguration(): void
+    public function testDisabledCachesAreStillBuilt(): void
     {
-        $cache = $this->loader('pages', handler: 'array', config: ['cache' => ['time' => 123]])->load($this->container());
+        // Whether a cache is enabled is checked by the code using it
+        $cache = $this->manager(['pages' => $this->arrayOptions(['enabled' => false, 'ttl' => 60])])->get('pages');
 
+        $this->assertInstanceOf(ArrayCache::class, $cache);
+        $this->assertSame(60, $cache->defaultTtl());
+    }
+
+    public function testNonBooleanEnabledOptionsAreRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid "enabled" option for cache "pages": expected boolean, int given');
+
+        $this->manager(['pages' => $this->arrayOptions(['enabled' => 1])]);
+    }
+
+    public function testTimeToLiveIsReadFromEachCache(): void
+    {
+        $cacheManager = $this->manager(['first' => $this->arrayOptions(['ttl' => 123]), 'second' => $this->arrayOptions()]);
+
+        $cache = $cacheManager->get('first');
+        $second = $cacheManager->get('second');
+
+        $this->assertInstanceOf(ArrayCache::class, $cache);
+        $this->assertInstanceOf(ArrayCache::class, $second);
         $this->assertSame(123, $cache->defaultTtl());
+        $this->assertNull($second->defaultTtl());
     }
 
-    public function testTimeToLiveParameterWinsOverTheConfiguration(): void
+    public function testNonIntegerTimeToLiveIsRejected(): void
     {
-        $cache = $this->loader('pages', defaultTtl: 5, handler: 'array')->load($this->container());
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid "ttl" option for cache "pages": expected integer or null, string given');
 
-        $this->assertSame(5, $cache->defaultTtl());
+        $this->manager(['pages' => $this->arrayOptions(['ttl' => '60'])]);
     }
 
-    public function testCachePathComesFromTheConfigurationOrTheParameter(): void
+    public function testNonArrayCacheOptionsAreRejected(): void
     {
-        $cache = $this->loader('pages', config: ['cache' => ['path' => TESTS_TMP_PATH . '/from-config']])->load($this->container());
-        $fromParameter = $this->loader('pages', path: TESTS_TMP_PATH . '/from-parameter')->load($this->container());
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid options for cache "pages": expected array, string given');
 
-        $cache->set('key', 'value');
-        $fromParameter->set('key', 'value');
-
-        $this->assertDirectoryExists(TESTS_TMP_PATH . '/from-config');
-        $this->assertDirectoryExists(TESTS_TMP_PATH . '/from-parameter');
+        $this->manager(['pages' => 'files']);
     }
 
-    public function testLoadedCachesAreRegisteredInTheManager(): void
+    public function testInvalidCacheNamesAreRejected(): void
     {
-        $cacheManager = new CacheManager();
-        $cache = $this->loader('pages', handler: 'array', cacheManager: $cacheManager)->load($this->container());
+        $this->expectException(InvalidArgumentException::class);
 
-        $this->assertTrue($cacheManager->has('pages'));
-        $this->assertSame($cache, $cacheManager->get('pages'));
-    }
-
-    public function testInvalidNamespacesAreRejected(): void
-    {
-        $this->expectException(InvalidNamespaceException::class);
-
-        $this->loader('invalid namespace!', handler: 'array')->load($this->container());
-    }
-
-    private function container(): Container
-    {
-        $container = new Container();
-        $container->define(Container::class, $container);
-        return $container;
+        $this->manager(['Invalid' => $this->arrayOptions()]);
     }
 
     /**
-     * @param non-empty-string     $namespace
-     * @param array<string, mixed> $config
+     * @param array<string, mixed> $cache
      */
-    private function loader(string $namespace, ?string $path = null, ?int $defaultTtl = null, ?string $handler = null, array $config = [], ?CacheManager $cacheManager = null): CacheServiceLoader
+    private function manager(array $cache): CacheManager
     {
-        $config = array_replace_recursive(['cache' => ['path' => TESTS_TMP_PATH . '/cache', 'time' => 900]], $config);
+        $container = new Container();
+        $container->define(Container::class, $container);
 
-        return new CacheServiceLoader(new Config(['system' => $config], resolved: true), $cacheManager ?? new CacheManager(), $namespace, $path, $defaultTtl, $handler);
+        $config = new Config(['system' => ['cache' => $cache]], resolved: true);
+
+        return (new CacheServiceLoader($config))->load($container);
+    }
+
+    /**
+     * Get complete options of a files cache
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    private function filesOptions(string $path, array $options = []): array
+    {
+        return [...['enabled' => true, 'handler' => 'files', 'path' => $path, 'ttl' => null], ...$options];
+    }
+
+    /**
+     * Get complete options of an array cache
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    private function arrayOptions(array $options = []): array
+    {
+        return [...['enabled' => true, 'handler' => 'array', 'ttl' => null], ...$options];
     }
 }

@@ -4,7 +4,6 @@ namespace Formwork\Cache;
 
 use DateInterval;
 use Formwork\Cache\Exceptions\InvalidKeyException;
-use Formwork\Cache\Exceptions\InvalidNamespaceException;
 
 class ArrayCache extends AbstractCache implements CountableCache
 {
@@ -14,24 +13,11 @@ class ArrayCache extends AbstractCache implements CountableCache
     protected array $items = [];
 
     /**
-     * @param non-empty-string      $namespace  Cache namespace
      * @param DateInterval|int|null $defaultTtl Cached data time-to-live
-     *
-     * @throws InvalidNamespaceException If the namespace is not valid
      */
     public function __construct(
-        protected string $namespace,
         protected int|DateInterval|null $defaultTtl = null,
-    ) {
-        if (!$this->isValidNamespace($this->namespace)) {
-            throw new InvalidNamespaceException(sprintf('Namespace "%s" is not valid', $this->namespace));
-        }
-    }
-
-    public function namespace(): string
-    {
-        return $this->namespace;
-    }
+    ) {}
 
     public function defaultTtl(): int|DateInterval|null
     {
