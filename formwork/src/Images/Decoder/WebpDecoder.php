@@ -2,9 +2,10 @@
 
 namespace Formwork\Images\Decoder;
 
+use Formwork\Images\Binary\ByteReader;
+use Formwork\Images\Binary\Endianness;
 use Generator;
 use InvalidArgumentException;
-use UnexpectedValueException;
 
 final class WebpDecoder implements DecoderInterface
 {
@@ -18,47 +19,42 @@ final class WebpDecoder implements DecoderInterface
      */
     private const string WEBP_HEADER = 'WEBP';
 
+    /**
+     * Size of the RIFF header, including the size field
+     */
+    private const int RIFF_HEADER_SIZE = 8;
+
     public function decode(string &$data): Generator
     {
-        if (!str_starts_with($data, self::RIFF_HEADER)) {
+        if (!str_starts_with($data, self::RIFF_HEADER) || substr($data, 8, 4) !== self::WEBP_HEADER) {
             throw new InvalidArgumentException('Invalid WebP data');
         }
 
-        $position = strlen(self::RIFF_HEADER) + 4;
+        $reader = new ByteReader($data, 4);
 
-        if (strpos($data, self::WEBP_HEADER, $position) !== $position) {
-            throw new InvalidArgumentException('Invalid WebP data');
-        }
+        // Ignore any data after the end of the RIFF container
+        $end = min(strlen($data), $reader->uint(4, Endianness::Little) + self::RIFF_HEADER_SIZE);
 
-        $position += strlen(self::WEBP_HEADER);
+        $reader->skip(strlen(self::WEBP_HEADER));
 
-        while ($position < strlen($data)) {
-            $offset = $position;
-            $type = substr($data, $position, 4);
-            $position += 4;
-            $size = $this->unpack('V', $data, $position)[1];
+        while ($reader->position() + self::RIFF_HEADER_SIZE <= $end) {
+            $offset = $reader->position();
+            $type = $reader->bytes(4);
+            $size = $reader->uint(4, Endianness::Little);
+            $value = $reader->bytes($size);
 
-            if ($size % 2 !== 0) {
-                $size++;
+            // Chunks are padded to an even size, but the last padding byte may be missing
+            if ($size % 2 !== 0 && $reader->remaining() > 0) {
+                $reader->skip(1);
             }
-
-            $position += $size + 4;
 
             yield [
                 'offset'   => $offset,
                 'size'     => $size,
                 'type'     => $type,
-                'value'    => substr($data, $offset + 8, $size),
-                'position' => &$position,
+                'value'    => $value,
+                'position' => $reader->position(),
             ];
         }
-    }
-
-    /**
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

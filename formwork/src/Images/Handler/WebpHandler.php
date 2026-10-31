@@ -2,13 +2,14 @@
 
 namespace Formwork\Images\Handler;
 
+use Formwork\Images\Binary\Bytes;
+use Formwork\Images\Binary\Endianness;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Decoder\WebpDecoder;
 use Formwork\Images\Exif\ExifData;
 use Formwork\Images\ImageInfo;
 use GdImage;
-use InvalidArgumentException;
 use RuntimeException;
 use UnexpectedValueException;
 
@@ -18,6 +19,16 @@ final class WebpHandler extends AbstractHandler
      * RIFF header
      */
     private const string RIFF_HEADER = 'RIFF';
+
+    /**
+     * WebP file header
+     */
+    private const string WEBP_HEADER = 'WEBP';
+
+    /**
+     * Size of the VP8X chunk
+     */
+    private const int VP8X_SIZE = 10;
 
     /**
      * VP8X no flags
@@ -58,20 +69,23 @@ final class WebpHandler extends AbstractHandler
 
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8X') {
-                $info['hasAlphaChannel'] = ((ord($chunk['value'][0]) >> 4) & 0x01) === 1;
-                $info['width'] = $this->unpack('V', substr($chunk['value'], 4, 3) . "\x00")[1] + 1;
-                $info['height'] = $this->unpack('V', substr($chunk['value'], 7, 3) . "\x00")[1] + 1;
+                if ($chunk['size'] < self::VP8X_SIZE) {
+                    throw new UnexpectedValueException('Invalid VP8X chunk');
+                }
+                $info['hasAlphaChannel'] = (Bytes::unpack($chunk['value'], 0, 1) & self::ALPHA_FLAG) !== 0;
+                $info['width'] = Bytes::unpack($chunk['value'], 4, 3, Endianness::Little) + 1;
+                $info['height'] = Bytes::unpack($chunk['value'], 7, 3, Endianness::Little) + 1;
                 $isVP8ChunkParsed = true;
             }
 
             if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8 ') {
-                $info['width'] = $this->unpack('v', $chunk['value'], 6)[1] & 0x3fff;
-                $info['height'] = $this->unpack('v', $chunk['value'], 8)[1] & 0x3fff;
+                $info['width'] = Bytes::unpack($chunk['value'], 6, 2, Endianness::Little) & 0x3fff;
+                $info['height'] = Bytes::unpack($chunk['value'], 8, 2, Endianness::Little) & 0x3fff;
                 $isVP8ChunkParsed = true;
             }
 
             if (!$isVP8ChunkParsed && $chunk['type'] === 'VP8L') {
-                $bits = $this->unpack('V', $chunk['value'], 1)[1];
+                $bits = Bytes::unpack($chunk['value'], 1, 4, Endianness::Little);
                 $info['width'] = ($bits & 0x3fff) + 1;
                 $info['height'] = (($bits >> 14) & 0x3fff) + 1;
                 $info['hasAlphaChannel'] = (($bits >> 28) & 0x01) === 1;
@@ -84,8 +98,9 @@ final class WebpHandler extends AbstractHandler
 
             if ($chunk['type'] === 'ANIM') {
                 $info['isAnimation'] = true;
-                $info['animationRepeatCount'] = $this->unpack('v', $chunk['value'], 4)[1];
+                $info['animationRepeatCount'] = Bytes::unpack($chunk['value'], 4, 2, Endianness::Little);
             }
+
             if (!$info['isAnimation']) {
                 continue;
             }
@@ -132,31 +147,17 @@ final class WebpHandler extends AbstractHandler
 
     public function setColorProfile(ColorProfile $colorProfile): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'VP8X') {
-                $VP8XFlags = ord($chunk['value'][0]) | self::ICC_FLAG;
-                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
-                $ICCPChunk = $this->encodeChunk('ICCP', $colorProfile->getData());
-                $this->data = substr_replace($this->data, $ICCPChunk, $chunk['position'], 0);
-                $this->updateRIFFHeader();
-                break;
-            }
-        }
+        $chunks = $this->withoutChunks($this->extendedChunks(), 'ICCP');
+
+        // The color profile must immediately follow the VP8X chunk
+        array_splice($chunks, 1, 0, [['ICCP', $colorProfile->getData()]]);
+
+        $this->setChunks($chunks);
     }
 
     public function removeColorProfile(): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'ICCP') {
-                $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                $this->updateRIFFHeader();
-            }
-
-            if ($chunk['type'] === 'VP8X') {
-                $VP8XFlags = ord($chunk['value'][0]) & ~self::ICC_FLAG;
-                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
-            }
-        }
+        $this->setChunks($this->withoutChunks($this->chunks(), 'ICCP'));
     }
 
     public static function supportsExifData(): bool
@@ -188,33 +189,26 @@ final class WebpHandler extends AbstractHandler
 
     public function setExifData(ExifData $exifData): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'VP8X') {
-                $VP8XFlags = ord($chunk['value'][0]) | self::EXIF_FLAG;
-                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
-            }
+        $chunks = $this->withoutChunks($this->extendedChunks(), 'EXIF');
 
-            if (in_array($chunk['type'], ['VP8 ', 'VP8L'], true)) {
-                $ExifChunk = $this->encodeChunk('EXIF', $exifData->getData());
-                $this->data = substr_replace($this->data, $ExifChunk, $chunk['position'], 0);
-                $this->updateRIFFHeader();
+        // EXIF metadata follows the image data and precedes XMP metadata
+        $position = count($chunks);
+
+        foreach ($chunks as $index => [$type]) {
+            if ($type === 'XMP ') {
+                $position = $index;
+                break;
             }
         }
+
+        array_splice($chunks, $position, 0, [['EXIF', $exifData->getData()]]);
+
+        $this->setChunks($chunks);
     }
 
     public function removeExifData(): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'EXIF') {
-                $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                $this->updateRIFFHeader();
-            }
-
-            if ($chunk['type'] === 'VP8X') {
-                $VP8XFlags = ord($chunk['value'][0]) & ~self::EXIF_FLAG;
-                $this->data = substr_replace($this->data, chr($VP8XFlags), $chunk['offset'] + 8, 1);
-            }
-        }
+        $this->setChunks($this->withoutChunks($this->chunks(), 'EXIF'));
     }
 
     protected function getDecoder(): WebpDecoder
@@ -238,18 +232,82 @@ final class WebpHandler extends AbstractHandler
 
         $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
 
-        $this->setVP8XChunk();
+        $this->setChunks($this->extendedChunks());
     }
 
     /**
-     * Update RIFF header
+     * Get the chunks of the image
+     *
+     * @return list<array{string, string}>
      */
-    private function updateRIFFHeader(): void
+    private function chunks(): array
     {
-        if (!str_starts_with($this->data, self::RIFF_HEADER)) {
-            throw new InvalidArgumentException('Invalid WebP data');
+        $chunks = [];
+
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            $chunks[] = [$chunk['type'], $chunk['value']];
         }
-        $this->data = substr_replace($this->data, pack('V', strlen($this->data) - 8), 4, 4);
+
+        return $chunks;
+    }
+
+    /**
+     * Get the chunks of the image, ensuring that the first one is a VP8X chunk
+     *
+     * @return list<array{string, string}>
+     */
+    private function extendedChunks(): array
+    {
+        $chunks = $this->chunks();
+
+        if (($chunks[0][0] ?? null) === 'VP8X') {
+            return $chunks;
+        }
+
+        $info = $this->getInfo();
+
+        $flags = $info->hasAlphaChannel() ? self::ALPHA_FLAG : self::NO_FLAG;
+
+        $canvas = Bytes::pack($info->width() - 1, 3, Endianness::Little) . Bytes::pack($info->height() - 1, 3, Endianness::Little);
+
+        return [['VP8X', Bytes::pack($flags, 1) . "\x00\x00\x00" . $canvas], ...$chunks];
+    }
+
+    /**
+     * Remove all the chunks of a given type
+     *
+     * @param list<array{string, string}> $chunks
+     *
+     * @return list<array{string, string}>
+     */
+    private function withoutChunks(array $chunks, string $type): array
+    {
+        return array_values(array_filter($chunks, static fn(array $chunk): bool => $chunk[0] !== $type));
+    }
+
+    /**
+     * Set the chunks of the image, updating the flags of the VP8X chunk accordingly
+     *
+     * @param list<array{string, string}> $chunks
+     */
+    private function setChunks(array $chunks): void
+    {
+        $types = array_column($chunks, 0);
+
+        if (($chunks[0][0] ?? null) === 'VP8X') {
+            $flags = Bytes::unpack($chunks[0][1], 0, 1) & ~(self::ICC_FLAG | self::EXIF_FLAG);
+            $flags |= in_array('ICCP', $types, true) ? self::ICC_FLAG : self::NO_FLAG;
+            $flags |= in_array('EXIF', $types, true) ? self::EXIF_FLAG : self::NO_FLAG;
+            $chunks[0][1] = Bytes::pack($flags, 1) . substr($chunks[0][1], 1);
+        }
+
+        $data = self::WEBP_HEADER;
+
+        foreach ($chunks as [$type, $value]) {
+            $data .= $this->encodeChunk($type, $value);
+        }
+
+        $this->data = self::RIFF_HEADER . Bytes::pack(strlen($data), 4, Endianness::Little) . $data;
     }
 
     /**
@@ -260,30 +318,5 @@ final class WebpHandler extends AbstractHandler
         $length = strlen($data);
         $data = $length % 2 !== 0 ? $data . "\x00" : $data;
         return $type . pack('V', $length) . $data;
-    }
-
-    /**
-     * Set VP8X chunk
-     */
-    private function setVP8XChunk(): void
-    {
-        if (!str_contains(substr($this->data, 12), 'VP8X')) {
-            $info = $this->getInfo();
-            $VP8XFlags = $info->hasAlphaChannel() ? self::ALPHA_FLAG : self::NO_FLAG;
-            $data = chr($VP8XFlags) . "\x0\x0\x0" . substr(pack('V', $info->width() - 1), 0, 3) . substr(pack('V', $info->height() - 1), 0, 3);
-            $chunk = $this->encodeChunk('VP8X', $data);
-            $this->data = substr_replace($this->data, $chunk, 12, 0);
-            $this->updateRIFFHeader();
-        }
-    }
-
-    /**
-     * Unpack data from a binary string
-     *
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }
