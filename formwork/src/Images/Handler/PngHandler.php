@@ -2,6 +2,8 @@
 
 namespace Formwork\Images\Handler;
 
+use Formwork\Images\Binary\ByteReader;
+use Formwork\Images\Binary\Bytes;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Decoder\PngDecoder;
@@ -13,6 +15,21 @@ use UnexpectedValueException;
 
 final class PngHandler extends AbstractHandler
 {
+    /**
+     * Minimum size of the IHDR chunk
+     */
+    private const int IHDR_SIZE = 13;
+
+    /**
+     * Maximum length of the name of an embedded color profile
+     */
+    private const int MAX_PROFILE_NAME_LENGTH = 79;
+
+    /**
+     * Name used for embedded color profiles without a name
+     */
+    private const string DEFAULT_PROFILE_NAME = 'ICC profile';
+
     public function getInfo(): ImageInfo
     {
         $info = [
@@ -30,10 +47,13 @@ final class PngHandler extends AbstractHandler
 
         foreach ($this->decoder->decode($this->data) as $chunk) {
             if ($chunk['type'] === 'IHDR') {
-                $info['width'] = $this->unpack('N', $chunk['value'], 0)[1];
-                $info['height'] = $this->unpack('N', $chunk['value'], 4)[1];
-                $info['colorDepth'] = ord($chunk['value'][8]);
-                [$info['colorSpace'], $info['hasAlphaChannel']] = $this->getColorSpaceAndAlpha(ord($chunk['value'][9]));
+                if ($chunk['size'] < self::IHDR_SIZE) {
+                    throw new UnexpectedValueException('Invalid IHDR chunk');
+                }
+                $info['width'] = Bytes::unpack($chunk['value'], 0, 4);
+                $info['height'] = Bytes::unpack($chunk['value'], 4, 4);
+                $info['colorDepth'] = Bytes::unpack($chunk['value'], 8, 1);
+                [$info['colorSpace'], $info['hasAlphaChannel']] = $this->getColorSpaceAndAlpha(Bytes::unpack($chunk['value'], 9, 1));
             }
 
             if ($chunk['type'] === 'PLTE') {
@@ -45,8 +65,8 @@ final class PngHandler extends AbstractHandler
 
             if ($chunk['type'] === 'acTL') {
                 $info['isAnimation'] = true;
-                $info['animationFrames'] = $this->unpack('N', $chunk['value'], 0)[1];
-                $info['animationRepeatCount'] = $this->unpack('N', $chunk['value'], 4)[1];
+                $info['animationFrames'] = Bytes::unpack($chunk['value'], 0, 4);
+                $info['animationRepeatCount'] = Bytes::unpack($chunk['value'], 4, 4);
             }
         }
 
@@ -88,23 +108,13 @@ final class PngHandler extends AbstractHandler
 
     public function setColorProfile(ColorProfile $colorProfile): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'IHDR') {
-                $iCCPChunk = $this->encodeChunk('iCCP', $this->encodeProfile($colorProfile->name(), $colorProfile->getData()));
-                $this->data = substr_replace($this->data, $iCCPChunk, $chunk['position'], 0);
-                break;
-            }
-        }
+        $chunk = $this->encodeChunk('iCCP', $this->encodeProfile($colorProfile->name(), $colorProfile->getData()));
+        $this->replaceChunks('iCCP', $chunk);
     }
 
     public function removeColorProfile(): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'iCCP') {
-                $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                break;
-            }
-        }
+        $this->replaceChunks('iCCP');
     }
 
     public static function supportsExifData(): bool
@@ -136,23 +146,12 @@ final class PngHandler extends AbstractHandler
 
     public function setExifData(ExifData $exifData): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'IHDR') {
-                $iCCPChunk = $this->encodeChunk('eXIf', $exifData->getData());
-                $this->data = substr_replace($this->data, $iCCPChunk, $chunk['position'], 0);
-                break;
-            }
-        }
+        $this->replaceChunks('eXIf', $this->encodeChunk('eXIf', $exifData->getData()));
     }
 
     public function removeExifData(): void
     {
-        foreach ($this->decoder->decode($this->data) as $chunk) {
-            if ($chunk['type'] === 'eXIf') {
-                $this->data = substr_replace($this->data, '', $chunk['offset'], $chunk['position'] - $chunk['offset']);
-                break;
-            }
-        }
+        $this->replaceChunks('eXIf');
     }
 
     protected function getDecoder(): PngDecoder
@@ -199,6 +198,31 @@ final class PngHandler extends AbstractHandler
     }
 
     /**
+     * Replace all the chunks of a given type with a new one placed right after the header chunk
+     */
+    private function replaceChunks(string $type, ?string $replacement = null): void
+    {
+        $replacements = [];
+        $headerEnd = null;
+
+        foreach ($this->decoder->decode($this->data) as $chunk) {
+            if ($chunk['type'] === 'IHDR') {
+                $headerEnd = $chunk['position'];
+            }
+
+            if ($chunk['type'] === $type) {
+                $replacements[] = [$chunk['offset'], $chunk['position'] - $chunk['offset'], ''];
+            }
+        }
+
+        if ($replacement !== null) {
+            $replacements[] = [$headerEnd ?? throw new UnexpectedValueException('Missing IHDR chunk'), 0, $replacement];
+        }
+
+        $this->data = Bytes::replace($this->data, $replacements);
+    }
+
+    /**
      * Decode a PNG color profile chunk
      *
      * @return array{name: string, value: string}
@@ -209,9 +233,16 @@ final class PngHandler extends AbstractHandler
             throw new RuntimeException(sprintf('%s() requires the extension "zlib" to be enabled', __METHOD__));
         }
 
-        $name = $this->unpack('Z*', $data)[1];
-        $value = gzuncompress(substr($data, strlen($name) + 2))
-            ?: throw new UnexpectedValueException('Invalid color profile string');
+        $reader = new ByteReader($data);
+        $name = $reader->cString();
+        $reader->skip(1);
+
+        $value = @gzuncompress($reader->rest());
+
+        if ($value === false || $value === '') {
+            throw new UnexpectedValueException('Invalid color profile string');
+        }
+
         return ['name' => $name, 'value' => $value];
     }
 
@@ -224,16 +255,8 @@ final class PngHandler extends AbstractHandler
             throw new RuntimeException(sprintf('%s() requires the extension "zlib" to be enabled', __METHOD__));
         }
 
-        return trim($name) . "\x0\x0" . gzcompress($value);
-    }
+        $name = substr(trim($name), 0, self::MAX_PROFILE_NAME_LENGTH);
 
-    /**
-     * Unpack data from binary string
-     *
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
+        return ($name === '' ? self::DEFAULT_PROFILE_NAME : $name) . "\x00\x00" . gzcompress($value);
     }
 }

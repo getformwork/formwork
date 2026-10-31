@@ -2,9 +2,9 @@
 
 namespace Formwork\Images\Decoder;
 
+use Formwork\Images\Binary\ByteReader;
 use Generator;
 use InvalidArgumentException;
-use UnexpectedValueException;
 
 final class PngDecoder implements DecoderInterface
 {
@@ -13,39 +13,38 @@ final class PngDecoder implements DecoderInterface
      */
     private const string PNG_HEADER = "\x89PNG\x0d\x0a\x1a\x0a";
 
+    /**
+     * Type of the last chunk of a PNG file
+     */
+    private const string END_CHUNK = 'IEND';
+
     public function decode(string &$data): Generator
     {
         if (!str_starts_with($data, self::PNG_HEADER)) {
             throw new InvalidArgumentException('Invalid PNG data');
         }
 
-        $position = strlen(self::PNG_HEADER);
+        $reader = new ByteReader($data, strlen(self::PNG_HEADER));
 
-        while ($position < strlen($data)) {
-            $offset = $position;
-            $size = $this->unpack('N', $data, $position)[1];
-            $position += 4;
-            $type = substr($data, $position, 4);
-            $position += $size + 4;
-            $checksum = $this->unpack('N', $data, $position)[1];
-            $position += 4;
+        while ($reader->remaining() > 0) {
+            $offset = $reader->position();
+            $size = $reader->uint(4);
+            $type = $reader->bytes(4);
+            $value = $reader->bytes($size);
+            $checksum = $reader->uint(4);
 
             yield [
                 'offset'   => $offset,
                 'size'     => $size,
                 'type'     => $type,
-                'value'    => substr($data, $offset + 8, $size),
+                'value'    => $value,
                 'checksum' => $checksum,
-                'position' => &$position,
+                'position' => $reader->position(),
             ];
-        }
-    }
 
-    /**
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
+            if ($type === self::END_CHUNK) {
+                return;
+            }
+        }
     }
 }
