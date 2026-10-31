@@ -11,12 +11,12 @@ class ImageInfo implements Arrayable
     protected string $mimeType;
 
     /**
-     * @var int<1, max>
+     * @var int<0, max>
      */
     protected int $width;
 
     /**
-     * @var int<1, max>
+     * @var int<0, max>
      */
     protected int $height;
 
@@ -59,7 +59,7 @@ class ImageInfo implements Arrayable
     /**
      * Get image width
      *
-     * @return int<1, max>
+     * @return int<0, max>
      */
     public function width(): int
     {
@@ -69,7 +69,7 @@ class ImageInfo implements Arrayable
     /**
      * Get image height
      *
-     * @return int<1, max>
+     * @return int<0, max>
      */
     public function height(): int
     {
