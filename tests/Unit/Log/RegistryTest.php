@@ -264,4 +264,37 @@ final class RegistryTest extends TestCase
 
         $this->assertSame('{not json', FileSystem::read($this->file));
     }
+
+    public function testRegistryIsNotModifiedUntilChanged(): void
+    {
+        $registry = new Registry($this->file);
+        $this->assertFalse($registry->isModified());
+
+        $registry->has('key');
+        $this->assertFalse($registry->isModified());
+
+        $registry->set('key', 'value');
+        $this->assertTrue($registry->isModified());
+
+        $registry->save();
+        $this->assertFalse($registry->isModified());
+
+        $registry->remove('missing');
+        $this->assertFalse($registry->isModified());
+
+        $registry->remove('key');
+        $this->assertTrue($registry->isModified());
+    }
+
+    public function testSavingStillRewritesAnUnmodifiedRegistry(): void
+    {
+        $registry = new Registry($this->file);
+        $registry->set('key', 'value');
+        $registry->save();
+
+        FileSystem::write($this->file, '{"key":"external"}');
+        $registry->save();
+
+        $this->assertSame('value', (new Registry($this->file))->get('key'));
+    }
 }

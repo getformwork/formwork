@@ -34,9 +34,17 @@ class Registry
      */
     public function __destruct()
     {
-        if ($this->loaded && !$this->saved) {
+        if ($this->isModified()) {
             $this->save();
         }
+    }
+
+    /**
+     * Return whether the registry has changes that are not saved yet
+     */
+    public function isModified(): bool
+    {
+        return $this->loaded && !$this->saved;
     }
 
     /**

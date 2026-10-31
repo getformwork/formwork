@@ -75,7 +75,6 @@ final class Statistics
             $this->registries['sessions']->has($hash)
             && $timestamp - $this->registries['sessions']->get($hash) < $this->options['visitsDelay']
         ) {
-            $this->registries['sessions']->save();
             return;
         }
 
@@ -98,7 +97,6 @@ final class Statistics
 
         if (!$this->registries['visitors']->has($visitor) || $this->registries['visitors']->get($visitor) !== $date) {
             $this->registries['uniqueVisits']->set($date, $todayUniqueVisits + 1);
-            $this->registries['uniqueVisits']->save();
         }
 
         $this->registries['visitors']->set($visitor, $date);
@@ -216,7 +214,9 @@ final class Statistics
     private function saveRegistries(): void
     {
         foreach ($this->registries as $registry) {
-            $registry->save();
+            if ($registry->isModified()) {
+                $registry->save();
+            }
         }
     }
 
