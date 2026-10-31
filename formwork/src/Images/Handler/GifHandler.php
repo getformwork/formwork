@@ -2,6 +2,8 @@
 
 namespace Formwork\Images\Handler;
 
+use Formwork\Images\Binary\Bytes;
+use Formwork\Images\Binary\Endianness;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Decoder\GifDecoder;
@@ -34,33 +36,43 @@ final class GifHandler extends AbstractHandler
             'animationRepeatCount' => null,
         ];
 
+        $frames = 0;
+
         foreach ($this->decoder->decode($this->data) as $block) {
             if ($block['type'] === 'LSD') {
                 $info['width'] = $block['desc']['width'];
                 $info['height'] = $block['desc']['height'];
-                $info['colorNumber'] = 2 ** ($block['desc']['colorres'] + 1);
+
+                if ($block['desc']['gctflag'] === 1) {
+                    $info['colorNumber'] = 2 ** ($block['desc']['gctsize'] + 1);
+                }
             }
 
             if ($block['type'] === 'EXT' && $block['label'] === 0xf9) {
-                $info['hasAlphaChannel'] = (ord($block['value'][3]) & 0x01) === 1;
-                if (!$info['isAnimation']) {
-                    $info['isAnimation'] = $this->unpack('v', $block['value'], 4)[1] > 0;
+                // The transparency flag is the lowest bit of the packed field of the graphic control extension
+                if ($info['hasAlphaChannel'] === false) {
+                    $info['hasAlphaChannel'] = (Bytes::unpack($block['value'], 3, 1) & 0x01) === 1;
                 }
             }
 
             if ($block['type'] === 'EXT' && str_starts_with($block['value'], self::NETSCAPE_EXT_HEADER)) {
-                $info['animationRepeatCount'] = $this->unpack('v', $block['value'], 16)[1];
+                $info['animationRepeatCount'] = Bytes::unpack($block['value'], 16, 2, Endianness::Little);
                 if ($info['animationRepeatCount'] > 0) {
                     $info['animationRepeatCount']++;
                 }
             }
-            if ($block['type'] !== 'IMG') {
-                continue;
+
+            if ($block['type'] === 'IMG') {
+                $frames++;
             }
-            if (!$info['isAnimation']) {
-                continue;
-            }
-            $info['animationFrames']++;
+        }
+
+        // An image is animated only if it has more than one frame
+        if ($frames > 1) {
+            $info['isAnimation'] = true;
+            $info['animationFrames'] = $frames;
+        } else {
+            $info['animationRepeatCount'] = null;
         }
 
         return new ImageInfo($info);
@@ -137,7 +149,7 @@ final class GifHandler extends AbstractHandler
             throw new RuntimeException('Cannot create GIF image from GdImage');
         }
 
-        if (($transparent = imagecolorallocatealpha($gdImage, 0, 0, 0, 127)) === false) {
+        if (($transparent = imagecolorallocatealpha($image, 0, 0, 0, 127)) === false) {
             throw new RuntimeException('Cannot allocate transparent color');
         }
 
@@ -156,15 +168,5 @@ final class GifHandler extends AbstractHandler
         }
 
         $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
-    }
-
-    /**
-     * Unpack data from a binary string
-     *
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }
