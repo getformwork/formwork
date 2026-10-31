@@ -3,18 +3,16 @@
 @use "../colors" as *;
 @use "../animations";
 
-/* stylelint-disable selector-class-pattern */
-
 .editor-toolbar {
     position: relative;
     display: flex;
+    gap: 0 3rem;
     min-height: 2.625rem;
     padding: 0.125rem 0.25rem;
-    border: 1px solid var(--color-base-500);
     background-color: var(--color-base-800);
+    border: 1px solid var(--color-base-500);
     border-top-left-radius: var(--border-radius);
     border-top-right-radius: var(--border-radius);
-    gap: 0 3rem;
 
     .color-scheme-dark & {
         background-color: var(--color-base-700);
@@ -25,13 +23,13 @@
     width: 2rem;
     height: 2rem;
     padding: 0.375rem;
-    border: 1px solid transparent;
     margin: 0.125rem 0;
+    border: 1px solid transparent;
 
     &:hover,
     &:focus {
-        background-color: var(--color-base-600);
         color: var(--color-button-hover);
+        background-color: var(--color-base-600);
     }
 
     &:focus {
@@ -54,8 +52,8 @@
 }
 
 .toolbar-button.is-active {
-    background-color: var(--color-base-600);
     color: var(--color-button-hover);
+    background-color: var(--color-base-600);
 
     &:disabled {
         color: var(--color-base-500);
@@ -73,9 +71,9 @@
 .form-textarea.editor-textarea {
     padding: 3.625rem 1rem 1rem;
     margin-bottom: 0;
-    background-color: var(--color-base-800);
     color: transparent;
     pointer-events: none;
+    background-color: var(--color-base-800);
     @include user-select-none;
 
     &::placeholder {
@@ -91,10 +89,10 @@
 .cm-editor {
     min-height: 6rem;
     max-height: 48rem;
-    border: 1px solid var(--color-base-500);
-    border-radius: var(--border-radius);
     font-family: var(--font-family-sans);
     font-size: var(--font-size-md);
+    border: 1px solid var(--color-base-500);
+    border-radius: var(--border-radius);
 }
 
 .cm-content .cm-line {
@@ -103,20 +101,25 @@
 }
 
 .ProseMirror {
-    overflow: auto;
+    position: relative;
     padding: 1rem;
-    background-color: var(--color-base-900);
+    overflow: auto;
+    font-feature-settings: "liga" 0;
+    font-variant-ligatures: none;
     color: var(--color-base-100);
-    outline: none;
+    overflow-wrap: break-word;
+    white-space: break-spaces;
     resize: vertical;
+    outline: none;
+    background-color: var(--color-base-900);
 
     &:focus {
         outline: none;
     }
 
     & .pm-placeholder {
-        color: var(--color-base-300);
         font-size: var(--font-size-sm);
+        color: var(--color-base-300);
         pointer-events: none;
     }
 
@@ -127,24 +130,13 @@
 
 .editor-textarea:disabled {
     & + [contenteditable="false"] {
-        background-color: var(--color-base-700);
         color: var(--color-base-300);
+        background-color: var(--color-base-700);
 
         & > * {
             opacity: 0.6;
         }
     }
-}
-
-/* stylelint-disable */
-.ProseMirror {
-    position: relative;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    white-space: break-spaces;
-    -webkit-font-variant-ligatures: none;
-    font-variant-ligatures: none;
-    font-feature-settings: "liga" 0;
 }
 
 .ProseMirror pre {
@@ -156,9 +148,6 @@
 }
 
 .ProseMirror-hideselection *::selection {
-    background: transparent;
-}
-.ProseMirror-hideselection *::-moz-selection {
     background: transparent;
 }
 .ProseMirror-hideselection {
@@ -173,23 +162,22 @@ li.ProseMirror-selectednode {
     outline: none;
 }
 
-li.ProseMirror-selectednode:after {
-    content: "";
+li.ProseMirror-selectednode::after {
     position: absolute;
-    left: -32px;
-    right: -2px;
     top: -2px;
+    right: -2px;
     bottom: -2px;
-    border: 2px solid var(--color-focusring);
+    left: -32px;
     pointer-events: none;
+    content: "";
+    border: 2px solid var(--color-focusring);
 }
 
 img.ProseMirror-separator {
-    display: inline !important;
-    border: none !important;
-    margin: 0 !important;
+    display: inline;
+    margin: 0;
+    border: none;
 }
-/* stylelint-enable */
 
 .ProseMirror img {
     max-width: 100%;
@@ -236,8 +224,8 @@ img.ProseMirror-separator {
 }
 
 .editor-toolbar .separator {
-    height: 1.25rem;
     align-self: center;
+    height: 1.25rem;
     border-left: 1px solid var(--color-base-500);
 }
 
@@ -252,9 +240,9 @@ img.ProseMirror-separator {
 .editor-toolbar .dropdown-button {
     width: auto;
     min-width: 8rem;
-    border-color: var(--color-base-500);
-    background-color: var(--color-base-900);
     text-align: left;
+    background-color: var(--color-base-900);
+    border-color: var(--color-base-500);
 
     &:focus {
         border-color: var(--color-accent-500);
@@ -273,15 +261,15 @@ img.ProseMirror-separator {
     display: none;
 }
 
-.ProseMirror-selectednode {
-    outline: 2px solid var(--color-focusring) !important;
+.ProseMirror .ProseMirror-selectednode {
+    outline: 2px solid var(--color-focusring);
 }
 
 .editor-wrap {
     display: flex;
     flex-direction: column;
-    border-radius: var(--border-radius);
     margin-bottom: 0.75rem;
+    border-radius: var(--border-radius);
 }
 
 .editor-wrap:focus-within {

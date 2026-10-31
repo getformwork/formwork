@@ -4,15 +4,14 @@
 .form-input-tags-wrap {
     position: relative;
     display: block;
-    box-sizing: border-box;
     padding: 0.25rem 0.5rem * 0.5;
     padding-bottom: 0;
-    border: 1px solid var(--color-base-500);
-    border-radius: var(--border-radius);
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: var(--font-size-sm);
     line-height: var(--line-height-text);
+    border: 1px solid var(--color-base-500);
+    border-radius: var(--border-radius);
     @include user-select-none;
 }
 
@@ -42,15 +41,14 @@
     display: inline-block;
     width: auto;
     max-width: 100%;
-    box-sizing: border-box;
     padding: 0 0.5rem * 0.5;
-    border: 0;
-    border-radius: 0;
     margin-bottom: 0.25rem;
-    background-color: transparent;
     font-family: inherit;
     font-size: var(--font-size-sm);
     line-height: inherit;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
 
     &:focus {
         outline: none;
@@ -59,12 +57,11 @@
 
 .form-input-tags-wrap .tag {
     display: inline-block;
-    box-sizing: border-box;
     padding: 0 0.375rem;
-    border-radius: var(--border-radius-sm);
     margin-bottom: 0.25rem;
-    background-color: var(--color-base-700);
     font-size: var(--font-size-sm);
+    background-color: var(--color-base-700);
+    border-radius: var(--border-radius-sm);
     @include user-select-none;
 
     &.sortable-chosen:not(.sortable-drag) {
@@ -92,14 +89,14 @@
 .tag-remove {
     display: inline-block;
     padding: 0 0.125rem;
-    border: 0;
     margin-left: 0.25rem;
-    background: transparent;
-    color: var(--color-base-100);
-    cursor: pointer;
     font: inherit;
     font-style: normal;
     line-height: inherit;
+    color: var(--color-base-100);
+    cursor: pointer;
+    background: transparent;
+    border: 0;
     transition: color var(--transition-time-sm);
 
     &:hover {
@@ -108,11 +105,11 @@
 }
 
 .tag-remove::after {
-    content: "\00d7";
     font-weight: 600;
+    content: "\00d7";
 }
 
 .form-input-tags-wrap.is-dragging,
 .form-input-tags-wrap.is-dragging * {
-    cursor: grabbing !important;
+    cursor: grabbing;
 }

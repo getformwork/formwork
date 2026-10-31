@@ -8,11 +8,11 @@
 .form-upload-drop-target {
     display: block;
     padding: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    background-color: var(--color-base-800);
     border: 1px solid var(--color-base-800);
     border-radius: var(--border-radius);
-    margin-bottom: 1rem;
-    background-color: var(--color-base-800);
-    font-size: 0.875rem;
 
     .color-scheme-dark & {
         background-color: var(--color-base-700);
@@ -35,10 +35,10 @@
 .form-upload-drop-target > span {
     display: block;
     padding: 1.5rem 1rem;
-    border: 2px dashed var(--color-base-500);
-    border-radius: calc(var(--border-radius) * 0.5);
     color: var(--color-base-100);
     text-align: center;
+    border: 2px dashed var(--color-base-500);
+    border-radius: calc(var(--border-radius) * 0.5);
     transition: background-color var(--transition-time-md);
 
     &:hover {

@@ -38,7 +38,6 @@
     margin: 2rem auto;
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
 .error-debug-details .__formwork-code {
     margin-right: 0;
     margin-left: 0;
@@ -47,10 +46,10 @@
 .error-debug-details {
     max-width: 87.5rem;
     padding: 1.5rem 2rem;
-    border-radius: var(--border-radius);
     margin: 0 auto 2rem;
-    background-color: var(--color-base-900);
     text-align: left;
+    background-color: var(--color-base-900);
+    border-radius: var(--border-radius);
 
     .color-scheme-dark & {
         background-color: var(--color-base-800);
@@ -64,8 +63,8 @@
 .error-debug-editor-uri {
     color: inherit;
     text-decoration: underline;
-    text-decoration-color: var(--color-base-500);
     text-decoration-style: dashed;
+    text-decoration-color: var(--color-base-500);
 }
 
 .error-debug-filename,

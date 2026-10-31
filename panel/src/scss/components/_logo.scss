@@ -3,10 +3,10 @@
 
 .logo {
     margin-bottom: 2rem;
-    color: var(--color-base-100);
     font-size: var(--font-size-h5);
     font-weight: 600;
     line-height: 1.5rem;
+    color: var(--color-base-100);
     text-align: center;
     @media (min-width: map.get($breakpoints, "md")) {
         text-align: left;

@@ -21,18 +21,18 @@
 
 .dropdown-menu {
     position: absolute;
-    z-index: 8;
     top: 100%;
     left: 0;
+    z-index: 8;
     display: none;
     min-width: 8rem;
     padding: 0.25rem 0;
+    margin-top: 3px;
+    overflow-y: auto;
+    background-color: var(--color-base-900);
     border: 1px solid var(--color-base-500);
     border-radius: var(--border-radius);
-    margin-top: 3px;
-    background-color: var(--color-base-900);
     box-shadow: var(--box-shadow-md);
-    overflow-y: auto;
 
     .color-scheme-dark & {
         background-color: var(--color-base-800);
@@ -40,51 +40,49 @@
 }
 
 .dropdown-list {
-    /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */
-    @extend .dropdown-menu;
-
     width: 100%;
     max-height: calc(6.25 * (2 * 0.5rem * var(--line-height-text) + var(--font-size-sm)));
+    @extend .dropdown-menu;
 }
 
 .dropdown-item {
     display: block;
     width: 100%;
     padding: 0.5rem 1rem;
-    border: 0;
-    background-color: transparent;
-    color: var(--color-base-100);
-    cursor: pointer !important;
     font-family: inherit;
     font-size: var(--font-size-sm);
+    color: var(--color-base-100);
     text-align: inherit;
     white-space: nowrap;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
 
     &:hover {
-        background-color: var(--color-base-700);
         color: var(--color-base-100);
+        background-color: var(--color-base-700);
     }
 
     &:focus {
-        background-color: var(--color-base-700);
         color: var(--color-base-100);
+        background-color: var(--color-base-700);
         @include focusring;
     }
 
     &.disabled,
     &:disabled {
         color: var(--color-base-500);
-        cursor: default !important;
+        cursor: default;
 
         &:hover {
-            background-color: transparent;
             color: var(--color-base-500);
+            background-color: transparent;
         }
     }
 
     &.selected {
-        background-color: var(--color-accent-500);
         color: var(--color-white);
+        background-color: var(--color-accent-500);
 
         .color-scheme-dark & {
             background-color: var(--color-accent-300);
@@ -122,16 +120,16 @@
     display: block;
     width: 100%;
     padding: 0.5rem 1rem;
-    color: var(--color-base-300);
-    cursor: default !important;
     font-size: var(--font-size-sm);
+    color: var(--color-base-300);
     white-space: nowrap;
+    cursor: default;
 }
 
 .dropdown-separator {
     height: 0;
-    border-top: 1px solid var(--color-base-500);
     margin: 0.25rem 0;
+    border-top: 1px solid var(--color-base-500);
 
     &:first-child,
     &:last-child {
@@ -143,11 +141,11 @@
     display: inline-block;
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: var(--border-radius);
     margin: -0.75rem 0.5rem -0.5rem 0;
-    background-color: var(--color-base-700);
-    object-fit: contain;
     vertical-align: middle;
+    object-fit: contain;
+    background-color: var(--color-base-700);
+    border-radius: var(--border-radius);
 }
 
 .dropdown-list .dropdown-item > .icon {

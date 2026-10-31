@@ -7,8 +7,8 @@
 
 .sortable-chosen,
 .sortable-ghost {
-    background-color: var(--color-base-900);
     cursor: grabbing;
+    background-color: var(--color-base-900);
 }
 
 .sortable-chosen * {

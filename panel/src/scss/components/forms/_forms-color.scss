@@ -5,12 +5,11 @@
     width: 2rem;
     height: 2rem;
     padding: 0;
-    border: none;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
     border: 1px solid var(--color-base-500);
     border-radius: var(--border-radius);
-    appearance: none;
-    background-color: transparent;
-    cursor: pointer;
 
     &:focus {
         border-color: var(--color-accent-500);

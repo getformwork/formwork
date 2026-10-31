@@ -5,6 +5,7 @@
 @use "sass:map";
 
 @mixin make-pages-tree-levels($levels) {
+    // biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
     @for $i from 2 through $levels {
         $indent: 0.5rem;
 
@@ -75,8 +76,8 @@
 
     &::before {
         position: absolute;
-        z-index: 1;
         top: -2.125rem;
+        z-index: 1;
         width: 1.625rem;
         height: 3.625rem;
         border-bottom: 2px solid var(--color-base-600);
@@ -85,8 +86,8 @@
 
     &::after {
         position: absolute;
-        z-index: 1;
         top: -2.125rem;
+        z-index: 1;
         width: 1.625rem;
         height: 100%;
         border-left: 2px solid var(--color-base-600);
@@ -133,15 +134,13 @@
 
 .pages-tree-children-toggle .button {
     padding: 0;
-    border: 0;
     color: var(--color-base-300);
     cursor: pointer;
+    border: 0;
 
     & .icon {
         margin-right: 0;
-        transition:
-            transform var(--transition-time-sm),
-            color var(--transition-time-sm);
+        transition: transform var(--transition-time-sm), color var(--transition-time-sm);
     }
 }
 
@@ -175,16 +174,6 @@
     opacity: 0.5;
 }
 
-.pages-tree-item.sortable-chosen .pages-tree-children,
-.pages-tree-item.sortable-fallback .pages-tree-children {
-    display: none !important;
-}
-
-.pages-tree-item.sortable-chosen .pages-tree-children-toggle .icon,
-.pages-tree-item.sortable-fallback .pages-tree-children-toggle .icon {
-    transform: none !important;
-}
-
 .pages-tree-item.sortable-fallback .pages-tree-item-cell {
     opacity: 1;
 }
@@ -197,12 +186,23 @@
     transform: rotate(-180deg);
 }
 
-.pages-tree.is-dragging {
-    cursor: grabbing !important;
+.pages-tree-item.sortable-chosen > .pages-tree-children,
+.pages-tree-item.sortable-fallback > .pages-tree-children {
+    display: none;
+}
+
+.pages-tree-item.sortable-chosen > .pages-tree-row .pages-tree-children-toggle .icon,
+.pages-tree-item.sortable-fallback > .pages-tree-row .pages-tree-children-toggle .icon {
+    transform: none;
+}
+
+.pages-tree.is-dragging,
+.pages-tree.is-dragging * {
+    cursor: grabbing;
 }
 
 .pages-tree.is-dragging > .is-not-orderable * {
-    cursor: no-drop !important;
+    cursor: no-drop;
 }
 
 .pages-tree.is-dragging > .is-not-orderable .pages-tree-row:hover {

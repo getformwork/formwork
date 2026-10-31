@@ -3,27 +3,26 @@
 
 .image-picker-thumbnails {
     display: flex;
-    overflow: auto;
+    flex-wrap: wrap;
     height: 24rem;
     max-height: 50vh;
-    flex-wrap: wrap;
     padding: 0.5rem;
     margin-bottom: 1rem;
+    overflow: auto;
 }
 
 .image-picker-thumbnail {
     position: relative;
     width: 10em;
     height: 10rem;
-    box-sizing: border-box;
     padding: 0.25rem;
+    margin: 0.25rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-origin: content-box;
+    background-size: contain;
     border: 1px solid var(--color-base-500);
     border-radius: var(--border-radius);
-    margin: 0.25rem;
-    background-origin: content-box;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
 
     &:hover {
         background-color: var(--color-base-800);
@@ -41,11 +40,11 @@
     display: block;
     max-width: calc(100% - 1rem);
     padding: 0 0.25rem;
-    border-radius: var(--border-radius);
-    background-color: var(--color-tooltip);
-    content: attr(data-filename);
     font-size: var(--font-size-xs);
     text-align: center;
+    content: attr(data-filename);
+    background-color: var(--color-tooltip);
+    border-radius: var(--border-radius);
     transform: translateX(-50%);
     @include user-select-none;
     @include ellipsis;
@@ -62,6 +61,6 @@
 }
 
 .image-picker-empty-state-icon {
-    color: var(--color-base-400);
     font-size: 2rem;
+    color: var(--color-base-400);
 }

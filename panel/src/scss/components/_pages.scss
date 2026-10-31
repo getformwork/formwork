@@ -9,8 +9,8 @@
 }
 
 .page-route {
-    color: var(--color-base-300);
     font-size: var(--font-size-sm);
+    color: var(--color-base-300);
 }
 
 .button .page-language {
@@ -18,8 +18,8 @@
 }
 
 .page-date {
-    max-width: 20%;
     flex: 0 0 20%;
+    max-width: 20%;
     text-align: center;
 }
 
@@ -56,10 +56,10 @@
     z-index: 8;
     display: none;
     padding: 0.5rem;
-    border: 1px solid var(--color-base-500);
-    border-radius: var(--border-radius);
     margin: 0.25rem 0 1rem;
     background-color: var(--color-base-900);
+    border: 1px solid var(--color-base-500);
+    border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-md);
 
     .color-scheme-dark & {
@@ -82,8 +82,8 @@
 
 .page-info-row {
     padding: 0.5rem 0.25rem;
-    border-bottom: 1px solid var(--color-base-600);
     font-size: var(--font-size-sm);
+    border-bottom: 1px solid var(--color-base-600);
 }
 
 .page-info-badges {

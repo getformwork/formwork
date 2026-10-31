@@ -1,8 +1,7 @@
 {
     "biome.configurationPath": "./panel/biome.json",
-    "stylelint.configBasedir": "./panel",
     "intelephense.diagnostics.undefinedVariables": "local",
-    "[javascript][typescript]": {
+    "[javascript][typescript][scss]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports.biome": "explicit",
             "source.fixAll.biome": "explicit"

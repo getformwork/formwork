@@ -2,16 +2,16 @@
     display: inline-block;
     min-width: 1.375em;
     padding: 0.25rem 0.5rem;
-    border-radius: 2em;
-    background-color: var(--color-base-600);
-    color: var(--color-base-100);
     font-size: 0.75em;
-    font-variant-numeric: tabular-nums;
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
     line-height: 1.125;
-    text-align: center;
     vertical-align: 0.125em;
+    color: var(--color-base-100);
+    text-align: center;
     white-space: nowrap;
+    background-color: var(--color-base-600);
+    border-radius: 2em;
 
     .color-scheme-dark & {
         background-color: var(--color-base-500);
@@ -25,32 +25,32 @@
 
 .badge-blue,
 .color-scheme-dark .badge-blue {
-    background-color: var(--color-accent-800);
     color: var(--color-accent-300);
+    background-color: var(--color-accent-800);
 }
 
 .badge-green,
 .color-scheme-dark .badge-green {
-    background-color: var(--color-success-800);
     color: var(--color-success-300);
+    background-color: var(--color-success-800);
 }
 
 .badge-amber,
 .color-scheme-dark .badge-amber {
-    background-color: var(--color-warning-700);
     color: var(--color-warning-300);
+    background-color: var(--color-warning-700);
 }
 
 .badge-red,
 .color-scheme-dark .badge-red {
-    background-color: var(--color-danger-700);
     color: var(--color-danger-300);
+    background-color: var(--color-danger-700);
 }
 
 .badge-purple,
 .color-scheme-dark .badge-purple {
-    background-color: var(--color-purple-800);
     color: var(--color-purple-300);
+    background-color: var(--color-purple-800);
 }
 
 .button .badge {

@@ -12,10 +12,10 @@
 
 .file-preview-link {
     cursor: zoom-in;
-    line-height: 0;
 }
 
 .file-preview-image {
+    display: block;
     max-height: 42.5rem;
     object-fit: contain;
     @include checkered-background(1.5rem, 0.125);
