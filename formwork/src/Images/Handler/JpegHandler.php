@@ -2,6 +2,8 @@
 
 namespace Formwork\Images\Handler;
 
+use Formwork\Images\Binary\ByteReader;
+use Formwork\Images\Binary\Bytes;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Decoder\JpegDecoder;
@@ -17,6 +19,21 @@ final class JpegHandler extends AbstractHandler
      * Maximum number of bytes in a segment
      */
     private const int MAX_BYTES_IN_SEGMENT = 65533;
+
+    /**
+     * Minimum size of a start of frame segment
+     */
+    private const int SOF_SIZE = 6;
+
+    /**
+     * Maximum number of chunks of an ICC profile
+     */
+    private const int MAX_PROFILE_CHUNKS = 255;
+
+    /**
+     * JFIF header
+     */
+    private const string JFIF_HEADER = "JFIF\x00";
 
     /**
      * Image EXIF header
@@ -44,14 +61,14 @@ final class JpegHandler extends AbstractHandler
         ];
 
         foreach ($this->decoder->decode($this->data) as $segment) {
-            if (
-                $segment['type'] > 0xbf && $segment['type'] < 0xc3
-                || $segment['type'] > 0xc8 && $segment['type'] < 0xcc
-            ) {
-                $info['colorDepth'] = ord($segment['value'][0]);
-                $info['height'] = $this->unpack('n', $segment['value'], 1)[1];
-                $info['width'] = $this->unpack('n', $segment['value'], 3)[1];
-                $info['colorSpace'] = $this->getColorSpace(ord($segment['value'][5]));
+            if ($this->isStartOfFrame($segment['type'])) {
+                if ($segment['size'] - 2 < self::SOF_SIZE) {
+                    throw new UnexpectedValueException('Invalid start of frame segment');
+                }
+                $info['colorDepth'] = Bytes::unpack($segment['value'], 0, 1);
+                $info['height'] = Bytes::unpack($segment['value'], 1, 2);
+                $info['width'] = Bytes::unpack($segment['value'], 3, 2);
+                $info['colorSpace'] = $this->getColorSpace(Bytes::unpack($segment['value'], 5, 1));
                 break;
             }
         }
@@ -86,14 +103,15 @@ final class JpegHandler extends AbstractHandler
 
     public function getColorProfile(): ?ColorProfile
     {
-        $headerLength = strlen(self::ICC_PROFILE_HEADER);
         $profileChunks = [];
         $chunkCount = 0;
 
         foreach ($this->decoder->decode($this->data) as $segment) {
             if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
-                [$chunkNum, $chunkCount] = array_values($this->unpack('Cnum/Ccount', $segment['value'], $headerLength));
-                $profileChunks[$chunkNum] = substr($segment['value'], $headerLength + 2);
+                $reader = new ByteReader($segment['value'], strlen(self::ICC_PROFILE_HEADER));
+                $chunkNum = $reader->uint(1);
+                $chunkCount = $reader->uint(1);
+                $profileChunks[$chunkNum] = $reader->rest();
             }
         }
 
@@ -101,31 +119,23 @@ final class JpegHandler extends AbstractHandler
             return null;
         }
 
-        if (count($profileChunks) !== $chunkCount) {
+        ksort($profileChunks);
+
+        if (array_keys($profileChunks) !== range(1, $chunkCount)) {
             throw new UnexpectedValueException('Unexpected profile chunk count');
         }
 
-        ksort($profileChunks);
         return new ColorProfile(implode('', $profileChunks));
     }
 
     public function setColorProfile(ColorProfile $colorProfile): void
     {
-        foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xd8) {
-                $this->data = substr_replace($this->data, $this->encodeColorProfile($colorProfile->getData()), $segment['position'], 0);
-                break;
-            }
-        }
+        $this->replaceSegments(0xe2, self::ICC_PROFILE_HEADER, $this->encodeColorProfile($colorProfile->getData()));
     }
 
     public function removeColorProfile(): void
     {
-        foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe2 && str_starts_with($segment['value'], self::ICC_PROFILE_HEADER)) {
-                $this->data = substr_replace($this->data, '', $segment['offset'], $segment['position'] - $segment['offset']);
-            }
-        }
+        $this->replaceSegments(0xe2, self::ICC_PROFILE_HEADER);
     }
 
     public static function supportsExifData(): bool
@@ -163,21 +173,12 @@ final class JpegHandler extends AbstractHandler
 
     public function setExifData(ExifData $exifData): void
     {
-        foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xd8) {
-                $this->data = substr_replace($this->data, $this->encodeExifData($exifData->getData()), $segment['position'], 0);
-                break;
-            }
-        }
+        $this->replaceSegments(0xe1, self::EXIF_HEADER, $this->encodeExifData($exifData->getData()));
     }
 
     public function removeExifData(): void
     {
-        foreach ($this->decoder->decode($this->data) as $segment) {
-            if ($segment['type'] === 0xe1 && str_starts_with($segment['value'], self::EXIF_HEADER)) {
-                $this->data = substr_replace($this->data, '', $segment['offset'], $segment['position'] - $segment['offset']);
-            }
-        }
+        $this->replaceSegments(0xe1, self::EXIF_HEADER);
     }
 
     protected function getDecoder(): JpegDecoder
@@ -196,6 +197,51 @@ final class JpegHandler extends AbstractHandler
         }
 
         $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
+    }
+
+    /**
+     * Whether a marker is a start of frame (SOF) one
+     */
+    private function isStartOfFrame(int $type): bool
+    {
+        return $type >= 0xc0 && $type <= 0xcf && !in_array($type, [0xc4, 0xc8, 0xcc], true);
+    }
+
+    /**
+     * Replace all the segments of a given type and header with new ones
+     *
+     * New segments are placed right after the start of image marker, or after the JFIF
+     * segment if present, since it is required to immediately follow the former.
+     */
+    private function replaceSegments(int $type, string $header, ?string $replacement = null): void
+    {
+        $replacements = [];
+        $insertPosition = null;
+
+        foreach ($this->decoder->decode($this->data) as $segment) {
+            if ($segment['type'] === 0xd8) {
+                $insertPosition = $segment['position'];
+                continue;
+            }
+
+            if ($insertPosition === null) {
+                throw new UnexpectedValueException('Missing start of image marker');
+            }
+
+            if ($segment['type'] === 0xe0 && $segment['offset'] === $insertPosition && str_starts_with($segment['value'], self::JFIF_HEADER)) {
+                $insertPosition = $segment['position'];
+            }
+
+            if ($segment['type'] === $type && str_starts_with($segment['value'], $header)) {
+                $replacements[] = [$segment['offset'], $segment['position'] - $segment['offset'], ''];
+            }
+        }
+
+        if ($replacement !== null) {
+            $replacements[] = [$insertPosition ?? throw new UnexpectedValueException('Missing start of image marker'), 0, $replacement];
+        }
+
+        $this->data = Bytes::replace($this->data, $replacements);
     }
 
     /**
@@ -220,30 +266,34 @@ final class JpegHandler extends AbstractHandler
         $chunks = str_split($data, $maxChunkSize);
         $count = count($chunks);
 
+        if ($count > self::MAX_PROFILE_CHUNKS) {
+            throw new UnexpectedValueException('Color profile is too large to be embedded in a JPEG image');
+        }
+
         for ($i = 0; $i < $count; $i++) {
-            $value = self::ICC_PROFILE_HEADER . pack('CC', $i + 1, $count) . $chunks[$i];
-            $chunks[$i] = "\xff\xe2" . pack('n', strlen($value) + 2) . $value;
+            $chunks[$i] = $this->encodeSegment(0xe2, self::ICC_PROFILE_HEADER . Bytes::pack($i + 1, 1) . Bytes::pack($count, 1) . $chunks[$i]);
         }
 
         return implode('', $chunks);
     }
 
     /**
-     * Encode EXIF data into JPEG segments
+     * Encode EXIF data into a JPEG segment
      */
     private function encodeExifData(string $data): string
     {
-        $value = self::EXIF_HEADER . $data;
-        return "\xff\xe1" . pack('n', strlen($value) + 2) . $value;
+        return $this->encodeSegment(0xe1, self::EXIF_HEADER . $data);
     }
 
     /**
-     * Unpack data from binary string
-     *
-     * @return array<int|string, mixed>
+     * Encode a JPEG segment
      */
-    private function unpack(string $format, string $string, int $offset = 0): array
+    private function encodeSegment(int $type, string $value): string
     {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
+        if (strlen($value) > self::MAX_BYTES_IN_SEGMENT) {
+            throw new UnexpectedValueException('Data is too large to be embedded in a JPEG segment');
+        }
+
+        return "\xff" . chr($type) . Bytes::pack(strlen($value) + 2, 2) . $value;
     }
 }
