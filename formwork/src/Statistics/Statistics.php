@@ -22,6 +22,11 @@ final class Statistics
     private const string DATE_FORMAT = 'Ymd';
 
     /**
+     * Date label format for the statistics chart
+     */
+    private const string LABEL_DATE_FORMAT = "D\nj M";
+
+    /**
      * Number of days displayed in the statistics chart
      */
     private const int DEFAULT_CHART_LIMIT = 7;
@@ -128,15 +133,14 @@ final class Statistics
      *
      * @return array{labels: array<string>, series: list<list<int>>}
      */
-    public function getChartData(int $limit = self::DEFAULT_CHART_LIMIT): array
+    public function getChartData(int $limit = self::DEFAULT_CHART_LIMIT, string $labelFormat = self::LABEL_DATE_FORMAT): array
     {
-
         $visits = $this->getVisits($limit);
         $uniqueVisits = $this->getUniqueVisits($limit);
 
         $labels = Arr::map(
             iterator_to_array($this->generateDays($limit)),
-            fn(string $day): string => Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), "D\nj M", $this->translation)
+            fn(string $day): string => Date::formatTimestamp(Date::toTimestamp($day, self::DATE_FORMAT), $labelFormat, $this->translation)
         );
 
         return [
