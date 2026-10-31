@@ -1,16 +1,16 @@
 .modal-backdrop {
     position: fixed;
+    inset: 0;
     z-index: 16;
     background-color: var(--color-backdrop);
-    inset: 0;
 }
 
 .modal {
     position: fixed;
+    inset: 0;
     z-index: 20;
     display: none;
     align-items: center;
-    inset: 0;
     outline: 0;
 }
 
@@ -37,16 +37,24 @@ body:has(.modal.open) {
 }
 
 .modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
     border-top: 1px solid var(--color-base-600);
+}
+
+.modal-footer :not(.button-right) + .button-right {
+    margin-left: auto;
 }
 
 .modal-container {
     width: 26rem;
     max-width: 26rem;
-    border: 1px solid var(--color-base-500);
-    border-radius: var(--border-radius);
     margin: 3rem 0.5rem;
     background-color: var(--color-base-900);
+    border: 1px solid var(--color-base-500);
+    border-radius: var(--border-radius);
     box-shadow: var(--box-shadow-lg);
     @media (width >= 26rem) {
         margin: 3rem auto;

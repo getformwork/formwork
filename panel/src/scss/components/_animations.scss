@@ -1,7 +1,7 @@
 @keyframes fade-in-right {
     from {
         opacity: 0;
-        transform: translate3d(150%, 0, 0);
+        transform: translate(150%, 0);
     }
 
     to {
@@ -18,25 +18,25 @@
 
     to {
         opacity: 0;
-        transform: translate3d(150%, 0, 0);
+        transform: translate(150%, 0);
     }
 }
 
 @keyframes shake {
     0%,
     100% {
-        transform: translate3d(0, 0, 0);
+        transform: translate(0, 0);
     }
 
     10%,
     50%,
     90% {
-        transform: translate3d(-4px, 0, 0);
+        transform: translate(-4px, 0);
     }
 
     30%,
     70% {
-        transform: translate3d(16px, 0, 0);
+        transform: translate(16px, 0);
     }
 }
 
@@ -61,7 +61,7 @@
 }
 
 %animation-shimmer {
-    animation: shimmer 2s infinite linear;
     background: linear-gradient(90deg, var(--color-base-900) 30%, var(--color-base-700) 50%, var(--color-base-900) 70%);
     background-size: 400%;
+    animation: shimmer 2s infinite linear;
 }

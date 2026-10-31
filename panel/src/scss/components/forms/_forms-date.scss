@@ -7,17 +7,17 @@
 
 .calendar {
     position: absolute;
-    z-index: 8;
     top: 100%;
+    z-index: 8;
     display: none;
     width: 18rem;
     padding: 0.5rem;
+    margin: 3px 1rem 1rem;
+    color: var(--color-base-100);
+    background-color: var(--color-base-900);
     border: 1px solid var(--color-base-500);
     border-radius: var(--border-radius);
-    margin: 3px 1rem 1rem;
-    background-color: var(--color-base-900);
     box-shadow: var(--box-shadow-md);
-    color: var(--color-base-100);
 
     .color-scheme-dark & {
         background-color: var(--color-base-800);
@@ -26,8 +26,8 @@
 
 .calendar::after {
     position: absolute;
-    content: "";
     inset: 100% 0 -2.5rem;
+    content: "";
 }
 
 .calendar-header {
@@ -35,24 +35,24 @@
 }
 
 .calendar-buttons {
+    display: flex;
     margin: 0 (-0.5rem);
-    font-size: 0;
 }
 
 .calendar-buttons button {
-    width: 33.3%;
+    flex: 1;
 }
 
 .calendar button {
     padding: 0 0.5rem;
-    border: 0;
     margin: 0;
-    background-color: transparent;
-    box-shadow: none;
+    font-size: var(--font-size-sm);
     color: var(--color-base-100);
     cursor: pointer;
-    font-size: var(--font-size-sm);
     outline: none;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
 
     &:hover {
         color: var(--color-button-hover);
@@ -63,7 +63,6 @@
     }
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
 .calendar-buttons .currentMonth {
     font-weight: 600;
 }
@@ -74,8 +73,8 @@
 
 .calendar-table td {
     width: 14%;
-    cursor: default;
     text-align: center;
+    cursor: default;
     @include user-select-none;
 }
 
@@ -91,19 +90,17 @@
 
 .calendar-day {
     border-radius: var(--border-radius);
-    transition:
-        background-color var(--transition-time-sm),
-        color var(--transition-time-sm);
+    transition: background-color var(--transition-time-sm), color var(--transition-time-sm);
 
     &:hover {
-        background-color: var(--color-accent-400);
         color: var(--color-white);
+        background-color: var(--color-accent-400);
     }
 }
 
 .calendar-day.selected {
-    background-color: var(--color-accent-500);
     color: var(--color-white);
+    background-color: var(--color-accent-500);
 }
 
 .calendar-prev-month-day,
@@ -113,6 +110,6 @@
 
 .calendar-separator {
     height: 0;
-    border-top: 1px solid var(--color-base-500);
     margin: 0.5rem (-0.5rem);
+    border-top: 1px solid var(--color-base-500);
 }

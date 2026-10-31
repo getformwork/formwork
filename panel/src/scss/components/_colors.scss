@@ -79,7 +79,6 @@ $color-purple-700: tint($color-purple, 40%);
 $color-purple-800: tint($color-purple, 60%);
 $color-purple-900: tint($color-purple, 80%);
 
-/* stylelint-disable custom-property-empty-line-before */
 :root {
     --color-white: #{$color-white};
     --color-black: #{$color-black};
@@ -154,4 +153,3 @@ $color-purple-900: tint($color-purple, 80%);
     --color-purple-800: #{$color-purple-800};
     --color-purple-900: #{$color-purple-900};
 }
-/* stylelint-enable */

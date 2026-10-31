@@ -6,15 +6,15 @@
 .form-input {
     width: 100%;
     padding: 0.25rem 0.5rem;
-    border: 1px solid var(--color-base-500);
-    border-radius: var(--border-radius);
     margin: 0;
     margin-bottom: 0.75rem;
-    background-color: var(--color-base-900);
-    color: var(--color-base-100);
     font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
     line-height: var(--line-height-text);
+    color: var(--color-base-100);
+    background-color: var(--color-base-900);
+    border: 1px solid var(--color-base-500);
+    border-radius: var(--border-radius);
     @include appearance-none;
 
     &:focus {
@@ -23,8 +23,8 @@
     }
 
     &:disabled {
-        background-color: var(--color-base-700);
         color: var(--color-base-300);
+        background-color: var(--color-base-700);
     }
 
     .form-input-wrap > & {
@@ -54,9 +54,9 @@
     border: none;
     border-radius: 0;
 
-    &::-webkit-file-upload-button {
-        appearance: auto;
+    &::file-selector-button {
         font: inherit;
+        appearance: auto;
     }
 }
 
@@ -77,21 +77,14 @@
     padding: 0.25rem 1.5rem 0.25rem 0.5rem;
     background: var(--color-base-900) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 24'><path fill='#{urlencode-color($color-gray-300)}' d='M0 0h32L16 24z'/></svg>") no-repeat right 0.75rem center;
     background-size: 8px 6px;
-    /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */
     @extend .form-input;
-
-    &:-moz-focusring {
-        color: transparent;
-        text-shadow: 0 0 0 var(--color-base-100);
-    }
 }
 
 .form-textarea {
-    overflow: auto;
     min-height: calc(3 * var(--font-size-sm) * var(--line-height-text) + 0.25rem * 2);
     max-height: calc(30 * var(--font-size-sm) * var(--line-height-text) + 0.25rem * 2);
+    overflow: auto;
     resize: vertical;
-    /* stylelint-disable-next-line scss/at-extend-no-missing-placeholder */
     @extend .form-input;
 }
 
@@ -153,13 +146,13 @@
     top: 50%;
     right: 0.25rem;
     padding: 0 0.25rem;
-    border: 0;
-    border-radius: var(--border-radius);
-    background: none;
-    color: var(--color-base-100);
-    cursor: pointer;
     font: inherit;
     line-height: inherit;
+    color: var(--color-base-100);
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: var(--border-radius);
     transform: translateY(-50%);
     transition: color var(--transition-time-sm);
 
@@ -204,15 +197,15 @@
 .form-input-description {
     margin-top: -0.5rem;
     margin-bottom: 0.75rem;
-    color: var(--color-base-300);
     font-size: var(--font-size-sm);
+    color: var(--color-base-300);
 }
 
 .form-input-errors {
     margin-top: -0.5rem;
     margin-bottom: 0.75rem;
-    color: var(--color-danger-500);
     font-size: var(--font-size-sm);
+    color: var(--color-danger-500);
 }
 
 .form-label {
@@ -224,9 +217,9 @@
 }
 
 .form-label-suggestion {
-    color: var(--color-base-300);
     font-size: var(--font-size-xs);
     line-height: 1;
+    color: var(--color-base-300);
 }
 
 .form-label-required::after {

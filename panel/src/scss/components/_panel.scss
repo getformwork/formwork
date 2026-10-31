@@ -5,17 +5,17 @@
 
 .panel-header {
     position: fixed;
-    z-index: 10;
     top: 0;
     right: 0;
     left: 0;
+    z-index: 10;
     display: flex;
     align-items: center;
     padding: 0.75rem;
     padding-left: 3rem;
+    font-size: var(--font-size-sm);
     background-color: var(--color-base-700);
     box-shadow: inset 0 -1px 0 0 var(--color-base-600);
-    font-size: var(--font-size-sm);
     @include user-select-none;
 
     .color-scheme-dark & {
@@ -42,12 +42,12 @@
 }
 
 .panel-user-image {
-    overflow: hidden;
+    flex: 0 0 48px;
     width: 48px;
     height: 48px;
-    flex: 0 0 48px;
-    border-radius: 50%;
+    overflow: hidden;
     background-color: var(--color-base-400);
+    border-radius: 50%;
     box-shadow: var(--box-shadow-sm);
     transition: box-shadow var(--transition-time-md) ease-out;
 
@@ -66,13 +66,13 @@
 }
 
 .panel-user-fullname {
-    color: var(--color-base-100);
     font-weight: var(--font-weight-headings);
+    color: var(--color-base-100);
 }
 
 .panel-user-username {
-    color: var(--color-base-300);
     font-size: var(--font-size-sm);
+    color: var(--color-base-300);
 }
 
 .panel-main {

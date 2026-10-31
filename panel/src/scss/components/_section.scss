@@ -7,30 +7,20 @@
     padding: 1.5rem 1.25rem;
     margin-bottom: 1rem;
     background-color: var(--color-base-900);
-    box-shadow:
-        var(--box-shadow-sm),
-        inset 0 1px 0 0 var(--color-base-700),
-        inset 0 -1px 0 0 var(--color-base-700);
+    box-shadow: var(--box-shadow-sm), inset 0 1px 0 0 var(--color-base-700), inset 0 -1px 0 0 var(--color-base-700);
 
     .color-scheme-dark & {
         background-color: var(--color-base-800);
-        box-shadow:
-            var(--box-shadow-sm),
-            inset 0 1px 0 0 var(--color-base-600),
-            inset 0 -1px 0 0 var(--color-base-600);
+        box-shadow: var(--box-shadow-sm), inset 0 1px 0 0 var(--color-base-600), inset 0 -1px 0 0 var(--color-base-600);
     }
 
     @media (min-width: map.get($breakpoints, "sm")) {
         padding: 1.5rem 1.75rem;
         border-radius: var(--border-radius);
-        box-shadow:
-            var(--box-shadow-sm),
-            inset 0 0 0 1px var(--color-base-700);
+        box-shadow: var(--box-shadow-sm), inset 0 0 0 1px var(--color-base-700);
 
         .color-scheme-dark & {
-            box-shadow:
-                var(--box-shadow-sm),
-                inset 0 0 0 1px var(--color-base-600);
+            box-shadow: var(--box-shadow-sm), inset 0 0 0 1px var(--color-base-600);
         }
     }
 }
@@ -54,9 +44,7 @@
 
 .section-toggle .icon {
     margin-right: 0;
-    transition:
-        transform var(--transition-time-sm),
-        color var(--transition-time-sm);
+    transition: transform var(--transition-time-sm), color var(--transition-time-sm);
 }
 
 .section.collapsed .section-toggle .icon {

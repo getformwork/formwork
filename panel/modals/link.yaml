@@ -21,13 +21,6 @@ buttons:
         label: '{{panel.modal.action.cancel}}'
         variant: secondary
 
-    insert:
-        action: command
-        icon: check-circle
-        label: '{{panel.modal.action.continue}}'
-        align: right
-        command: insert-link
-
     remove:
         action: command
         icon: trash
@@ -35,3 +28,10 @@ buttons:
         align: right
         command: remove-link
         variant: link
+
+    insert:
+        action: command
+        icon: check-circle
+        label: '{{panel.modal.action.continue}}'
+        align: right
+        command: insert-link

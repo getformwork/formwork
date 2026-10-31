@@ -53,6 +53,7 @@
 .ct-label.ct-horizontal,
 .ct-label.ct-horizontal.ct-end {
     display: inline-block;
+    // biome-ignore lint/complexity/noImportantStyles: override the inline width Chartist sets on labels
     width: auto !important;
     min-width: 3rem;
     color: var(--color-base-100);

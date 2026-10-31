@@ -8,8 +8,8 @@
     bottom: -1px;
     left: 0;
     height: 0.125rem;
-    background-color: var(--color-base-500);
     content: " ";
+    background-color: var(--color-base-500);
 }
 
 .statistics-histogram-cell::after {
@@ -19,6 +19,6 @@
     left: 0;
     width: var(--percentage);
     height: 0.125rem;
-    background-color: var(--color-accent-600);
     content: " ";
+    background-color: var(--color-accent-600);
 }

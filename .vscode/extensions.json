@@ -2,7 +2,6 @@
     "recommendations": [
         "biomejs.biome",
         "bmewburn.vscode-intelephense-client",
-        "editorconfig.editorconfig",
-        "stylelint.vscode-stylelint"
+        "editorconfig.editorconfig"
     ]
 }
