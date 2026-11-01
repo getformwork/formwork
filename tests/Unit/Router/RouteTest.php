@@ -173,17 +173,15 @@ final class RouteTest extends TestCase
     }
 
     /**
-     * @return array<string, array{string, string, array<string, string>}>
+     * @return \Iterator<string, array{string, string, array<string, string>}>
      */
-    public static function matchingProvider(): array
+    public static function matchingProvider(): \Iterator
     {
-        return [
-            'static root'                     => ['/', '/', []],
-            'static path with trailing slash' => ['/docs/', '/docs/', []],
-            'dynamic digits parameter'        => ['/users/{id:digits}', '/users/42/', ['id' => '42']],
-            'optional parameter omitted'      => ['/archive/{year:digits}?', '/archive/', []],
-            'optional parameter present'      => ['/archive/{year:digits}?', '/archive/2025/', ['year' => '2025']],
-        ];
+        yield 'static root' => ['/', '/', []];
+        yield 'static path with trailing slash' => ['/docs/', '/docs/', []];
+        yield 'dynamic digits parameter' => ['/users/{id:digits}', '/users/42/', ['id' => '42']];
+        yield 'optional parameter omitted' => ['/archive/{year:digits}?', '/archive/', []];
+        yield 'optional parameter present' => ['/archive/{year:digits}?', '/archive/2025/', ['year' => '2025']];
     }
 
     /**
@@ -218,24 +216,22 @@ final class RouteTest extends TestCase
     }
 
     /**
-     * @return array<string, array{string, ?string, string, list<string>, list<string>, bool}>
+     * @return \Iterator<string, array{string, string|null, string, list<string>, list<string>, bool}>
      */
-    public static function requirementsProvider(): array
+    public static function requirementsProvider(): \Iterator
     {
-        return [
-            'matching method and prefix'       => ['GET', null, '/admin', ['GET'], ['HTTP'], true],
-            'HEAD is equivalent to GET'        => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true],
-            'method mismatch'                  => ['POST', null, '/admin', ['GET'], ['HTTP'], false],
-            'matching XHR type'                => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['XHR'], true],
-            'type mismatch'                    => ['GET', null, '/admin', ['GET'], ['XHR'], false],
-            'prefix mismatch'                  => ['GET', null, '/other', ['GET'], ['HTTP'], false],
-            'prefix sharing only a stem'       => ['GET', null, '/adm', ['GET'], ['HTTP'], false],
-            'one of several methods'           => ['PUT', null, '/admin', ['POST', 'PUT'], ['HTTP'], true],
-            'one of several types'             => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP', 'XHR'], true],
-            'no allowed methods'               => ['GET', null, '/admin', [], ['HTTP'], false],
-            'no allowed types'                 => ['GET', null, '/admin', ['GET'], [], false],
-            'route without the request prefix' => ['GET', null, '', ['GET'], ['HTTP'], false],
-        ];
+        yield 'matching method and prefix' => ['GET', null, '/admin', ['GET'], ['HTTP'], true];
+        yield 'HEAD is equivalent to GET' => ['HEAD', null, '/admin', ['GET'], ['HTTP'], true];
+        yield 'method mismatch' => ['POST', null, '/admin', ['GET'], ['HTTP'], false];
+        yield 'matching XHR type' => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['XHR'], true];
+        yield 'type mismatch' => ['GET', null, '/admin', ['GET'], ['XHR'], false];
+        yield 'prefix mismatch' => ['GET', null, '/other', ['GET'], ['HTTP'], false];
+        yield 'prefix sharing only a stem' => ['GET', null, '/adm', ['GET'], ['HTTP'], false];
+        yield 'one of several methods' => ['PUT', null, '/admin', ['POST', 'PUT'], ['HTTP'], true];
+        yield 'one of several types' => ['GET', 'XMLHttpRequest', '/admin', ['GET'], ['HTTP', 'XHR'], true];
+        yield 'no allowed methods' => ['GET', null, '/admin', [], ['HTTP'], false];
+        yield 'no allowed types' => ['GET', null, '/admin', ['GET'], [], false];
+        yield 'route without the request prefix' => ['GET', null, '', ['GET'], ['HTTP'], false];
     }
 
     #[DataProvider('arrayConstraintProvider')]

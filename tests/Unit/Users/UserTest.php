@@ -8,6 +8,7 @@ use Formwork\Cms\App;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\FileFactory;
+use Formwork\Images\Image;
 use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
@@ -531,7 +532,7 @@ final class UserTest extends TestCase
 
         $image = $this->makeUser(['username' => 'alice', 'image' => 'avatar.png'])->image();
 
-        $this->assertNotNull($image);
+        $this->assertInstanceOf(Image::class, $image);
         $this->assertSame($this->imagesPath . '/avatar.png', $image->path());
     }
 

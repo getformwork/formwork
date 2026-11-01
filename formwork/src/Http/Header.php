@@ -27,7 +27,7 @@ final class Header
             throw new RuntimeException(sprintf('Header splitting failed with error: %s', preg_last_error_msg()));
         }
 
-        return array_reduce($tokens, function ($result, $token) use ($separators) {
+        return array_reduce($tokens, function ($result, string $token) use ($separators) {
             $token = trim($token, ' "');
             $result[] = strlen($separators) === 1 ? $token : self::split($token, substr($separators, 1));
             return $result;
@@ -45,7 +45,7 @@ final class Header
      */
     public static function combine(array $tokens): array
     {
-        return array_reduce($tokens, function ($result, $token) {
+        return array_reduce($tokens, function (array $result, $token) {
             if (count($token) === 0) {
                 throw new UnexpectedValueException('Unexpected token format');
             }

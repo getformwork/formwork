@@ -17,7 +17,7 @@ final class PhpDomParserTest extends TestCase
     {
         $fragment = (new PhpDomParser())->parse('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0"/></svg>');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertInstanceOf(DOMElement::class, $fragment->firstChild);
         $this->assertSame('svg', $fragment->firstChild->nodeName);
     }
@@ -57,7 +57,7 @@ final class PhpDomParserTest extends TestCase
     {
         $fragment = (new PhpDomParser())->parse('just text');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertSame('just text', $fragment->textContent);
     }
 
@@ -93,6 +93,7 @@ final class PhpDomParserTest extends TestCase
     {
         $phpDomParser = new PhpDomParser();
         $fragment = $phpDomParser->parse('<p class="a">text</p><p>more</p>');
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
 
         $this->assertSame('<p class="a">text</p><p>more</p>', $phpDomParser->serialize($fragment));
     }
@@ -102,7 +103,7 @@ final class PhpDomParserTest extends TestCase
         $phpDomParser = new PhpDomParser();
         $fragment = $phpDomParser->parse('<p>one</p><p>two</p>');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertSame('<p>two</p>', $phpDomParser->serialize($fragment->lastChild));
     }
 
@@ -139,7 +140,7 @@ final class PhpDomParserTest extends TestCase
         $phpDomParser = new PhpDomParser();
         $fragment = $phpDomParser->parse($markup);
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertSame('<svg xmlns="http://www.w3.org/2000/svg"/>', $phpDomParser->serialize($fragment));
     }
 
@@ -152,6 +153,7 @@ final class PhpDomParserTest extends TestCase
     {
         $phpDomParser = new PhpDomParser();
         $fragment = $phpDomParser->parse('<p title="&quot;&lt;">&lt;&amp;&gt;</p>');
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
 
         $this->assertSame('<p title="&quot;&lt;">&lt;&amp;&gt;</p>', $phpDomParser->serialize($fragment));
     }

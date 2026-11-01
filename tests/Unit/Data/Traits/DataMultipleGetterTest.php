@@ -8,7 +8,7 @@ use Formwork\Tests\Unit\Data\Fixtures\DataMultipleGetterFixture;
 use PHPUnit\Framework\Attributes\CoversTrait;
 
 #[CoversTrait(DataMultipleGetter::class)]
-class DataMultipleGetterTest extends TestCase
+final class DataMultipleGetterTest extends TestCase
 {
     public function testGetMultipleReturnsCorrectValues(): void
     {

@@ -29,7 +29,7 @@ class Logger extends AbstractLogger implements LoggerInterface
     /**
      * @var array<HandlerInterface>
      */
-    private $handlers = [];
+    private array $handlers = [];
 
     /**
      * Add a log handler

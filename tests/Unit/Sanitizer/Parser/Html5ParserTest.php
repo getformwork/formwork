@@ -14,7 +14,7 @@ final class Html5ParserTest extends TestCase
     {
         $fragment = (new Html5Parser())->parse('<p>Hello <b>world</b></p>');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertInstanceOf(DOMElement::class, $fragment->firstChild);
         $this->assertSame('p', $fragment->firstChild->nodeName);
         $this->assertSame('Hello world', $fragment->textContent);
@@ -26,7 +26,7 @@ final class Html5ParserTest extends TestCase
 
         $fragment = $html5Parser->parse('<script>alert(1)');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertSame('script', $fragment->firstChild?->nodeName);
         $this->assertSame('alert(1)', $fragment->firstChild->textContent);
     }
@@ -35,7 +35,7 @@ final class Html5ParserTest extends TestCase
     {
         $fragment = (new Html5Parser())->parse('');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertFalse($fragment->hasChildNodes());
     }
 
@@ -51,6 +51,7 @@ final class Html5ParserTest extends TestCase
     {
         $html5Parser = new Html5Parser();
         $fragment = $html5Parser->parse('<a title="&quot;&lt;&amp;&gt;" href="/x?a=1&amp;b=2">link</a>');
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
 
         $serialized = $html5Parser->serialize($fragment);
 
@@ -63,7 +64,7 @@ final class Html5ParserTest extends TestCase
         $html5Parser = new Html5Parser();
         $fragment = $html5Parser->parse('<p>one</p><p>two</p>');
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertSame('<p>one</p>', $html5Parser->serialize($fragment->firstChild));
     }
 
@@ -73,7 +74,7 @@ final class Html5ParserTest extends TestCase
 
         $fragment = $html5Parser->parse(str_repeat('<div>', 2000) . 'deep' . str_repeat('</div>', 2000));
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
         $this->assertSame('deep', $fragment->textContent);
     }
 
@@ -81,6 +82,6 @@ final class Html5ParserTest extends TestCase
     {
         $fragment = (new Html5Parser())->parse("<p>caf\xE9</p>");
 
-        $this->assertNotNull($fragment);
+        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
     }
 }

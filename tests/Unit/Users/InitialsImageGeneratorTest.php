@@ -16,7 +16,7 @@ final class InitialsImageGeneratorTest extends TestCase
         $uri = InitialsImageGenerator::generate('Alice Smith');
 
         $this->assertStringStartsWith('data:image/svg+xml,', $uri);
-        $this->assertSame(1, preg_match('/^data:image\/svg\+xml,[A-Za-z0-9%._~-]+$/', $uri), 'The payload must be fully percent encoded');
+        $this->assertMatchesRegularExpression('/^data:image\/svg\+xml,[A-Za-z0-9%._~-]+$/', $uri, 'The payload must be fully percent encoded');
     }
 
     public function testImagesAreValidXml(): void

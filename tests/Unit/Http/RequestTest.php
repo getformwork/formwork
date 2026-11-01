@@ -26,27 +26,25 @@ final class RequestTest extends TestCase
     }
 
     /**
-     * @return array<string, array{scriptName: string, expectedRoot: string}>
+     * @return \Iterator<string, array{scriptName: string, expectedRoot: string}>
      */
-    public static function rootProvider(): array
+    public static function rootProvider(): \Iterator
     {
-        return [
-            'document root' => [
-                'scriptName'   => '/index.php',
-                'expectedRoot' => '/',
-            ],
-            'nested application' => [
-                'scriptName'   => '/formwork/index.php',
-                'expectedRoot' => '/formwork/',
-            ],
-            'absolute cli script path' => [
-                'scriptName'   => '/project/vendor/bin/phpunit',
-                'expectedRoot' => '/project/vendor/bin/',
-            ],
-            'missing script name' => [
-                'scriptName'   => '',
-                'expectedRoot' => '/',
-            ],
+        yield 'document root' => [
+            'scriptName'   => '/index.php',
+            'expectedRoot' => '/',
+        ];
+        yield 'nested application' => [
+            'scriptName'   => '/formwork/index.php',
+            'expectedRoot' => '/formwork/',
+        ];
+        yield 'absolute cli script path' => [
+            'scriptName'   => '/project/vendor/bin/phpunit',
+            'expectedRoot' => '/project/vendor/bin/',
+        ];
+        yield 'missing script name' => [
+            'scriptName'   => '',
+            'expectedRoot' => '/',
         ];
     }
 
@@ -139,7 +137,7 @@ final class RequestTest extends TestCase
         $this->assertSame('RequestTest/1.0', $request->userAgent());
         $this->assertSame('page=2', $request->content());
         $this->assertSame('text/html', array_key_first($request->mimeTypes()));
-        $this->assertSame(0.8, $request->mimeTypes()['application/json']);
+        $this->assertEqualsWithDelta(0.8, $request->mimeTypes()['application/json'], PHP_FLOAT_EPSILON);
         $this->assertSame(['gzip' => 1.0, 'br' => 0.5], $request->encodings());
         $this->assertSame(['it-IT' => 1.0, 'en' => 0.7], $request->languages());
         $this->assertSame('GET', $request->server()->get('REQUEST_METHOD'));

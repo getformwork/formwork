@@ -55,7 +55,7 @@ final class FileCollectionTest extends TestCase
         $fileCollection = new FileCollection();
 
         $this->assertTrue($fileCollection->isEmpty());
-        $this->assertSame(0, $fileCollection->count());
+        $this->assertCount(0, $fileCollection);
         $this->assertNull($fileCollection->first());
         $this->assertSame([], $fileCollection->toArray());
     }

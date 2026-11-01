@@ -8,7 +8,7 @@ use Formwork\Tests\Unit\Data\Fixtures\DataMultipleSetterFixture;
 use PHPUnit\Framework\Attributes\CoversTrait;
 
 #[CoversTrait(DataMultipleSetter::class)]
-class DataMultipleSetterTest extends TestCase
+final class DataMultipleSetterTest extends TestCase
 {
     public function testSetMultiple(): void
     {

@@ -22,21 +22,19 @@ use UnexpectedValueException;
 #[UsesTempDirectory]
 final class PaginationTest extends TestCase
 {
-    private App $app;
-
     private Site $fixtureSite;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->app = App::instance();
+        $app = App::instance();
         $path = FileSystem::joinPaths(TESTS_TMP_PATH, 'pagination-site');
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/site', $path);
         $this->fixtureSite = new Site(
             ['path' => TESTS_TMP_PATH, 'contentPath' => $path, 'metadata' => []],
-            $this->app->config(),
-            $this->app->getService(PageFactory::class),
-            $this->app->getService(PageCollectionFactory::class),
+            $app->config(),
+            $app->getService(PageFactory::class),
+            $app->getService(PageCollectionFactory::class),
         );
     }
 

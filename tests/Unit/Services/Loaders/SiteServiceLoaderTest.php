@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Services\Loaders;
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Config\Config;
+use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Services\Container;
@@ -47,7 +48,7 @@ final class SiteServiceLoaderTest extends TestCase
     {
         $site = $this->container(['title' => 'My site'])->get(Site::class);
 
-        $this->assertNotNull($site->findPage('/about'));
+        $this->assertInstanceOf(Page::class, $site->findPage('/about'));
     }
 
     public function testSiteIsResolvedOnlyOnce(): void

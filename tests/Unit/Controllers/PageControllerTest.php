@@ -259,7 +259,7 @@ final class PageControllerTest extends TestCase
         $this->load('/about/', system: ['cache' => ['enabled' => false]]);
 
         $this->assertSame(2, $this->renderedPages);
-        $this->assertSame(0, $this->cache->count());
+        $this->assertCount(0, $this->cache);
     }
 
     public function testCachedPagesCarryValidators(): void
@@ -291,7 +291,7 @@ final class PageControllerTest extends TestCase
         $this->load('/does-not-exist/', system: ['cache' => ['enabled' => true]]);
         $this->load('/does-not-exist/', system: ['cache' => ['enabled' => true]]);
 
-        $this->assertSame(0, $this->cache->count());
+        $this->assertCount(0, $this->cache);
     }
 
     public function testDifferentRoutesUseDifferentCacheEntries(): void
@@ -300,7 +300,7 @@ final class PageControllerTest extends TestCase
         $home = $this->load('/', system: ['cache' => ['enabled' => true]]);
 
         $this->assertNotSame($response->content(), $home->content());
-        $this->assertSame(2, $this->cache->count());
+        $this->assertCount(2, $this->cache);
     }
 
     public function testCachedPagesAreInvalidatedWhenTheContentChanges(): void

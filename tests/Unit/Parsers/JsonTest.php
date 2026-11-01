@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Json::class)]
 #[UsesTempDirectory]
-class JsonTest extends TestCase
+final class JsonTest extends TestCase
 {
     protected function setUp(): void
     {

@@ -71,7 +71,7 @@ final class ImageRendererTest extends TestCase
 
         $this->assertSame(0, $domDocument->getElementsByTagName('script')->length);
         $image = $domDocument->getElementsByTagName('img')->item(0);
-        $this->assertNotNull($image);
+        $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertFalse($image->hasAttribute('onerror'));
     }
 

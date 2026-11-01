@@ -112,7 +112,7 @@ final class ConfigTest extends TestCase
         $this->assertSame('default', $config->getString('name', 'default'));
         $this->assertFalse($config->getBool('enabled', false));
         $this->assertSame(7, $config->getInt('attempts', 7));
-        $this->assertSame(0.25, $config->getFloat('ratio', 0.25));
+        $this->assertEqualsWithDelta(0.25, $config->getFloat('ratio', 0.25), PHP_FLOAT_EPSILON);
         $this->assertSame(['site'], $config->getArray('paths', ['site']));
     }
 

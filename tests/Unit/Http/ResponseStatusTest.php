@@ -21,15 +21,13 @@ final class ResponseStatusTest extends TestCase
         $this->assertSame($responseStatus, ResponseStatus::fromCode($code));
     }
 
-    public static function statusProvider(): array
+    public static function statusProvider(): \Iterator
     {
-        return [
-            'informational' => [ResponseStatus::Continue, 100, ResponseStatusType::Informational],
-            'successful'    => [ResponseStatus::OK, 200, ResponseStatusType::Successful],
-            'redirect'      => [ResponseStatus::Found, 302, ResponseStatusType::Redirection],
-            'client error'  => [ResponseStatus::NotFound, 404, ResponseStatusType::ClientError],
-            'server error'  => [ResponseStatus::InternalServerError, 500, ResponseStatusType::ServerError],
-        ];
+        yield 'informational' => [ResponseStatus::Continue, 100, ResponseStatusType::Informational];
+        yield 'successful' => [ResponseStatus::OK, 200, ResponseStatusType::Successful];
+        yield 'redirect' => [ResponseStatus::Found, 302, ResponseStatusType::Redirection];
+        yield 'client error' => [ResponseStatus::NotFound, 404, ResponseStatusType::ClientError];
+        yield 'server error' => [ResponseStatus::InternalServerError, 500, ResponseStatusType::ServerError];
     }
 
     public function testStatusCodesAreUnique(): void

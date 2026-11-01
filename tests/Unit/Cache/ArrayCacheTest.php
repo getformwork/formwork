@@ -37,7 +37,7 @@ final class ArrayCacheTest extends CacheTestCase
     /**
      * @param non-empty-string $namespace
      */
-    protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): AbstractCache
+    protected function createCache(string $namespace = 'test', int|DateInterval|null $defaultTtl = null): ArrayCache
     {
         return new ArrayCache($namespace, $defaultTtl);
     }

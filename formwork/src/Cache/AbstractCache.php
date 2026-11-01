@@ -226,7 +226,7 @@ abstract class AbstractCache implements NamespacedCacheInterface
     protected function parseTtl(int|DateInterval|null $ttl): ?int
     {
         return $ttl instanceof DateInterval
-            ? (int) (($now = new DateTimeImmutable())->add($ttl)->getTimestamp() - $now->getTimestamp())
+            ? ($now = new DateTimeImmutable())->add($ttl)->getTimestamp() - $now->getTimestamp()
             : $ttl;
     }
 }

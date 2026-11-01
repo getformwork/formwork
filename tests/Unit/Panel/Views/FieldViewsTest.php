@@ -51,9 +51,9 @@ final class FieldViewsTest extends TestCase
 
         $domxPath = new DOMXPath($document);
 
-        $this->assertSame(0.0, $domxPath->evaluate('count(//script[normalize-space() != ""])'), 'Inline script injected');
-        $this->assertSame(0.0, $domxPath->evaluate('count(//img)'), 'Image injected');
-        $this->assertSame(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), 'Event handler injected');
+        $this->assertEqualsWithDelta(0.0, $domxPath->evaluate('count(//script[normalize-space() != ""])'), PHP_FLOAT_EPSILON, 'Inline script injected');
+        $this->assertEqualsWithDelta(0.0, $domxPath->evaluate('count(//img)'), PHP_FLOAT_EPSILON, 'Image injected');
+        $this->assertEqualsWithDelta(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), PHP_FLOAT_EPSILON, 'Event handler injected');
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Cms;
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Languages\Languages;
+use Formwork\Metadata\Metadata;
 use Formwork\Pages\Exceptions\PageNotFoundException;
 use Formwork\Pages\Page;
 use Formwork\Tests\TestCase;
@@ -80,7 +81,7 @@ final class SiteTest extends TestCase
 
     public function testNumberPrefixesAreNotPartOfTheRoute(): void
     {
-        $this->assertNotNull($this->site->findPage('/second'));
+        $this->assertInstanceOf(Page::class, $this->site->findPage('/second'));
         $this->assertNull($this->site->findPage('/2-second')?->route());
         $this->assertNull($this->site->findPage('/1-first')?->route());
     }
@@ -253,7 +254,7 @@ final class SiteTest extends TestCase
 
         $this->assertSame('A site', $metadata->get('description')?->content());
         $this->assertSame('noindex', $metadata->get('robots')?->content());
-        $this->assertNotNull($metadata->get('charset'));
+        $this->assertInstanceOf(Metadata::class, $metadata->get('charset'));
     }
 
     public function testMetadataIsBuiltOnce(): void

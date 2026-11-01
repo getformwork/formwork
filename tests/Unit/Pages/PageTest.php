@@ -15,6 +15,7 @@ use Formwork\Pages\Events\PageBeforeSaveEvent;
 use Formwork\Pages\Events\PageLoadedEvent;
 use Formwork\Pages\Events\PageRenderEvent;
 use Formwork\Pages\Page;
+use Formwork\Templates\Template;
 use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
@@ -169,7 +170,7 @@ final class PageTest extends TestCase
         FileSystem::write($path . 'blog-post.en.md', "---\ntitle: Dashed\n---\n");
 
         $pageTemplate = $site->templates()->get('page');
-        $this->assertNotNull($pageTemplate);
+        $this->assertInstanceOf(Template::class, $pageTemplate);
         $template = clone $pageTemplate;
         $templates = new Templates([...$site->templates()->toArray(), 'blog-post' => $template]);
         (new ReflectionProperty(Site::class, 'templates'))->setValue($site, $templates);

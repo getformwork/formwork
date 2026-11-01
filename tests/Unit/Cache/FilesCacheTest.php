@@ -43,7 +43,7 @@ final class FilesCacheTest extends CacheTestCase
         $filesCache->clear();
 
         $this->assertDirectoryDoesNotExist($filesCache->path());
-        $this->assertSame(0, $filesCache->count());
+        $this->assertCount(0, $filesCache);
     }
 
     public function testDirectoryIsCreatedRecursivelyOnTheFirstSet(): void
@@ -60,7 +60,7 @@ final class FilesCacheTest extends CacheTestCase
         $this->createCache()->set('key', ['persisted' => true]);
 
         $this->assertSame(['persisted' => true], $this->createCache()->get('key'));
-        $this->assertSame(1, $this->createCache()->count());
+        $this->assertCount(1, $this->createCache());
     }
 
     public function testNamespacesAreStoredInSeparateDirectories(): void
@@ -145,7 +145,7 @@ final class FilesCacheTest extends CacheTestCase
         $this->captureException(UnexpectedValueException::class, static fn() => $filesCache->set('closure', static fn() => null));
 
         $this->assertFalse($filesCache->has('closure'));
-        $this->assertSame(0, $filesCache->count());
+        $this->assertCount(0, $filesCache);
     }
 
     public function testFailedSetKeepsThePreviousValue(): void
@@ -233,11 +233,11 @@ final class FilesCacheTest extends CacheTestCase
         $filesCache = $this->createCache();
         $filesCache->setMultiple(['a' => 1, 'b' => 2]);
 
-        $this->assertSame(2, $filesCache->count());
+        $this->assertCount(2, $filesCache);
 
         $filesCache->delete('a');
 
-        $this->assertSame(1, $filesCache->count());
+        $this->assertCount(1, $filesCache);
     }
 
     public function testStdClassValuesRoundTrip(): void

@@ -285,7 +285,7 @@ final class ClientTest extends TestCase
         $options = $context;
 
         $this->assertSame('POST', $options['http']['method']);
-        $this->assertSame(1.0, $options['http']['protocol_version']);
+        $this->assertEqualsWithDelta(1.0, $options['http']['protocol_version'], PHP_FLOAT_EPSILON);
         $this->assertSame(['X-Test: value'], $options['http']['header']);
         $this->assertSame('body', $options['http']['content']);
         $this->assertSame(0, $options['http']['follow_location']);

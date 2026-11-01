@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 
 #[CoversClass(FieldCollection::class)]
-class FieldCollectionTest extends TestCase
+final class FieldCollectionTest extends TestCase
 {
     public function testSetLayoutAndGetLayout(): void
     {

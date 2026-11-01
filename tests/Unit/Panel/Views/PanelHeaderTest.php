@@ -29,9 +29,9 @@ final class PanelHeaderTest extends TestCase
         $document = $this->document($this->renderHeader($title, $canEditSite));
         $domxPath = new DOMXPath($document);
 
-        $this->assertSame(0.0, $domxPath->evaluate('count(//script)'), 'Script injected');
-        $this->assertSame(0.0, $domxPath->evaluate('count(//img)'), 'Image injected');
-        $this->assertSame(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), 'Event handler injected');
+        $this->assertEqualsWithDelta(0.0, $domxPath->evaluate('count(//script)'), PHP_FLOAT_EPSILON, 'Script injected');
+        $this->assertEqualsWithDelta(0.0, $domxPath->evaluate('count(//img)'), PHP_FLOAT_EPSILON, 'Image injected');
+        $this->assertEqualsWithDelta(0.0, $domxPath->evaluate('count(//@*[starts-with(name(), "on")])'), PHP_FLOAT_EPSILON, 'Event handler injected');
         $this->assertStringContainsString($title, $document->textContent);
     }
 
@@ -56,8 +56,8 @@ final class PanelHeaderTest extends TestCase
         $domDocument = $this->document($this->renderHeader('Site', true));
         $without = $this->document($this->renderHeader('Site', false));
 
-        $this->assertSame(1.0, (new DOMXPath($domDocument))->evaluate('count(//a[@href="/panel/options/site/"])'));
-        $this->assertSame(0.0, (new DOMXPath($without))->evaluate('count(//a[@href="/panel/options/site/"])'));
+        $this->assertEqualsWithDelta(1.0, (new DOMXPath($domDocument))->evaluate('count(//a[@href="/panel/options/site/"])'), PHP_FLOAT_EPSILON);
+        $this->assertEqualsWithDelta(0.0, (new DOMXPath($without))->evaluate('count(//a[@href="/panel/options/site/"])'), PHP_FLOAT_EPSILON);
     }
 
     private function renderHeader(string $siteTitle, bool $canEditSite): string

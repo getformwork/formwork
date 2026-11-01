@@ -188,26 +188,24 @@ final class RouterTest extends TestCase
     }
 
     /**
-     * @return array<string, array{string, array<string, string>, string}>
+     * @return \Iterator<string, array{string, array<string, string>, string}>
      */
-    public static function generateProvider(): array
+    public static function generateProvider(): \Iterator
     {
-        return [
-            'static path'         => ['/docs/', [], '/docs/'],
-            'default any pattern' => ['/users/{id}', ['id' => 'abc-123'], '/users/abc-123/'],
-            'all pattern'         => ['/files/{path:all}', ['path' => 'a/b.txt'], '/files/a/b.txt/'],
-            'slug shortcut'       => ['/posts/{slug:slug}', ['slug' => 'hello-world'], '/posts/hello-world/'],
-            'alnum shortcut'      => ['/items/{code:alnum}', ['code' => 'A123'], '/items/A123/'],
-            'alpha shortcut'      => ['/letters/{value:alpha}', ['value' => 'abc'], '/letters/abc/'],
-            'digits shortcut'     => ['/page/{number:digits}', ['number' => '12'], '/page/12/'],
-            'hex shortcut'        => ['/hash/{value:xdigits}', ['value' => 'deadbeef'], '/hash/deadbeef/'],
-            'number shortcut'     => ['/id/{number:number}', ['number' => '12'], '/id/12/'],
-            'base64 shortcut'     => ['/token/{value:base64}', ['value' => 'YWJj'], '/token/YWJj/'],
-            'encoded base64'      => ['/token/{value:base64}', ['value' => 'YWJjZA%3D%3D'], '/token/YWJjZA%3D%3D/'],
-            'optional parameter'  => ['/archive/{year:digits}?', [], '/archive/'],
-            'comma separator'     => ['/search,{term}', ['term' => 'php'], '/search,php/'],
-            'colon separator'     => ['/version:{version}', ['version' => 'v2'], '/version:v2/'],
-        ];
+        yield 'static path' => ['/docs/', [], '/docs/'];
+        yield 'default any pattern' => ['/users/{id}', ['id' => 'abc-123'], '/users/abc-123/'];
+        yield 'all pattern' => ['/files/{path:all}', ['path' => 'a/b.txt'], '/files/a/b.txt/'];
+        yield 'slug shortcut' => ['/posts/{slug:slug}', ['slug' => 'hello-world'], '/posts/hello-world/'];
+        yield 'alnum shortcut' => ['/items/{code:alnum}', ['code' => 'A123'], '/items/A123/'];
+        yield 'alpha shortcut' => ['/letters/{value:alpha}', ['value' => 'abc'], '/letters/abc/'];
+        yield 'digits shortcut' => ['/page/{number:digits}', ['number' => '12'], '/page/12/'];
+        yield 'hex shortcut' => ['/hash/{value:xdigits}', ['value' => 'deadbeef'], '/hash/deadbeef/'];
+        yield 'number shortcut' => ['/id/{number:number}', ['number' => '12'], '/id/12/'];
+        yield 'base64 shortcut' => ['/token/{value:base64}', ['value' => 'YWJj'], '/token/YWJj/'];
+        yield 'encoded base64' => ['/token/{value:base64}', ['value' => 'YWJjZA%3D%3D'], '/token/YWJjZA%3D%3D/'];
+        yield 'optional parameter' => ['/archive/{year:digits}?', [], '/archive/'];
+        yield 'comma separator' => ['/search,{term}', ['term' => 'php'], '/search,php/'];
+        yield 'colon separator' => ['/version:{version}', ['version' => 'v2'], '/version:v2/'];
     }
 
     public function testGenerateUsesPrefixAndRejectsUnknownRoutes(): void

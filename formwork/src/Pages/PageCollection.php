@@ -176,7 +176,7 @@ class PageCollection extends AbstractCollection implements Paginable
         $keywordsLower = array_map(mb_strtolower(...), $keywords);
 
         $queryRegex = '/\b' . preg_quote($queryLower, '/') . '\b/u';
-        $escapedKeywords = array_map(fn($keyword) => preg_quote($keyword, '/'), $keywordsLower);
+        $escapedKeywords = array_map(fn(string $keyword) => preg_quote($keyword, '/'), $keywordsLower);
         $keywordsRegex = '/(?:\b' . implode('\b|\b', $escapedKeywords) . '\b)/u';
 
         $weights += [

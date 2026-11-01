@@ -6,6 +6,7 @@ use ArrayObject;
 use DateInterval;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\CacheItem;
+use Formwork\Cache\CacheItemInterface;
 use Formwork\Cache\CountableCache;
 use Formwork\Cache\Exceptions\InvalidKeyException;
 use Formwork\Cache\Exceptions\InvalidNamespaceException;
@@ -161,7 +162,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'new');
 
         $this->assertSame('new', $cache->get('key'));
-        $this->assertSame(1, $cache->count());
+        $this->assertCount(1, $cache);
     }
 
     public function testKeysAreCaseSensitiveAndExact(): void
@@ -174,7 +175,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertSame('lower', $cache->get('key'));
         $this->assertSame('upper', $cache->get('Key'));
         $this->assertSame('trailing space', $cache->get('key '));
-        $this->assertSame(3, $cache->count());
+        $this->assertCount(3, $cache);
     }
 
     /**
@@ -233,7 +234,7 @@ abstract class CacheTestCase extends TestCase
             }
         }
 
-        $this->assertSame(0, $cache->count());
+        $this->assertCount(0, $cache);
     }
 
     /**
@@ -264,7 +265,7 @@ abstract class CacheTestCase extends TestCase
         $this->captureException(InvalidKeyException::class, static fn() => $cache->set('in/valid', 'other'));
 
         $this->assertSame(['valid' => 'value'], $cache->getMultiple(['valid']));
-        $this->assertSame(1, $cache->count());
+        $this->assertCount(1, $cache);
     }
 
     public function testDeleteRemovesOnlyTheGivenItem(): void
@@ -277,7 +278,7 @@ abstract class CacheTestCase extends TestCase
 
         $this->assertFalse($cache->has('a'));
         $this->assertSame(2, $cache->get('b'));
-        $this->assertSame(1, $cache->count());
+        $this->assertCount(1, $cache);
     }
 
     public function testDeletingAMissingItemSucceeds(): void
@@ -293,7 +294,7 @@ abstract class CacheTestCase extends TestCase
 
         $this->assertTrue($cache->clear());
 
-        $this->assertSame(0, $cache->count());
+        $this->assertCount(0, $cache);
         $this->assertFalse($cache->has('a'));
         $this->assertNull($cache->get('b'));
     }
@@ -303,7 +304,7 @@ abstract class CacheTestCase extends TestCase
         $cache = $this->createCache();
 
         $this->assertTrue($cache->clear());
-        $this->assertSame(0, $cache->count());
+        $this->assertCount(0, $cache);
     }
 
     public function testCacheCanBeUsedAfterBeingCleared(): void
@@ -315,21 +316,21 @@ abstract class CacheTestCase extends TestCase
         $cache->set('a', 2);
 
         $this->assertSame(2, $cache->get('a'));
-        $this->assertSame(1, $cache->count());
+        $this->assertCount(1, $cache);
     }
 
     public function testCountReflectsTheStoredItems(): void
     {
         $cache = $this->createCache();
 
-        $this->assertSame(0, $cache->count());
+        $this->assertCount(0, $cache);
         $this->assertCount(0, $cache);
 
         $cache->set('a', 1);
         $cache->set('b', 2);
         $cache->set('c', null);
 
-        $this->assertSame(3, $cache->count());
+        $this->assertCount(3, $cache);
         $this->assertCount(3, $cache);
     }
 
@@ -350,7 +351,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'value', 100);
 
         $item = $cache->getItem('key');
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItemInterface::class, $item);
         $this->assertSame($item->cachedTime() + 100, $item->expirationTime());
         $this->assertSame('value', $cache->get('key'));
     }
@@ -362,7 +363,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'value', new DateInterval('PT2H'));
 
         $item = $cache->getItem('key');
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItemInterface::class, $item);
         $this->assertSame($item->cachedTime() + 7200, $item->expirationTime());
     }
 
@@ -373,7 +374,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'value');
 
         $item = $cache->getItem('key');
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItemInterface::class, $item);
         $this->assertSame($item->cachedTime() + 300, $item->expirationTime());
     }
 
@@ -384,7 +385,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'value');
 
         $item = $cache->getItem('key');
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItemInterface::class, $item);
         $this->assertSame($item->cachedTime() + 600, $item->expirationTime());
     }
 
@@ -395,7 +396,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'value', 50);
 
         $item = $cache->getItem('key');
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItemInterface::class, $item);
         $this->assertSame($item->cachedTime() + 50, $item->expirationTime());
     }
 
@@ -423,7 +424,7 @@ abstract class CacheTestCase extends TestCase
 
         $cache->has('key');
 
-        $this->assertSame(0, $cache->count());
+        $this->assertCount(0, $cache);
     }
 
     public function testExpiredItemsCanBeSetAgain(): void
@@ -465,7 +466,7 @@ abstract class CacheTestCase extends TestCase
         $cache->set('key', 'old', -86400);
         $cache->set('key', 'new', 0);
 
-        $this->assertSame(0, $cache->count(), 'A zero time-to-live must delete the item');
+        $this->assertCount(0, $cache, 'A zero time-to-live must delete the item');
     }
 
     public function testCachedTimeIsTheTimeOfTheLastSet(): void
@@ -532,7 +533,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->setMultiple(['a' => 1, 'b' => 2, 'c' => 3]));
 
         $this->assertSame(['a' => 1, 'b' => 2, 'c' => 3], $cache->getMultiple(['a', 'b', 'c']));
-        $this->assertSame(3, $cache->count());
+        $this->assertCount(3, $cache);
     }
 
     public function testSetMultipleAppliesTheTtlToEveryValue(): void
@@ -543,7 +544,7 @@ abstract class CacheTestCase extends TestCase
 
         foreach (['a', 'b'] as $key) {
             $item = $cache->getItem($key);
-            $this->assertNotNull($item);
+            $this->assertInstanceOf(CacheItemInterface::class, $item);
             $this->assertSame($item->cachedTime() + 120, $item->expirationTime(), $key);
         }
     }
@@ -557,7 +558,7 @@ abstract class CacheTestCase extends TestCase
             yield 'b' => 2;
         })());
 
-        $this->assertSame(2, $cache->count());
+        $this->assertCount(2, $cache);
     }
 
     public function testSetMultipleRejectsInvalidKeys(): void
@@ -576,7 +577,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->deleteMultiple(['a', 'c', 'missing']));
 
         $this->assertSame(['b' => 2], array_filter((array) $cache->getMultiple(['a', 'b', 'c'])));
-        $this->assertSame(1, $cache->count());
+        $this->assertCount(1, $cache);
     }
 
     public function testDeleteMultipleRejectsInvalidKeys(): void
@@ -663,7 +664,7 @@ abstract class CacheTestCase extends TestCase
             $cache->saveMultiple(['a' => 1, 'b' => 2]);
         });
 
-        $this->assertSame(2, $cache->count());
+        $this->assertCount(2, $cache);
         $this->assertCount(1, $messages);
         $this->assertStringContainsString('saveMultiple() is deprecated since Formwork 2.4.0', $messages[0]);
     }

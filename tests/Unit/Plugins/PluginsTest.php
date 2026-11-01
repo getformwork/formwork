@@ -122,7 +122,7 @@ final class PluginsTest extends TestCase
         $this->dispatcher->dispatch(new Event('customEvent', []));
 
         $plugin = $this->plugins->get('listenB');
-        $this->assertNotNull($plugin);
+        $this->assertInstanceOf(Plugin::class, $plugin);
         $this->assertSame(1, (new ReflectionProperty($plugin, 'calls'))->getValue());
     }
 

@@ -320,7 +320,7 @@ final class CodeDumper
                 $result .= implode('', $closeTags);
             }
 
-            preg_replace_callback('/<\/?(\w+)[^>]*>/', function ($match) use (&$openTags, &$closeTags) {
+            preg_replace_callback('/<\/?(\w+)[^>]*>/', function (array $match) use (&$openTags, &$closeTags) {
                 if ($match[0][1] === '/') {
                     array_pop($openTags);
                     array_shift($closeTags);

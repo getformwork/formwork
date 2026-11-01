@@ -188,7 +188,7 @@ final class AbstractFormatterTest extends TestCase
         $this->assertSame(RuntimeException::class, $result['class']);
         $this->assertSame('failure', $result['message']);
         $this->assertSame(7, $result['code']);
-        $this->assertStringContainsString(__FILE__ . ':', $result['file']);
+        $this->assertStringContainsString(__FILE__ . ':', (string) $result['file']);
         $this->assertContainsOnlyString($result['trace']);
         $this->assertStringNotContainsString('secret-argument', (string) json_encode($result));
     }
