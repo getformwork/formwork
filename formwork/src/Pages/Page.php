@@ -240,7 +240,7 @@ class Page extends Model implements Stringable
         ];
 
         // Merge with scheme default field values
-        $defaults = Arr::override($defaults, Arr::undot($this->scheme()->fields()->extract('default')));
+        $defaults = Arr::override($defaults, Arr::undot($this->scheme()->defaults()));
 
         // If the page doesn't have a route, by default it won't be routable nor cacheable
         if ($this->route() === null) {

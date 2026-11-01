@@ -30,6 +30,13 @@ class Scheme implements Arrayable
     protected array $data = [];
 
     /**
+     * Cached default values of the scheme fields
+     *
+     * @var array<string, mixed>
+     */
+    protected array $defaults;
+
+    /**
      * Scheme IDs currently being extended.
      *
      * @var array<string, true>
@@ -144,6 +151,20 @@ class Scheme implements Arrayable
     }
 
     /**
+     * Get the default values of the scheme fields
+     *
+     * Unlike `fields()`, the result is cached until the scheme is extended
+     *
+     * @return array<string, mixed>
+     *
+     * @since 2.4.0
+     */
+    public function defaults(): array
+    {
+        return $this->defaults ??= $this->fields()->extract('default');
+    }
+
+    /**
      * Extend the scheme with another scheme
      *
      * @param Scheme|string $scheme Scheme instance or scheme id to extend with
@@ -191,6 +212,7 @@ class Scheme implements Arrayable
     {
         // @phpstan-ignore assign.propertyType
         $this->data = Arr::extend($data, $this->data);
+        unset($this->defaults);
     }
 
     /**

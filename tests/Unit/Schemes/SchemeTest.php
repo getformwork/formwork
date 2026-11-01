@@ -7,6 +7,7 @@ use Formwork\Schemes\Scheme;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
 use Formwork\Tests\UsesTempDirectory;
+use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -204,6 +205,108 @@ final class SchemeTest extends TestCase
         $fields = $this->makeScheme('post', [])->fields();
 
         $this->assertCount(0, $fields);
+    }
+
+    // defaults()
+
+    public function testDefaultsAreTheFieldDefaultsKeyedByName(): void
+    {
+        $scheme = $this->makeScheme('post', ['fields' => [
+            'headline' => ['type' => 'headline'],
+            'explicit' => ['type' => 'title', 'default' => 'Mine'],
+            'plain'    => ['type' => 'text'],
+        ]]);
+
+        $this->assertSame(
+            ['headline' => 'Untitled', 'explicit' => 'Mine', 'plain' => ''],
+            $scheme->defaults(),
+        );
+    }
+
+    public function testDefaultsMatchTheExtractedFieldDefaults(): void
+    {
+        $scheme = $this->makeScheme('post', ['fields' => [
+            'headline' => ['type' => 'headline'],
+            'explicit' => ['type' => 'title', 'default' => 'Mine'],
+        ]]);
+
+        $this->assertSame($scheme->fields()->extract('default'), $scheme->defaults());
+    }
+
+    public function testDefaultsOfASchemeWithoutFieldsAreEmpty(): void
+    {
+        $this->assertSame([], $this->makeScheme('post', [])->defaults());
+    }
+
+    public function testDefaultsAreNotAffectedByFieldValues(): void
+    {
+        $scheme = $this->makeScheme('post', ['fields' => ['title' => ['type' => 'title']]]);
+
+        $scheme->fields()->get('title')?->set('value', 'changed');
+
+        $this->assertSame(['title' => 'Untitled'], $scheme->defaults());
+    }
+
+    public function testDefaultsAreBuiltOnlyOnce(): void
+    {
+        // The field type definition is evaluated every time a field of that type is created,
+        // so each evaluation appends a byte to a file
+        $counter = $this->fieldsPath . '/counted.count';
+        FileSystem::write($this->fieldsPath . '/counted.php', "<?php\nreturn function () {\n    file_put_contents(" . var_export($counter, true) . ", '.', FILE_APPEND);\n    return ['default' => 'Counted'];\n};\n");
+        FileSystem::write($counter, '');
+
+        $scheme = $this->makeScheme('post', ['fields' => ['title' => ['type' => 'counted']]]);
+
+        $this->assertSame(['title' => 'Counted'], $scheme->defaults());
+        $this->assertSame(['title' => 'Counted'], $scheme->defaults());
+        $this->assertSame(1, strlen(FileSystem::read($counter)));
+
+        $scheme->fields();
+        $this->assertSame(2, strlen(FileSystem::read($counter)), 'fields() is not cached.');
+    }
+
+    public function testDefaultsAreRefreshedWhenTheSchemeIsExtendedWithData(): void
+    {
+        $scheme = $this->makeScheme('child', ['fields' => ['own' => ['type' => 'title']]]);
+
+        $this->assertSame(['own' => 'Untitled'], $scheme->defaults());
+
+        $scheme->extendWith(['fields' => ['inherited' => ['type' => 'text', 'default' => 'Base']]]);
+
+        $this->assertSame(['inherited' => 'Base', 'own' => 'Untitled'], $scheme->defaults());
+    }
+
+    public function testDefaultsAreRefreshedWhenTheSchemeExtendsAnotherScheme(): void
+    {
+        $base = $this->makeScheme('base', ['fields' => ['inherited' => ['type' => 'text', 'default' => 'Base']]]);
+        $scheme = $this->makeScheme('child', ['fields' => ['own' => ['type' => 'title']]]);
+
+        $this->assertSame(['own' => 'Untitled'], $scheme->defaults());
+
+        $scheme->extend($base);
+
+        $this->assertSame(['inherited' => 'Base', 'own' => 'Untitled'], $scheme->defaults());
+    }
+
+    public function testOwnDefaultsWinOverTheExtendedOnes(): void
+    {
+        $this->writeScheme('base', "fields:\n  title:\n    type: text\n    default: Base\n");
+        $this->writeScheme('child', "extend: base\nfields:\n  title:\n    default: Child\n");
+
+        $this->assertSame(['title' => 'Child'], $this->schemes->get('child')->defaults());
+        $this->assertSame(['title' => 'Base'], $this->schemes->get('base')->defaults());
+    }
+
+    public function testExtendingDoesNotChangeTheBaseDefaults(): void
+    {
+        $base = $this->makeScheme('base', ['fields' => ['inherited' => ['type' => 'text', 'default' => 'Base']]]);
+        $scheme = $this->makeScheme('child', ['fields' => ['own' => ['type' => 'title']]]);
+
+        $this->assertSame(['inherited' => 'Base'], $base->defaults());
+
+        $scheme->extend($base);
+
+        $this->assertSame(['inherited' => 'Base'], $base->defaults());
     }
 
     // Extension

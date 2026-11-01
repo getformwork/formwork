@@ -287,7 +287,7 @@ class File extends Model implements Arrayable, Stringable
     {
         $data = Arr::exclude(
             $this->data,
-            Arr::undot($this->fields()->extract('default'))
+            Arr::undot($this->scheme()->defaults())
         );
 
         $metaFile = $path . $this->app()->config()->getString('system.files.metadataExtension');

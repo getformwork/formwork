@@ -222,6 +222,7 @@ final class FileTest extends TestCase
         ]);
         $scheme = $this->createStub(Scheme::class);
         $scheme->method('fields')->willReturn($fieldCollection);
+        $scheme->method('defaults')->willReturn($fieldCollection->extract('default'));
 
         $file = new File($path);
         $file->setScheme($scheme);
