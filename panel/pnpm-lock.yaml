@@ -30,8 +30,8 @@ importers:
         specifier: ^1.14.5
         version: 1.14.5
       chartist:
-        specifier: ^1.5.0
-        version: 1.5.0
+        specifier: 2.2.0
+        version: 2.2.0
       prosemirror-commands:
         specifier: ^1.7.2
         version: 1.7.2
@@ -583,8 +583,8 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
-  chartist@1.5.0:
-    resolution: {integrity: sha512-mcCJuWHpNqkJucuWEeHxymQCQEeAOkamGypqCV5+C+uI2NF4I3BOn/tjIuZaowJVNAcrY9BG3janLaCWSNVPDw==}
+  chartist@2.2.0:
+    resolution: {integrity: sha512-B3OUXchU0hdaDQ1CaAs0sMz2X3GeKSIiO3OmKtQ55hz4NLTkGhLYEgOQGF2hcDhZtAzrAAje+oG3MnOOk6DBFQ==}
     engines: {node: '>=14'}
 
   chokidar@5.0.0:
@@ -1078,7 +1078,7 @@ snapshots:
 
   argparse@2.0.1: {}
 
-  chartist@1.5.0: {}
+  chartist@2.2.0: {}
 
   chokidar@5.0.0:
     dependencies:
