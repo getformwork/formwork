@@ -1,5 +1,6 @@
 import { circleSmallFill } from "./icons";
-import { Tooltip } from "./tooltip";
+import { hoverLine } from "./plugins/chartist-hover-line";
+import { hoverTooltip } from "./plugins/chartist-hover-tooltip";
 
 /**
  * Describes the data of a chart
@@ -27,11 +28,11 @@ export class StatisticsChart {
     private async init(container: HTMLElement, data: NumericChartistData) {
         const spacing = 100;
 
-        const options = {
+        const { lineChart } = await import("chartist");
+
+        lineChart(container, data, {
             showArea: true,
             fullWidth: true,
-            scaleMinSpace: 20,
-            divisor: 5,
             chartPadding: 20,
             lineSmooth: false,
             low: 0,
@@ -50,45 +51,20 @@ export class StatisticsChart {
                     x: 0,
                     y: 5,
                 },
+                scaleMinSpace: 20,
+                divisor: 5,
             },
-        };
-
-        const { LineChart } = await import("chartist");
-
-        const chart = new LineChart(container, data, options);
-
-        container.classList.remove("is-loading");
-
-        chart.on("draw", (event) => {
-            if (event.type === "point") {
-                event.element.attr({ "ct:index": event.index });
-            }
+            plugins: [hoverLine(), hoverTooltip({ renderTooltip: (index) => this.renderTooltip(data, index) })],
         });
 
-        container.addEventListener("mouseover", (event) => this.showPointTooltip(event, data));
+        container.classList.remove("is-loading");
     }
 
     /**
-     * Show a tooltip with the values of the point under the pointer
+     * Render the content of the tooltip of a point
      */
-    private showPointTooltip(event: MouseEvent, data: NumericChartistData) {
-        const target = event.target as SVGElement;
-
-        if (target.getAttribute("class") !== "ct-point" || !target.hasAttribute("ct:index")) {
-            return;
-        }
-
-        const strokeWidth = parseFloat(getComputedStyle(target).strokeWidth);
-        const index = parseInt(target.getAttribute("ct:index") as string, 10);
-
-        const text = `<div>${data.labels[index]}<br><span class="text-color-blue">${circleSmallFill}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${circleSmallFill}</span>${data.series[1][index]}</div>`;
-
-        const tooltip = new Tooltip(text, {
-            referenceElement: target as unknown as HTMLElement,
-            offset: { x: 0, y: -strokeWidth },
-        });
-
-        tooltip.show();
+    private renderTooltip(data: NumericChartistData, index: number) {
+        return `<div>${data.labels[index]}<br><span class="text-color-blue">${circleSmallFill}</span> ${data.series[0][index]} <span class="text-color-amber ml-2">${circleSmallFill}</span>${data.series[1][index]}</div>`;
     }
 }
 
