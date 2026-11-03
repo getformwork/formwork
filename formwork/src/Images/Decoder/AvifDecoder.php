@@ -2,6 +2,7 @@
 
 namespace Formwork\Images\Decoder;
 
+use Formwork\Images\Binary\ByteReader;
 use Generator;
 use InvalidArgumentException;
 use UnexpectedValueException;
@@ -27,53 +28,44 @@ final class AvifDecoder implements DecoderInterface
             throw new InvalidArgumentException('Invalid AVIF data');
         }
 
-        $position = 0;
-        $this->unpack('N', $data, $position);
-        $boxType = substr($data, 4, 4);
-
-        if ($boxType !== self::FTYP_BOX) {
+        if (substr($data, 4, 4) !== self::FTYP_BOX) {
             throw new InvalidArgumentException('Invalid AVIF data: missing ftyp box');
         }
 
-        $majorBrand = substr($data, 8, 4);
-        if (!in_array($majorBrand, self::VALID_BRANDS, true)) {
+        if (!in_array(substr($data, 8, 4), self::VALID_BRANDS, true)) {
             throw new InvalidArgumentException('Invalid AVIF data: unsupported brand');
         }
 
-        $position = 0;
+        $reader = new ByteReader($data);
 
-        while ($position < strlen($data)) {
-            $offset = $position;
+        while ($reader->remaining() > 0) {
+            $offset = $reader->position();
 
-            $size = $this->unpack('N', $data, $position)[1];
+            $size = $reader->uint(4);
+            $type = $reader->bytes(4);
             $headerSize = 8;
 
             if ($size === 1) {
-                $size = $this->unpack('J', $data, $position + 8)[1];
+                $size = $reader->uint(8);
                 $headerSize = 16;
             } elseif ($size === 0) {
-                $size = strlen($data) - $position;
+                // The box extends to the end of the file
+                $size = strlen($data) - $offset;
             }
 
-            $type = substr($data, $position + 4, 4);
-            $contentSize = $size - $headerSize;
-            $position += $size;
+            if ($size < $headerSize) {
+                throw new UnexpectedValueException('Invalid box size');
+            }
+
+            $value = $reader->bytes($size - $headerSize);
 
             yield [
                 'offset'   => $offset,
                 'size'     => $size,
                 'type'     => $type,
-                'value'    => substr($data, $offset + $headerSize, $contentSize),
-                'position' => &$position,
+                'value'    => $value,
+                'position' => $reader->position(),
             ];
         }
-    }
-
-    /**
-     * @return array<int|string, mixed>
-     */
-    private function unpack(string $format, string $string, int $offset = 0): array
-    {
-        return unpack($format, $string, $offset) ?: throw new UnexpectedValueException('Cannot unpack string');
     }
 }

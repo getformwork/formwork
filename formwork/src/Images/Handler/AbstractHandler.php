@@ -2,6 +2,8 @@
 
 namespace Formwork\Images\Handler;
 
+use Formwork\Images\ColorProfile\ColorProfile;
+use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Decoder\DecoderInterface;
 use Formwork\Images\Transform\TransformCollection;
 use Formwork\Utils\FileSystem;
@@ -90,7 +92,7 @@ abstract class AbstractHandler implements HandlerInterface
         $imageInfo = $this->getInfo();
 
         if ($this->options['preserveColorProfile'] && $this->hasColorProfile() && $handler::supportsColorProfile()) {
-            $colorProfile = $this->getColorProfile();
+            $colorProfile = $this->getRgbColorProfile();
         }
 
         if ($this->options['preserveExifData'] && $this->hasExifData() && $handler::supportsExifData()) {
@@ -146,5 +148,19 @@ abstract class AbstractHandler implements HandlerInterface
         }
 
         return $image;
+    }
+
+    /**
+     * Get the color profile only if it describes RGB data, as processed images are always RGB
+     */
+    private function getRgbColorProfile(): ?ColorProfile
+    {
+        $colorProfile = $this->getColorProfile();
+
+        try {
+            return $colorProfile?->colorSpace() === ColorSpace::RGB ? $colorProfile : null;
+        } catch (UnexpectedValueException) {
+            return null;
+        }
     }
 }
