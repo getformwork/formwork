@@ -32,6 +32,7 @@ use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PagesController::class)]
 #[UsesApplication]
@@ -538,6 +539,34 @@ final class PagesControllerActionsTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
         $this->assertSame('error', Json::parse($response->content())['status']);
+    }
+
+    #[DataProvider('uploadErrorCodeProvider')]
+    public function testFilesFailingWithAPhpErrorAreNotUploadedToPages(int $error): void
+    {
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->failedUpload($error)]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
+        $this->assertSame('error', Json::parse($response->content())['status']);
+        $this->assertFileDoesNotExist($this->pagesPath . '/about/big.png');
+    }
+
+    public function testFilesFailingWithAPhpErrorDoNotPreventOtherUploadsToPages(): void
+    {
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->failedUpload(UPLOAD_ERR_INI_SIZE), $this->uploadedImage(clientName: 'small.png')]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertSame(ResponseStatus::OK, $response->status(), $response->content());
+        $this->assertFileExists($this->pagesPath . '/about/small.png');
+        $this->assertFileDoesNotExist($this->pagesPath . '/about/big.png');
+        $this->assertCount(1, Json::parse($response->content())['data']);
+    }
+
+    public function testEmptyFileFieldsAreNotUploadedToPages(): void
+    {
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->failedUpload(UPLOAD_ERR_NO_FILE, clientName: '')]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
     }
 
     public function testUploadingWithoutFilesFails(): void

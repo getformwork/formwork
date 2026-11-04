@@ -32,6 +32,7 @@ use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FilesController::class)]
 #[UsesApplication]
@@ -423,6 +424,18 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertSame($original, FileSystem::read($destination . '/photo.png'));
     }
 
+    #[DataProvider('uploadErrorCodeProvider')]
+    public function testFilesFailingWithAPhpErrorAreNotUploaded(int $error): void
+    {
+        $destination = TESTS_TMP_PATH . '/site-files';
+
+        $response = $this->upload(['parent' => '.'], [$this->failedUpload($error)], $destination);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastNotificationType());
+        $this->assertFileDoesNotExist($destination . '/big.png');
+    }
+
     public function testUploadingWithoutFilesIsAnInvalidForm(): void
     {
         $destination = TESTS_TMP_PATH . '/site-files';
@@ -432,6 +445,27 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('error', $this->lastNotificationType());
         $this->assertFileDoesNotExist($destination);
+    }
+
+    #[DataProvider('uploadErrorProvider')]
+    public function testFilesCannotBeReplacedByAFileFailingWithAPhpError(int $error, string $languageString): void
+    {
+        $response = $this->replace('b.txt', [$this->failedUpload($error, 'file', 'new.txt')]);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(['error' => [$this->uploadErrorText($languageString)]], $this->notifications());
+        $this->assertSame('bee', FileSystem::read($this->contentPath . '/b.txt'));
+    }
+
+    #[DataProvider('uploadErrorProvider')]
+    public function testFilesCannotBeReplacedByAFileFailingWithAPhpErrorWithAScriptRequest(int $error, string $languageString): void
+    {
+        $response = $this->replace('b.txt', [$this->failedUpload($error, 'file', 'new.txt')], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
+        $this->assertSame($this->uploadErrorText($languageString), Json::parse($response->content())['message']);
+        $this->assertSame('bee', FileSystem::read($this->contentPath . '/b.txt'));
     }
 
     public function testReplacingRequiresTheFileOfTheSameType(): void
@@ -549,6 +583,14 @@ final class FilesControllerActionsTest extends TestCase
     private function params(string $filename): RouteParams
     {
         return new RouteParams(['model' => 'page', 'id' => '/about/', 'filename' => $filename]);
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    private function notifications(): array
+    {
+        return $this->panelRequest?->session()->messages()->getAll() ?? [];
     }
 
     private function lastNotificationType(): ?string

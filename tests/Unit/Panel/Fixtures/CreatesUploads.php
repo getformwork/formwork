@@ -8,8 +8,11 @@ use Formwork\Config\Config;
 use Formwork\Files\FileFactory;
 use Formwork\Files\FileUriGenerator;
 use Formwork\Files\Services\FileUploader;
+use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\Request;
+use Formwork\Parsers\Yaml;
 use Formwork\Services\Container;
+use Formwork\Tests\TestInstallation;
 use Formwork\Utils\FileSystem;
 use ReflectionProperty;
 
@@ -18,6 +21,33 @@ use ReflectionProperty;
  */
 trait CreatesUploads
 {
+    /**
+     * PHP upload errors for which a file is reported as received
+     *
+     * @return iterable<string, array{int}>
+     */
+    public static function uploadErrorCodeProvider(): iterable
+    {
+        foreach (self::uploadErrorProvider() as $name => [$error]) {
+            yield $name => [$error];
+        }
+    }
+
+    /**
+     * PHP upload errors for which a file is reported as received, with the language string of the error
+     *
+     * @return iterable<string, array{int, string}>
+     */
+    public static function uploadErrorProvider(): iterable
+    {
+        yield 'exceeds upload_max_filesize' => [UPLOAD_ERR_INI_SIZE, 'upload.error.size'];
+        yield 'exceeds MAX_FILE_SIZE' => [UPLOAD_ERR_FORM_SIZE, 'upload.error.size'];
+        yield 'partial upload' => [UPLOAD_ERR_PARTIAL, 'upload.error.partial'];
+        yield 'missing temporary folder' => [UPLOAD_ERR_NO_TMP_DIR, 'upload.error.noTemp'];
+        yield 'cannot write to disk' => [UPLOAD_ERR_CANT_WRITE, 'upload.error.cannotWrite'];
+        yield 'stopped by an extension' => [UPLOAD_ERR_EXTENSION, 'upload.error.phpExtension'];
+    }
+
     /**
      * Create an uploaded PNG image
      */
@@ -40,6 +70,29 @@ trait CreatesUploads
         FileSystem::write($path, 'plain text');
 
         return MovableUploadedFile::from($fieldName, $path, $clientName, 'text/plain');
+    }
+
+    /**
+     * Create a file whose upload failed with the given PHP error, as PHP reports it
+     */
+    protected function failedUpload(int $error, string $fieldName = 'files', string $clientName = 'big.png'): UploadedFile
+    {
+        return new UploadedFile($fieldName, [
+            'name'      => $clientName,
+            'full_path' => $clientName,
+            'type'      => '',
+            'tmp_name'  => '',
+            'error'     => (string) $error,
+            'size'      => '0',
+        ]);
+    }
+
+    /**
+     * Get the English text of the error of an upload
+     */
+    protected function uploadErrorText(string $languageString): string
+    {
+        return sprintf(Yaml::parseFile(TestInstallation::systemPath() . '/translations/en.yaml')['upload.error'], Yaml::parseFile(TestInstallation::systemPath() . '/translations/en.yaml')[$languageString]);
     }
 
     /**

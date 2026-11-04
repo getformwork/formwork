@@ -6,6 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\FileResponse;
+use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
@@ -16,7 +17,6 @@ use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\Fixtures\CreatesUploads;
-use Formwork\Tests\Unit\Panel\Fixtures\MovableUploadedFile;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Permissions;
@@ -303,6 +303,17 @@ final class UsersControllerActionsTest extends TestCase
         $this->assertNotSame('Alice Changed', Yaml::parseFile($this->accountFile('alice'))['fullname'] ?? null);
     }
 
+    #[DataProvider('uploadErrorCodeProvider')]
+    public function testImagesFailingWithAPhpErrorAreNotSaved(int $error): void
+    {
+        $response = $this->saveProfile(['fullname' => 'Alice Changed'], $this->failedUpload($error, 'image', 'avatar.png'));
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(['error'], $this->notificationTypes());
+        $this->assertArrayNotHasKey('image', Yaml::parseFile($this->accountFile('alice')));
+        $this->assertNotSame('Alice Changed', Yaml::parseFile($this->accountFile('alice'))['fullname'] ?? null);
+    }
+
     public function testProfilesCanBeSavedWithoutAnImage(): void
     {
         $response = $this->saveProfile(['fullname' => 'Alice Changed'], null);
@@ -315,7 +326,7 @@ final class UsersControllerActionsTest extends TestCase
     /**
      * @param array<string, string> $overrides
      */
-    private function saveProfile(array $overrides, ?MovableUploadedFile $image): Response
+    private function saveProfile(array $overrides, ?UploadedFile $image): Response
     {
         $uploader = $this->uploader([$this->userImagesPath()]);
         $current = App::instance()->getService(UserFactory::class)->make([
