@@ -42,9 +42,12 @@ final class CacheCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    /**
+     * @param CLImate|null $climate CLImate instance, a new one is created by default
+     */
+    public function __construct(?CLImate $climate = null)
     {
-        $this->climate = new CLImate();
+        $this->climate = $climate ?? new CLImate();
 
         $this->climate->arguments->add([
             'action' => [
@@ -67,8 +70,18 @@ final class CacheCommand implements CommandInterface
 
     public function __invoke(?array $argv = null): never
     {
-        $argv ??= $_SERVER['argv'] ?? [];
+        exit($this->run($argv ?? $_SERVER['argv'] ?? []));
+    }
 
+    /**
+     * Run the command and return its exit code
+     *
+     * @param list<string> $argv Command line arguments
+     *
+     * @since 2.4.0
+     */
+    public function run(array $argv): int
+    {
         $this->app = App::instance();
         $this->app->load();
 
@@ -78,14 +91,14 @@ final class CacheCommand implements CommandInterface
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $action = (string) $this->climate->arguments->get('action');
@@ -94,15 +107,15 @@ final class CacheCommand implements CommandInterface
         if (isset($this->actions[$action])) {
             try {
                 $this->{$action}($type, $argv);
-                exit(0);
+                return 0;
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid action: %s.', $action));
-        exit(1);
+        return 1;
     }
 
     /**

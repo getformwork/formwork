@@ -17,7 +17,7 @@ final class FormworkCommandRunner implements CommandInterface
     private CLImate $climate;
 
     /**
-     * @var array<string, array{description: string, command: class-string<CommandInterface>}>
+     * @var array<string, array{description: string, command: class-string<BackupCommand|CacheCommand|ServeCommand|UpdatesCommand>}>
      */
     private array $commands = [
         'backup' => [
@@ -38,9 +38,12 @@ final class FormworkCommandRunner implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    /**
+     * @param CLImate|null $climate CLImate instance, a new one is created by default
+     */
+    public function __construct(?CLImate $climate = null)
     {
-        $this->climate = new CLImate();
+        $this->climate = $climate ?? new CLImate();
 
         $this->climate->description(sprintf('<bold>Formwork <cyan>%s</cyan></bold> CLI', App::VERSION));
 
@@ -69,23 +72,33 @@ final class FormworkCommandRunner implements CommandInterface
 
     public function __invoke(?array $argv = null): never
     {
-        $argv ??= $_SERVER['argv'] ?? [];
+        exit($this->run($argv ?? $_SERVER['argv'] ?? []));
+    }
 
+    /**
+     * Run the command and return its exit code
+     *
+     * @param list<string> $argv Command line arguments
+     *
+     * @since 2.4.0
+     */
+    public function run(array $argv): int
+    {
         if (count($argv) < 2 || $this->hasDirectArgument('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         if ($this->hasDirectArgument('version', $argv)) {
             $this->climate->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold>', App::VERSION));
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $command = (string) $this->climate->arguments->get('command');
@@ -97,15 +110,15 @@ final class FormworkCommandRunner implements CommandInterface
                 /** @var list<string> */
                 $arguments = [sprintf('%s %s', $argv[0], $command), ...array_slice($argv, 2)];
 
-                (new $commandClass())($arguments);
+                return (new $commandClass())->run($arguments);
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid command: %s.', $command));
-        exit(1);
+        return 1;
     }
 
     /**

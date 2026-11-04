@@ -35,9 +35,12 @@ final class UpdatesCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    /**
+     * @param CLImate|null $climate CLImate instance, a new one is created by default
+     */
+    public function __construct(?CLImate $climate = null)
     {
-        $this->climate = new CLImate();
+        $this->climate = $climate ?? new CLImate();
 
         $this->climate->arguments->add([
             'action' => [
@@ -76,47 +79,58 @@ final class UpdatesCommand implements CommandInterface
 
     public function __invoke(?array $argv = null): never
     {
-        $argv ??= $_SERVER['argv'] ?? [];
+        exit($this->run($argv ?? $_SERVER['argv'] ?? []));
+    }
 
+    /**
+     * Run the command and return its exit code
+     *
+     * @param list<string> $argv Command line arguments
+     *
+     * @since 2.4.0
+     */
+    public function run(array $argv): int
+    {
         $this->app = App::instance();
         $this->app->load();
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $action = (string) $this->climate->arguments->get('action');
 
         if (isset($this->actions[$action])) {
             try {
-                $this->{$action}($argv);
-                exit(0);
+                return (int) $this->{$action}($argv);
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid action: %s.', $action));
-        exit(1);
+        return 1;
     }
 
     /**
      * `updates check` action
      *
      * @param list<string> $argv
+     *
+     * @return int Exit code
      */
-    public function check(array $argv = []): void
+    public function check(array $argv = []): int
     {
-        $force = $this->climate->arguments->defined('force');
+        $force = $this->climate->arguments->defined('force', $argv);
 
         $updater = $this->app->getService(Updater::class);
 
@@ -124,19 +138,19 @@ final class UpdatesCommand implements CommandInterface
             $upToDate = $updater->checkUpdates($force);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
-            exit(1);
+            return 1;
         }
 
         $release = $updater->latestRelease();
 
         if ($release === null) {
             $this->climate->error('Cannot retrieve latest release information.');
-            exit(1);
+            return 1;
         }
 
         if ($upToDate) {
             $this->climate->out("<bold>Formwork <cyan>{$release['tag']}</cyan></bold> is already up to date.");
-            exit(0);
+            return 0;
         }
 
         $currentVersion = App::VERSION;
@@ -147,37 +161,40 @@ final class UpdatesCommand implements CommandInterface
         // The first argument is the command invocation, the action is the second one
         $command = ($argv[0] ?? 'formwork updates') . ' update';
         $this->climate->out("Run <cyan>{$command}</cyan> to update to the latest version.");
+        return 0;
     }
 
     /**
      * `updates update` action
      *
      * @param list<string> $argv
+     *
+     * @return int Exit code
      */
-    public function update(array $argv = []): void
+    public function update(array $argv = []): int
     {
-        $force = $this->climate->arguments->defined('force');
-        $backup = !$this->climate->arguments->defined('no-backup');
-        $preferDist = !$this->climate->arguments->defined('no-prefer-dist');
-        $cleanup = !$this->climate->arguments->defined('no-cleanup');
+        $force = $this->climate->arguments->defined('force', $argv);
+        $backup = !$this->climate->arguments->defined('no-backup', $argv);
+        $preferDist = !$this->climate->arguments->defined('no-prefer-dist', $argv);
+        $cleanup = !$this->climate->arguments->defined('no-cleanup', $argv);
         $updater = $this->app->getService(Updater::class);
 
         try {
             $upToDate = $updater->checkUpdates(force: $force, preferDistAssets: $preferDist);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
-            exit(1);
+            return 1;
         }
 
         $release = $updater->latestRelease();
         if ($release === null) {
             $this->climate->error('Cannot retrieve latest release information.');
-            exit(1);
+            return 1;
         }
 
         if ($upToDate) {
             $this->climate->out("<bold>Formwork <cyan>{$release['tag']}</cyan></bold> is already up to date.");
-            exit(0);
+            return 0;
         }
 
         if ($backup) {
@@ -187,7 +204,7 @@ final class UpdatesCommand implements CommandInterface
                     ->backup(hostname: gethostname() ?: 'local-cli');
             } catch (RuntimeException|TranslatedException $e) {
                 $this->climate->error("Cannot make backup: {$e->getMessage()}");
-                exit(1);
+                return 1;
             }
             $this->climate->br();
         }
@@ -197,7 +214,7 @@ final class UpdatesCommand implements CommandInterface
             $updater->update(force: $force, preferDistAssets: $preferDist, cleanupAfterInstall: $cleanup);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot install updates: {$e->getMessage()}");
-            exit(1);
+            return 1;
         }
         $this->climate->br();
 
@@ -210,6 +227,7 @@ final class UpdatesCommand implements CommandInterface
         }
 
         $this->climate->out("<bold>Formwork</bold> has been updated successfully to <bold><green>{$release['tag']}</green></bold>.");
+        return 0;
     }
 
     /**

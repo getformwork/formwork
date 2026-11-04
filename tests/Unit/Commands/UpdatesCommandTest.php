@@ -6,13 +6,21 @@ use Formwork\Cms\App;
 use Formwork\Commands\UpdatesCommand;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Commands\Fixtures\RunsCommands;
+use Formwork\Tests\UsesApplication;
 use Formwork\Updater\SemVer;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(UpdatesCommand::class)]
+#[UsesApplication]
 final class UpdatesCommandTest extends TestCase
 {
     use RunsCommands;
+
+    public function testExitCodeIsPassedToTheProcess(): void
+    {
+        $this->assertSame(0, $this->runCommandInSubprocess(UpdatesCommand::class, ['check'], 'uptodate')['exitCode']);
+        $this->assertSame(1, $this->runCommandInSubprocess(UpdatesCommand::class, ['check'], 'unreachable')['exitCode']);
+    }
 
     public function testHelpListsTheActions(): void
     {

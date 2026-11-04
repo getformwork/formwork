@@ -55,13 +55,21 @@ final class ServeCommand implements CommandInterface
     private CLImate $climate;
 
     /**
+     * Exit code of the command
+     */
+    private int $exitCode = 0;
+
+    /**
      * Server start time
      */
     private float $startTime;
 
-    public function __construct()
+    /**
+     * @param CLImate|null $climate CLImate instance, a new one is created by default
+     */
+    public function __construct(?CLImate $climate = null)
     {
-        $this->climate = new CLImate();
+        $this->climate = $climate ?? new CLImate();
 
         // Fix clear command for terminals that don't clear the scrollback buffer with the default clear command
         $this->climate->style->addCommand('clear', "\033[H\033[2J\033[3J");
@@ -69,8 +77,18 @@ final class ServeCommand implements CommandInterface
 
     public function __invoke(?array $argv = null): never
     {
-        $argv ??= $_SERVER['argv'] ?? [];
+        exit($this->run($argv ?? $_SERVER['argv'] ?? []));
+    }
 
+    /**
+     * Run the command and return its exit code
+     *
+     * @param list<string> $argv Command line arguments
+     *
+     * @since 2.4.0
+     */
+    public function run(array $argv): int
+    {
         $this->climate->description(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Development Server', App::VERSION));
 
         $this->climate->arguments->add([
@@ -108,7 +126,7 @@ final class ServeCommand implements CommandInterface
 
         if ($this->climate->arguments->get('help')) {
             $this->climate->usage($argv);
-            exit(0);
+            return 0;
         }
 
         /** @var string */
@@ -116,7 +134,7 @@ final class ServeCommand implements CommandInterface
 
         if (!$this->isValidHost($host)) {
             $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>failed to listen on invalid host <bold>%s</bold></red>', App::VERSION, $host));
-            exit(1);
+            return 1;
         }
 
         /** @var int */
@@ -127,14 +145,15 @@ final class ServeCommand implements CommandInterface
 
         [$this->host, $this->port, $this->retryAttempts] = [$host, $port, $retryAttempts];
 
-        $this->start();
-        exit(0);
+        $this->exitCode = 0;
+
+        return $this->start();
     }
 
     /**
-     * Start the server
+     * Start the server and return the exit code once it is stopped
      */
-    private function start(): void
+    private function start(): int
     {
         $this->startTime = microtime(true);
 
@@ -150,6 +169,8 @@ final class ServeCommand implements CommandInterface
         $this->process->run(function ($type, $buffer): void {
             $this->handleOutput($type, explode("\n", $buffer));
         });
+
+        return $this->exitCode;
     }
 
     /**
@@ -243,7 +264,8 @@ final class ServeCommand implements CommandInterface
 
                     if (!str_contains($message, 'Address already in use')) {
                         $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>%s</red>', App::VERSION, lcfirst($message)));
-                        exit(1);
+                        $this->exitCode = 1;
+                        return;
                     }
 
                     if ($this->retryAttempts-- > 0) {
@@ -268,7 +290,8 @@ final class ServeCommand implements CommandInterface
 
                     $this->start();
 
-                    exit(1);
+                    $this->exitCode = 1;
+                    return;
 
                 default:
                     if (($data = $this->splitMessage($message)) !== []) {

@@ -28,7 +28,6 @@ final class ServeCommandTest extends TestCase
     {
         parent::setUp();
 
-        $this->command = new ServeCommand();
         $this->buffer = new Buffer();
 
         $climate = new CLImate();
@@ -36,7 +35,7 @@ final class ServeCommandTest extends TestCase
         $climate->output->add('error', $this->buffer);
         $climate->forceAnsiOff();
 
-        (new ReflectionProperty($this->command, 'climate'))->setValue($this->command, $climate);
+        $this->command = new ServeCommand($climate);
     }
 
     public function testCommandImplementsTheInterface(): void

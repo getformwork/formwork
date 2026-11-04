@@ -37,9 +37,12 @@ final class BackupCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    /**
+     * @param CLImate|null $climate CLImate instance, a new one is created by default
+     */
+    public function __construct(?CLImate $climate = null)
     {
-        $this->climate = new CLImate();
+        $this->climate = $climate ?? new CLImate();
 
         $this->climate->arguments->add([
             'action' => [
@@ -71,45 +74,56 @@ final class BackupCommand implements CommandInterface
 
     public function __invoke(?array $argv = null): never
     {
-        $argv ??= $_SERVER['argv'] ?? [];
+        exit($this->run($argv ?? $_SERVER['argv'] ?? []));
+    }
 
+    /**
+     * Run the command and return its exit code
+     *
+     * @param list<string> $argv Command line arguments
+     *
+     * @since 2.4.0
+     */
+    public function run(array $argv): int
+    {
         $this->app = App::instance();
         $this->app->load();
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $action = (string) $this->climate->arguments->get('action');
 
         if (isset($this->actions[$action])) {
             try {
-                $this->{$action}($argv);
-                exit(0);
+                return (int) $this->{$action}($argv);
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid action: %s.', $action));
-        exit(1);
+        return 1;
     }
 
     /**
      * `backup make` action
      *
      * @param list<string> $argv
+     *
+     * @return int Exit code
      */
-    public function make(array $argv = []): void
+    public function make(array $argv = []): int
     {
         $this->climate->out('Creating backup... this may take a while depending on the size of your installation.');
         /** @var ?string $name */
@@ -121,22 +135,25 @@ final class BackupCommand implements CommandInterface
             $file = $backupper->backup($name, $hostname);
         } catch (RuntimeException|TranslatedException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
         $this->climate->br()->out(sprintf('<green>Backup created:</green> %s', $file));
+        return 0;
     }
 
     /**
      * `backup list` action
      *
      * @param list<string> $argv
+     *
+     * @return int Exit code
      */
-    public function list(array $argv = []): void
+    public function list(array $argv = []): int
     {
         $backups = $this->app->getService(Backupper::class)->getBackups();
         if (count($backups) === 0) {
             $this->climate->green('No backups found.');
-            return;
+            return 0;
         }
         $this->climate->green('Available backups:');
         foreach ($backups as $backup) {
@@ -146,6 +163,7 @@ final class BackupCommand implements CommandInterface
 
             $this->climate->out(sprintf('  <light_gray>[%s]</light_gray> %s <cyan>%s</cyan>', $time, $name, $size));
         }
+        return 0;
     }
 
     /**

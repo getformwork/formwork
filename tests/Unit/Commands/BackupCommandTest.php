@@ -5,12 +5,20 @@ namespace Formwork\Tests\Unit\Commands;
 use Formwork\Commands\BackupCommand;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Commands\Fixtures\RunsCommands;
+use Formwork\Tests\UsesApplication;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(BackupCommand::class)]
+#[UsesApplication]
 final class BackupCommandTest extends TestCase
 {
     use RunsCommands;
+
+    public function testExitCodeIsPassedToTheProcess(): void
+    {
+        $this->assertSame(0, $this->runCommandInSubprocess(BackupCommand::class, ['list'])['exitCode']);
+        $this->assertSame(1, $this->runCommandInSubprocess(BackupCommand::class, ['bogus'])['exitCode']);
+    }
 
     public function testHelpListsTheActions(): void
     {

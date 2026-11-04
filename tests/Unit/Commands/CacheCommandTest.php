@@ -5,13 +5,21 @@ namespace Formwork\Tests\Unit\Commands;
 use Formwork\Commands\CacheCommand;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Commands\Fixtures\RunsCommands;
+use Formwork\Tests\UsesApplication;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(CacheCommand::class)]
+#[UsesApplication]
 final class CacheCommandTest extends TestCase
 {
     use RunsCommands;
+
+    public function testExitCodeIsPassedToTheProcess(): void
+    {
+        $this->assertSame(0, $this->runCommandInSubprocess(CacheCommand::class, ['stats', 'pages'])['exitCode']);
+        $this->assertSame(1, $this->runCommandInSubprocess(CacheCommand::class, ['bogus'])['exitCode']);
+    }
 
     public function testHelpListsTheActions(): void
     {
