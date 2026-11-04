@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 use Formwork\Backup\Backupper;
 use Formwork\Cms\App;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Controllers\ToolsController;
 use Formwork\Parsers\Json;
@@ -85,6 +86,55 @@ final class ToolsControllerTest extends TestCase
         $response = $this->controller(['panel.tools.info' => false, 'panel.tools.backups' => true, 'panel.tools.updates' => true])->info();
 
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
+    }
+
+    public function testUpdatesRendersTheCurrentVersion(): void
+    {
+        $response = $this->controller(['panel.tools.updates' => true])->updates();
+
+        $view = $this->renderedView($response);
+
+        $this->assertSame('@panel.tools.updates', $view['view']);
+        $this->assertSame(App::VERSION, $view['vars']['currentVersion']);
+    }
+
+    public function testBackupsAreListedFromTheNewest(): void
+    {
+        $path = TESTS_TMP_PATH . '/backups';
+        FileSystem::createDirectory($path);
+        FileSystem::write($path . '/old.zip', 'old');
+        FileSystem::write($path . '/new.zip', 'newer');
+        touch($path . '/old.zip', 1000);
+        touch($path . '/new.zip', 2000);
+
+        $backupper = new Backupper(new Request([], [], [], [], []), ['path' => $path, 'name' => 'backup', 'maxExecutionTime' => 60, 'maxFiles' => 10, 'ignore' => []], App::instance()->rootPath(), App::instance());
+
+        $view = $this->renderedView($this->controller(['panel.tools.backups' => true])->backups($backupper));
+
+        $this->assertSame('@panel.tools.backups', $view['view']);
+        $this->assertSame(['new.zip', 'old.zip'], array_column($view['vars']['backups'], 'name'));
+        $this->assertSame([2000, 1000], array_column($view['vars']['backups'], 'timestamp'));
+        $this->assertSame(rawurlencode(base64_encode('new.zip')), array_values($view['vars']['backups'])[0]['encodedName']);
+    }
+
+    public function testInfoReportsTheVersionsAndTheWarnings(): void
+    {
+        $view = $this->renderedView($this->controller(['panel.tools.info' => true])->info());
+
+        $this->assertSame('@panel.tools.info', $view['view']);
+        $this->assertSame(App::VERSION, $view['vars']['formwork']['Formwork Version']);
+        $this->assertSame(PHP_VERSION, $view['vars']['formwork']['PHP Version']);
+        $this->assertContains('Insecure connection detected, using HTTPS is recommended', $view['vars']['warnings']);
+        $this->assertSame('league/commonmark', array_key_first($view['vars']['info']['Dependencies']));
+    }
+
+    public function testInfoWarnsAboutTheDebugMode(): void
+    {
+        $controller = $this->makeController(ToolsController::class, ['panel.tools.info' => true], ['debug' => ['enabled' => true]]);
+
+        $view = $this->renderedView($controller->info());
+
+        $this->assertContains('Debug mode enabled, remember to turn it off in production', $view['vars']['warnings']);
     }
 
     public function testRequiredDependenciesExcludePhpAndExtensions(): void
