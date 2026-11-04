@@ -208,8 +208,9 @@ final class CacheCommand implements CommandInterface
     private function configCacheStats(): void
     {
         $path = $this->app->rootPath() . '/cache/config/';
-        $items = iterator_to_array(FileSystem::listContents($path));
-        $size = FileSystem::directorySize($path);
+        $exists = FileSystem::isDirectory($path, assertExists: false);
+        $items = $exists ? iterator_to_array(FileSystem::listContents($path)) : [];
+        $size = $exists ? FileSystem::directorySize($path) : 0;
 
         $this->climate->out('<green>Config Cache</green>');
         $this->climate->out(sprintf('  Items number: <cyan>%d</cyan>', count($items)));
@@ -222,8 +223,9 @@ final class CacheCommand implements CommandInterface
     private function imagesCacheStats(): void
     {
         $path = $this->app->config()->getString('system.images.processPath');
-        $items = iterator_to_array(FileSystem::listContents($path));
-        $size = FileSystem::directorySize($path);
+        $exists = FileSystem::isDirectory($path, assertExists: false);
+        $items = $exists ? iterator_to_array(FileSystem::listContents($path)) : [];
+        $size = $exists ? FileSystem::directorySize($path) : 0;
 
         $this->climate->out('<green>Images Cache</green>');
         $this->climate->out(sprintf('  Items number: <cyan>%d</cyan>', count($items)));
@@ -279,7 +281,9 @@ final class CacheCommand implements CommandInterface
     private function clearImagesCache(): void
     {
         $path = $this->app->config()->getString('system.images.processPath');
-        FileSystem::delete($path, recursive: true);
+        if (FileSystem::exists($path)) {
+            FileSystem::delete($path, recursive: true);
+        }
         FileSystem::createDirectory($path, recursive: true);
     }
 

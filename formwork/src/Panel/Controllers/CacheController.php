@@ -100,7 +100,9 @@ final class CacheController extends AbstractController
     private function clearImagesCache(): void
     {
         $path = $this->config->getString('system.images.processPath');
-        FileSystem::delete($path, recursive: true);
+        if (FileSystem::exists($path)) {
+            FileSystem::delete($path, recursive: true);
+        }
         FileSystem::createDirectory($path, recursive: true);
     }
 

@@ -4,6 +4,7 @@ namespace Formwork\Commands;
 
 use Formwork\Backup\Backupper;
 use Formwork\Cms\App;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
@@ -118,7 +119,7 @@ final class BackupCommand implements CommandInterface
         $backupper = $this->app->getService(Backupper::class);
         try {
             $file = $backupper->backup($name, $hostname);
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException|TranslatedException $e) {
             $this->climate->error($e->getMessage());
             exit(1);
         }

@@ -201,7 +201,7 @@ final class Panel
 
         if ($colorScheme === ColorScheme::Auto) {
             // Get color scheme from cookie to avoid flash of incorrect color scheme
-            return ColorScheme::from($this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value));
+            return ColorScheme::tryFrom((string) $this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value)) ?? $colorScheme;
         }
 
         return $colorScheme;

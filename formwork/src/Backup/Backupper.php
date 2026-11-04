@@ -72,21 +72,25 @@ final class Backupper
 
             $zipArchive = new ZipArchive();
 
-            if (($status = $zipArchive->open($destination, ZipArchive::CREATE)) === true) {
-                foreach (FileSystem::listRecursive($source, FileSystem::LIST_FILES | FileSystem::LIST_HIDDEN) as $file) {
-                    if ($this->isCopiable($file)) {
-                        $zipArchive->addFile(FileSystem::joinPaths($source, $file), $file);
-                    }
-                }
-                $zipArchive->close();
-            }
+            // Errors are reported by the returned status, not by warnings
+            $status = @$zipArchive->open($destination, ZipArchive::CREATE);
 
-            $this->deleteOldBackups();
+            if ($status !== true) {
+                // Opening may also fail without an error code, e.g. when the destination cannot be created
+                $status = (int) $status !== ZipArchive::ER_OK ? (int) $status : ZipArchive::ER_OPEN;
 
-            if (is_int($status) && $status !== ZipArchive::ER_OK) {
                 /** @var key-of<ZipErrors::ERROR_MESSAGES> $status */
                 throw new TranslatedException(ZipErrors::ERROR_MESSAGES[$status], ZipErrors::ERROR_LANGUAGE_STRINGS[$status]);
             }
+
+            foreach (FileSystem::listRecursive($source, FileSystem::LIST_FILES | FileSystem::LIST_HIDDEN) as $file) {
+                if ($this->isCopiable($file)) {
+                    $zipArchive->addFile(FileSystem::joinPaths($source, $file), $file);
+                }
+            }
+            $zipArchive->close();
+
+            $this->deleteOldBackups();
 
             return $destination;
         } finally {

@@ -5,6 +5,7 @@ namespace Formwork\Commands;
 use Formwork\Backup\Backupper;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cms\App;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Updater\Updater;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
@@ -143,7 +144,8 @@ final class UpdatesCommand implements CommandInterface
         $this->climate->out("Latest available version: <bold><green>{$release['tag']}</green></bold>.");
         $this->climate->br();
 
-        $command = implode(' ', array_slice($argv, 0, -1)) . ' update';
+        // The first argument is the command invocation, the action is the second one
+        $command = ($argv[0] ?? 'formwork updates') . ' update';
         $this->climate->out("Run <cyan>{$command}</cyan> to update to the latest version.");
     }
 
@@ -183,7 +185,7 @@ final class UpdatesCommand implements CommandInterface
             try {
                 $this->app->getService(Backupper::class)
                     ->backup(hostname: gethostname() ?: 'local-cli');
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException|TranslatedException $e) {
                 $this->climate->error("Cannot make backup: {$e->getMessage()}");
                 exit(1);
             }
