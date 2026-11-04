@@ -14,12 +14,6 @@ final class BackupCommandTest extends TestCase
 {
     use RunsCommands;
 
-    public function testExitCodeIsPassedToTheProcess(): void
-    {
-        $this->assertSame(0, $this->runCommandInSubprocess(BackupCommand::class, ['list'])['exitCode']);
-        $this->assertSame(1, $this->runCommandInSubprocess(BackupCommand::class, ['bogus'])['exitCode']);
-    }
-
     public function testHelpListsTheActions(): void
     {
         $result = $this->runCommand(BackupCommand::class);

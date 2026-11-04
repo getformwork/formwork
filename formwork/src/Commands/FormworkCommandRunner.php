@@ -2,6 +2,7 @@
 
 namespace Formwork\Commands;
 
+use Closure;
 use Formwork\Cms\App;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
@@ -39,11 +40,20 @@ final class FormworkCommandRunner implements CommandInterface
     ];
 
     /**
-     * @param CLImate|null $climate CLImate instance, a new one is created by default
+     * Factory of the commands to run
+     *
+     * @var Closure(class-string<BackupCommand|CacheCommand|ServeCommand|UpdatesCommand>): (BackupCommand|CacheCommand|ServeCommand|UpdatesCommand)
      */
-    public function __construct(?CLImate $climate = null)
+    private Closure $commandFactory;
+
+    /**
+     * @param CLImate|null                                                                                                                                   $climate        CLImate instance, a new one is created by default
+     * @param (Closure(class-string<BackupCommand|CacheCommand|ServeCommand|UpdatesCommand>): (BackupCommand|CacheCommand|ServeCommand|UpdatesCommand))|null $commandFactory Factory of the commands to run, they are created with their defaults by default
+     */
+    public function __construct(?CLImate $climate = null, ?Closure $commandFactory = null)
     {
         $this->climate = $climate ?? new CLImate();
+        $this->commandFactory = $commandFactory ?? static fn(string $class) => new $class();
 
         $this->climate->description(sprintf('<bold>Formwork <cyan>%s</cyan></bold> CLI', App::VERSION));
 
@@ -110,7 +120,7 @@ final class FormworkCommandRunner implements CommandInterface
                 /** @var list<string> */
                 $arguments = [sprintf('%s %s', $argv[0], $command), ...array_slice($argv, 2)];
 
-                return (new $commandClass())->run($arguments);
+                return ($this->commandFactory)($commandClass)->run($arguments);
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
                 return 1;

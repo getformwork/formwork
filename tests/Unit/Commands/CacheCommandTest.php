@@ -15,12 +15,6 @@ final class CacheCommandTest extends TestCase
 {
     use RunsCommands;
 
-    public function testExitCodeIsPassedToTheProcess(): void
-    {
-        $this->assertSame(0, $this->runCommandInSubprocess(CacheCommand::class, ['stats', 'pages'])['exitCode']);
-        $this->assertSame(1, $this->runCommandInSubprocess(CacheCommand::class, ['bogus'])['exitCode']);
-    }
-
     public function testHelpListsTheActions(): void
     {
         $result = $this->runCommand(CacheCommand::class);

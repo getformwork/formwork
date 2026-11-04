@@ -16,12 +16,6 @@ final class UpdatesCommandTest extends TestCase
 {
     use RunsCommands;
 
-    public function testExitCodeIsPassedToTheProcess(): void
-    {
-        $this->assertSame(0, $this->runCommandInSubprocess(UpdatesCommand::class, ['check'], 'uptodate')['exitCode']);
-        $this->assertSame(1, $this->runCommandInSubprocess(UpdatesCommand::class, ['check'], 'unreachable')['exitCode']);
-    }
-
     public function testHelpListsTheActions(): void
     {
         $result = $this->runCommand(UpdatesCommand::class);

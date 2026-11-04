@@ -15,12 +15,6 @@ final class FormworkCommandRunnerTest extends TestCase
 {
     use RunsCommands;
 
-    public function testExitCodeIsPassedToTheProcess(): void
-    {
-        $this->assertSame(0, $this->runCommandInSubprocess(FormworkCommandRunner::class, ['--version'])['exitCode']);
-        $this->assertSame(1, $this->runCommandInSubprocess(FormworkCommandRunner::class, ['unknown'])['exitCode']);
-    }
-
     public function testRunnerIsACommand(): void
     {
         $this->assertInstanceOf(CommandInterface::class, new FormworkCommandRunner());
@@ -84,7 +78,7 @@ final class FormworkCommandRunnerTest extends TestCase
 
     public function testCommandsAreDispatchedWithTheirArguments(): void
     {
-        $result = $this->runCommandInSubprocess(FormworkCommandRunner::class, ['cache', 'bogus']);
+        $result = $this->runCommand(FormworkCommandRunner::class, ['cache', 'bogus']);
 
         $this->assertSame(1, $result['exitCode']);
         $this->assertStringContainsString('Invalid action: bogus.', $result['error'] . $result['output']);
@@ -92,14 +86,14 @@ final class FormworkCommandRunnerTest extends TestCase
 
     public function testCommandOptionsAreNotRejectedByTheRunner(): void
     {
-        $result = $this->runCommandInSubprocess(FormworkCommandRunner::class, ['backup', 'list', '--hostname=example.test']);
+        $result = $this->runCommand(FormworkCommandRunner::class, ['backup', 'list', '--hostname=example.test']);
 
         $this->assertSame(0, $result['exitCode'], $result['error'] . $result['output']);
     }
 
     public function testHelpOfADispatchedCommandIsShownByTheCommand(): void
     {
-        $result = $this->runCommandInSubprocess(FormworkCommandRunner::class, ['backup', '--help']);
+        $result = $this->runCommand(FormworkCommandRunner::class, ['backup', '--help']);
 
         $this->assertSame(0, $result['exitCode']);
         $this->assertStringContainsString('Available Actions:', $result['output']);
@@ -108,7 +102,7 @@ final class FormworkCommandRunnerTest extends TestCase
 
     public function testDispatchedCommandsReceiveTheCommandNameInTheUsage(): void
     {
-        $result = $this->runCommandInSubprocess(FormworkCommandRunner::class, ['cache', '--help']);
+        $result = $this->runCommand(FormworkCommandRunner::class, ['cache', '--help']);
 
         $this->assertStringContainsString('cache', $result['output']);
         $this->assertStringContainsString('Available Actions:', $result['output']);

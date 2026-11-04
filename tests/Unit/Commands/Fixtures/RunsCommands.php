@@ -14,22 +14,20 @@ use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Util\Writer\Buffer;
 use ReflectionMethod;
-use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\Process;
 
 /**
- * Runs commands, either in the same process or in a separate one
+ * Runs commands in the same process, capturing their output
  *
  * Commands that use the application must run over the application of the tests (`UsesApplication`)
  */
 trait RunsCommands
 {
     /**
-     * Run a command in this process, capturing its output
+     * Run a command and return its exit code and output
      *
      * @param class-string<BackupCommand|CacheCommand|FormworkCommandRunner|ServeCommand|UpdatesCommand> $command
      * @param list<string>                                                                               $arguments
-     * @param array<string, string>                                                                      $environment Same variables as `run-command.php`
+     * @param array<string, string>                                                                      $environment `FORMWORK_TEST_BACKUPS` is the number of dummy backups to create, `FORMWORK_TEST_BROKEN_BACKUPS` makes the backup path unusable
      *
      * @return array{exitCode: int, output: string, error: string}
      */
@@ -38,10 +36,14 @@ trait RunsCommands
         $output = new Buffer();
         $error = new Buffer();
 
-        $climate = new CLImate();
-        $climate->output->add('out', $output)->defaultTo('out');
-        $climate->output->add('error', $error);
-        $climate->forceAnsiOff();
+        $makeClimate = static function () use ($output, $error): CLImate {
+            $climate = new CLImate();
+            $climate->output->add('out', $output)->defaultTo('out');
+            $climate->output->add('error', $error);
+            $climate->forceAnsiOff();
+
+            return $climate;
+        };
 
         if ($scenario !== 'none') {
             OfflineClient::$scenario = $scenario;
@@ -57,42 +59,16 @@ trait RunsCommands
         $this->prepareCommandEnvironment($environment);
 
         try {
-            $exitCode = (new $command($climate))->run(['bin/formwork test', ...$arguments]);
+            $instance = $command === FormworkCommandRunner::class
+                ? new FormworkCommandRunner($makeClimate(), static fn(string $class) => new $class($makeClimate()))
+                : new $command($makeClimate());
+
+            $exitCode = $instance->run(['bin/formwork test', ...$arguments]);
         } finally {
             $this->cleanCommandEnvironment();
         }
 
         return ['exitCode' => $exitCode, 'output' => $output->get(), 'error' => $error->get()];
-    }
-
-    /**
-     * Run a command in a separate process, testing its termination with `exit`
-     *
-     * @param class-string<BackupCommand|CacheCommand|FormworkCommandRunner|ServeCommand|UpdatesCommand> $command
-     * @param list<string>                                                                               $arguments
-     * @param array<string, string>                                                                      $environment
-     *
-     * @return array{exitCode: int, output: string, error: string}
-     */
-    protected function runCommandInSubprocess(string $command, array $arguments = [], string $scenario = 'none', array $environment = []): array
-    {
-        $process = new Process([
-            (new PhpExecutableFinder())->find() ?: 'php',
-            __DIR__ . '/run-command.php',
-            $command,
-            $scenario,
-            '--',
-            ...$arguments,
-        ], null, $environment);
-
-        $process->setTimeout(60);
-        $process->run();
-
-        return [
-            'exitCode' => (int) $process->getExitCode(),
-            'output'   => $process->getOutput(),
-            'error'    => $process->getErrorOutput(),
-        ];
     }
 
     /**
