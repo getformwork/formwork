@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 const ICONS_DIR = path.resolve(import.meta.dirname, "../../assets/icons/svg/");
-const OUTPUT_FILE = path.resolve(import.meta.dirname, "../ts/components/icons.ts");
+const OUTPUT_FILE = path.resolve(import.meta.dirname, "../ts/components/ui/icons.ts");
 
 function sanitizeName(filename) {
     return filename
