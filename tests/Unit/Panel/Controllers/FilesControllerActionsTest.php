@@ -9,6 +9,7 @@ use Formwork\Fields\FieldFactory;
 use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
+use Formwork\Http\Files\UploadedFile;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
@@ -26,6 +27,7 @@ use Formwork\Router\Router;
 use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
+use Formwork\Tests\Unit\Panel\Fixtures\CreatesUploads;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -37,6 +39,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class FilesControllerActionsTest extends TestCase
 {
     use BuildsPanelControllers;
+    use CreatesUploads;
 
     private string $contentPath;
 
@@ -367,6 +370,162 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertSame('bee', FileSystem::read($this->contentPath . '/b.txt'));
     }
 
+    public function testUploadingFilesRequiresThePermission(): void
+    {
+        $response = $this->controller(['panel.files.upload' => false])->upload($this->createStub(FileUploader::class));
+
+        $this->assertSame(ResponseStatus::Forbidden, $response->status());
+    }
+
+    public function testFilesCanBeUploadedToTheSite(): void
+    {
+        $destination = TESTS_TMP_PATH . '/site-files';
+
+        $response = $this->upload(['parent' => '.'], [$this->uploadedImage('files')], $destination);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('success', $this->lastNotificationType());
+        $this->assertFileExists($destination . '/photo.png');
+    }
+
+    public function testSeveralFilesCanBeUploaded(): void
+    {
+        $destination = TESTS_TMP_PATH . '/site-files';
+
+        $this->upload(['parent' => '.'], [$this->uploadedImage('files', 'first.png'), $this->uploadedImage('files', 'second.png')], $destination);
+
+        $this->assertFileExists($destination . '/first.png');
+        $this->assertFileExists($destination . '/second.png');
+    }
+
+    public function testFilesOfADisallowedTypeAreNotUploaded(): void
+    {
+        $destination = TESTS_TMP_PATH . '/site-files';
+
+        $response = $this->upload(['parent' => '.'], [$this->uploadedText('files')], $destination);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastNotificationType());
+        $this->assertFileDoesNotExist($destination . '/notes.txt');
+    }
+
+    public function testExistingFilesAreNotOverwrittenByUploads(): void
+    {
+        $destination = TESTS_TMP_PATH . '/site-files';
+
+        $this->upload(['parent' => '.'], [$this->uploadedImage('files')], $destination);
+        $original = FileSystem::read($destination . '/photo.png');
+
+        $response = $this->upload(['parent' => '.'], [$this->uploadedImage('files')], $destination);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastNotificationType());
+        $this->assertSame($original, FileSystem::read($destination . '/photo.png'));
+    }
+
+    public function testUploadingWithoutFilesIsAnInvalidForm(): void
+    {
+        $destination = TESTS_TMP_PATH . '/site-files';
+
+        $response = $this->upload(['parent' => '.'], [], $destination);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastNotificationType());
+        $this->assertFileDoesNotExist($destination);
+    }
+
+    public function testReplacingRequiresTheFileOfTheSameType(): void
+    {
+        $response = $this->replace('b.txt', [$this->uploadedImage('file', 'other.png')]);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastNotificationType());
+        $this->assertSame('bee', FileSystem::read($this->contentPath . '/b.txt'));
+    }
+
+    public function testFilesCanBeReplaced(): void
+    {
+        $response = $this->replace('b.txt', [$this->uploadedText('file', 'new.txt')]);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('success', $this->lastNotificationType());
+        $this->assertSame('plain text', FileSystem::read($this->contentPath . '/b.txt'));
+        $this->assertFileDoesNotExist($this->contentPath . '/new.txt');
+    }
+
+    public function testFilesCanBeReplacedWithAScriptRequest(): void
+    {
+        $response = $this->replace('b.txt', [$this->uploadedText('file', 'new.txt')], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::OK, $response->status(), $response->content());
+        $this->assertSame('b.txt', Json::parse($response->content())['data']['filename']);
+        $this->assertSame('plain text', FileSystem::read($this->contentPath . '/b.txt'));
+    }
+
+    public function testOnlyOneFileCanReplaceAFile(): void
+    {
+        $response = $this->replace('b.txt', [$this->uploadedText('file', 'one.txt'), $this->uploadedText('file', 'two.txt')]);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastNotificationType());
+        $this->assertSame('bee', FileSystem::read($this->contentPath . '/b.txt'));
+    }
+
+    public function testReplacingKeepsTheMetadataOfTheFile(): void
+    {
+        $this->replace('a.txt', [$this->uploadedText('file', 'new.txt')]);
+
+        $this->assertFileExists($this->contentPath . '/a.txt.meta.yaml');
+        $this->assertSame("title: Letter A\n", FileSystem::read($this->contentPath . '/a.txt.meta.yaml'));
+    }
+
+    /**
+     * @param list<UploadedFile>    $files
+     * @param array<string, string> $server
+     */
+    private function replace(string $filename, array $files, array $server = []): Response
+    {
+        return $this->controller(files: ['file' => $files], server: $server, services: [FileUploader::class => $this->uploader([$this->contentPath])])
+            ->replace($this->params($filename), $this->uploader([$this->contentPath]));
+    }
+
+    /**
+     * @param array<string, string> $input
+     * @param list<UploadedFile>    $files
+     */
+    private function upload(array $input, array $files, string $destination): Response
+    {
+        $fieldFactory = App::instance()->getService(FieldFactory::class);
+
+        $modal = $this->createStub(Modal::class);
+        $modal->method('fields')->willReturnCallback(fn(): FieldCollection => new FieldCollection([
+            'files'  => $fieldFactory->make('uploadFileModal.files', ['type' => 'upload', 'multiple' => true]),
+            'parent' => $fieldFactory->make('uploadFileModal.parent', ['type' => 'page', 'required' => true, 'allowSite' => true]),
+        ]));
+
+        $modals = $this->createStub(Modals::class);
+        $modals->method('get')->willReturn($modal);
+
+        $uploader = $this->uploader([$destination]);
+
+        if ($files !== [] && !FileSystem::isDirectory($destination, assertExists: false)) {
+            FileSystem::createDirectory($destination);
+        }
+
+        $controller = $this->makeController(
+            FilesController::class,
+            ['panel.files' => true],
+            ['files' => ['paths' => ['site' => $destination]]],
+            ['uploadFileModal' => $input],
+            [Site::class => $this->site, Modals::class => $modals, FileUploader::class => $uploader],
+            files: $files === [] ? [] : ['uploadFileModal' => ['files' => $files]],
+            server: ['REQUEST_METHOD' => 'POST'],
+        );
+
+        return $controller->upload($uploader);
+    }
+
     private function files(): FileCollection
     {
         $factory = $this->fileFactory();
@@ -426,8 +585,9 @@ final class FilesControllerActionsTest extends TestCase
      * @param array<string, mixed>  $input
      * @param array<string, string> $server
      * @param array<string, object> $services
+     * @param array<string, mixed>  $files
      */
-    private function controller(array $permissions = ['panel.files' => true], array $input = [], array $server = [], array $services = []): FilesController
+    private function controller(array $permissions = ['panel.files' => true], array $input = [], array $server = [], array $services = [], array $files = []): FilesController
     {
         return $this->makeController(
             FilesController::class,
@@ -435,6 +595,7 @@ final class FilesControllerActionsTest extends TestCase
             input: $input,
             services: [Site::class => $this->site, ...$services],
             server: $server,
+            files: $files,
         );
     }
 }

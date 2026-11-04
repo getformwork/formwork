@@ -7,6 +7,7 @@ use Formwork\Cms\Site;
 use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
+use Formwork\Files\Services\FileUploader;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
@@ -24,6 +25,7 @@ use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
+use Formwork\Tests\Unit\Panel\Fixtures\CreatesUploads;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\User;
@@ -37,6 +39,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 final class PagesControllerActionsTest extends TestCase
 {
     use BuildsPanelControllers;
+    use CreatesUploads;
 
     private string $pagesPath;
 
@@ -479,6 +482,64 @@ final class PagesControllerActionsTest extends TestCase
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
     }
 
+    public function testFilesCanBeUploadedToPages(): void
+    {
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->uploadedImage()]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::OK, $response->status(), $response->content());
+        $this->assertFileExists($this->pagesPath . '/about/photo.png');
+
+        $data = array_values(Json::parse($response->content())['data']);
+
+        $this->assertCount(1, $data);
+        $this->assertSame('photo.png', $data[0]['name']);
+        $this->assertSame('image/png', $data[0]['mimeType']);
+        $this->assertSame('image', $data[0]['type']);
+        $this->assertSame(['info', 'rename', 'replace', 'delete'], array_keys($data[0]['actions']));
+    }
+
+    public function testSeveralFilesCanBeUploadedToPages(): void
+    {
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->uploadedImage(clientName: 'first.png'), $this->uploadedImage(clientName: 'second.png')]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertSame(ResponseStatus::OK, $response->status(), $response->content());
+        $this->assertFileExists($this->pagesPath . '/about/first.png');
+        $this->assertFileExists($this->pagesPath . '/about/second.png');
+        $this->assertCount(2, Json::parse($response->content())['data']);
+    }
+
+    public function testUploadingFilesTouchesTheContentFileOfThePage(): void
+    {
+        $content = $this->site->findPage('about')?->contentFile()?->path() ?? '';
+        touch($content, 1000);
+
+        $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->uploadedImage()]])->upload(new RouteParams(['page' => 'about']));
+
+        clearstatcache();
+        $this->assertGreaterThan(1000, filemtime($content));
+    }
+
+    public function testFilesOfADisallowedTypeAreNotUploadedToPages(): void
+    {
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->uploadedText()]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertNotSame(ResponseStatus::OK, $response->status());
+        $this->assertFileDoesNotExist($this->pagesPath . '/about/notes.txt');
+    }
+
+    public function testUploadingAnExistingFileToAPageIsReportedAsAnError(): void
+    {
+        $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->uploadedImage()]])->upload(new RouteParams(['page' => 'about']));
+
+        $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'], files: ['files' => [$this->uploadedImage()]])->upload(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
+        $this->assertSame('error', Json::parse($response->content())['status']);
+    }
+
     public function testUploadingWithoutFilesFails(): void
     {
         $response = $this->controller(server: ['REQUEST_METHOD' => 'POST'])->upload(new RouteParams(['page' => 'about']));
@@ -581,8 +642,9 @@ final class PagesControllerActionsTest extends TestCase
      * @param array<string, string> $server
      * @param array<string, string> $query
      * @param array<string, object> $services
+     * @param array<string, mixed>  $files
      */
-    private function controller(array $permissions = ['panel.pages' => true, 'panel.files.upload' => true], array $input = [], array $server = [], array $query = [], array $services = [], ?User $user = null): PagesController
+    private function controller(array $permissions = ['panel.pages' => true, 'panel.files.upload' => true], array $input = [], array $server = [], array $query = [], array $services = [], ?User $user = null, array $files = []): PagesController
     {
         $fieldFactory = App::instance()->getService(FieldFactory::class);
 
@@ -604,8 +666,9 @@ final class PagesControllerActionsTest extends TestCase
             PagesController::class,
             $permissions,
             input: $input,
-            services: [Site::class => $this->site, Modals::class => $modals, ...$services],
+            services: [Site::class => $this->site, Modals::class => $modals, FileUploader::class => $this->uploader([$this->pagesPath], $this->pagesPath), ...$services],
             user: $user,
+            files: $files,
             query: $query,
             server: $server,
         );

@@ -169,6 +169,16 @@ final class PanelTest extends TestCase
         $this->assertSame([], $panel->notifications());
     }
 
+    public function testNotificationsOfTheSameTypeAreKept(): void
+    {
+        $panel = $this->panel();
+
+        $panel->notify('Image uploaded', 'success');
+        $panel->notify('Profile saved', 'success');
+
+        $this->assertSame(['Image uploaded', 'Profile saved'], array_column($panel->notifications(), 'text'));
+    }
+
     public function testNotificationsDefaultToTheInfoType(): void
     {
         $panel = $this->panel();

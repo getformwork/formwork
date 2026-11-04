@@ -61,6 +61,7 @@ trait BuildsPanelControllers
      * @param array<string, mixed>  $input                Request input
      * @param array<string, string> $query                Request query
      * @param array<string, string> $server               Additional or replacing server variables
+     * @param array<string, mixed>  $files                Uploaded files of the request
      * @param bool                  $previousSession      Whether the request has a previous session
      * @param bool                  $realErrorsController Whether to build the real errors controller when a controller forwards to it
      * @param array<string, object> $services             Additional or replacing container services
@@ -69,7 +70,7 @@ trait BuildsPanelControllers
      *
      * @return T
      */
-    protected function makeController(string $class, array $permissions, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false): object
+    protected function makeController(string $class, array $permissions, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = []): object
     {
         $app = App::instance();
 
@@ -89,6 +90,7 @@ trait BuildsPanelControllers
         ]);
         $request->session()->setPath($sessionPath);
         $request->previousSession = $previousSession;
+        $request->withFiles($files);
         $this->closePanelSession();
         $this->panelRequest = $request;
 

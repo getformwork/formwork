@@ -446,9 +446,14 @@ final class PagesController extends AbstractController
 
         $fieldCollection = $page->fields()->filterBy('type', 'upload');
 
-        $form = $this->form('file-uploader', $fieldCollection)
-            ->setDefaultUploadsDestination($page->contentPath())
-            ->processRequest($this->request);
+        try {
+            $form = $this->form('file-uploader', $fieldCollection)
+                ->setDefaultUploadsDestination($page->contentPath())
+                ->processRequest($this->request);
+        } catch (TranslatedException $e) {
+            // The uploads are processed with the form, e.g. a file of a disallowed type or with an existing name
+            return JsonResponse::error($this->translate('upload.error', $this->translate($e->getLanguageString())), ResponseStatus::InternalServerError);
+        }
 
         if (!$form->isSubmitted() || !$form->isValid() || $form->uploadedFiles() === []) {
             return JsonResponse::error($this->translate('panel.files.cannotUpload.invalidFields'), ResponseStatus::InternalServerError);

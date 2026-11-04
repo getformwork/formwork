@@ -7,12 +7,16 @@ use Formwork\Cms\Site;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Controllers\UsersController;
+use Formwork\Parsers\Yaml;
 use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
+use Formwork\Tests\Unit\Panel\Fixtures\CreatesUploads;
+use Formwork\Tests\Unit\Panel\Fixtures\MovableUploadedFile;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Permissions;
@@ -30,10 +34,16 @@ use ReflectionProperty;
 final class UsersControllerActionsTest extends TestCase
 {
     use BuildsPanelControllers;
+    use CreatesUploads;
 
     private string $imagesPath;
 
     private string $secretFile;
+
+    /**
+     * @var list<string>
+     */
+    private array $existingUserImages = [];
 
     private ?Users $users = null;
 
@@ -49,12 +59,21 @@ final class UsersControllerActionsTest extends TestCase
         FileSystem::write($this->imagesPath . '/alice.png', 'image');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/images/nested');
 
+        $this->existingUserImages = glob($this->userImagesPath() . '/*') ?: [];
+
         $this->secretFile = TESTS_TMP_PATH . '/secret.txt';
         FileSystem::write($this->secretFile, 'secret');
     }
 
     protected function tearDown(): void
     {
+        // Images of the users are stored in the images directory of the application
+        foreach (glob($this->userImagesPath() . '/*') ?: [] as $image) {
+            if (!in_array($image, $this->existingUserImages, true)) {
+                FileSystem::delete($image);
+            }
+        }
+
         foreach (['alice', 'bob', 'carol'] as $username) {
             if (FileSystem::exists($this->accountFile($username))) {
                 FileSystem::delete($this->accountFile($username));
@@ -247,6 +266,100 @@ final class UsersControllerActionsTest extends TestCase
         yield 'absolute path' => ['/etc/passwd'];
     }
 
+    public function testProfilesCanBeSavedWithAnImage(): void
+    {
+        $response = $this->saveProfile(['fullname' => 'Alice Changed'], $this->uploadedImage('image', 'avatar.png'));
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertStringEndsWith('/route/panel.users.profile', $response->headers()->get('Location'));
+        $this->assertSame(['success', 'success'], $this->notificationTypes());
+
+        $files = array_diff(glob($this->userImagesPath() . '/*.png') ?: [], $this->existingUserImages);
+        $account = Yaml::parseFile($this->accountFile('alice'));
+
+        $this->assertCount(1, $files);
+        $this->assertSame('Alice Changed', $account['fullname']);
+        $this->assertContains($account['image'], array_map('basename', $files));
+    }
+
+    public function testUploadedImagesAreSquared(): void
+    {
+        $this->saveProfile([], $this->uploadedImage('image', 'avatar.png'));
+
+        $account = Yaml::parseFile($this->accountFile('alice'));
+        [$width, $height] = getimagesize($this->userImagesPath() . '/' . $account['image']) ?: [0, 0];
+
+        $this->assertSame($width, $height);
+        $this->assertSame(App::instance()->config()->getInt('system.panel.userImageSize'), $width);
+    }
+
+    public function testImagesOfADisallowedTypeAreNotSaved(): void
+    {
+        $response = $this->saveProfile(['fullname' => 'Alice Changed'], $this->uploadedText('image', 'avatar.txt'));
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(['error'], $this->notificationTypes());
+        $this->assertArrayNotHasKey('image', Yaml::parseFile($this->accountFile('alice')));
+        $this->assertNotSame('Alice Changed', Yaml::parseFile($this->accountFile('alice'))['fullname'] ?? null);
+    }
+
+    public function testProfilesCanBeSavedWithoutAnImage(): void
+    {
+        $response = $this->saveProfile(['fullname' => 'Alice Changed'], null);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame(['success'], $this->notificationTypes());
+        $this->assertSame('Alice Changed', Yaml::parseFile($this->accountFile('alice'))['fullname']);
+    }
+
+    /**
+     * @param array<string, string> $overrides
+     */
+    private function saveProfile(array $overrides, ?MovableUploadedFile $image): Response
+    {
+        $uploader = $this->uploader([$this->userImagesPath()]);
+        $current = App::instance()->getService(UserFactory::class)->make([
+            'username'     => 'tester',
+            'fullname'     => 'Tester',
+            'email'        => 'tester@example.test',
+            'role'         => 'admin',
+            'language'     => 'en',
+            'passwordHash' => password_hash('password', PASSWORD_DEFAULT),
+        ]);
+
+        $site = $this->createStub(Site::class);
+        $site->method('users')->willReturn($this->users());
+
+        $input = ['fullname' => 'Alice', 'email' => 'alice@example.test', 'language' => 'en', 'role' => 'admin', 'colorScheme' => 'light', ...$overrides];
+
+        $controller = $this->makeController(
+            UsersController::class,
+            ['panel.users' => true],
+            ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->userImagesPath()]]],
+            $input,
+            [Site::class => $site, FileUploader::class => $uploader],
+            $current,
+            files: $image === null ? [] : ['image' => $image],
+            server: ['REQUEST_METHOD' => 'POST'],
+        );
+
+        return $controller->profile(new RouteParams(['user' => 'alice']), $uploader);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function notificationTypes(): array
+    {
+        $types = [];
+
+        foreach ($this->panelRequest?->session()->messages()->getAll() ?? [] as $type => $messages) {
+            $types = [...$types, ...array_fill(0, count($messages), $type)];
+        }
+
+        return $types;
+    }
+
     /**
      * Create users and their account files, and return the users
      */
@@ -280,6 +393,11 @@ final class UsersControllerActionsTest extends TestCase
         }
 
         return $this->users = new Users($users, $app->getService(Users::class)->roles());
+    }
+
+    private function userImagesPath(): string
+    {
+        return App::instance()->config()->getString('system.users.paths.images');
     }
 
     private function accountsPath(): string
