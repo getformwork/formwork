@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
+use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Http\JsonResponse;
@@ -11,12 +12,16 @@ use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Pages\PageFactory;
+use Formwork\Panel\ContentHistory\ContentHistory;
+use Formwork\Panel\ContentHistory\ContentHistoryEvent;
+use Formwork\Panel\ContentHistory\ContentHistoryItem;
 use Formwork\Panel\Controllers\PagesController;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Parsers\Json;
 use Formwork\Router\RouteParams;
 use Formwork\Schemes\Schemes;
+use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
 use Formwork\Tests\UsesApplication;
@@ -33,12 +38,28 @@ final class PagesControllerActionsTest extends TestCase
 {
     use BuildsPanelControllers;
 
+    private string $pagesPath;
+
+    private Site $site;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $app = App::instance();
+
         // `FieldFactory` is registered lazily by the schemes service loader
-        App::instance()->getService(Schemes::class);
+        $app->getService(Schemes::class);
+
+        // Each test works on its own copy of the pages, so that they can be changed freely
+        $this->pagesPath = TESTS_TMP_PATH . '/pages';
+        FileSystem::copyDirectory($app->config()->getString('system.pages.path'), $this->pagesPath);
+
+        $this->site = $app->getService(Container::class)->build(Site::class, ['data' => [
+            ...$app->config()->getArray('site'),
+            'contentPath' => $this->pagesPath,
+        ]]);
+        $this->site->load();
     }
 
     protected function tearDown(): void
@@ -178,7 +199,7 @@ final class PagesControllerActionsTest extends TestCase
 
     public function testInvalidPagesAreNotSaved(): void
     {
-        $content = App::instance()->site()->findPage('about')?->contentFile()?->path();
+        $content = $this->site->findPage('about')?->contentFile()?->path();
 
         $this->assertNotNull($content);
 
@@ -216,7 +237,7 @@ final class PagesControllerActionsTest extends TestCase
 
     public function testPreviewDoesNotChangeThePage(): void
     {
-        $page = App::instance()->site()->findPage('about');
+        $page = $this->site->findPage('about');
 
         $this->assertNotNull($page);
 
@@ -231,32 +252,138 @@ final class PagesControllerActionsTest extends TestCase
 
     public function testPagesCanBeEdited(): void
     {
-        $page = App::instance()->site()->findPage('about');
+        $page = $this->site->findPage('about');
 
         $this->assertNotNull($page);
         $this->assertNotNull($page->contentPath());
 
-        $content = $page->contentFile()?->path();
-        $history = $page->contentPath() . '/.history';
-        $original = FileSystem::read((string) $content);
-        $data = ['title' => $page->get('title'), 'content' => $page->get('content')];
+        $response = $this->controller(input: $this->pageInput('about', ['title' => 'About us', 'content' => 'New content']), server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->edit(new RouteParams(['page' => 'about']));
 
-        try {
-            $response = $this->controller(input: $this->pageInput('about', ['title' => 'About us', 'content' => 'New content']), server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->edit(new RouteParams(['page' => 'about']));
+        $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
+        $this->assertStringEndsWith('/route/panel.pages.edit', $response->headers()->get('Location'));
+        $this->assertSame('success', $this->lastNotificationType());
+        $this->assertStringContainsString('About us', FileSystem::read((string) $page->contentFile()?->path()));
+        $this->assertFileExists($page->contentPath() . '/.history');
+    }
 
-            $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
-            $this->assertStringEndsWith('/route/panel.pages.edit', $response->headers()->get('Location'));
-            $this->assertStringContainsString('About us', FileSystem::read((string) $content));
-            $this->assertFileExists($history);
-        } finally {
-            // The page is shared with the other tests, restore also the loaded data
-            $page->setMultiple($data);
-            FileSystem::write((string) $content, $original);
+    public function testEditingARecordsTheUserInTheHistory(): void
+    {
+        $this->controller(input: $this->pageInput('about', ['title' => 'About us']), server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->edit(new RouteParams(['page' => 'about']));
 
-            if (FileSystem::exists($history)) {
-                FileSystem::delete($history);
-            }
-        }
+        $history = new ContentHistory($this->site->findPage('about')?->contentPath() ?? '');
+
+        $this->assertInstanceOf(ContentHistoryItem::class, $item = $history->lastItem());
+        $this->assertSame('tester', $item->user());
+        $this->assertSame(ContentHistoryEvent::Edited, $item->event());
+    }
+
+    public function testUnchangedPagesAreNotAddedToTheHistory(): void
+    {
+        $this->controller(input: $this->pageInput('about'), server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->edit(new RouteParams(['page' => 'about']));
+
+        $this->assertFileDoesNotExist(($this->site->findPage('about')?->contentPath() ?? '') . '/.history');
+    }
+
+    public function testPagesCanBePublishedWhileEditing(): void
+    {
+        $page = $this->site->findPage('about');
+
+        $this->assertNotNull($page);
+
+        $this->controller(input: $this->pageInput('about', ['published' => '0']), query: ['publish' => '1'], server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->edit(new RouteParams(['page' => 'about']));
+
+        $this->assertTrue($page->get('published'));
+        $this->assertFileExists(($page->contentPath() ?? '') . '/.history');
+    }
+
+    public function testNewPagesCanBeCreated(): void
+    {
+        $response = $this->controller(input: ['newPageModal' => $this->newPageInput()], server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->create($this->pageFactory());
+
+        $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
+        $this->assertStringEndsWith('/route/panel.pages.edit', $response->headers()->get('Location'));
+        $this->assertSame('success', $this->lastNotificationType());
+        $this->assertContains('fresh', array_map(fn(string $directory): string => preg_replace('/^\d+-/', '', basename($directory)) ?? '', glob($this->pagesPath . '/*', GLOB_ONLYDIR) ?: []));
+    }
+
+    public function testNewPagesAreUnpublishedAndRecordedInTheHistory(): void
+    {
+        $this->controller(input: ['newPageModal' => $this->newPageInput()], server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->create($this->pageFactory());
+
+        $directory = glob($this->pagesPath . '/*fresh', GLOB_ONLYDIR)[0] ?? null;
+
+        $this->assertNotNull($directory);
+        $this->assertStringContainsString('published: false', FileSystem::read(glob($directory . '/*.md')[0] ?? ''));
+        $this->assertTrue((new ContentHistory($directory))->isJustCreated());
+    }
+
+    public function testPagesCanBeDuplicated(): void
+    {
+        $response = $this->controller(input: ['duplicatePageModal' => ['title' => 'About copy', 'slug' => 'about-copy']], server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator())->duplicate(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
+        $this->assertSame('success', $this->lastNotificationType());
+
+        $directory = glob($this->pagesPath . '/*about-copy', GLOB_ONLYDIR)[0] ?? null;
+
+        $this->assertNotNull($directory);
+        $this->assertStringContainsString('About copy', FileSystem::read(glob($directory . '/*.md')[0] ?? ''));
+        $this->assertDirectoryExists($this->site->findPage('about')?->contentPath() ?? '');
+    }
+
+    public function testPagesCanBeDeleted(): void
+    {
+        $path = $this->site->findPage('about')?->contentPath() ?? '';
+
+        $response = $this->controller()->delete(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('success', $this->lastNotificationType());
+        $this->assertDirectoryDoesNotExist($path);
+        $this->assertDirectoryExists($this->pagesPath . '/blog');
+    }
+
+    public function testPagesCanBeDeletedWithAScriptRequest(): void
+    {
+        $path = $this->site->findPage('about')?->contentPath() ?? '';
+
+        $response = $this->controller(server: ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'])->delete(new RouteParams(['page' => 'about']));
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertDirectoryDoesNotExist($path);
+    }
+
+    public function testPagesThatCannotBeDeletedAreKept(): void
+    {
+        $path = $this->site->findPage('error')?->contentPath() ?? '';
+
+        $response = $this->controller(server: ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'])->delete(new RouteParams(['page' => 'error']));
+
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
+        $this->assertDirectoryExists($path);
+    }
+
+    public function testPagesAreReordered(): void
+    {
+        $this->numberPages();
+
+        $response = $this->controller(input: ['page' => '/blog/', 'before' => '/about/', 'parent' => '.'])->reorder();
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertDirectoryExists($this->pagesPath . '/1-blog');
+        $this->assertDirectoryExists($this->pagesPath . '/2-about');
+    }
+
+    public function testReorderingKeepsThePagesThatAreNotOrderable(): void
+    {
+        $this->numberPages();
+
+        $this->controller(input: ['page' => '/blog/', 'before' => '/about/', 'parent' => '.'])->reorder();
+
+        $this->assertDirectoryExists($this->pagesPath . '/error');
+        $this->assertDirectoryExists($this->pagesPath . '/index');
     }
 
     public function testReorderingPagesRequiresThePermission(): void
@@ -278,7 +405,7 @@ final class PagesControllerActionsTest extends TestCase
 
     public function testReorderingAnUnknownPageFails(): void
     {
-        $response = $this->controller(input: ['page' => 'missing', 'before' => 'about', 'parent' => '.'])->reorder();
+        $response = $this->controller(input: ['page' => '/missing/', 'before' => '/about/', 'parent' => '.'])->reorder();
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
         $this->assertSame('error', Json::parse($response->content())['status']);
@@ -286,21 +413,21 @@ final class PagesControllerActionsTest extends TestCase
 
     public function testReorderingBeforeAnUnknownPageFails(): void
     {
-        $response = $this->controller(input: ['page' => 'about', 'before' => 'missing', 'parent' => '.'])->reorder();
+        $response = $this->controller(input: ['page' => '/about/', 'before' => '/missing/', 'parent' => '.'])->reorder();
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
     }
 
     public function testReorderingInAnUnknownParentFails(): void
     {
-        $response = $this->controller(input: ['page' => 'about', 'before' => 'blog', 'parent' => 'missing'])->reorder();
+        $response = $this->controller(input: ['page' => '/about/', 'before' => '/blog/', 'parent' => 'missing'])->reorder();
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
     }
 
     public function testReorderingInAPageWithoutChildrenFails(): void
     {
-        $response = $this->controller(input: ['page' => 'about', 'before' => 'blog', 'parent' => 'about'])->reorder();
+        $response = $this->controller(input: ['page' => '/about/', 'before' => '/blog/', 'parent' => 'about'])->reorder();
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
     }
@@ -310,7 +437,7 @@ final class PagesControllerActionsTest extends TestCase
         $response = $this->controller(['panel.pages.delete' => false])->delete(new RouteParams(['page' => 'about']));
 
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertDirectoryExists(App::instance()->site()->findPage('about')?->contentPath() ?? '');
+        $this->assertDirectoryExists($this->site->findPage('about')?->contentPath() ?? '');
     }
 
     public function testUnknownPagesCannotBeDeleted(): void
@@ -334,7 +461,7 @@ final class PagesControllerActionsTest extends TestCase
         $response = $this->controller(server: ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest'])->delete(new RouteParams(['page' => 'about', 'language' => 'xx']));
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
-        $this->assertDirectoryExists(App::instance()->site()->findPage('about')?->contentPath() ?? '');
+        $this->assertDirectoryExists($this->site->findPage('about')?->contentPath() ?? '');
     }
 
     public function testUploadingFilesRequiresThePermission(): void
@@ -369,14 +496,24 @@ final class PagesControllerActionsTest extends TestCase
      */
     private function pageInput(string $route, array $overrides = []): array
     {
-        $page = App::instance()->site()->findPage($route);
+        $page = $this->site->findPage($route);
 
         $this->assertNotNull($page);
 
-        $input = ['slug' => $page->slug()];
+        $input = ['slug' => $page->slug(), 'parent' => $page->parent() instanceof Site ? '.' : (string) $page->parent()?->route(), 'template' => $page->template()->name()];
 
         foreach ($page->fields() as $name => $field) {
+            // The parent and the template are the ones of the page, files are not submitted by the editor
+            if (in_array($name, ['parent', 'template', 'files', 'slug'], true)) {
+                continue;
+            }
+
             $value = $field->value();
+
+            if ($value === null) {
+                continue;
+            }
+
             $input[$name] = match (true) {
                 is_bool($value)   => $value ? '1' : '0',
                 is_scalar($value) => (string) $value,
@@ -403,6 +540,29 @@ final class PagesControllerActionsTest extends TestCase
         return $directories;
     }
 
+    /**
+     * Number some pages, so that they can be reordered
+     */
+    private function numberPages(): void
+    {
+        rename($this->pagesPath . '/about', $this->pagesPath . '/1-about');
+        rename($this->pagesPath . '/blog', $this->pagesPath . '/2-blog');
+
+        $this->site = App::instance()->getService(Container::class)->build(Site::class, ['data' => [
+            ...App::instance()->config()->getArray('site'),
+            'contentPath' => $this->pagesPath,
+        ]]);
+        $this->site->load();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function newPageInput(): array
+    {
+        return ['title' => 'Fresh', 'slug' => 'fresh', 'parent' => '.', 'template' => 'default'];
+    }
+
     private function pageFactory(): PageFactory
     {
         return App::instance()->getService(PageFactory::class);
@@ -426,23 +586,45 @@ final class PagesControllerActionsTest extends TestCase
     {
         $fieldFactory = App::instance()->getService(FieldFactory::class);
 
-        $modal = $this->createStub(Modal::class);
-        $modal->method('fields')->willReturn(new FieldCollection([
-            'title' => $fieldFactory->make('newPageModal.title', ['type' => 'text', 'required' => true]),
-        ]));
-
         $modals = $this->createStub(Modals::class);
-        $modals->method('get')->willReturn($modal);
+        $modals->method('get')->willReturnCallback(function (string $name) use ($fieldFactory): Modal {
+            $fields = ['title' => 'text', 'slug' => 'text'];
+
+            if ($name === 'newPage') {
+                $fields += ['parent' => 'text', 'template' => 'text'];
+            }
+
+            $modal = $this->createStub(Modal::class);
+            $modal->method('fields')->willReturnCallback(fn(): FieldCollection => new FieldCollection($this->modalFields($fieldFactory, $name, $fields)));
+
+            return $modal;
+        });
 
         return $this->makeController(
             PagesController::class,
             $permissions,
             input: $input,
-            services: [Site::class => App::instance()->site(), Modals::class => $modals, ...$services],
+            services: [Site::class => $this->site, Modals::class => $modals, ...$services],
             user: $user,
             query: $query,
             server: $server,
         );
+    }
+
+    /**
+     * @param array<string, string> $fields Field types by name
+     *
+     * @return array<string, Field>
+     */
+    private function modalFields(FieldFactory $fieldFactory, string $modal, array $fields): array
+    {
+        $result = [];
+
+        foreach ($fields as $name => $type) {
+            $result[$name] = $fieldFactory->make("{$modal}Modal.{$name}", ['type' => $type, 'required' => true]);
+        }
+
+        return $result;
     }
 
     /**
