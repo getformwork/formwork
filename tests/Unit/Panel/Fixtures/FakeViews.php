@@ -15,16 +15,26 @@ use Formwork\View\ViewFactory;
 final class FakeViews
 {
     /**
-     * Fake view, scalars and arrays are printed as they are (arrays also for arrayable objects), other objects as their type
+     * Fake view, scalars and arrays are printed as they are (also arrayable objects, up to two levels), other objects as their type
      */
     private const string TEMPLATE = <<<'PHP'
         <?php
-        $convert = static function (mixed $value) use (&$convert): mixed {
-            if ($value instanceof \Formwork\Data\Contracts\Arrayable) {
-                $value = $value->toArray();
+        $convert = static function (mixed $value, int $depth = 0) use (&$convert): mixed {
+            // Arrayable objects are expanded only for two levels, as models reference each other
+            if ($value instanceof \Formwork\Data\Contracts\Arrayable && $depth < 2) {
+                // Models report the deprecated implicit properties when they are converted, which is not relevant here
+                set_error_handler(static fn(): bool => true, E_USER_DEPRECATED);
+
+                try {
+                    $value = $value->toArray();
+                } finally {
+                    restore_error_handler();
+                }
+
+                ++$depth;
             }
             if (is_array($value)) {
-                return array_map($convert, $value);
+                return array_map(static fn(mixed $item): mixed => $convert($item, $depth), $value);
             }
             return is_scalar($value) || $value === null ? $value : get_debug_type($value);
         };

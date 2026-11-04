@@ -193,6 +193,11 @@ final class FilesController extends AbstractController
 
         FileSystem::delete($file->path());
 
+        // Do not leave the metadata of the file behind, they would be inherited by a file uploaded with the same name
+        if (FileSystem::exists($metadataPath = $this->getMetadataPath($file->path()))) {
+            FileSystem::delete($metadataPath);
+        }
+
         $this->updateLastModifiedTime($model);
 
         if ($this->request->isXmlHttpRequest()) {
@@ -240,6 +245,16 @@ final class FilesController extends AbstractController
         }
 
         $name = Str::slug(FileSystem::name($data->get('filename')));
+
+        // A name without any valid character would result in a hidden file with only the extension
+        if ($name === '') {
+            if ($this->request->isXmlHttpRequest()) {
+                return JsonResponse::error($this->translate('panel.files.cannotRename.invalidFields'), ResponseStatus::BadRequest);
+            }
+            $this->panel->notify($this->translate('panel.files.cannotRename.invalidFields'), 'error');
+            return $this->redirect($this->generateRoute('panel.files.edit', $routeParams->toArray()));
+        }
+
         $extension = FileSystem::extension($filename);
 
         $newName = "{$name}.{$extension}";
@@ -255,6 +270,11 @@ final class FilesController extends AbstractController
                 $destination = FileSystem::joinPaths($dirname, $newName);
 
                 FileSystem::move($file->path(), $destination);
+
+                // Keep the metadata of the file
+                if (FileSystem::exists($metadataPath = $this->getMetadataPath($file->path()))) {
+                    FileSystem::move($metadataPath, $this->getMetadataPath($destination));
+                }
 
                 $file = $fileFactory->make($destination);
 
@@ -370,6 +390,14 @@ final class FilesController extends AbstractController
         }
 
         return Arr::sort($files, sortBy: fn(array $a, array $b) => strnatcasecmp($a[0]->name(), $b[0]->name()));
+    }
+
+    /**
+     * Get the path of the metadata file of a given file
+     */
+    private function getMetadataPath(string $path): string
+    {
+        return $path . $this->config->getString('system.files.metadataExtension');
     }
 
     private function getModel(RouteParams $routeParams): Page|Site|null
