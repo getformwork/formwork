@@ -46,13 +46,14 @@ trait BuildsPanelControllers
      * @param array<string, bool>   $permissions
      * @param array<string, mixed>  $system      Overrides of the `system` configuration
      * @param array<string, mixed>  $input       Request input
+     * @param array<string, string> $query       Request query
      * @param array<string, object> $services    Additional or replacing container services
      *
      * @template T of object
      *
      * @return T
      */
-    protected function makeController(string $class, array $permissions, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null): object
+    protected function makeController(string $class, array $permissions, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = []): object
     {
         $app = App::instance();
 
@@ -63,7 +64,7 @@ trait BuildsPanelControllers
             FileSystem::createDirectory($sessionPath, recursive: true);
         }
 
-        $request = new Request($input, [], [], [], [
+        $request = new Request($input, $query, [], [], [
             'REQUEST_METHOD' => 'POST',
             'SERVER_NAME'    => 'localhost',
             'SERVER_PORT'    => '80',
