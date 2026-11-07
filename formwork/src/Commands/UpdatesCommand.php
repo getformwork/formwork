@@ -143,7 +143,7 @@ final class UpdatesCommand implements CommandInterface
         $this->climate->out("Latest available version: <bold><green>{$release['tag']}</green></bold>.");
         $this->climate->br();
 
-        $command = implode(' ', array_slice($argv, 0, -1)) . ' update';
+        $command = "{$argv[0]} update";
         $this->climate->out("Run <cyan>{$command}</cyan> to update to the latest version.");
     }
 
