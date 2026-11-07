@@ -74,6 +74,11 @@ class ServiceDefinition
             throw new LogicException('Instantiated object cannot have loaders');
         }
         $this->loader = $className;
+
+        if (is_subclass_of($className, DefinitionAwareServiceLoaderInterface::class)) {
+            $className::onDefined($this->container);
+        }
+
         return $this;
     }
 
