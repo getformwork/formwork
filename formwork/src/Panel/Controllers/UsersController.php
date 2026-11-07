@@ -220,6 +220,10 @@ final class UsersController extends AbstractController
      */
     public function images(RouteParams $routeParams): Response
     {
+        if (!$this->hasPermission('panel.users.images')) {
+            return $this->forward(ErrorsController::class, 'forbidden');
+        }
+
         $imagesPath = FileSystem::resolvePath($this->config->get('system.users.paths.images'));
         $path = FileSystem::resolvePath(FileSystem::joinPaths($imagesPath, $routeParams->get('image')));
 
