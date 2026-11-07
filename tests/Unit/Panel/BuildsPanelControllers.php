@@ -7,11 +7,13 @@ use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Config\Config;
 use Formwork\Events\EventDispatcher;
+use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
+use Formwork\Pages\PageFactory;
 use Formwork\Panel\Modals\Modals;
 use Formwork\Panel\Panel;
 use Formwork\Parsers\Json;
@@ -29,11 +31,7 @@ use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
 use Formwork\View\View;
 use Formwork\View\ViewFactory;
-use LogicException;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionNamedType;
 
 /**
  * Builds panel controllers on top of lightweight collaborators
@@ -43,6 +41,8 @@ use ReflectionNamedType;
 trait BuildsPanelControllers
 {
     private ?Request $panelRequest = null;
+
+    private Container $panelContainer;
 
     /**
      * @param array<string, bool>  $permissions
@@ -67,25 +67,8 @@ trait BuildsPanelControllers
      */
     protected function call(object $controller, string $action, array $params = []): Response
     {
-        $arguments = [];
-
-        foreach ((new ReflectionMethod($controller, $action))->getParameters() as $parameter) {
-            $type = $parameter->getType();
-            $class = $type instanceof ReflectionNamedType ? $type->getName() : '';
-
-            if (!class_exists($class)) {
-                throw new LogicException(sprintf('Cannot provide parameter $%s of %s::%s()', $parameter->getName(), $controller::class, $action));
-            }
-
-            $arguments[] = match (true) {
-                $class === RouteParams::class            => new RouteParams($params),
-                (new ReflectionClass($class))->isFinal() => App::instance()->getService($class),
-                default                                  => $this->createStub($class),
-            };
-        }
-
         /** @var Response */
-        return $controller->{$action}(...$arguments);
+        return $this->panelContainer->call($controller->{$action}(...), ['routeParams' => new RouteParams($params)]);
     }
 
     /**
@@ -166,7 +149,7 @@ trait BuildsPanelControllers
             $users->method('loggedIn')->willReturn($user);
         }
 
-        $container = new ControllerContainerFixture();
+        $this->panelContainer = $container = new ControllerContainerFixture();
         $container->realErrorsController = $realErrorsController;
 
         foreach ([
@@ -182,6 +165,8 @@ trait BuildsPanelControllers
             Modals::class          => $this->createStub(Modals::class),
             Assets::class          => $this->createStub(Assets::class),
             FileUploader::class    => $this->createStub(FileUploader::class),
+            FileFactory::class     => $app->getService(FileFactory::class),
+            PageFactory::class     => $app->getService(PageFactory::class),
             ViewFactory::class     => $this->emptyViewFactory(),
         ] as $name => $service) {
             $container->define($name, $services[$name] ?? $service);
