@@ -82,7 +82,7 @@ class ContentHistory
     {
         $this->items()->add(new ContentHistoryItem($contentHistoryEvent, $user, $timestamp));
         if ($this->items()->count() > $this->limit) {
-            $this->items = $this->items()->slice(-$this->limit);
+            $this->items = $this->items()->slice($this->items()->count() - max(0, $this->limit));
         }
     }
 
