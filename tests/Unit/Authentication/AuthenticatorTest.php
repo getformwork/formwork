@@ -10,6 +10,7 @@ use Formwork\Authentication\RateLimiter;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Authentication\Fixtures\NativeFunctionsFixture;
 use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySession;
 use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\Unit\Users\Fixtures\TestableUser;
@@ -19,6 +20,7 @@ use Formwork\Users\Users;
 use Formwork\Users\Utils\Password;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(Authenticator::class)]
 #[UsesApplication]
@@ -27,16 +29,47 @@ final class AuthenticatorTest extends TestCase
 {
     use BuildsUsers;
 
+    /**
+     * @var array<string, array<string, string>>
+     */
+    private static array $testUsersData;
+
     private InMemorySession $session;
 
     private Users $users;
 
-    private TestableUser $alice;
+    /**
+     * @var array<string, TestableUser>
+     */
+    private array $testUsers = [];
 
     /**
      * @var list<Registry>
      */
     private array $registries = [];
+
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        NativeFunctionsFixture::disable('usleep');
+
+        // Hashing is deliberately slow, so generate the test users data once for the whole class
+        self::$testUsersData = [
+            'alice' => [
+                'username' => 'alice',
+                'email'    => 'alice@example.test',
+                'role'     => 'admin',
+                'hash'     => Password::hash('correct-password'),
+            ],
+            'bob' => [
+                'username' => 'bob',
+                'email'    => 'bob@example.test',
+                'role'     => 'editor',
+                'hash'     => Password::hash('bobs-password'),
+            ],
+        ];
+    }
 
     protected function setUp(): void
     {
@@ -44,18 +77,7 @@ final class AuthenticatorTest extends TestCase
         $this->setUpUsers();
         $this->session = new InMemorySession();
         $this->users = $this->users();
-        $this->alice = $this->makeUser([
-            'username' => 'alice',
-            'email'    => 'alice@example.test',
-            'role'     => 'admin',
-            'hash'     => Password::hash('correct-password'),
-        ], $this->users);
-        $this->makeUser([
-            'username' => 'bob',
-            'email'    => 'bob@example.test',
-            'role'     => 'editor',
-            'hash'     => Password::hash('bobs-password'),
-        ], $this->users);
+        $this->testUsers = array_map(fn(array $data): TestableUser => $this->makeUser($data, $this->users), self::$testUsersData);
     }
 
     protected function tearDown(): void
@@ -68,14 +90,14 @@ final class AuthenticatorTest extends TestCase
     {
         $user = $this->authenticator()->login('alice', 'correct-password');
 
-        $this->assertSame($this->alice, $user);
+        $this->assertSame($this->testUsers['alice'], $user);
     }
 
     public function testUsersCanLogInWithTheirEmail(): void
     {
         $user = $this->authenticator()->login('alice@example.test', 'correct-password');
 
-        $this->assertSame($this->alice, $user);
+        $this->assertSame($this->testUsers['alice'], $user);
     }
 
     public function testLoginStoresTheUsernameInTheSession(): void
@@ -98,7 +120,7 @@ final class AuthenticatorTest extends TestCase
 
         $this->authenticator()->login('alice', 'correct-password');
 
-        $this->assertGreaterThanOrEqual($before, $this->alice->data()['lastAccess']);
+        $this->assertGreaterThanOrEqual($before, $this->testUsers['alice']->data()['lastAccess']);
         $this->assertFileExists($this->accountsPath . '/alice.yaml');
     }
 
@@ -143,8 +165,11 @@ final class AuthenticatorTest extends TestCase
         $this->authenticator()->login('alice', 'bobs-password');
     }
 
+    #[RunInSeparateProcess]
     public function testFailedLoginsAreSlowedDown(): void
     {
+        NativeFunctionsFixture::enable('usleep');
+
         $start = microtime(true);
 
         $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
@@ -184,7 +209,7 @@ final class AuthenticatorTest extends TestCase
         $authenticator->login('alice', 'correct-password');
 
         $this->assertTrue($authenticator->isLoggedIn());
-        $this->assertSame($this->alice, $authenticator->getUser());
+        $this->assertSame($this->testUsers['alice'], $authenticator->getUser());
     }
 
     public function testLoggedInStateComesFromTheSession(): void

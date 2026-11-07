@@ -35,6 +35,22 @@ final class UserTest extends TestCase
 {
     use BuildsUsers;
 
+    /**
+     * @var array<string, string>
+     */
+    private static array $hashes;
+
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        // Hashing is deliberately slow, so generate the hashes once for the whole class
+        self::$hashes = [
+            'secret'   => Password::hash('secret-password'),
+            'original' => Password::hash('original-password'),
+        ];
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -73,7 +89,7 @@ final class UserTest extends TestCase
 
     public function testPasswordHashIsNeverExposed(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('secret-password')]);
+        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::$hashes['secret']]);
 
         $this->assertArrayNotHasKey('hash', $testableUser->toArray());
         $this->assertArrayNotHasKey('hash', $testableUser->__debugInfo());
@@ -83,7 +99,7 @@ final class UserTest extends TestCase
 
     public function testPasswordHashCannotBeRead(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('secret-password')]);
+        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::$hashes['secret']]);
 
         $this->expectException(LogicException::class);
         $testableUser->get('hash');
@@ -123,7 +139,7 @@ final class UserTest extends TestCase
 
     public function testTooLongPasswordsAreRejectedAsInvalidValues(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('original-password')]);
+        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::$hashes['original']]);
 
         $invalidValueException = $this->captureException(InvalidValueException::class, static fn() => $testableUser->set('password', str_repeat('a', 73)));
         $this->assertSame('Password exceeds the maximum supported length', $invalidValueException->getMessage());
@@ -142,7 +158,7 @@ final class UserTest extends TestCase
 
     public function testRejectedPasswordsDoNotReplaceTheCurrentOne(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => Password::hash('original-password')]);
+        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::$hashes['original']]);
 
         $this->captureException(InvalidValueException::class, static fn() => $testableUser->set('password', 'short'));
 
