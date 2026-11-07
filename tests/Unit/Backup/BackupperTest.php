@@ -167,7 +167,7 @@ final class BackupperTest extends TestCase
 
     public function testNameFallsBackToTheRequestHostWhenNoHostnameIsGiven(): void
     {
-        $request = new Request([], [], [], [], ['SERVER_NAME' => 'request.example.com', 'HTTP_HOST' => 'request.example.com']);
+        $request = new Request(server: ['SERVER_NAME' => 'request.example.com', 'HTTP_HOST' => 'request.example.com']);
 
         $destination = $this->backupper(['name' => '{{hostname}}'], $request)->backup();
 
@@ -280,7 +280,7 @@ final class BackupperTest extends TestCase
      */
     private function backupper(array $options = [], ?Request $request = null): Backupper
     {
-        return new Backupper($request ?? new Request([], [], [], [], []), [
+        return new Backupper($request ?? new Request(), [
             'path'             => $this->backupPath,
             'name'             => '{{hostname}}-formwork-backup',
             'maxExecutionTime' => '180',

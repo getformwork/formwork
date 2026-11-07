@@ -10,7 +10,6 @@ use Formwork\Utils\Exceptions\FileSystemException;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(FileSystem::class)]
 #[UsesTempDirectory]
@@ -65,7 +64,6 @@ final class FileSystemTest extends TestCase
         $this->assertSame(getcwd(), FileSystem::cwd());
     }
 
-    #[RunInSeparateProcess]
     public function testCwdThrowsOnUnresolved(): void
     {
         NativeFunctionsFixture::disable('cwd');
@@ -185,7 +183,6 @@ final class FileSystemTest extends TestCase
         FileSystem::accessTime(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testAccessTimeThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('fileatime');
@@ -208,7 +205,6 @@ final class FileSystemTest extends TestCase
         FileSystem::creationTime(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testCreationTimeThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('filectime');
@@ -229,7 +225,6 @@ final class FileSystemTest extends TestCase
         FileSystem::lastModifiedTime(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testLastModifiedTimeThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('filemtime');
@@ -271,7 +266,6 @@ final class FileSystemTest extends TestCase
         FileSystem::touch(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testTouchThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('touch');
@@ -300,7 +294,6 @@ final class FileSystemTest extends TestCase
         FileSystem::mode(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testModeThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('fileperms');
@@ -341,7 +334,6 @@ final class FileSystemTest extends TestCase
         FileSystem::fileSize(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testFileSizeThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('filesize');
@@ -369,7 +361,6 @@ final class FileSystemTest extends TestCase
         FileSystem::directorySize(TESTS_TMP_PATH . '/nonexistentdir');
     }
 
-    #[RunInSeparateProcess]
     public function testDirectorySizeThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('filesize');
@@ -415,7 +406,6 @@ final class FileSystemTest extends TestCase
         FileSystem::deleteFile(TESTS_TMP_PATH . '/nonexistent.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testDeleteFileThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('unlink');
@@ -452,7 +442,6 @@ final class FileSystemTest extends TestCase
         FileSystem::deleteDirectory(TESTS_TMP_PATH . '/nonexistentdir');
     }
 
-    #[RunInSeparateProcess]
     public function testDeleteDirectoryThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('rmdir');
@@ -477,7 +466,6 @@ final class FileSystemTest extends TestCase
         FileSystem::deleteLink(TESTS_TMP_PATH . '/nonexistentlink');
     }
 
-    #[RunInSeparateProcess]
     public function testDeleteLinkThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('unlink');
@@ -524,7 +512,6 @@ final class FileSystemTest extends TestCase
         FileSystem::copyFile(TESTS_TMP_PATH . '/sample.txt', TESTS_TMP_PATH . '/sample.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testCopyFileThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('copy');
@@ -555,7 +542,6 @@ final class FileSystemTest extends TestCase
         FileSystem::copyDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . '/dir');
     }
 
-    #[RunInSeparateProcess]
     public function testCopyDirectoryThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('copy');
@@ -591,7 +577,6 @@ final class FileSystemTest extends TestCase
         FileSystem::copyLink(TESTS_TMP_PATH . '/symlink', TESTS_TMP_PATH . '/symlink');
     }
 
-    #[RunInSeparateProcess]
     public function testCopyLinkThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('symlink');
@@ -642,7 +627,6 @@ final class FileSystemTest extends TestCase
         FileSystem::moveFile(TESTS_TMP_PATH . '/sample.txt', TESTS_TMP_PATH . '/sample.txt');
     }
 
-    #[RunInSeparateProcess]
     public function testMoveFileThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('rename');
@@ -674,7 +658,6 @@ final class FileSystemTest extends TestCase
         FileSystem::moveDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . '/dir');
     }
 
-    #[RunInSeparateProcess]
     public function testMoveDirectoryThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('copy');
@@ -706,7 +689,6 @@ final class FileSystemTest extends TestCase
         FileSystem::moveLink(TESTS_TMP_PATH . '/symlink', TESTS_TMP_PATH . '/symlink');
     }
 
-    #[RunInSeparateProcess]
     public function testMoveLinkThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('symlink');
@@ -744,7 +726,6 @@ final class FileSystemTest extends TestCase
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode);
     }
 
-    #[RunInSeparateProcess]
     public function testReadThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('file_get_contents');
@@ -796,7 +777,6 @@ final class FileSystemTest extends TestCase
         iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/nonexistentdir'));
     }
 
-    #[RunInSeparateProcess]
     public function testListContentsThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('opendir');
@@ -871,7 +851,6 @@ final class FileSystemTest extends TestCase
         FileSystem::readLink(TESTS_TMP_PATH . '/nonexistentlink');
     }
 
-    #[RunInSeparateProcess]
     public function testReadLinkThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('readlink');
@@ -885,7 +864,6 @@ final class FileSystemTest extends TestCase
         $this->assertTrue(FileSystem::exists(TESTS_TMP_PATH . '/newfile.txt'));
     }
 
-    #[RunInSeparateProcess]
     public function testCreateFileThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('fopen');
@@ -900,7 +878,6 @@ final class FileSystemTest extends TestCase
         $this->assertStringStartsWith('_tmp', basename($tempFile));
     }
 
-    #[RunInSeparateProcess]
     public function testCreateTempFileThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('fopen');
@@ -941,7 +918,6 @@ final class FileSystemTest extends TestCase
         chmod(TESTS_TMP_PATH . '/sample.txt', $mode);
     }
 
-    #[RunInSeparateProcess]
     public function testWriteThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('file_put_contents');
@@ -957,7 +933,6 @@ final class FileSystemTest extends TestCase
         $this->assertSame(['newfile.txt'], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH . '/write', FileSystem::LIST_ALL), false));
     }
 
-    #[RunInSeparateProcess]
     public function testFailedWritesRemoveTheTemporaryFile(): void
     {
         FileSystem::createDirectory(TESTS_TMP_PATH . '/write');
@@ -978,7 +953,6 @@ final class FileSystemTest extends TestCase
         $this->assertTrue(FileSystem::exists(TESTS_TMP_PATH . '/newdir'));
     }
 
-    #[RunInSeparateProcess]
     public function testCreateDirectoryThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('mkdir');
@@ -992,7 +966,6 @@ final class FileSystemTest extends TestCase
         $this->assertTrue(FileSystem::isLink(TESTS_TMP_PATH . '/newlink'));
     }
 
-    #[RunInSeparateProcess]
     public function testCreateLinkThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('symlink');

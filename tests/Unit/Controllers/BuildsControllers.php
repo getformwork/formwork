@@ -45,7 +45,7 @@ trait BuildsControllers
             'site'   => array_replace_recursive($app->config()->get('site') ?? [], $site),
         ], resolved: true);
 
-        $request = new Request([], $query, [], [], $server + [
+        $request = new Request(query: $query, server: $server + [
             'REQUEST_METHOD' => 'GET',
             'SERVER_NAME'    => 'localhost',
             'SERVER_PORT'    => '80',

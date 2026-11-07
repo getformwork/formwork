@@ -2,11 +2,9 @@
 
 namespace Formwork\Tests\Unit\Panel\Controllers;
 
-use Formwork\Backup\Backupper;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\BackupController;
 use Formwork\Router\RouteParams;
@@ -17,7 +15,6 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionClass;
 use ReflectionProperty;
 
 #[CoversClass(BackupController::class)]
@@ -56,24 +53,10 @@ final class BackupControllerTest extends TestCase
 
     public function testBackupsCanBeDownloadedWithTheDownloadPermission(): void
     {
-        $response = $this->download('backup.zip', ['panel.backup.download' => true]);
+        $response = $this->download('backup.zip');
 
         $this->assertInstanceOf(FileResponse::class, $response);
         $this->assertSame(FileSystem::joinPaths($this->backupPath, 'backup.zip'), $this->responseFile($response));
-    }
-
-    public function testDownloadRequiresTheDownloadPermission(): void
-    {
-        $response = $this->download('backup.zip', ['panel.backup' => false]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testMakingOrDeletingBackupsDoesNotGrantDownloads(): void
-    {
-        $response = $this->download('backup.zip', ['panel.backup' => false, 'panel.backup.make' => true, 'panel.backup.delete' => true]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
 
     #[DataProvider('escapingNameProvider')]
@@ -81,7 +64,7 @@ final class BackupControllerTest extends TestCase
     {
         $name = $this->expandName($name);
 
-        $response = $this->download($name, ['panel.backup.download' => true]);
+        $response = $this->download($name);
 
         $this->assertNotInstanceOf(FileResponse::class, $response);
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -93,7 +76,7 @@ final class BackupControllerTest extends TestCase
     {
         $name = $this->expandName($name);
 
-        $response = $this->delete($name, ['panel.backup.delete' => true]);
+        $response = $this->delete($name);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('error', $this->lastMessageType());
@@ -126,7 +109,7 @@ final class BackupControllerTest extends TestCase
 
     public function testDownloadOfAMissingBackupIsReportedAsAnError(): void
     {
-        $response = $this->download('missing.zip', ['panel.backup.download' => true]);
+        $response = $this->download('missing.zip');
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('error', $this->lastMessageType());
@@ -134,7 +117,7 @@ final class BackupControllerTest extends TestCase
 
     public function testDownloadWithAnInvalidEncodingIsReportedAsAnError(): void
     {
-        $controller = $this->controller(['panel.backup.download' => true]);
+        $controller = $this->controller();
 
         $response = $controller->download(new RouteParams(['backup' => '!!!not base64!!!']));
 
@@ -143,7 +126,7 @@ final class BackupControllerTest extends TestCase
 
     public function testBackupsCanBeDeletedWithTheDeletePermission(): void
     {
-        $response = $this->delete('backup.zip', ['panel.backup.delete' => true]);
+        $response = $this->delete('backup.zip');
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('success', $this->lastMessageType());
@@ -151,32 +134,9 @@ final class BackupControllerTest extends TestCase
         $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'other.zip'));
     }
 
-    public function testDeleteRequiresTheDeletePermission(): void
-    {
-        $response = $this->delete('backup.zip', ['panel.backup' => false]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'backup.zip'));
-    }
-
-    public function testTheDownloadPermissionDoesNotAllowDeletingBackups(): void
-    {
-        $response = $this->delete('backup.zip', ['panel.backup' => false, 'panel.backup.download' => true]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'backup.zip'));
-    }
-
-    public function testTheDeletePermissionDoesNotAllowDownloadingBackups(): void
-    {
-        $response = $this->download('backup.zip', ['panel.backup' => false, 'panel.backup.delete' => true]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
     public function testDeleteOfAMissingBackupIsReportedAsAnError(): void
     {
-        $response = $this->delete('missing.zip', ['panel.backup.delete' => true]);
+        $response = $this->delete('missing.zip');
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('error', $this->lastMessageType());
@@ -185,19 +145,10 @@ final class BackupControllerTest extends TestCase
 
     public function testDeleteDoesNotRemoveDirectories(): void
     {
-        $this->delete('nested', ['panel.backup.delete' => true]);
+        $this->delete('nested');
 
         $this->assertDirectoryExists(FileSystem::joinPaths($this->backupPath, 'nested'));
         $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'nested', 'inner.zip'));
-    }
-
-    public function testMakingBackupsRequiresThePermission(): void
-    {
-        $controller = $this->controller(['panel.backup' => false]);
-
-        $response = $controller->make((new ReflectionClass(Backupper::class))->newInstanceWithoutConstructor());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
 
     /**
@@ -215,28 +166,19 @@ final class BackupControllerTest extends TestCase
         ]);
     }
 
-    /**
-     * @param array<string, bool> $permissions
-     */
-    private function download(string $name, array $permissions): Response
+    private function download(string $name): Response
     {
-        return $this->controller($permissions)->download(new RouteParams(['backup' => base64_encode($name)]));
+        return $this->controller()->download(new RouteParams(['backup' => base64_encode($name)]));
     }
 
-    /**
-     * @param array<string, bool> $permissions
-     */
-    private function delete(string $name, array $permissions): Response
+    private function delete(string $name): RedirectResponse
     {
-        return $this->controller($permissions)->delete(new RouteParams(['backup' => base64_encode($name)]));
+        return $this->controller()->delete(new RouteParams(['backup' => base64_encode($name)]));
     }
 
-    /**
-     * @param array<string, bool> $permissions
-     */
-    private function controller(array $permissions): BackupController
+    private function controller(): BackupController
     {
-        $this->controller = $this->makeController(BackupController::class, $permissions, ['backup' => ['path' => $this->backupPath]]);
+        $this->controller = $this->makeController(BackupController::class, ['backup' => ['path' => $this->backupPath]]);
 
         return $this->controller;
     }

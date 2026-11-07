@@ -18,6 +18,10 @@ final class ErrorsController extends AbstractController implements ErrorsControl
      */
     public function error(ResponseStatus $responseStatus = ResponseStatus::InternalServerError, ?Throwable $throwable = null): Response
     {
+        if ($responseStatus === ResponseStatus::Forbidden) {
+            return $this->forbidden();
+        }
+
         return $this->makeErrorResponse($responseStatus, 'internalServerError', [
             'href'  => $this->makeGitHubIssueUri($throwable),
             'label' => $this->translate('panel.errors.action.reportToGithub'),

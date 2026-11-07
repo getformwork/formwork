@@ -88,7 +88,7 @@ final class VisitorTest extends TestCase
 
     public function testSourceIsUnknownWhenTheHostOfTheRequestIsInvalid(): void
     {
-        $request = new Request([], [], [], [], [
+        $request = new Request(server: [
             'REQUEST_METHOD' => 'GET',
             'SERVER_NAME'    => 'not a valid host',
             'SERVER_PORT'    => '80',
@@ -100,7 +100,7 @@ final class VisitorTest extends TestCase
 
     private function request(?string $userAgent, ?string $referer = null): Request
     {
-        return new Request([], [], [], [], array_filter([
+        return new Request(server: array_filter([
             'REQUEST_METHOD'  => 'GET',
             'SERVER_NAME'     => 'example.test',
             'SERVER_PORT'     => '80',

@@ -66,7 +66,7 @@ final class UserFactoryTest extends TestCase
         $container = new Container();
         $container->define(Users::class, $users ?? $this->users());
         $container->define(Config::class, new Config(['system' => ['users' => ['paths' => ['accounts' => $this->accountsPath, 'images' => $this->imagesPath]]]], resolved: true));
-        $container->define(Request::class, new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']));
+        $container->define(Request::class, new Request(server: ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']));
         $container->define(FileFactory::class, App::instance()->getService(FileFactory::class));
 
         return new UserFactory($container);

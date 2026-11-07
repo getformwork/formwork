@@ -10,6 +10,7 @@ use Formwork\Plugins\Exceptions\PluginInitializationException;
 use Formwork\Plugins\Plugin;
 use Formwork\Plugins\Plugins;
 use Formwork\Router\RouteParams;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
@@ -23,12 +24,9 @@ final class PluginsController extends AbstractController
     /**
      * Plugins@index action
      */
+    #[Permission('panel.plugins')]
     public function index(): Response
     {
-        if (!$this->hasPermission('panel.plugins')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         if ($this->app->plugins()->isEmpty()) {
             return $this->forward(ErrorsController::class, 'notFound');
         }
@@ -42,12 +40,9 @@ final class PluginsController extends AbstractController
     /**
      * Plugins@plugin action
      */
+    #[Permission('panel.plugins')]
     public function plugin(RouteParams $routeParams, Plugins $plugins): Response
     {
-        if (!$this->hasPermission('panel.plugins')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $name = Str::toCamelCase($routeParams->get('id'));
 
         if (($plugin = $plugins->get($name)) === null) {
@@ -82,12 +77,9 @@ final class PluginsController extends AbstractController
     /**
      * Plugins@enable action
      */
-    public function enable(RouteParams $routeParams, Plugins $plugins): Response
+    #[Permission('panel.plugins')]
+    public function enable(RouteParams $routeParams, Plugins $plugins): JsonResponse
     {
-        if (!$this->hasPermission('panel.plugins')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $name = Str::toCamelCase($routeParams->get('id'));
 
         if (($plugin = $plugins->get($name)) === null) {
@@ -118,12 +110,9 @@ final class PluginsController extends AbstractController
     /**
      * Plugins@disable action
      */
-    public function disable(RouteParams $routeParams, Plugins $plugins): Response
+    #[Permission('panel.plugins')]
+    public function disable(RouteParams $routeParams, Plugins $plugins): JsonResponse
     {
-        if (!$this->hasPermission('panel.plugins')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $name = Str::toCamelCase($routeParams->get('id'));
 
         if (($plugin = $plugins->get($name)) === null) {

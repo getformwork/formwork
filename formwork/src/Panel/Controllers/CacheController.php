@@ -9,6 +9,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Services\Attributes\Service;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\ConfigServiceLoader;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Psr\Log\LoggerInterface;
@@ -27,12 +28,9 @@ final class CacheController extends AbstractController
     /**
      * Cache@clear action
      */
+    #[Permission('panel.cache.clear')]
     public function clear(RouteParams $routeParams): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.cache.clear')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         switch ($type = $routeParams->get('type', 'default')) {
             case 'default':
                 $this->clearCaches([

@@ -5,6 +5,7 @@ namespace Formwork\Commands;
 use Formwork\Backup\Backupper;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cms\App;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Updater\Updater;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
@@ -15,11 +16,6 @@ use RuntimeException;
  */
 final class UpdatesCommand implements CommandInterface
 {
-    /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
     private App $app;
 
     /**
@@ -34,10 +30,8 @@ final class UpdatesCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         $this->climate->arguments->add([
             'action' => [
                 'description' => 'Updates action to perform (check, update)',
@@ -73,7 +67,7 @@ final class UpdatesCommand implements CommandInterface
         ]);
     }
 
-    public function __invoke(?array $argv = null): never
+    public function __invoke(?array $argv = null): int
     {
         $argv ??= $_SERVER['argv'] ?? [];
 
@@ -82,30 +76,29 @@ final class UpdatesCommand implements CommandInterface
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $action = (string) $this->climate->arguments->get('action');
 
         if (isset($this->actions[$action])) {
             try {
-                $this->{$action}($argv);
-                exit(0);
+                return $this->{$action}($argv);
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid action: %s.', $action));
-        exit(1);
+        return 1;
     }
 
     /**
@@ -113,9 +106,9 @@ final class UpdatesCommand implements CommandInterface
      *
      * @param list<string> $argv
      */
-    public function check(array $argv = []): void
+    public function check(array $argv = []): int
     {
-        $force = $this->climate->arguments->defined('force');
+        $force = $this->climate->arguments->defined('force', $argv);
 
         $updater = $this->app->getService(Updater::class);
 
@@ -123,19 +116,19 @@ final class UpdatesCommand implements CommandInterface
             $upToDate = $updater->checkUpdates($force);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
-            exit(1);
+            return 1;
         }
 
         $release = $updater->latestRelease();
 
         if ($release === null) {
             $this->climate->error('Cannot retrieve latest release information.');
-            exit(1);
+            return 1;
         }
 
         if ($upToDate) {
             $this->climate->out("<bold>Formwork <cyan>{$release['tag']}</cyan></bold> is already up to date.");
-            exit(0);
+            return 0;
         }
 
         $currentVersion = App::VERSION;
@@ -143,8 +136,10 @@ final class UpdatesCommand implements CommandInterface
         $this->climate->out("Latest available version: <bold><green>{$release['tag']}</green></bold>.");
         $this->climate->br();
 
-        $command = implode(' ', array_slice($argv, 0, -1)) . ' update';
+        $command = "{$argv[0]} update";
         $this->climate->out("Run <cyan>{$command}</cyan> to update to the latest version.");
+
+        return 0;
     }
 
     /**
@@ -152,30 +147,30 @@ final class UpdatesCommand implements CommandInterface
      *
      * @param list<string> $argv
      */
-    public function update(array $argv = []): void
+    public function update(array $argv = []): int
     {
-        $force = $this->climate->arguments->defined('force');
-        $backup = !$this->climate->arguments->defined('no-backup');
-        $preferDist = !$this->climate->arguments->defined('no-prefer-dist');
-        $cleanup = !$this->climate->arguments->defined('no-cleanup');
+        $force = $this->climate->arguments->defined('force', $argv);
+        $backup = !$this->climate->arguments->defined('no-backup', $argv);
+        $preferDist = !$this->climate->arguments->defined('no-prefer-dist', $argv);
+        $cleanup = !$this->climate->arguments->defined('no-cleanup', $argv);
         $updater = $this->app->getService(Updater::class);
 
         try {
             $upToDate = $updater->checkUpdates(force: $force, preferDistAssets: $preferDist);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot check for updates: {$e->getMessage()}");
-            exit(1);
+            return 1;
         }
 
         $release = $updater->latestRelease();
         if ($release === null) {
             $this->climate->error('Cannot retrieve latest release information.');
-            exit(1);
+            return 1;
         }
 
         if ($upToDate) {
             $this->climate->out("<bold>Formwork <cyan>{$release['tag']}</cyan></bold> is already up to date.");
-            exit(0);
+            return 0;
         }
 
         if ($backup) {
@@ -183,9 +178,9 @@ final class UpdatesCommand implements CommandInterface
             try {
                 $this->app->getService(Backupper::class)
                     ->backup(hostname: gethostname() ?: 'local-cli');
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException|TranslatedException $e) {
                 $this->climate->error("Cannot make backup: {$e->getMessage()}");
-                exit(1);
+                return 1;
             }
             $this->climate->br();
         }
@@ -195,7 +190,7 @@ final class UpdatesCommand implements CommandInterface
             $updater->update(force: $force, preferDistAssets: $preferDist, cleanupAfterInstall: $cleanup);
         } catch (RuntimeException $e) {
             $this->climate->error("Cannot install updates: {$e->getMessage()}");
-            exit(1);
+            return 1;
         }
         $this->climate->br();
 
@@ -208,6 +203,8 @@ final class UpdatesCommand implements CommandInterface
         }
 
         $this->climate->out("<bold>Formwork</bold> has been updated successfully to <bold><green>{$release['tag']}</green></bold>.");
+
+        return 0;
     }
 
     /**

@@ -12,12 +12,12 @@ use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySessionFixture;
 use Formwork\Tests\Unit\Authentication\Fixtures\NativeFunctionsFixture;
+use Formwork\Tests\Unit\Users\BuildsPasswordHashes;
 use Formwork\Tests\Unit\Users\BuildsUsers;
 use Formwork\Tests\Unit\Users\Fixtures\TestableUserFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Users;
-use Formwork\Users\Utils\Password;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -28,11 +28,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 final class AuthenticatorTest extends TestCase
 {
     use BuildsUsers;
-
-    /**
-     * @var array<string, array<string, string>>
-     */
-    private static array $testUsersData;
+    use BuildsPasswordHashes;
 
     private InMemorySessionFixture $session;
 
@@ -53,22 +49,6 @@ final class AuthenticatorTest extends TestCase
         parent::setUpBeforeClass();
 
         NativeFunctionsFixture::disable('usleep');
-
-        // Hashing is deliberately slow, so generate the test users data once for the whole class
-        self::$testUsersData = [
-            'alice' => [
-                'username' => 'alice',
-                'email'    => 'alice@example.test',
-                'role'     => 'admin',
-                'hash'     => Password::hash('correct-password'),
-            ],
-            'bob' => [
-                'username' => 'bob',
-                'email'    => 'bob@example.test',
-                'role'     => 'editor',
-                'hash'     => Password::hash('bobs-password'),
-            ],
-        ];
     }
 
     protected function setUp(): void
@@ -77,7 +57,10 @@ final class AuthenticatorTest extends TestCase
         $this->setUpUsers();
         $this->session = new InMemorySessionFixture();
         $this->users = $this->users();
-        $this->testUsers = array_map(fn(array $data): TestableUserFixture => $this->makeUser($data, $this->users), self::$testUsersData);
+        $this->testUsers = array_map(fn(array $data): TestableUserFixture => $this->makeUser($data, $this->users), [
+            'alice' => ['username' => 'alice', 'email' => 'alice@example.test', 'role' => 'admin', 'hash' => self::hashPassword('correct-password')],
+            'bob'   => ['username' => 'bob', 'email' => 'bob@example.test', 'role' => 'editor', 'hash' => self::hashPassword('bobs-password')],
+        ]);
     }
 
     protected function tearDown(): void
@@ -272,7 +255,7 @@ final class AuthenticatorTest extends TestCase
 
     private function authenticator(int $limit = 10): Authenticator
     {
-        $request = new Request([], [], [], [], [
+        $request = new Request(server: [
             'REQUEST_METHOD' => 'GET',
             'REMOTE_ADDR'    => '203.0.113.7',
             'SERVER_NAME'    => 'localhost',

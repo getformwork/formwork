@@ -509,7 +509,7 @@ final class RouterTest extends TestCase
 
         return new Router(
             new Container(),
-            new Request([], [], [], [], $server),
+            new Request(server: $server),
             $eventDispatcher ?? new EventDispatcher(),
         );
     }

@@ -5,6 +5,7 @@ namespace Formwork\Tests\Unit\Services;
 use Formwork\Services\Container;
 use Formwork\Services\ServiceDefinition;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Services\Fixtures\DefinitionAwareLoaderFixture;
 use Formwork\Tests\Unit\Services\Fixtures\SimpleServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\TestServiceLoaderFixture;
 use LogicException;
@@ -46,6 +47,19 @@ final class ServiceDefinitionTest extends TestCase
         $this->assertSame($serviceDefinition, $serviceDefinition->loader(TestServiceLoaderFixture::class));
         $this->assertSame(TestServiceLoaderFixture::class, $serviceDefinition->getLoader());
         $this->assertTrue($container->has('service.alias'));
+    }
+
+    public function testLoadersAreToldWhenTheyAreDefinedWithoutBeingInstantiated(): void
+    {
+        DefinitionAwareLoaderFixture::$defined = [];
+        DefinitionAwareLoaderFixture::$instances = 0;
+
+        $container = new Container();
+        $container->define('service')->loader(DefinitionAwareLoaderFixture::class);
+
+        $this->assertSame([$container], DefinitionAwareLoaderFixture::$defined);
+        $this->assertSame(0, DefinitionAwareLoaderFixture::$instances);
+        $this->assertFalse($container->isResolved('service'));
     }
 
     public function testNewDefinitionsStartWithoutAObjectOrLoader(): void

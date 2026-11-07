@@ -18,11 +18,6 @@ use Psr\Log\LoggerInterface;
  */
 final class CacheCommand implements CommandInterface
 {
-    /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
     private App $app;
 
     private ?LoggerInterface $logger = null;
@@ -42,10 +37,8 @@ final class CacheCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         $this->climate->arguments->add([
             'action' => [
                 'description' => 'Cache action to perform (clear, invalidate, stats)',
@@ -65,7 +58,7 @@ final class CacheCommand implements CommandInterface
         ]);
     }
 
-    public function __invoke(?array $argv = null): never
+    public function __invoke(?array $argv = null): int
     {
         $argv ??= $_SERVER['argv'] ?? [];
 
@@ -78,14 +71,14 @@ final class CacheCommand implements CommandInterface
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $action = (string) $this->climate->arguments->get('action');
@@ -94,15 +87,16 @@ final class CacheCommand implements CommandInterface
         if (isset($this->actions[$action])) {
             try {
                 $this->{$action}($type, $argv);
-                exit(0);
+
+                return 0;
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid action: %s.', $action));
-        exit(1);
+        return 1;
     }
 
     /**
@@ -222,8 +216,9 @@ final class CacheCommand implements CommandInterface
     private function imagesCacheStats(): void
     {
         $path = $this->app->config()->getString('system.images.processPath');
-        $items = iterator_to_array(FileSystem::listContents($path));
-        $size = FileSystem::directorySize($path);
+        $exists = FileSystem::isDirectory($path, assertExists: false);
+        $items = $exists ? iterator_to_array(FileSystem::listContents($path)) : [];
+        $size = $exists ? FileSystem::directorySize($path) : 0;
 
         $this->climate->out('<green>Images Cache</green>');
         $this->climate->out(sprintf('  Items number: <cyan>%d</cyan>', count($items)));
@@ -279,7 +274,11 @@ final class CacheCommand implements CommandInterface
     private function clearImagesCache(): void
     {
         $path = $this->app->config()->getString('system.images.processPath');
-        FileSystem::delete($path, recursive: true);
+
+        if (FileSystem::exists($path)) {
+            FileSystem::delete($path, recursive: true);
+        }
+
         FileSystem::createDirectory($path, recursive: true);
     }
 

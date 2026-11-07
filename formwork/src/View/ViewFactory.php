@@ -5,7 +5,7 @@ namespace Formwork\View;
 use Closure;
 use Formwork\Cms\App;
 
-final class ViewFactory
+class ViewFactory
 {
     /**
      * @param array<string, Closure> $methods

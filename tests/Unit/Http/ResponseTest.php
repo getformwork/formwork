@@ -9,7 +9,6 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 #[CoversClass(Response::class)]
 final class ResponseTest extends TestCase
@@ -204,7 +203,6 @@ final class ResponseTest extends TestCase
     // Headers cannot be sent once the output of the test runner has started, so the
     // tests sending a response run in a separate process and check the headers as data
 
-    #[RunInSeparateProcess]
     public function testSendWritesTheContentAndCompletesTheHeaders(): void
     {
         $response = new Response('Hello');
@@ -214,7 +212,6 @@ final class ResponseTest extends TestCase
         $this->assertSame('no-cache, private', $response->headers()->get('Cache-Control'));
     }
 
-    #[RunInSeparateProcess]
     public function testSendKeepsTheGivenHeaders(): void
     {
         $response = new Response('{}', ResponseStatus::OK, [
@@ -231,7 +228,6 @@ final class ResponseTest extends TestCase
     }
 
     #[DataProvider('contentTypeProvider')]
-    #[RunInSeparateProcess]
     public function testTextContentTypesGetACharsetWhenMissing(string $contentType, string $expected): void
     {
         $response = new Response('body', ResponseStatus::OK, ['Content-Type' => $contentType]);
@@ -284,7 +280,7 @@ final class ResponseTest extends TestCase
      */
     private function request(RequestMethod $requestMethod = RequestMethod::GET, array $server = []): Request
     {
-        return new Request([], [], [], [], $server + [
+        return new Request(server: $server + [
             'REQUEST_METHOD' => $requestMethod->value,
             'SERVER_NAME'    => 'example.test',
             'SERVER_PORT'    => '80',

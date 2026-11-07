@@ -10,6 +10,11 @@ use Formwork\Http\ResponseStatus;
  */
 final class ForbiddenErrorsControllerFixture
 {
+    public function notFound(): Response
+    {
+        return new Response('not found', ResponseStatus::NotFound);
+    }
+
     public function forbidden(): Response
     {
         return new Response('forbidden', ResponseStatus::Forbidden);

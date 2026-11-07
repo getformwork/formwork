@@ -150,6 +150,31 @@ final class AppTest extends TestCase
         }
     }
 
+    #[DataProvider('handledRequestProvider')]
+    public function testHandledRequestsAreTheGivenOnesNotTheGlobalOnes(string $uri, ResponseStatus $status, string $content): void
+    {
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => $uri, 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+
+        try {
+            $response = App::instance()->handle($request);
+
+            $this->assertSame($request, App::instance()->request());
+            $this->assertSame($status, $response->status());
+            $this->assertStringContainsString($content, $response->content());
+        } finally {
+            $this->reload();
+        }
+    }
+
+    /**
+     * @return iterable<string, array{string, ResponseStatus, string}>
+     */
+    public static function handledRequestProvider(): iterable
+    {
+        yield 'a page' => ['/about/', ResponseStatus::OK, 'About content'];
+        yield 'a missing page' => ['/missing/', ResponseStatus::NotFound, 'Page Not Found content'];
+    }
+
     public function testLoadingDoesNotInstallTheErrorHandler(): void
     {
         $before = set_error_handler(static fn(): bool => false);

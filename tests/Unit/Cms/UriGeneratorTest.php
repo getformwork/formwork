@@ -69,7 +69,7 @@ final class UriGeneratorTest extends TestCase
 
     private function generator(string $scriptName, ?Router $router = null): UriGenerator
     {
-        $request = new Request([], [], [], [], ['SCRIPT_NAME' => $scriptName, 'REQUEST_METHOD' => 'GET']);
+        $request = new Request(server: ['SCRIPT_NAME' => $scriptName, 'REQUEST_METHOD' => 'GET']);
 
         return new UriGenerator($request, $router ?? $this->createStub(Router::class));
     }

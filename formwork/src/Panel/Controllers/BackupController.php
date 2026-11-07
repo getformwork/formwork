@@ -6,9 +6,11 @@ use Formwork\Backup\Backupper;
 use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\FileResponse;
 use Formwork\Http\JsonResponse;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
@@ -18,12 +20,9 @@ final class BackupController extends AbstractController
     /**
      * Backup@make action
      */
+    #[Permission('panel.backup.make')]
     public function make(Backupper $backupper): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.backup.make')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         try {
             $file = $backupper->backup();
         } catch (TranslatedException $e) {
@@ -44,11 +43,9 @@ final class BackupController extends AbstractController
     /**
      * Backup@download action
      */
+    #[Permission('panel.backup.download')]
     public function download(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.backup.download')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
         try {
             $backupPath = rtrim(Path::normalize($this->config->getString('system.backup.path')), '/');
             $file = FileSystem::joinPaths($backupPath, base64_decode((string) $routeParams->get('backup')));
@@ -65,11 +62,9 @@ final class BackupController extends AbstractController
     /**
      * Backup@delete action
      */
-    public function delete(RouteParams $routeParams): Response
+    #[Permission('panel.backup.delete')]
+    public function delete(RouteParams $routeParams): RedirectResponse
     {
-        if (!$this->hasPermission('panel.backup.delete')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
         try {
             $backupPath = rtrim(Path::normalize($this->config->getString('system.backup.path')), '/');
             $file = FileSystem::joinPaths($backupPath, base64_decode((string) $routeParams->get('backup')));

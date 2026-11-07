@@ -84,7 +84,6 @@ final class FilesControllerTest extends TestCase
 
         $filesController = $this->makeController(
             FilesController::class,
-            ['panel.files.edit' => true],
             input: ['title' => 'untitled', ...$submitted],
             services: [Site::class => $site, FileUploader::class => $this->createStub(FileUploader::class), FileFactory::class => $app->getService(FileFactory::class)],
         );

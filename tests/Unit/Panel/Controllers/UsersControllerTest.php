@@ -13,7 +13,6 @@ use Formwork\Forms\FormData;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Model\Model;
 use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\UsersController;
@@ -112,14 +111,6 @@ final class UsersControllerTest extends TestCase
         $this->assertNotSame('admin', $this->savedUser('newuser')['role']);
     }
 
-    public function testCreatingUsersRequiresThePermission(): void
-    {
-        $response = $this->create('editor', $this->newUser(role: 'editor'), ['panel.users' => false]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileDoesNotExist(FileSystem::joinPaths($this->accountsPath, 'newuser.yaml'));
-    }
-
     public function testNonAdministratorsCannotSubmitUnknownRoles(): void
     {
         $response = $this->create('editor', $this->newUser(role: 'superuser'));
@@ -201,7 +192,7 @@ final class UsersControllerTest extends TestCase
         $user = new User(
             ['username' => 'subject', 'fullname' => 'Subject', ...$existing],
             $config,
-            new Request([], [], [], [], ['REQUEST_METHOD' => 'POST']),
+            new Request(server: ['REQUEST_METHOD' => 'POST']),
             $app->getService(FileFactory::class),
             $this->createStub(Users::class),
         );
@@ -220,7 +211,7 @@ final class UsersControllerTest extends TestCase
         $current->method('canChangePasswordOf')->willReturn(true);
         $current->method('canChangeRoleOf')->willReturn(true);
 
-        $this->controller = $this->makeController(UsersController::class, [], user: $current);
+        $this->controller = $this->makeController(UsersController::class, user: $current);
 
         $fields = $user->fields();
         $fields->setValues(['title' => 'untitled', ...$submitted], null);
@@ -307,18 +298,17 @@ final class UsersControllerTest extends TestCase
 
         $this->controller = $this->makeController(
             UsersController::class,
-            $permissions,
-            ['users' => ['paths' => ['accounts' => $this->accountsPath]]],
+            system: ['users' => ['paths' => ['accounts' => $this->accountsPath]]],
             // Modal fields are named after the modal, so their values are submitted as `newUser[field]`
-            ['newUser' => $input],
-            [
+            input: ['newUser' => $input],
+            services: [
                 Site::class         => $site,
                 Modals::class       => $modals,
                 FileUploader::class => $this->createStub(FileUploader::class),
                 FileFactory::class  => $app->getService(FileFactory::class),
             ],
-            $current,
-            $users,
+            user: $current,
+            users: $users,
         );
 
         return $this->controller->create(new UserFactory($this->containerOf($this->controller)));

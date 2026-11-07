@@ -55,6 +55,6 @@ final class ExceptionThrownEventTest extends TestCase
 
     private function request(): Request
     {
-        return new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+        return new Request(server: ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
     }
 }
