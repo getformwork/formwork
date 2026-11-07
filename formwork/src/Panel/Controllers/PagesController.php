@@ -341,7 +341,12 @@ final class PagesController extends AbstractController
         /** @var string $requestParent */
         $requestParent = $requestData->get('parent');
 
-        $parent = $this->resolveParent($requestParent);
+        try {
+            $parent = $this->resolveParent($requestParent);
+        } catch (UnexpectedValueException) {
+            return JsonResponse::error($this->translate('panel.pages.page.cannotMove'), ResponseStatus::InternalServerError);
+        }
+
         if (!$parent->hasChildren()) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'), ResponseStatus::InternalServerError);
         }
@@ -442,8 +447,13 @@ final class PagesController extends AbstractController
         $fieldCollection = $page->fields()->filterBy('type', 'upload');
 
         $form = $this->form('file-uploader', $fieldCollection)
-            ->setDefaultUploadsDestination($page->contentPath())
-            ->processRequest($this->request);
+            ->setDefaultUploadsDestination($page->contentPath());
+
+        try {
+            $form->processRequest($this->request);
+        } catch (TranslatedException $e) {
+            return JsonResponse::error($this->translate('upload.error', $this->translate($e->getLanguageString())), ResponseStatus::InternalServerError);
+        }
 
         if (!$form->isSubmitted() || !$form->isValid() || $form->uploadedFiles() === []) {
             return JsonResponse::error($this->translate('panel.files.cannotUpload.invalidFields'), ResponseStatus::InternalServerError);
