@@ -191,6 +191,12 @@ final class FilesController extends AbstractController
 
         FileSystem::delete($file->path());
 
+        $metadataFile = $file->path() . $this->config->get('system.files.metadataExtension');
+
+        if (FileSystem::exists($metadataFile)) {
+            FileSystem::delete($metadataFile);
+        }
+
         $this->updateLastModifiedTime($model);
 
         if ($this->request->isXmlHttpRequest()) {
@@ -215,15 +221,14 @@ final class FilesController extends AbstractController
         $form = $this->form('rename-file', $this->modal($modalName)->fields())
             ->processRequest($this->request);
 
-        if (!$form->isValid()) {
+        // The name must contain at least one valid character to be slugified
+        if (!$form->isValid() || ($name = Str::slug(FileSystem::name($form->data()->get('filename')))) === '') {
             if ($this->request->isXmlHttpRequest()) {
                 return JsonResponse::error($this->translate('panel.files.cannotRename.invalidFields'), ResponseStatus::BadRequest);
             }
             $this->panel->notify($this->translate('panel.files.cannotRename.invalidFields'), 'error');
             return $this->redirect($this->generateRoute('panel.files.index'));
         }
-
-        $data = $form->data();
 
         $filename = $routeParams->get('filename');
 
@@ -237,7 +242,6 @@ final class FilesController extends AbstractController
             return $this->redirect($this->generateRoute('panel.files.edit', $routeParams->toArray()));
         }
 
-        $name = Str::slug(FileSystem::name($data->get('filename')));
         $extension = FileSystem::extension($filename);
 
         $newName = "{$name}.{$extension}";
@@ -253,6 +257,12 @@ final class FilesController extends AbstractController
                 $destination = FileSystem::joinPaths($dirname, $newName);
 
                 FileSystem::move($file->path(), $destination);
+
+                $metadataFile = $file->path() . $this->config->get('system.files.metadataExtension');
+
+                if (FileSystem::exists($metadataFile)) {
+                    FileSystem::move($metadataFile, $destination . $this->config->get('system.files.metadataExtension'));
+                }
 
                 $file = $fileFactory->make($destination);
 
