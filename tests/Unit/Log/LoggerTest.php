@@ -5,7 +5,7 @@ namespace Formwork\Tests\Unit\Log;
 use DateTimeImmutable;
 use Formwork\Log\Logger;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Log\Fixtures\RecordingHandler;
+use Formwork\Tests\Unit\Log\Fixtures\RecordingHandlerFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\AbstractLogger;
@@ -36,7 +36,7 @@ final class LoggerTest extends TestCase
     public function testRecordsAreForwardedToTheHandlers(): void
     {
         $logger = new Logger();
-        $recordingHandler = new RecordingHandler();
+        $recordingHandler = new RecordingHandlerFixture();
         $logger->addHandler($recordingHandler);
 
         $logger->log(LogLevel::WARNING, 'Something happened', ['key' => 'value']);
@@ -52,8 +52,8 @@ final class LoggerTest extends TestCase
     public function testEveryHandlerReceivesTheRecordInOrder(): void
     {
         $logger = new Logger();
-        $first = new RecordingHandler();
-        $second = new RecordingHandler();
+        $first = new RecordingHandlerFixture();
+        $second = new RecordingHandlerFixture();
         $logger->addHandler($first);
         $logger->addHandler($second);
 
@@ -68,7 +68,7 @@ final class LoggerTest extends TestCase
     public function testConvenienceMethodsUseTheMatchingLevel(string $method, string $level): void
     {
         $logger = new Logger();
-        $recordingHandler = new RecordingHandler();
+        $recordingHandler = new RecordingHandlerFixture();
         $logger->addHandler($recordingHandler);
 
         $logger->{$method}('message', ['a' => 1]);
@@ -100,7 +100,7 @@ final class LoggerTest extends TestCase
     public function testStringableMessagesAreConvertedToStrings(): void
     {
         $logger = new Logger();
-        $recordingHandler = new RecordingHandler();
+        $recordingHandler = new RecordingHandlerFixture();
         $logger->addHandler($recordingHandler);
 
         $logger->info(new class implements Stringable {
@@ -116,7 +116,7 @@ final class LoggerTest extends TestCase
     public function testTimestampsHaveMicrosecondPrecisionAndAreCurrent(): void
     {
         $logger = new Logger();
-        $recordingHandler = new RecordingHandler();
+        $recordingHandler = new RecordingHandlerFixture();
         $logger->addHandler($recordingHandler);
         $before = microtime(true);
 
@@ -131,7 +131,7 @@ final class LoggerTest extends TestCase
     public function testInvalidLevelsAreRejected(mixed $level): void
     {
         $logger = new Logger();
-        $recordingHandler = new RecordingHandler();
+        $recordingHandler = new RecordingHandlerFixture();
         $logger->addHandler($recordingHandler);
 
         $this->captureException(InvalidArgumentException::class, static fn() => $logger->log($level, 'message'));
@@ -155,7 +155,7 @@ final class LoggerTest extends TestCase
     public function testContextIsPassedUntouched(): void
     {
         $logger = new Logger();
-        $recordingHandler = new RecordingHandler();
+        $recordingHandler = new RecordingHandlerFixture();
         $logger->addHandler($recordingHandler);
         $runtimeException = new RuntimeException('failure');
 

@@ -8,7 +8,6 @@ use Formwork\Files\FileFactory;
 use Formwork\Http\Request;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\User;

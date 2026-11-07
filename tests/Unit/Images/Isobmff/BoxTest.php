@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Images\Isobmff;
 
 use Formwork\Images\Isobmff\Box;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\AvifFile;
+use Formwork\Tests\Unit\Images\Fixtures\AvifFileFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(Box::class)]
@@ -16,7 +16,7 @@ final class BoxTest extends TestCase
 
         $this->assertSame(8, $box->headerLength());
         $this->assertSame(15, $box->length());
-        $this->assertSame(AvifFile::box('free', 'payload'), $box->encode());
+        $this->assertSame(AvifFileFixture::box('free', 'payload'), $box->encode());
     }
 
     public function testFullBoxHeadersHoldAVersionAndThreeFlagBytes(): void
@@ -42,7 +42,7 @@ final class BoxTest extends TestCase
 
     public function testSequencesOfBoxesAreParsed(): void
     {
-        $boxes = Box::parseAll(AvifFile::box('abcd', 'first') . AvifFile::box('efgh', 'second'));
+        $boxes = Box::parseAll(AvifFileFixture::box('abcd', 'first') . AvifFileFixture::box('efgh', 'second'));
 
         $this->assertCount(2, $boxes);
         $this->assertSame('abcd', $boxes[0]->type);
@@ -58,7 +58,7 @@ final class BoxTest extends TestCase
 
     public function testBoxesWithA64BitSizeAreParsed(): void
     {
-        $boxes = Box::parseAll(AvifFile::largeBox('mdat', 'payload') . AvifFile::box('free'));
+        $boxes = Box::parseAll(AvifFileFixture::largeBox('mdat', 'payload') . AvifFileFixture::box('free'));
 
         $this->assertCount(2, $boxes);
         $this->assertSame('mdat', $boxes[0]->type);
@@ -68,7 +68,7 @@ final class BoxTest extends TestCase
 
     public function testBoxesWithoutASizeExtendToTheEndOfTheData(): void
     {
-        $boxes = Box::parseAll(AvifFile::box('free') . AvifFile::unsizedBox('mdat', 'to the end'));
+        $boxes = Box::parseAll(AvifFileFixture::box('free') . AvifFileFixture::unsizedBox('mdat', 'to the end'));
 
         $this->assertCount(2, $boxes);
         $this->assertSame('to the end', $boxes[1]->payload);
@@ -78,7 +78,7 @@ final class BoxTest extends TestCase
     {
         $boxes = [new Box('abcd', 'first'), new Box('efgh', 'second')];
 
-        $this->assertSame(AvifFile::box('abcd', 'first') . AvifFile::box('efgh', 'second'), Box::encodeAll($boxes));
+        $this->assertSame(AvifFileFixture::box('abcd', 'first') . AvifFileFixture::box('efgh', 'second'), Box::encodeAll($boxes));
     }
 
     public function testEncodingAndParsingAreSymmetrical(): void

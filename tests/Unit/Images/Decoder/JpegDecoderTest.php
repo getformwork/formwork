@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Images\Decoder;
 
 use Formwork\Images\Decoder\JpegDecoder;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
@@ -14,7 +14,7 @@ final class JpegDecoderTest extends TestCase
 {
     public function testSegmentsAreDecoded(): void
     {
-        $data = "\xff\xd8" . GdImages::jpegSegment(0xe1, 'abc') . "\xff\xd9";
+        $data = "\xff\xd8" . GdImagesFixture::jpegSegment(0xe1, 'abc') . "\xff\xd9";
 
         $segments = iterator_to_array((new JpegDecoder())->decode($data), false);
 
@@ -28,7 +28,7 @@ final class JpegDecoderTest extends TestCase
     {
         $header = "\x01\x01\x00\x00\x3f\x00";
         $scan = "\x12\xff\x00\x34\xff\xd0\x56";
-        $data = "\xff\xd8" . GdImages::jpegSegment(0xda, $header) . $scan . GdImages::jpegSegment(0xfe, 'comment') . "\xff\xd9";
+        $data = "\xff\xd8" . GdImagesFixture::jpegSegment(0xda, $header) . $scan . GdImagesFixture::jpegSegment(0xfe, 'comment') . "\xff\xd9";
 
         $segments = iterator_to_array((new JpegDecoder())->decode($data), false);
 
@@ -56,7 +56,7 @@ final class JpegDecoderTest extends TestCase
 
     public function testRealImagesAreDecoded(): void
     {
-        $data = GdImages::jpeg();
+        $data = GdImagesFixture::jpeg();
 
         $types = array_column(iterator_to_array((new JpegDecoder())->decode($data), false), 'type');
 
@@ -103,7 +103,7 @@ final class JpegDecoderTest extends TestCase
 
     public function testUnterminatedScansAreNotDecoded(): void
     {
-        $data = "\xff\xd8" . GdImages::jpegSegment(0xda, "\x01\x01") . "\x12\x34";
+        $data = "\xff\xd8" . GdImagesFixture::jpegSegment(0xda, "\x01\x01") . "\x12\x34";
 
         $this->expectException(UnexpectedValueException::class);
 

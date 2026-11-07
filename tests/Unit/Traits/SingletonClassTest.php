@@ -3,11 +3,11 @@
 namespace Formwork\Tests\Unit\Traits;
 
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Traits\Fixtures\BaseSingleton;
-use Formwork\Tests\Unit\Traits\Fixtures\DerivedSingleton;
-use Formwork\Tests\Unit\Traits\Fixtures\EagerSingleton;
-use Formwork\Tests\Unit\Traits\Fixtures\LazySingleton;
-use Formwork\Tests\Unit\Traits\Fixtures\OtherLazySingleton;
+use Formwork\Tests\Unit\Traits\Fixtures\BaseSingletonFixture;
+use Formwork\Tests\Unit\Traits\Fixtures\DerivedSingletonFixture;
+use Formwork\Tests\Unit\Traits\Fixtures\EagerSingletonFixture;
+use Formwork\Tests\Unit\Traits\Fixtures\LazySingletonFixture;
+use Formwork\Tests\Unit\Traits\Fixtures\OtherLazySingletonFixture;
 use Formwork\Traits\SingletonClass;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversTrait;
@@ -19,75 +19,75 @@ final class SingletonClassTest extends TestCase
     #[RunInSeparateProcess]
     public function testInstanceIsCreatedOnFirstUseAndShared(): void
     {
-        $lazySingleton = LazySingleton::instance();
+        $lazySingleton = LazySingletonFixture::instance();
         $lazySingleton->counter = 5;
 
-        $this->assertInstanceOf(LazySingleton::class, $lazySingleton);
-        $this->assertSame($lazySingleton, LazySingleton::instance());
-        $this->assertSame(5, LazySingleton::instance()->counter);
+        $this->assertInstanceOf(LazySingletonFixture::class, $lazySingleton);
+        $this->assertSame($lazySingleton, LazySingletonFixture::instance());
+        $this->assertSame(5, LazySingletonFixture::instance()->counter);
     }
 
     #[RunInSeparateProcess]
     public function testSingletonsCannotBeCloned(): void
     {
-        $instance = LazySingleton::instance();
+        $instance = LazySingletonFixture::instance();
 
         $logicException = $this->captureException(LogicException::class, fn() => clone $instance);
 
-        $this->assertSame('Cannot clone ' . LazySingleton::class . ', the class is a singleton', $logicException->getMessage());
+        $this->assertSame('Cannot clone ' . LazySingletonFixture::class . ', the class is a singleton', $logicException->getMessage());
     }
 
     #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorBecomeTheInstance(): void
     {
-        $eagerSingleton = new EagerSingleton();
+        $eagerSingleton = new EagerSingletonFixture();
 
-        $this->assertSame($eagerSingleton, EagerSingleton::instance());
+        $this->assertSame($eagerSingleton, EagerSingletonFixture::instance());
     }
 
     #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorCannotBeCreatedTwice(): void
     {
-        new EagerSingleton();
+        new EagerSingletonFixture();
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('the class is a singleton and cannot be instiantated again');
-        new EagerSingleton();
+        new EagerSingletonFixture();
     }
 
     #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorCannotBeCreatedAfterInstance(): void
     {
-        EagerSingleton::instance();
+        EagerSingletonFixture::instance();
 
         $this->expectException(LogicException::class);
-        new EagerSingleton();
+        new EagerSingletonFixture();
     }
 
     #[RunInSeparateProcess]
     public function testEachClassHasItsOwnInstance(): void
     {
-        $this->assertNotSame(LazySingleton::instance(), OtherLazySingleton::instance());
-        $this->assertInstanceOf(OtherLazySingleton::class, OtherLazySingleton::instance());
+        $this->assertNotSame(LazySingletonFixture::instance(), OtherLazySingletonFixture::instance());
+        $this->assertInstanceOf(OtherLazySingletonFixture::class, OtherLazySingletonFixture::instance());
     }
 
     #[RunInSeparateProcess]
     public function testSubclassesGetTheirOwnInstance(): void
     {
-        $derivedSingleton = DerivedSingleton::instance();
-        $baseSingleton = BaseSingleton::instance();
+        $derivedSingleton = DerivedSingletonFixture::instance();
+        $baseSingleton = BaseSingletonFixture::instance();
 
-        $this->assertInstanceOf(DerivedSingleton::class, $derivedSingleton);
-        $this->assertNotInstanceOf(DerivedSingleton::class, $baseSingleton, 'The base class instance must not be an instance of its subclass');
-        $this->assertSame(BaseSingleton::class, $baseSingleton::class);
+        $this->assertInstanceOf(DerivedSingletonFixture::class, $derivedSingleton);
+        $this->assertNotInstanceOf(DerivedSingletonFixture::class, $baseSingleton, 'The base class instance must not be an instance of its subclass');
+        $this->assertSame(BaseSingletonFixture::class, $baseSingleton::class);
     }
 
     #[RunInSeparateProcess]
     public function testBaseInstanceIsNotReturnedForSubclasses(): void
     {
-        $baseSingleton = BaseSingleton::instance();
+        $baseSingleton = BaseSingletonFixture::instance();
 
-        $this->assertSame(DerivedSingleton::class, DerivedSingleton::instance()::class);
-        $this->assertSame(BaseSingleton::class, $baseSingleton::class);
+        $this->assertSame(DerivedSingletonFixture::class, DerivedSingletonFixture::instance()::class);
+        $this->assertSame(BaseSingletonFixture::class, $baseSingleton::class);
     }
 }

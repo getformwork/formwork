@@ -121,7 +121,7 @@ final class SectionTest extends TestCase
         $this->assertSame('{{greeting}}', $section->label());
     }
 
-    #[DataProvider('nonStringLabels')]
+    #[DataProvider('nonStringLabelsProvider')]
     public function testNonStringLabelsAreReturnedUntouched(mixed $label): void
     {
         $section = new Section(['label' => $label]);
@@ -133,7 +133,7 @@ final class SectionTest extends TestCase
     /**
      * @return iterable<string, array{mixed}>
      */
-    public static function nonStringLabels(): iterable
+    public static function nonStringLabelsProvider(): iterable
     {
         yield 'integer' => [42];
         yield 'bool' => [true];

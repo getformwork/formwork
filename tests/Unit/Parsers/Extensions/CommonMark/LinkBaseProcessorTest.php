@@ -17,7 +17,7 @@ final class LinkBaseProcessorTest extends TestCase
     /**
      * @return iterable<string, array{string, string, string}>
      */
-    public static function relativeLinks(): iterable
+    public static function relativeLinksProvider(): iterable
     {
         yield 'sibling page' => ['[a](page)', '/blog/', '/site/blog/page/'];
         yield 'absolute path' => ['[a](/about)', '/blog/', '/site/about/'];
@@ -29,7 +29,7 @@ final class LinkBaseProcessorTest extends TestCase
         yield 'html file' => ['[a](page.html)', '/blog/', '/site/blog/page.html'];
     }
 
-    #[DataProvider('relativeLinks')]
+    #[DataProvider('relativeLinksProvider')]
     public function testRelativeLinksAreResolvedAgainstTheBaseRoute(string $markdown, string $baseRoute, string $expectedUri): void
     {
         $html = Markdown::parse($markdown, ['site' => $this->site(), 'baseRoute' => $baseRoute]);
@@ -47,7 +47,7 @@ final class LinkBaseProcessorTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public static function untouchedLinks(): iterable
+    public static function untouchedLinksProvider(): iterable
     {
         yield 'anchor' => ['[a](#section)', '#section'];
         yield 'https' => ['[a](https://example.com/x)', 'https://example.com/x'];
@@ -55,7 +55,7 @@ final class LinkBaseProcessorTest extends TestCase
         yield 'mailto' => ['[a](mailto:me@example.com)', 'mailto:me@example.com'];
     }
 
-    #[DataProvider('untouchedLinks')]
+    #[DataProvider('untouchedLinksProvider')]
     public function testExternalAndSpecialLinksAreNotRewritten(string $markdown, string $expectedUri): void
     {
         $html = Markdown::parse($markdown, ['site' => $this->site(), 'baseRoute' => '/blog/']);
@@ -88,7 +88,7 @@ final class LinkBaseProcessorTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function dangerousDestinations(): iterable
+    public static function dangerousDestinationsProvider(): iterable
     {
         yield 'javascript link' => ['[x](javascript:alert(1))'];
         yield 'javascript link uppercase' => ['[x](JaVaScRiPt:alert(1))'];
@@ -98,7 +98,7 @@ final class LinkBaseProcessorTest extends TestCase
         yield 'encoded javascript link' => ['[x](&#106;avascript:alert(1))'];
     }
 
-    #[DataProvider('dangerousDestinations')]
+    #[DataProvider('dangerousDestinationsProvider')]
     public function testDangerousDestinationsNeverReachTheOutput(string $markdown): void
     {
         $html = Markdown::parse($markdown, ['site' => $this->site(), 'baseRoute' => '/blog/']);

@@ -25,7 +25,7 @@ final class PhpDomParserTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function malformedMarkup(): iterable
+    public static function malformedMarkupProvider(): iterable
     {
         yield 'unclosed element' => ['<svg><path>'];
         yield 'mismatched tags' => ['<a><b></a></b>'];
@@ -37,7 +37,7 @@ final class PhpDomParserTest extends TestCase
         yield 'xml declaration in the middle' => ['<p/><?xml version="1.0"?>'];
     }
 
-    #[DataProvider('malformedMarkup')]
+    #[DataProvider('malformedMarkupProvider')]
     public function testMalformedMarkupYieldsNull(string $markup): void
     {
         $this->assertNull((new PhpDomParser())->parse($markup));
@@ -125,7 +125,7 @@ final class PhpDomParserTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function markupWithProlog(): iterable
+    public static function markupWithPrologProvider(): iterable
     {
         yield 'xml declaration' => ['<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg"/>'];
         yield 'xml declaration and newline' => ["<?xml version=\"1.0\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\"/>"];
@@ -134,7 +134,7 @@ final class PhpDomParserTest extends TestCase
         yield 'comments and processing instructions' => ['<?xml version="1.0"?><!-- Generator: Editor --><?xml-stylesheet href="style.css"?><svg xmlns="http://www.w3.org/2000/svg"/>'];
     }
 
-    #[DataProvider('markupWithProlog')]
+    #[DataProvider('markupWithPrologProvider')]
     public function testTheDocumentPrologIsRemoved(string $markup): void
     {
         $phpDomParser = new PhpDomParser();

@@ -7,7 +7,6 @@ use Formwork\Http\FileResponse;
 use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -60,7 +59,7 @@ final class FilesControllerTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function traversals(): iterable
+    public static function traversalsProvider(): iterable
     {
         yield 'parent directory' => ['../secret.txt'];
         yield 'nested parents' => ['nested/../../secret.txt'];
@@ -70,7 +69,7 @@ final class FilesControllerTest extends TestCase
         yield 'null byte' => ["document.pdf\0../secret.txt"];
     }
 
-    #[DataProvider('traversals')]
+    #[DataProvider('traversalsProvider')]
     public function testFilesOutsideTheFilesDirectoryAreNeverServed(string $name): void
     {
         $response = $this->controller()->file(new RouteParams(['name' => $name]));

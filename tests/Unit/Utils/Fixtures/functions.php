@@ -3,7 +3,7 @@
 namespace Formwork\Utils;
 
 use Formwork\Tests\Environment;
-use Formwork\Tests\Unit\Utils\Fixtures\FileSystemFixture;
+use Formwork\Tests\Unit\Utils\Fixtures\NativeFunctionsFixture;
 
 function extension_loaded(string $extension): bool
 {
@@ -12,90 +12,90 @@ function extension_loaded(string $extension): bool
 
 function getcwd(): string|false
 {
-    return FileSystemFixture::cwd();
+    return NativeFunctionsFixture::cwd();
 }
 
 function fileatime(string $filename): int|false
 {
-    return FileSystemFixture::fileatime($filename);
+    return NativeFunctionsFixture::fileatime($filename);
 }
 
 function filectime(string $filename): int|false
 {
-    return FileSystemFixture::filectime($filename);
+    return NativeFunctionsFixture::filectime($filename);
 }
 
 function filemtime(string $filename): int|false
 {
-    return FileSystemFixture::filemtime($filename);
+    return NativeFunctionsFixture::filemtime($filename);
 }
 
 function touch(string $filename, ?int $time = null, ?int $atime = null): bool
 {
-    return FileSystemFixture::touch($filename, $time, $atime);
+    return NativeFunctionsFixture::touch($filename, $time, $atime);
 }
 
 function fileperms(string $filename): int|false
 {
-    return FileSystemFixture::fileperms($filename);
+    return NativeFunctionsFixture::fileperms($filename);
 }
 
 function filesize(string $filename): int|false
 {
-    return FileSystemFixture::filesize($filename);
+    return NativeFunctionsFixture::filesize($filename);
 }
 
 function unlink(string $filename): bool
 {
-    return FileSystemFixture::unlink($filename);
+    return NativeFunctionsFixture::unlink($filename);
 }
 
 function rmdir(string $dirname): bool
 {
-    return FileSystemFixture::rmdir($dirname);
+    return NativeFunctionsFixture::rmdir($dirname);
 }
 
 function copy(string $source, string $dest): bool
 {
-    return FileSystemFixture::copy($source, $dest);
+    return NativeFunctionsFixture::copy($source, $dest);
 }
 
 function symlink(string $target, string $link): bool
 {
-    return FileSystemFixture::symlink($target, $link);
+    return NativeFunctionsFixture::symlink($target, $link);
 }
 
 function readlink(string $path): string|false
 {
-    return FileSystemFixture::readlink($path);
+    return NativeFunctionsFixture::readlink($path);
 }
 
 function rename(string $from, string $to): bool
 {
-    return FileSystemFixture::rename($from, $to);
+    return NativeFunctionsFixture::rename($from, $to);
 }
 
 function file_get_contents(string $filename): string|false
 {
-    return FileSystemFixture::file_get_contents($filename);
+    return NativeFunctionsFixture::file_get_contents($filename);
 }
 
 function file_put_contents(string $filename, mixed $data, int $flags = 0): int|false
 {
-    return FileSystemFixture::file_put_contents($filename, $data, $flags);
+    return NativeFunctionsFixture::file_put_contents($filename, $data, $flags);
 }
 
 function opendir(string $directory): mixed
 {
-    return FileSystemFixture::opendir($directory);
+    return NativeFunctionsFixture::opendir($directory);
 }
 
 function fopen(string $filename, string $mode): mixed
 {
-    return FileSystemFixture::fopen($filename, $mode);
+    return NativeFunctionsFixture::fopen($filename, $mode);
 }
 
 function mkdir(string $pathname, int $mode = 0o777, bool $recursive = false): bool
 {
-    return FileSystemFixture::mkdir($pathname, $mode, $recursive);
+    return NativeFunctionsFixture::mkdir($pathname, $mode, $recursive);
 }

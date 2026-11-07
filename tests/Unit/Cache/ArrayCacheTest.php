@@ -6,14 +6,17 @@ use DateInterval;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\ArrayCache;
 use Formwork\Cache\CacheItem;
+use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use ReflectionProperty;
 use stdClass;
 
 #[CoversClass(ArrayCache::class)]
 #[CoversClass(AbstractCache::class)]
-final class ArrayCacheTest extends CacheTestCase
+final class ArrayCacheTest extends TestCase
 {
+    use ProvidesCacheTests;
+
     public function testItemsAreNotSharedBetweenInstances(): void
     {
         $first = new ArrayCache('test');

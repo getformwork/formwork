@@ -8,6 +8,7 @@ use Formwork\Cache\AbstractCache;
 use Formwork\Cache\CacheItem;
 use Formwork\Cache\FilesCache;
 use Formwork\Parsers\Php;
+use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,8 +19,10 @@ use UnexpectedValueException;
 #[CoversClass(FilesCache::class)]
 #[CoversClass(AbstractCache::class)]
 #[UsesTempDirectory]
-final class FilesCacheTest extends CacheTestCase
+final class FilesCacheTest extends TestCase
 {
+    use ProvidesCacheTests;
+
     private string $path;
 
     protected function setUp(): void

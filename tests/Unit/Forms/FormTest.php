@@ -663,6 +663,9 @@ final class FormTest extends TestCase
         );
     }
 
+    /**
+     * @return iterable<string, array{string, array<string, mixed>, mixed, mixed, mixed}>
+     */
     public static function fieldTypesProvider(): iterable
     {
         yield 'array' => [

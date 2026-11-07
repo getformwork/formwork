@@ -8,7 +8,6 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversClass;

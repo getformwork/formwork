@@ -7,7 +7,6 @@ use Formwork\Plugins\Plugin;
 use Formwork\Plugins\PluginFactory;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;

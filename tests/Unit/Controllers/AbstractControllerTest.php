@@ -8,9 +8,8 @@ use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
-use Formwork\Tests\Unit\Controllers\Fixtures\ExposedController;
-use Formwork\Tests\Unit\Controllers\Fixtures\ForwardTarget;
+use Formwork\Tests\Unit\Controllers\Fixtures\ExposedControllerFixture;
+use Formwork\Tests\Unit\Controllers\Fixtures\ForwardTargetFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -90,7 +89,7 @@ final class AbstractControllerTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function foreignReferers(): iterable
+    public static function foreignReferersProvider(): iterable
     {
         yield 'other host' => ['https://evil.example/previous/'];
         yield 'other scheme' => ['https://localhost/previous/'];
@@ -104,7 +103,7 @@ final class AbstractControllerTest extends TestCase
         yield 'garbage' => ['not a url'];
     }
 
-    #[DataProvider('foreignReferers')]
+    #[DataProvider('foreignReferersProvider')]
     public function testRedirectToRefererNeverLeavesTheSite(string $referer): void
     {
         $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => $referer])->redirectBack(default: '/home/');
@@ -141,27 +140,27 @@ final class AbstractControllerTest extends TestCase
 
     public function testRequestsCanBeForwardedToAnotherController(): void
     {
-        $response = $this->controller()->forwardTo(ForwardTarget::class, 'greet', ['name' => 'Ada']);
+        $response = $this->controller()->forwardTo(ForwardTargetFixture::class, 'greet', ['name' => 'Ada']);
 
-        $this->assertSame('Hello Ada from forwardtarget', $response->content());
+        $this->assertSame('Hello Ada from forwardtargetfixture', $response->content());
     }
 
     public function testForwardedActionsReceiveTheirDefaults(): void
     {
-        $this->assertSame('Hello nobody from forwardtarget', $this->controller()->forwardTo(ForwardTarget::class, 'greet')->content());
+        $this->assertSame('Hello nobody from forwardtargetfixture', $this->controller()->forwardTo(ForwardTargetFixture::class, 'greet')->content());
     }
 
     /**
      * @return iterable<string, array{class-string}>
      */
-    public static function notControllers(): iterable
+    public static function notControllersProvider(): iterable
     {
         yield 'plain class' => [stdClass::class];
         yield 'response' => [Response::class];
         yield 'the abstract controller itself' => [AbstractController::class];
     }
 
-    #[DataProvider('notControllers')]
+    #[DataProvider('notControllersProvider')]
     public function testOnlyControllersCanBeForwardedTo(string $class): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -191,8 +190,8 @@ final class AbstractControllerTest extends TestCase
      * @param array<string, mixed>  $server
      * @param array<string, object> $services
      */
-    private function controller(array $server = [], array $services = [], ?Router $router = null): ExposedController
+    private function controller(array $server = [], array $services = [], ?Router $router = null): ExposedControllerFixture
     {
-        return $this->makeController(ExposedController::class, server: $server, services: $services, router: $router);
+        return $this->makeController(ExposedControllerFixture::class, server: $server, services: $services, router: $router);
     }
 }

@@ -5,7 +5,7 @@ namespace Formwork\Tests\Unit\Security;
 use Formwork\Http\Request;
 use Formwork\Security\CsrfToken;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySession;
+use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySessionFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionProperty;
@@ -13,14 +13,14 @@ use ReflectionProperty;
 #[CoversClass(CsrfToken::class)]
 final class CsrfTokenTest extends TestCase
 {
-    private InMemorySession $session;
+    private InMemorySessionFixture $session;
 
     private CsrfToken $csrfToken;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->session = new InMemorySession();
+        $this->session = new InMemorySessionFixture();
         $request = new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
         (new ReflectionProperty(Request::class, 'session'))->setValue($request, $this->session);
         $this->csrfToken = new CsrfToken($request);

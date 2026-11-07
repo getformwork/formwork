@@ -5,7 +5,7 @@ namespace Formwork\Tests\Unit\Images\Isobmff;
 use Formwork\Images\Isobmff\Box;
 use Formwork\Images\Isobmff\ImageSequence;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\AvifFile;
+use Formwork\Tests\Unit\Images\Fixtures\AvifFileFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -15,7 +15,7 @@ final class ImageSequenceTest extends TestCase
     #[DataProvider('timelineProvider')]
     public function testTimelineIsReadFromTheMovieBox(int $frames, int $plays): void
     {
-        $sequence = ImageSequence::fromBox($this->movie(AvifFile::create()->withFrames($frames, $plays)->build()));
+        $sequence = ImageSequence::fromBox($this->movie(AvifFileFixture::create()->withFrames($frames, $plays)->build()));
 
         $this->assertSame($frames, $sequence->frameCount);
         $this->assertSame($plays, $sequence->playCount);
@@ -42,8 +42,8 @@ final class ImageSequenceTest extends TestCase
 
     public function testTracksReferencingOthersAreIgnored(): void
     {
-        $auxiliary = AvifFile::box('trak', AvifFile::box('tref', AvifFile::box('auxl', "\x00\x00\x00\x01")) . AvifFile::box('mdia', AvifFile::box('minf', AvifFile::box('stbl', AvifFile::fullBox('stsz', 0, pack('NN', 10, 99))))));
-        $movie = $this->movie(AvifFile::create()->withFrames(4)->build());
+        $auxiliary = AvifFileFixture::box('trak', AvifFileFixture::box('tref', AvifFileFixture::box('auxl', "\x00\x00\x00\x01")) . AvifFileFixture::box('mdia', AvifFileFixture::box('minf', AvifFileFixture::box('stbl', AvifFileFixture::fullBox('stsz', 0, pack('NN', 10, 99))))));
+        $movie = $this->movie(AvifFileFixture::create()->withFrames(4)->build());
         $sequence = ImageSequence::fromBox(new Box('moov', $auxiliary . $movie->payload));
 
         $this->assertSame(4, $sequence->frameCount);
@@ -51,8 +51,8 @@ final class ImageSequenceTest extends TestCase
 
     public function testTracksWithoutEditListArePlayedOnce(): void
     {
-        $stsz = AvifFile::fullBox('stsz', 0, pack('NN', 10, 6));
-        $track = AvifFile::box('trak', AvifFile::fullBox('tkhd', 0, str_repeat("\x00", 80)) . AvifFile::box('mdia', AvifFile::box('minf', AvifFile::box('stbl', $stsz))));
+        $stsz = AvifFileFixture::fullBox('stsz', 0, pack('NN', 10, 6));
+        $track = AvifFileFixture::box('trak', AvifFileFixture::fullBox('tkhd', 0, str_repeat("\x00", 80)) . AvifFileFixture::box('mdia', AvifFileFixture::box('minf', AvifFileFixture::box('stbl', $stsz))));
 
         $sequence = ImageSequence::fromBox(new Box('moov', $track));
 
@@ -62,9 +62,9 @@ final class ImageSequenceTest extends TestCase
 
     public function testShortDurationFieldsAreRead(): void
     {
-        $header = AvifFile::fullBox('tkhd', 0, pack('NNNNN', 0, 0, 1, 0, 12) . str_repeat("\x00", 60));
-        $edits = AvifFile::box('edts', AvifFile::fullBox('elst', 0, pack('N', 1) . pack('NN', 4, 0) . pack('N', 0x10000), 1));
-        $track = AvifFile::box('trak', $header . $edits);
+        $header = AvifFileFixture::fullBox('tkhd', 0, pack('NNNNN', 0, 0, 1, 0, 12) . str_repeat("\x00", 60));
+        $edits = AvifFileFixture::box('edts', AvifFileFixture::fullBox('elst', 0, pack('N', 1) . pack('NN', 4, 0) . pack('N', 0x10000), 1));
+        $track = AvifFileFixture::box('trak', $header . $edits);
 
         $sequence = ImageSequence::fromBox(new Box('moov', $track));
 
@@ -74,7 +74,7 @@ final class ImageSequenceTest extends TestCase
 
     public function testTruncatedBoxesLeaveTheTimelineUnknown(): void
     {
-        $track = AvifFile::box('trak', AvifFile::fullBox('tkhd', 1, "\x00\x00") . AvifFile::box('edts', AvifFile::fullBox('elst', 1, "\x00", 1)) . AvifFile::box('mdia', AvifFile::box('minf', AvifFile::box('stbl', AvifFile::fullBox('stsz', 0, "\x00")))));
+        $track = AvifFileFixture::box('trak', AvifFileFixture::fullBox('tkhd', 1, "\x00\x00") . AvifFileFixture::box('edts', AvifFileFixture::fullBox('elst', 1, "\x00", 1)) . AvifFileFixture::box('mdia', AvifFileFixture::box('minf', AvifFileFixture::box('stbl', AvifFileFixture::fullBox('stsz', 0, "\x00")))));
 
         $sequence = ImageSequence::fromBox(new Box('moov', $track));
 

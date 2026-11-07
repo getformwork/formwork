@@ -15,7 +15,6 @@ use Formwork\Pages\Events\PageOutputEvent;
 use Formwork\Pages\Events\PageRenderEvent;
 use Formwork\Pages\Page;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;

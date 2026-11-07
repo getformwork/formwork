@@ -16,9 +16,9 @@ use Formwork\Interpolator\Nodes\StringNode;
 use Formwork\Interpolator\Parser;
 use Formwork\Interpolator\Tokenizer;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Interpolator\Fixtures\InterpolationTarget;
-use Formwork\Tests\Unit\Interpolator\Fixtures\MagicGetter;
-use Formwork\Tests\Unit\Interpolator\Fixtures\MagicTarget;
+use Formwork\Tests\Unit\Interpolator\Fixtures\InterpolationTargetFixture;
+use Formwork\Tests\Unit\Interpolator\Fixtures\MagicGetterFixture;
+use Formwork\Tests\Unit\Interpolator\Fixtures\MagicTargetFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -157,7 +157,7 @@ final class NodeInterpolatorTest extends TestCase
 
     public function testObjectPropertiesMethodsAndConstantsAreAccessible(): void
     {
-        $vars = ['object' => new InterpolationTarget()];
+        $vars = ['object' => new InterpolationTargetFixture()];
 
         $this->assertSame('public', $this->interpolate('object.publicProperty', $vars));
         $this->assertSame('method(null)', $this->interpolate('object.method', $vars));
@@ -169,7 +169,7 @@ final class NodeInterpolatorTest extends TestCase
 
     public function testMethodsReceiveInterpolatedArguments(): void
     {
-        $vars = ['object' => new InterpolationTarget(), 'number' => 7, 'list' => ['a' => 'b']];
+        $vars = ['object' => new InterpolationTargetFixture(), 'number' => 7, 'list' => ['a' => 'b']];
 
         $this->assertSame('method(7)', $this->interpolate('object.method(number)', $vars));
         $this->assertSame('method("b")', $this->interpolate('object.method(list.a)', $vars));
@@ -180,7 +180,7 @@ final class NodeInterpolatorTest extends TestCase
 
     public function testMethodResultsCanBeTraversed(): void
     {
-        $vars = ['object' => new InterpolationTarget()];
+        $vars = ['object' => new InterpolationTargetFixture()];
 
         $this->assertSame('value', $this->interpolate('object.items.key', $vars));
         $this->assertSame('one', $this->interpolate('object.items[1]', $vars));
@@ -190,12 +190,12 @@ final class NodeInterpolatorTest extends TestCase
 
     public function testNullPropertiesAreReturned(): void
     {
-        $this->assertNull($this->interpolate('object.nullProperty', ['object' => new InterpolationTarget()]));
+        $this->assertNull($this->interpolate('object.nullProperty', ['object' => new InterpolationTargetFixture()]));
     }
 
     public function testNullMethodResultsCannotBeTraversedIntoTheGlobalVariables(): void
     {
-        $vars = ['object' => new InterpolationTarget(), 'publicProperty' => 'global'];
+        $vars = ['object' => new InterpolationTargetFixture(), 'publicProperty' => 'global'];
 
         $this->expectException(InterpolationException::class);
         $this->interpolate('object.nothing.publicProperty', $vars);
@@ -205,7 +205,7 @@ final class NodeInterpolatorTest extends TestCase
     public function testNonPublicMembersAreReportedAsInterpolationErrors(string $expression): void
     {
         $this->expectException(InterpolationException::class);
-        $this->interpolate($expression, ['object' => new InterpolationTarget()]);
+        $this->interpolate($expression, ['object' => new InterpolationTargetFixture()]);
     }
 
     /**
@@ -225,19 +225,19 @@ final class NodeInterpolatorTest extends TestCase
     public function testPropertiesCannotBeCalled(): void
     {
         $this->expectException(InterpolationException::class);
-        $this->interpolate('object.publicProperty(1)', ['object' => new InterpolationTarget()]);
+        $this->interpolate('object.publicProperty(1)', ['object' => new InterpolationTargetFixture()]);
     }
 
     public function testMagicMethodsAreCalledForUndefinedMethods(): void
     {
-        $vars = ['magic' => new MagicTarget()];
+        $vars = ['magic' => new MagicTargetFixture()];
 
         $this->assertSame('called:1,2', $this->interpolate('magic.dynamic(1, 2)', $vars));
     }
 
     public function testMagicGettersAreUsedForUndefinedProperties(): void
     {
-        $vars = ['magic' => new MagicGetter()];
+        $vars = ['magic' => new MagicGetterFixture()];
 
         $this->assertSame('magic:anything', $this->interpolate('magic.anything', $vars));
     }
@@ -245,7 +245,7 @@ final class NodeInterpolatorTest extends TestCase
     public function testMagicMethodsTakePrecedenceOverPublicProperties(): void
     {
         $this->expectException(BadMethodCallException::class);
-        $this->interpolate('magic.realProperty', ['magic' => new MagicTarget()]);
+        $this->interpolate('magic.realProperty', ['magic' => new MagicTargetFixture()]);
     }
 
     public function testClosuresAreReturnedWhenNoArgumentsAreGiven(): void
@@ -337,7 +337,7 @@ final class NodeInterpolatorTest extends TestCase
     {
         $this->expectException(InterpolationException::class);
         $this->expectExceptionMessage('Invalid non-scalar array key');
-        $this->interpolate($expression, ['identity' => static fn(mixed $value): mixed => $value, 'list' => [1], 'object' => new InterpolationTarget()]);
+        $this->interpolate($expression, ['identity' => static fn(mixed $value): mixed => $value, 'list' => [1], 'object' => new InterpolationTargetFixture()]);
     }
 
     /**

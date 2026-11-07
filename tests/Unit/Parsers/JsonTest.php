@@ -15,6 +15,7 @@ final class JsonTest extends TestCase
 {
     protected function setUp(): void
     {
+        parent::setUp();
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/json', TESTS_TMP_PATH, overwrite: true);
     }
 

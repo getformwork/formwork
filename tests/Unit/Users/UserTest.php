@@ -11,7 +11,6 @@ use Formwork\Files\FileFactory;
 use Formwork\Images\Image;
 use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\ColorScheme;

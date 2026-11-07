@@ -121,7 +121,7 @@ final class TabTest extends TestCase
         $this->assertSame('{{greeting}}', $tab->label());
     }
 
-    #[DataProvider('nonStringLabels')]
+    #[DataProvider('nonStringLabelsProvider')]
     public function testNonStringLabelsAreReturnedUntouched(mixed $label): void
     {
         $tab = new Tab(['label' => $label]);
@@ -133,7 +133,7 @@ final class TabTest extends TestCase
     /**
      * @return iterable<string, array{mixed}>
      */
-    public static function nonStringLabels(): iterable
+    public static function nonStringLabelsProvider(): iterable
     {
         yield 'integer' => [42];
         yield 'bool' => [true];

@@ -10,7 +10,6 @@ use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;

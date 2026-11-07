@@ -20,6 +20,7 @@ final class PhpTest extends TestCase
 {
     protected function setUp(): void
     {
+        parent::setUp();
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/php', TESTS_TMP_PATH, overwrite: true);
     }
 

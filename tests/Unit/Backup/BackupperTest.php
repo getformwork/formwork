@@ -123,7 +123,7 @@ final class BackupperTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function invalidNames(): iterable
+    public static function invalidNamesProvider(): iterable
     {
         yield 'path traversal' => ['../escape'];
         yield 'nested directory' => ['sub/backup'];
@@ -137,7 +137,7 @@ final class BackupperTest extends TestCase
         yield 'shell metacharacters' => ['backup;rm'];
     }
 
-    #[DataProvider('invalidNames')]
+    #[DataProvider('invalidNamesProvider')]
     public function testInvalidNamesAreRejectedBeforeAnythingIsWritten(string $name): void
     {
         $unexpectedValueException = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.com'));
@@ -150,14 +150,14 @@ final class BackupperTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function hostnames(): iterable
+    public static function hostnamesProvider(): iterable
     {
         yield 'ipv4' => ['192.168.1.10'];
         yield 'ipv6' => ['[2001:db8::1]'];
         yield 'localhost' => ['localhost'];
     }
 
-    #[DataProvider('hostnames')]
+    #[DataProvider('hostnamesProvider')]
     public function testEveryHostnameTheRequestCanReportProducesAValidArchiveName(string $hostname): void
     {
         $destination = $this->backupper(['name' => '{{hostname}}'])->backup(null, $hostname);

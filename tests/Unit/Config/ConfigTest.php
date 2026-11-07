@@ -67,6 +67,9 @@ final class ConfigTest extends TestCase
         $this->assertSame($value, $config->{$getter}($key));
     }
 
+    /**
+     * @return iterable<string, array{string, string, mixed}>
+     */
     public static function typedGetterProvider(): iterable
     {
         yield 'string' => ['getString', 'name', 'Formwork'];
@@ -87,6 +90,9 @@ final class ConfigTest extends TestCase
         $config->{$getter}($key);
     }
 
+    /**
+     * @return iterable<string, array{string, string, mixed, string}>
+     */
     public static function invalidTypedGetterProvider(): iterable
     {
         yield 'string rejects null' => ['getString', 'name', null, 'string'];

@@ -47,14 +47,14 @@ final class UriGeneratorTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function traversals(): iterable
+    public static function traversalsProvider(): iterable
     {
         yield 'parent directory' => ['../secret'];
         yield 'several parents' => ['../../../../secret'];
         yield 'nested parents' => ['a/../../../secret'];
     }
 
-    #[DataProvider('traversals')]
+    #[DataProvider('traversalsProvider')]
     public function testPathsCannotClimbAboveTheRequestRoot(string $path): void
     {
         $uri = $this->generator('/subdir/deeper/index.php')->path($path);

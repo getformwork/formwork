@@ -379,7 +379,7 @@ final class UpdaterTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function escapingEntries(): iterable
+    public static function escapingEntriesProvider(): iterable
     {
         yield 'parent directory' => ['../formwork-zipslip-parent.txt'];
         yield 'several parents' => ['../../../../../../../../tmp/formwork-zipslip-deep.txt'];
@@ -388,7 +388,7 @@ final class UpdaterTest extends TestCase
         yield 'sibling sharing the root prefix' => ['../formwork-sibling/zipslip.txt'];
     }
 
-    #[DataProvider('escapingEntries')]
+    #[DataProvider('escapingEntriesProvider')]
     public function testArchivesEscapingTheInstallationRootAreRefused(string $entry): void
     {
         $archive = TESTS_TMP_PATH . '/updater/malicious.zip';
@@ -463,7 +463,7 @@ final class UpdaterTest extends TestCase
     /**
      * @return iterable<string, array{?string, ?string}>
      */
-    public static function digests(): iterable
+    public static function digestsProvider(): iterable
     {
         yield 'sha256' => ['sha256:abcdef', 'abcdef'];
         yield 'sha1' => ['sha1:abcdef', null];
@@ -473,7 +473,7 @@ final class UpdaterTest extends TestCase
         yield 'uppercase algorithm' => ['SHA256:abcdef', null];
     }
 
-    #[DataProvider('digests')]
+    #[DataProvider('digestsProvider')]
     public function testDigestParsing(?string $digest, ?string $expected): void
     {
         $this->assertSame($expected, $this->call($this->updater(), 'parseSha256Checksum', $digest));
@@ -482,7 +482,7 @@ final class UpdaterTest extends TestCase
     /**
      * @return iterable<string, array{string, string, bool}>
      */
-    public static function installability(): iterable
+    public static function installabilityProvider(): iterable
     {
         yield 'next patch' => ['2.3.12', '2.3.13', true];
         yield 'next minor' => ['2.3.12', '2.4.0', true];
@@ -493,7 +493,7 @@ final class UpdaterTest extends TestCase
         yield 'build metadata only' => ['2.3.12', '2.3.12+build', false];
     }
 
-    #[DataProvider('installability')]
+    #[DataProvider('installabilityProvider')]
     public function testInstallability(string $current, string $candidate, bool $expected): void
     {
         FileSystem::write($this->registryFile, Json::encode(['currentRelease' => $current]));

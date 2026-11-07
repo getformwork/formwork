@@ -46,6 +46,7 @@ final class AppTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         // PHPUnit narrows the error reporting level while its own handler is active
         $this->errorReporting = error_reporting(E_ALL);
     }
@@ -53,6 +54,7 @@ final class AppTest extends TestCase
     protected function tearDown(): void
     {
         error_reporting($this->errorReporting);
+        parent::tearDown();
     }
 
     public function testVersionIsAValidSemanticVersion(): void
@@ -249,7 +251,7 @@ final class AppTest extends TestCase
      *
      * @return iterable<string, array{string}>
      */
-    public static function services(): iterable
+    public static function servicesProvider(): iterable
     {
         $definitions = [];
         $container = new class extends Container {
@@ -273,7 +275,7 @@ final class AppTest extends TestCase
         yield from $definitions;
     }
 
-    #[DataProvider('services')]
+    #[DataProvider('servicesProvider')]
     public function testEveryDeclaredServiceCanBeResolved(string $name): void
     {
         $this->assertIsObject(App::instance()->getService($name));
@@ -299,7 +301,7 @@ final class AppTest extends TestCase
     /**
      * @return iterable<string, array{int}>
      */
-    public static function severities(): iterable
+    public static function severitiesProvider(): iterable
     {
         yield 'notice' => [E_NOTICE];
         yield 'warning' => [E_WARNING];
@@ -307,7 +309,7 @@ final class AppTest extends TestCase
         yield 'user error' => [E_USER_ERROR];
     }
 
-    #[DataProvider('severities')]
+    #[DataProvider('severitiesProvider')]
     public function testEverySeverityExceptUserDeprecationsIsConverted(int $severity): void
     {
         $this->expectException(ErrorException::class);

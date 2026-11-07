@@ -14,7 +14,6 @@ use Formwork\Plugins\PluginFactory;
 use Formwork\Plugins\Plugins;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;

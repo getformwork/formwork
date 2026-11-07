@@ -8,8 +8,8 @@ use Formwork\Plugins\Controllers\AssetsController;
 use Formwork\Plugins\Plugin;
 use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
-use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
+use Formwork\Tests\Unit\Controllers\BuildsControllers;
+use Formwork\Tests\Unit\Plugins\BuildsPlugins;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -67,7 +67,7 @@ final class AssetsControllerTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public static function traversals(): iterable
+    public static function traversalsProvider(): iterable
     {
         yield 'parent in the file' => ['css', '../../secret.yaml'];
         yield 'many parents in the file' => ['css', '../../../../../../../../../../etc/hostname'];
@@ -79,7 +79,7 @@ final class AssetsControllerTest extends TestCase
         yield 'null byte' => ['css', "style.css\0../../secret.yaml"];
     }
 
-    #[DataProvider('traversals')]
+    #[DataProvider('traversalsProvider')]
     public function testFilesOutsideTheAssetsDirectoryAreNeverServed(string $type, string $file): void
     {
         $response = $this->controller()->asset(new RouteParams(['type' => $type, 'file' => $file]));

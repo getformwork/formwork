@@ -10,10 +10,10 @@ use Formwork\Authentication\RateLimiter;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySessionFixture;
 use Formwork\Tests\Unit\Authentication\Fixtures\NativeFunctionsFixture;
-use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySession;
-use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
-use Formwork\Tests\Unit\Users\Fixtures\TestableUser;
+use Formwork\Tests\Unit\Users\BuildsUsers;
+use Formwork\Tests\Unit\Users\Fixtures\TestableUserFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\Users;
@@ -34,12 +34,12 @@ final class AuthenticatorTest extends TestCase
      */
     private static array $testUsersData;
 
-    private InMemorySession $session;
+    private InMemorySessionFixture $session;
 
     private Users $users;
 
     /**
-     * @var array<string, TestableUser>
+     * @var array<string, TestableUserFixture>
      */
     private array $testUsers = [];
 
@@ -75,9 +75,9 @@ final class AuthenticatorTest extends TestCase
     {
         parent::setUp();
         $this->setUpUsers();
-        $this->session = new InMemorySession();
+        $this->session = new InMemorySessionFixture();
         $this->users = $this->users();
-        $this->testUsers = array_map(fn(array $data): TestableUser => $this->makeUser($data, $this->users), self::$testUsersData);
+        $this->testUsers = array_map(fn(array $data): TestableUserFixture => $this->makeUser($data, $this->users), self::$testUsersData);
     }
 
     protected function tearDown(): void

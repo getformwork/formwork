@@ -7,7 +7,6 @@ use Formwork\Plugins\Exceptions\PluginInitializationException;
 use Formwork\Plugins\Plugin;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
@@ -51,7 +50,7 @@ final class PluginTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function invalidIds(): iterable
+    public static function invalidIdsProvider(): iterable
     {
         yield 'reserved id' => ['plugin'];
         yield 'uppercase' => ['Demo'];
@@ -64,7 +63,7 @@ final class PluginTest extends TestCase
         yield 'trailing newline' => ["demo\n"];
     }
 
-    #[DataProvider('invalidIds')]
+    #[DataProvider('invalidIdsProvider')]
     public function testInvalidIdsAreRejected(string $id): void
     {
         $this->expectException(InvalidArgumentException::class);

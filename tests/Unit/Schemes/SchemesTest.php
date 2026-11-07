@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Schemes;
 use Formwork\Schemes\Scheme;
 use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;

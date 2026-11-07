@@ -7,7 +7,7 @@ use DateTimeImmutable;
 use Formwork\Http\RequestMethod;
 use Formwork\Log\Formatter\AbstractFormatter;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Log\Fixtures\ExposedFormatter;
+use Formwork\Tests\Unit\Log\Fixtures\ExposedFormatterFixture;
 use JsonSerializable;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -25,7 +25,7 @@ final class AbstractFormatterTest extends TestCase
     #[DataProvider('interpolationProvider')]
     public function testInterpolation(string $message, array $context, string $expected): void
     {
-        $this->assertSame($expected, (new ExposedFormatter())->interpolateMessage($message, $context));
+        $this->assertSame($expected, (new ExposedFormatterFixture())->interpolateMessage($message, $context));
     }
 
     /**
@@ -68,7 +68,7 @@ final class AbstractFormatterTest extends TestCase
 
     public function testDateFormatIsConfigurable(): void
     {
-        $exposedFormatter = new ExposedFormatter();
+        $exposedFormatter = new ExposedFormatterFixture();
         $date = new DateTimeImmutable('2025-01-02 03:04:05 UTC');
 
         $this->assertSame('2025-01-02', $exposedFormatter->interpolateMessage('{when}', ['when' => $date], 'Y-m-d'));
@@ -76,13 +76,13 @@ final class AbstractFormatterTest extends TestCase
 
     public function testPlainEnumsAreInterpolatedByName(): void
     {
-        $this->assertSame('Case', (new ExposedFormatter())->interpolateMessage('{e}', ['e' => PlainEnum::Case]));
+        $this->assertSame('Case', (new ExposedFormatterFixture())->interpolateMessage('{e}', ['e' => PlainEnum::Case]));
     }
 
     #[DataProvider('scalarProvider')]
     public function testScalarsAreNormalizedUnchanged(mixed $value): void
     {
-        $this->assertSame($value, (new ExposedFormatter())->normalizeData($value));
+        $this->assertSame($value, (new ExposedFormatterFixture())->normalizeData($value));
     }
 
     /**
@@ -102,7 +102,7 @@ final class AbstractFormatterTest extends TestCase
     {
         $date = new DateTimeImmutable('2025-01-02 03:04:05 UTC');
 
-        $result = (new ExposedFormatter())->normalizeData(['a' => 1, 'b' => ['c' => $date, 'd' => STDIN]]);
+        $result = (new ExposedFormatterFixture())->normalizeData(['a' => 1, 'b' => ['c' => $date, 'd' => STDIN]]);
 
         $this->assertSame(['a' => 1, 'b' => ['c' => '2025-01-02T03:04:05+00:00', 'd' => '[resource (stream)]']], $result);
     }
@@ -111,27 +111,27 @@ final class AbstractFormatterTest extends TestCase
     {
         $data = ['a' => ['b' => ['c' => ['d' => ['e' => 'deep']]]]];
 
-        $this->assertSame(['a' => ['b' => ['c' => ['d' => '[array]']]]], (new ExposedFormatter())->normalizeData($data));
+        $this->assertSame(['a' => ['b' => ['c' => ['d' => '[array]']]]], (new ExposedFormatterFixture())->normalizeData($data));
     }
 
     public function testDepthIsConfigurable(): void
     {
         $data = ['a' => ['b' => 'c']];
 
-        $this->assertSame(['a' => '[array]'], (new ExposedFormatter())->normalizeData($data, depth: 1));
-        $this->assertSame('[array]', (new ExposedFormatter())->normalizeData($data, depth: 0));
+        $this->assertSame(['a' => '[array]'], (new ExposedFormatterFixture())->normalizeData($data, depth: 1));
+        $this->assertSame('[array]', (new ExposedFormatterFixture())->normalizeData($data, depth: 0));
     }
 
     public function testObjectsBeyondTheDepthAreSummarized(): void
     {
-        $this->assertSame('[object stdClass]', (new ExposedFormatter())->normalizeData(new stdClass(), depth: 0));
+        $this->assertSame('[object stdClass]', (new ExposedFormatterFixture())->normalizeData(new stdClass(), depth: 0));
     }
 
     public function testDateTimesAreFormatted(): void
     {
         $date = new DateTimeImmutable('2025-01-02 03:04:05.5 UTC');
 
-        $this->assertSame('2025-01-02', (new ExposedFormatter())->normalizeData($date, 'Y-m-d'));
+        $this->assertSame('2025-01-02', (new ExposedFormatterFixture())->normalizeData($date, 'Y-m-d'));
     }
 
     public function testObjectsAreWrappedWithTheirClassName(): void
@@ -140,7 +140,7 @@ final class AbstractFormatterTest extends TestCase
             public string $name = 'public';
         };
 
-        $result = (new ExposedFormatter())->normalizeData($object);
+        $result = (new ExposedFormatterFixture())->normalizeData($object);
 
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
@@ -156,7 +156,7 @@ final class AbstractFormatterTest extends TestCase
             }
         };
 
-        $this->assertSame(['as string'], array_values((array) (new ExposedFormatter())->normalizeData($object)));
+        $this->assertSame(['as string'], array_values((array) (new ExposedFormatterFixture())->normalizeData($object)));
     }
 
     public function testJsonSerializableObjectsUseTheirSerialization(): void
@@ -171,19 +171,19 @@ final class AbstractFormatterTest extends TestCase
             }
         };
 
-        $this->assertSame(['serialized' => true], array_values((array) (new ExposedFormatter())->normalizeData($object))[0]);
+        $this->assertSame(['serialized' => true], array_values((array) (new ExposedFormatterFixture())->normalizeData($object))[0]);
     }
 
     public function testArrayObjectsAreWrappedWithTheirClassName(): void
     {
-        $result = (new ExposedFormatter())->normalizeData(new ArrayObject([1, 2]));
+        $result = (new ExposedFormatterFixture())->normalizeData(new ArrayObject([1, 2]));
 
         $this->assertArrayHasKey(ArrayObject::class, (array) $result);
     }
 
     public function testThrowablesAreNormalizedWithoutLeakingArguments(): void
     {
-        $result = (new ExposedFormatter())->normalizeData($this->failure());
+        $result = (new ExposedFormatterFixture())->normalizeData($this->failure());
 
         $this->assertSame(RuntimeException::class, $result['class']);
         $this->assertSame('failure', $result['message']);
@@ -197,7 +197,7 @@ final class AbstractFormatterTest extends TestCase
     {
         $runtimeException = new RuntimeException('outer', 1, new LogicException('inner', 2));
 
-        $result = (new ExposedFormatter())->normalizeData($runtimeException);
+        $result = (new ExposedFormatterFixture())->normalizeData($runtimeException);
 
         $this->assertSame(LogicException::class, $result['previous']['class']);
         $this->assertSame('inner', $result['previous']['message']);
@@ -206,7 +206,7 @@ final class AbstractFormatterTest extends TestCase
 
     public function testResourcesAreSummarized(): void
     {
-        $this->assertSame('[resource (stream)]', (new ExposedFormatter())->normalizeData(STDIN));
+        $this->assertSame('[resource (stream)]', (new ExposedFormatterFixture())->normalizeData(STDIN));
     }
 
     public function testClosedResourcesAreSummarized(): void
@@ -215,7 +215,7 @@ final class AbstractFormatterTest extends TestCase
         $this->assertIsResource($resource);
         fclose($resource);
 
-        $this->assertSame('[unknown resource (closed)]', (new ExposedFormatter())->normalizeData($resource));
+        $this->assertSame('[unknown resource (closed)]', (new ExposedFormatterFixture())->normalizeData($resource));
     }
 
     private function failure(): RuntimeException

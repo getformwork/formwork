@@ -6,7 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Pages\Traits\PageUri;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
+use Formwork\Tests\Unit\Pages\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;
@@ -59,7 +59,7 @@ final class PageUriTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function traversalPaths(): iterable
+    public static function traversalPathsProvider(): iterable
     {
         yield 'parent directory' => ['../secret'];
         yield 'several parents' => ['../../../../secret'];
@@ -67,7 +67,7 @@ final class PageUriTest extends TestCase
         yield 'backslashes' => ['..\..\secret'];
     }
 
-    #[DataProvider('traversalPaths')]
+    #[DataProvider('traversalPathsProvider')]
     public function testPathsCannotClimbAboveTheApplicationRoot(string $path): void
     {
         $root = rtrim(App::instance()->request()->root(), '/');

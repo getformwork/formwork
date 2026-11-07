@@ -9,7 +9,7 @@ use Formwork\Plugins\Plugins;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\PluginsServiceLoader;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Plugins\Fixtures\BuildsPlugins;
+use Formwork\Tests\Unit\Plugins\BuildsPlugins;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;

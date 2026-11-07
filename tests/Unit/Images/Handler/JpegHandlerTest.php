@@ -7,7 +7,7 @@ use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\JpegHandler;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
@@ -19,7 +19,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new JpegHandler(GdImages::jpeg(40, 30)))->getInfo();
+        $info = (new JpegHandler(GdImagesFixture::jpeg(40, 30)))->getInfo();
 
         $this->assertSame('image/jpeg', $info->mimeType());
         $this->assertSame(40, $info->width());
@@ -34,7 +34,7 @@ final class JpegHandlerTest extends TestCase
     public function testInfoIsReadFromEveryKindOfFrame(int $marker, int $components, ColorSpace $colorSpace): void
     {
         $frame = "\x08" . pack('nn', 20, 10) . chr($components) . str_repeat("\x01\x11\x00", $components);
-        $handler = new JpegHandler("\xff\xd8" . GdImages::jpegSegment($marker, $frame) . "\xff\xd9");
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment($marker, $frame) . "\xff\xd9");
 
         $info = $handler->getInfo();
 
@@ -59,14 +59,14 @@ final class JpegHandlerTest extends TestCase
 
     public function testTablesAreNotMistakenForFrames(): void
     {
-        $handler = new JpegHandler("\xff\xd8" . GdImages::jpegSegment(0xc4, str_repeat("\x00", 20)) . "\xff\xd9");
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xc4, str_repeat("\x00", 20)) . "\xff\xd9");
 
         $this->assertSame(0, $handler->getInfo()->width());
     }
 
     public function testTruncatedFramesAreNotAccepted(): void
     {
-        $handler = new JpegHandler("\xff\xd8" . GdImages::jpegSegment(0xc0, "\x08\x00") . "\xff\xd9");
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xc0, "\x08\x00") . "\xff\xd9");
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Invalid start of frame segment');
@@ -76,7 +76,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testColorProfilesAreSetAndRead(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $this->assertFalse($handler->hasColorProfile());
         $this->assertNull($handler->getColorProfile());
@@ -91,7 +91,7 @@ final class JpegHandlerTest extends TestCase
     public function testLargeColorProfilesAreSplitAndJoined(): void
     {
         $profile = new ColorProfile($this->colorProfile()->getData() . random_bytes(150_000));
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $handler->setColorProfile($profile);
 
@@ -103,18 +103,18 @@ final class JpegHandlerTest extends TestCase
     public function testAllTheChunksOfAColorProfileAreRemoved(): void
     {
         $profile = new ColorProfile($this->colorProfile()->getData() . random_bytes(150_000));
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
         $handler->setColorProfile($profile);
 
         $handler->removeColorProfile();
 
         $this->assertFalse($handler->hasColorProfile());
-        $this->assertSame(GdImages::jpeg(), $handler->getData());
+        $this->assertSame(GdImagesFixture::jpeg(), $handler->getData());
     }
 
     public function testColorProfilesAreReplacedInsteadOfDuplicated(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $handler->setColorProfile($this->colorProfile());
         $handler->setColorProfile($this->colorProfile());
@@ -124,7 +124,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testIncompleteColorProfilesAreNotAccepted(): void
     {
-        $segment = GdImages::jpegSegment(0xe2, "ICC_PROFILE\x00\x01\x02" . $this->colorProfile()->getData());
+        $segment = GdImagesFixture::jpegSegment(0xe2, "ICC_PROFILE\x00\x01\x02" . $this->colorProfile()->getData());
         $handler = new JpegHandler("\xff\xd8" . $segment . "\xff\xd9");
 
         $this->expectException(UnexpectedValueException::class);
@@ -135,7 +135,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testTruncatedColorProfileSegmentsAreNotAccepted(): void
     {
-        $handler = new JpegHandler("\xff\xd8" . GdImages::jpegSegment(0xe2, "ICC_PROFILE\x00\x01") . "\xff\xd9");
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xe2, "ICC_PROFILE\x00\x01") . "\xff\xd9");
 
         $this->expectException(UnexpectedValueException::class);
 
@@ -144,7 +144,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testExifDataIsSetAndRead(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $this->assertFalse($handler->hasExifData());
         $this->assertNull($handler->getExifData());
@@ -158,7 +158,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testExifDataIsReplacedInsteadOfDuplicated(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $handler->setExifData($this->exifData());
         $handler->setExifData($this->exifData());
@@ -168,18 +168,18 @@ final class JpegHandlerTest extends TestCase
 
     public function testExifDataIsRemoved(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
         $handler->setExifData($this->exifData());
 
         $handler->removeExifData();
 
         $this->assertFalse($handler->hasExifData());
-        $this->assertSame(GdImages::jpeg(), $handler->getData());
+        $this->assertSame(GdImagesFixture::jpeg(), $handler->getData());
     }
 
     public function testMetadataFollowsTheJfifSegment(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
         $handler->setExifData($this->exifData());
         $handler->setColorProfile($this->colorProfile());
 
@@ -189,7 +189,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testMetadataFollowsTheStartOfImageMarkerWithoutJfifSegment(): void
     {
-        $handler = new JpegHandler("\xff\xd8" . GdImages::jpegSegment(0xc0, "\x08\x00\x0a\x00\x14\x03") . "\xff\xd9");
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xc0, "\x08\x00\x0a\x00\x14\x03") . "\xff\xd9");
         $handler->setExifData($this->exifData());
 
         $this->assertSame("\xff\xd8\xff\xe1", substr($handler->getData(), 0, 4));
@@ -199,12 +199,12 @@ final class JpegHandlerTest extends TestCase
 
     public function testRemovingMetadataKeepsOtherSegments(): void
     {
-        $jpeg = "\xff\xd8" . GdImages::jpegSegment(0xe1, "Exif\x00\x00" . $this->exifData()->getData()) . GdImages::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImages::jpegSegment(0xe2, 'other') . "\xff\xd9";
+        $jpeg = "\xff\xd8" . GdImagesFixture::jpegSegment(0xe1, "Exif\x00\x00" . $this->exifData()->getData()) . GdImagesFixture::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImagesFixture::jpegSegment(0xe2, 'other') . "\xff\xd9";
         $handler = new JpegHandler($jpeg);
 
         $handler->removeExifData();
 
-        $this->assertSame("\xff\xd8" . GdImages::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImages::jpegSegment(0xe2, 'other') . "\xff\xd9", $handler->getData());
+        $this->assertSame("\xff\xd8" . GdImagesFixture::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImagesFixture::jpegSegment(0xe2, 'other') . "\xff\xd9", $handler->getData());
     }
 
     public function testMissingStartOfImageMarkersAreNotAccepted(): void
@@ -218,7 +218,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testExifDataNotFittingInASegmentIsNotAccepted(): void
     {
-        $handler = new JpegHandler(GdImages::jpeg());
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Data is too large to be embedded in a JPEG segment');
@@ -228,7 +228,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testImagesAreCreatedFromGdImages(): void
     {
-        $handler = JpegHandler::fromGdImage(GdImages::image(16, 12));
+        $handler = JpegHandler::fromGdImage(GdImagesFixture::image(16, 12));
 
         $this->assertSame(16, $handler->getInfo()->width());
         $this->assertSame(12, $handler->getInfo()->height());

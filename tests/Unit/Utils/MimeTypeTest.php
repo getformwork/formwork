@@ -20,6 +20,7 @@ final class MimeTypeTest extends TestCase
     protected function tearDown(): void
     {
         Environment::enableExtension('fileinfo');
+        parent::tearDown();
     }
 
     public function testFromExtension(): void

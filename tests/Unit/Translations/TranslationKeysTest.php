@@ -28,7 +28,7 @@ final class TranslationKeysTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function referencedKeys(): iterable
+    public static function referencedKeysProvider(): iterable
     {
         $keys = [];
 
@@ -57,7 +57,7 @@ final class TranslationKeysTest extends TestCase
         return $keys;
     }
 
-    #[DataProvider('referencedKeys')]
+    #[DataProvider('referencedKeysProvider')]
     public function testReferencedKeysAreDefined(string $key): void
     {
         $this->assertArrayHasKey($key, $this->definedKeys());
@@ -68,7 +68,7 @@ final class TranslationKeysTest extends TestCase
      *
      * @return iterable<string, array{string}>
      */
-    public static function pageErrorKeys(): iterable
+    public static function pageErrorKeysProvider(): iterable
     {
         preg_match_all('/new InvalidValueException\([^;]*?,\s*\'([A-Za-z]+)\'\)/', FileSystem::read(self::path('formwork/src/Pages/Page.php')), $matches);
 
@@ -80,7 +80,7 @@ final class TranslationKeysTest extends TestCase
         }
     }
 
-    #[DataProvider('pageErrorKeys')]
+    #[DataProvider('pageErrorKeysProvider')]
     public function testPageErrorKeysAreDefined(string $key): void
     {
         $this->assertArrayHasKey($key, $this->definedKeys());

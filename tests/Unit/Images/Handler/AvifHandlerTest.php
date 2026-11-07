@@ -8,7 +8,7 @@ use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\AvifHandler;
 use Formwork\Images\Handler\Exceptions\UnsupportedFeatureException;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\AvifFile;
+use Formwork\Tests\Unit\Images\Fixtures\AvifFileFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -32,7 +32,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testInfoIsReadFromThePropertiesOfThePrimaryItem(): void
     {
-        $info = $this->handler(AvifFile::create()->withDimensions(1920, 1080)->withDepth(10))->getInfo();
+        $info = $this->handler(AvifFileFixture::create()->withDimensions(1920, 1080)->withDepth(10))->getInfo();
 
         $this->assertSame(1920, $info->width());
         $this->assertSame(1080, $info->height());
@@ -42,7 +42,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testInfoFallsBackToTheDefaultsWithoutProperties(): void
     {
-        $info = $this->handler(AvifFile::create()->withoutItemProperties())->getInfo();
+        $info = $this->handler(AvifFileFixture::create()->withoutItemProperties())->getInfo();
 
         $this->assertSame(0, $info->width());
         $this->assertSame(0, $info->height());
@@ -54,7 +54,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testInfoReadsThePropertiesOfAnyItemWithoutAPrimaryOne(): void
     {
-        $info = $this->handler(AvifFile::create()->withDimensions(32, 24)->withoutPrimaryItem())->getInfo();
+        $info = $this->handler(AvifFileFixture::create()->withDimensions(32, 24)->withoutPrimaryItem())->getInfo();
 
         $this->assertSame(32, $info->width());
         $this->assertSame(24, $info->height());
@@ -62,7 +62,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testInfoKeepsTheDefaultSizeWithoutSpatialExtents(): void
     {
-        $info = $this->handler(AvifFile::create()->withoutDimensions()->withDepth(10))->getInfo();
+        $info = $this->handler(AvifFileFixture::create()->withoutDimensions()->withDepth(10))->getInfo();
 
         $this->assertSame(0, $info->width());
         $this->assertSame(0, $info->height());
@@ -71,22 +71,22 @@ final class AvifHandlerTest extends TestCase
 
     public function testDepthIsTheDefaultOneWhenTheChannelsAreNotDeclared(): void
     {
-        $this->assertSame(8, $this->handler(AvifFile::create()->withDepth(0))->getInfo()->colorDepth());
+        $this->assertSame(8, $this->handler(AvifFileFixture::create()->withDepth(0))->getInfo()->colorDepth());
     }
 
     public function testAlphaChannelIsDetectedFromTheAuxiliaryType(): void
     {
-        $this->assertTrue($this->handler(AvifFile::create()->withAlpha())->getInfo()->hasAlphaChannel());
+        $this->assertTrue($this->handler(AvifFileFixture::create()->withAlpha())->getInfo()->hasAlphaChannel());
     }
 
     public function testImageSequencesAreAnimations(): void
     {
-        $this->assertTrue($this->handler(AvifFile::create()->asSequence())->getInfo()->isAnimation());
+        $this->assertTrue($this->handler(AvifFileFixture::create()->asSequence())->getInfo()->isAnimation());
     }
 
     public function testImageSequencesHaveAFrameCountAndARepeatCount(): void
     {
-        $info = $this->handler(AvifFile::create()->withFrames(12, 3))->getInfo();
+        $info = $this->handler(AvifFileFixture::create()->withFrames(12, 3))->getInfo();
 
         $this->assertSame(12, $info->animationFrames());
         $this->assertSame(3, $info->animationRepeatCount());
@@ -94,7 +94,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testImageSequencesCanLoopForever(): void
     {
-        $this->assertSame(0, $this->handler(AvifFile::create()->withFrames(5, 0))->getInfo()->animationRepeatCount());
+        $this->assertSame(0, $this->handler(AvifFileFixture::create()->withFrames(5, 0))->getInfo()->animationRepeatCount());
     }
 
     public function testStillImagesHaveNoFrameCount(): void
@@ -107,15 +107,15 @@ final class AvifHandlerTest extends TestCase
 
     public function testMonochromeImagesAreGrayscale(): void
     {
-        $this->assertSame(ColorSpace::Grayscale, $this->handler(AvifFile::create()->withCodecConfiguration(monochrome: true))->getInfo()->colorSpace());
-        $this->assertSame(ColorSpace::RGB, $this->handler(AvifFile::create()->withCodecConfiguration(monochrome: false))->getInfo()->colorSpace());
-        $this->assertSame(ColorSpace::RGB, $this->handler(AvifFile::create())->getInfo()->colorSpace());
+        $this->assertSame(ColorSpace::Grayscale, $this->handler(AvifFileFixture::create()->withCodecConfiguration(monochrome: true))->getInfo()->colorSpace());
+        $this->assertSame(ColorSpace::RGB, $this->handler(AvifFileFixture::create()->withCodecConfiguration(monochrome: false))->getInfo()->colorSpace());
+        $this->assertSame(ColorSpace::RGB, $this->handler(AvifFileFixture::create())->getInfo()->colorSpace());
     }
 
     public function testTransformsAreSupportedOnlyForStillImages(): void
     {
         $this->assertTrue($this->encoded()->supportsTransforms());
-        $this->assertFalse($this->handler(AvifFile::create()->asSequence())->supportsTransforms());
+        $this->assertFalse($this->handler(AvifFileFixture::create()->asSequence())->supportsTransforms());
     }
 
     public function testColorProfilesAndExifDataAreSupported(): void
@@ -135,7 +135,7 @@ final class AvifHandlerTest extends TestCase
     #[DataProvider('colorInformationTypeProvider')]
     public function testColorProfileIsReadFromBothColorInformationTypes(string $type): void
     {
-        $handler = $this->handler(AvifFile::create()->withColorProfile($this->colorProfileData(), $type));
+        $handler = $this->handler(AvifFileFixture::create()->withColorProfile($this->colorProfileData(), $type));
 
         $this->assertTrue($handler->hasColorProfile());
         $this->assertSame($this->colorProfileData(), $handler->getColorProfile()?->getData());
@@ -152,7 +152,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfileIsNotReadFromOtherColorInformation(): void
     {
-        $handler = $this->handler(AvifFile::create()->withColorProfile(str_repeat("\x00", 15), 'nclx'));
+        $handler = $this->handler(AvifFileFixture::create()->withColorProfile(str_repeat("\x00", 15), 'nclx'));
 
         $this->assertFalse($handler->hasColorProfile());
         $this->assertNull($handler->getColorProfile());
@@ -160,12 +160,12 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfileIsMissingWithoutProperties(): void
     {
-        $this->assertFalse($this->handler(AvifFile::create()->withoutItemProperties())->hasColorProfile());
+        $this->assertFalse($this->handler(AvifFileFixture::create()->withoutItemProperties())->hasColorProfile());
     }
 
     public function testColorProfileIsAdded(): void
     {
-        $handler = $this->handler(AvifFile::create());
+        $handler = $this->handler(AvifFileFixture::create());
         $handler->setColorProfile(new ColorProfile($this->colorProfileData()));
 
         $this->assertSame($this->colorProfileData(), $this->reread($handler)->getColorProfile()?->getData());
@@ -185,7 +185,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfileReplacesTheExistingOne(): void
     {
-        $handler = $this->handler(AvifFile::create()->withColorProfile($this->colorProfileData()));
+        $handler = $this->handler(AvifFileFixture::create()->withColorProfile($this->colorProfileData()));
         $handler->setColorProfile(new ColorProfile($this->colorProfileData('lab')));
 
         $this->assertSame($this->colorProfileData('lab'), $this->reread($handler)->getColorProfile()?->getData());
@@ -194,7 +194,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfileKeepsTheAssociationsOfTheOtherProperties(): void
     {
-        $handler = $this->handler(AvifFile::create()->withAlpha()->withColorProfile($this->colorProfileData()));
+        $handler = $this->handler(AvifFileFixture::create()->withAlpha()->withColorProfile($this->colorProfileData()));
         $handler->setColorProfile(new ColorProfile($this->colorProfileData('lab')));
 
         $info = $this->reread($handler)->getInfo();
@@ -206,7 +206,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfileIsRemoved(): void
     {
-        $handler = $this->handler(AvifFile::create()->withColorProfile($this->colorProfileData()));
+        $handler = $this->handler(AvifFileFixture::create()->withColorProfile($this->colorProfileData()));
         $handler->removeColorProfile();
 
         $this->assertFalse($handler->hasColorProfile());
@@ -228,7 +228,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testRemovingAMissingColorProfileLeavesTheImageUntouched(): void
     {
-        $data = AvifFile::create()->build();
+        $data = AvifFileFixture::create()->build();
         $handler = new AvifHandler($data);
         $handler->removeColorProfile();
 
@@ -246,7 +246,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataIsReadAfterTheHeaderOffset(): void
     {
-        $handler = $this->handler(AvifFile::create()->withExif($this->exifData(), 6));
+        $handler = $this->handler(AvifFileFixture::create()->withExif($this->exifData(), 6));
 
         $this->assertSame($this->exifData(), $handler->getExifData()?->getData());
     }
@@ -254,7 +254,7 @@ final class AvifHandlerTest extends TestCase
     #[DataProvider('incompleteExifItemProvider')]
     public function testExifDataIsMissingWhenTheItemIsTooShortToHoldIt(string $data): void
     {
-        $handler = $this->handler(AvifFile::create()->withRawExif($data));
+        $handler = $this->handler(AvifFileFixture::create()->withRawExif($data));
 
         $this->assertTrue($handler->hasExifData());
         $this->assertNull($handler->getExifData());
@@ -271,38 +271,38 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataIsMissingWhenTheItemIsNotDeclared(): void
     {
-        $handler = $this->handler(AvifFile::create());
+        $handler = $this->handler(AvifFileFixture::create());
 
         $this->assertFalse($handler->hasExifData());
         $this->assertNull($handler->getExifData());
     }
 
     #[DataProvider('itemLayoutProvider')]
-    public function testExifDataIsReadFromAnyItemLayout(AvifFile $file): void
+    public function testExifDataIsReadFromAnyItemLayout(AvifFileFixture $file): void
     {
         $this->assertSame($this->exifData(), $this->handler($file)->getExifData()?->getData());
     }
 
     /**
-     * @return iterable<string, array{AvifFile}>
+     * @return iterable<string, array{AvifFileFixture}>
      */
     public static function itemLayoutProvider(): iterable
     {
         $exif = (string) file_get_contents(self::FIXTURES . '/exif.tiff');
 
-        yield 'item location version 0' => [AvifFile::create()->withExif($exif)];
-        yield 'item location version 1' => [AvifFile::create()->withExif($exif)->withLocationVersion(1)];
-        yield 'item location version 2' => [AvifFile::create()->withExif($exif)->withLocationVersion(2)];
-        yield 'base offsets' => [AvifFile::create()->withExif($exif)->withLocationVersion(1, 4)];
-        yield 'extent indexes' => [AvifFile::create()->withExif($exif)->withLocationVersion(2)->withExtentIndexes()];
-        yield 'item data box' => [AvifFile::create()->withExif($exif)->withLocationVersion(1)->withItemDataBox()];
-        yield 'media data before the metadata' => [AvifFile::create()->withExif($exif)->withMediaDataFirst()];
-        yield 'media data with a 64-bit size' => [AvifFile::create()->withExif($exif)->withLargeMediaDataBox()];
-        yield 'media data without a size' => [AvifFile::create()->withExif($exif)->withUnsizedMediaDataBox()];
+        yield 'item location version 0' => [AvifFileFixture::create()->withExif($exif)];
+        yield 'item location version 1' => [AvifFileFixture::create()->withExif($exif)->withLocationVersion(1)];
+        yield 'item location version 2' => [AvifFileFixture::create()->withExif($exif)->withLocationVersion(2)];
+        yield 'base offsets' => [AvifFileFixture::create()->withExif($exif)->withLocationVersion(1, 4)];
+        yield 'extent indexes' => [AvifFileFixture::create()->withExif($exif)->withLocationVersion(2)->withExtentIndexes()];
+        yield 'item data box' => [AvifFileFixture::create()->withExif($exif)->withLocationVersion(1)->withItemDataBox()];
+        yield 'media data before the metadata' => [AvifFileFixture::create()->withExif($exif)->withMediaDataFirst()];
+        yield 'media data with a 64-bit size' => [AvifFileFixture::create()->withExif($exif)->withLargeMediaDataBox()];
+        yield 'media data without a size' => [AvifFileFixture::create()->withExif($exif)->withUnsizedMediaDataBox()];
     }
 
     #[DataProvider('itemLayoutProvider')]
-    public function testExifDataSurvivesTheRewritingOfAnyItemLayout(AvifFile $file): void
+    public function testExifDataSurvivesTheRewritingOfAnyItemLayout(AvifFileFixture $file): void
     {
         $handler = $this->handler($file);
         $handler->setColorProfile(new ColorProfile($this->colorProfileData()));
@@ -312,7 +312,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataIsAdded(): void
     {
-        $handler = $this->handler(AvifFile::create());
+        $handler = $this->handler(AvifFileFixture::create());
         $handler->setExifData(new ExifData($this->exifData()));
 
         $reread = $this->reread($handler);
@@ -323,7 +323,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataIsAddedToAnImageWithoutReferences(): void
     {
-        $handler = $this->handler(AvifFile::create());
+        $handler = $this->handler(AvifFileFixture::create());
         $handler->setExifData(new ExifData($this->exifData()));
 
         $this->assertStringContainsString('iref', $handler->getData());
@@ -332,7 +332,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataIsAddedToAnImageWithExistingReferences(): void
     {
-        $handler = $this->handler(AvifFile::create()->withAlpha());
+        $handler = $this->handler(AvifFileFixture::create()->withAlpha());
         $handler->setExifData(new ExifData($this->exifData()));
 
         $reread = $this->reread($handler);
@@ -344,7 +344,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataReplacesTheExistingOne(): void
     {
-        $handler = $this->handler(AvifFile::create()->withExif($this->exifData()));
+        $handler = $this->handler(AvifFileFixture::create()->withExif($this->exifData()));
         $handler->setExifData(new ExifData($this->exifData('alternate')));
 
         $this->assertSame($this->exifData('alternate'), $this->reread($handler)->getExifData()?->getData());
@@ -353,7 +353,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testExifDataIsRemoved(): void
     {
-        $handler = $this->handler(AvifFile::create()->withExif($this->exifData()));
+        $handler = $this->handler(AvifFileFixture::create()->withExif($this->exifData()));
         $handler->removeExifData();
 
         $this->assertFalse($handler->hasExifData());
@@ -375,7 +375,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testRemovingMissingExifDataLeavesTheImageUntouched(): void
     {
-        $data = AvifFile::create()->build();
+        $data = AvifFileFixture::create()->build();
         $handler = new AvifHandler($data);
         $handler->removeExifData();
 
@@ -398,7 +398,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testRewritingIsIdempotent(): void
     {
-        $handler = $this->handler(AvifFile::create()->withAlpha()->withExif($this->exifData()));
+        $handler = $this->handler(AvifFileFixture::create()->withAlpha()->withExif($this->exifData()));
         $handler->setColorProfile(new ColorProfile($this->colorProfileData()));
         $once = $handler->getData();
 
@@ -409,17 +409,17 @@ final class AvifHandlerTest extends TestCase
 
     public function testImageDataIsPreservedByTheRewriting(): void
     {
-        $handler = $this->handler(AvifFile::create()->withAlpha());
+        $handler = $this->handler(AvifFileFixture::create()->withAlpha());
         $handler->setColorProfile(new ColorProfile($this->colorProfileData()));
 
-        $this->assertStringContainsString(AvifFile::PRIMARY_DATA, $handler->getData());
-        $this->assertStringContainsString(AvifFile::ALPHA_DATA, $handler->getData());
+        $this->assertStringContainsString(AvifFileFixture::PRIMARY_DATA, $handler->getData());
+        $this->assertStringContainsString(AvifFileFixture::ALPHA_DATA, $handler->getData());
     }
 
     #[DataProvider('modificationProvider')]
     public function testImageSequencesCannotBeModified(string $method): void
     {
-        $handler = $this->handler(AvifFile::create()->asSequence()->withColorProfile($this->colorProfileData())->withExif($this->exifData()));
+        $handler = $this->handler(AvifFileFixture::create()->asSequence()->withColorProfile($this->colorProfileData())->withExif($this->exifData()));
 
         $this->expectException(UnsupportedFeatureException::class);
         $this->expectExceptionMessage('Modifying AVIF image sequences is not supported');
@@ -440,7 +440,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testImagesWithoutMetadataCannotBeModified(): void
     {
-        $handler = new AvifHandler(AvifFile::box('ftyp', 'avif' . pack('N', 0) . 'avif'));
+        $handler = new AvifHandler(AvifFileFixture::box('ftyp', 'avif' . pack('N', 0) . 'avif'));
 
         $this->expectException(UnsupportedFeatureException::class);
         $this->expectExceptionMessage('AVIF file does not contain a meta box');
@@ -450,7 +450,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfilesNeedAPrimaryItem(): void
     {
-        $handler = $this->handler(AvifFile::create()->withoutPrimaryItem());
+        $handler = $this->handler(AvifFileFixture::create()->withoutPrimaryItem());
 
         $this->expectException(UnsupportedFeatureException::class);
         $this->expectExceptionMessage('AVIF file does not define a primary item');
@@ -460,7 +460,7 @@ final class AvifHandlerTest extends TestCase
 
     public function testColorProfilesNeedTheItemProperties(): void
     {
-        $handler = $this->handler(AvifFile::create()->withoutItemProperties());
+        $handler = $this->handler(AvifFileFixture::create()->withoutItemProperties());
 
         $this->expectException(UnsupportedFeatureException::class);
         $this->expectExceptionMessage('AVIF file does not contain a required "iprp" box');
@@ -502,7 +502,7 @@ final class AvifHandlerTest extends TestCase
         return AvifHandler::fromPath(self::FIXTURES . '/image.avif');
     }
 
-    private function handler(AvifFile $file): AvifHandler
+    private function handler(AvifFileFixture $file): AvifHandler
     {
         return new AvifHandler($file->build());
     }

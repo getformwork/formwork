@@ -18,7 +18,6 @@ use Formwork\Pages\Page;
 use Formwork\Templates\Template;
 use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -361,6 +360,9 @@ final class PageTest extends TestCase
         $page->set('taxonomy', $taxonomy);
     }
 
+    /**
+     * @return iterable<string, array{mixed, class-string<Throwable>}>
+     */
     public static function invalidTaxonomyProvider(): iterable
     {
         yield 'scalar' => ['not-an-array', TypeError::class];

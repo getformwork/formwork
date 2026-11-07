@@ -9,7 +9,7 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Http\Transport\HttpTransportInterface;
 use Formwork\Http\Transport\StreamHttpTransport;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Http\Fixtures\FakeHttpTransport;
+use Formwork\Tests\Unit\Http\Fixtures\FakeHttpTransportFixture;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
@@ -21,11 +21,12 @@ use UnexpectedValueException;
 #[UsesTempDirectory]
 final class ClientTest extends TestCase
 {
-    private FakeHttpTransport $transport;
+    private FakeHttpTransportFixture $transport;
 
     protected function setUp(): void
     {
-        $this->transport = new FakeHttpTransport();
+        parent::setUp();
+        $this->transport = new FakeHttpTransportFixture();
     }
 
     public function testDefaultsCanBeOverriddenAndMergedRecursively(): void

@@ -6,7 +6,7 @@ use Formwork\Cms\Site;
 use Formwork\Pages\Page;
 use Formwork\Pages\Traits\PageTraversal;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
+use Formwork\Tests\Unit\Pages\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;

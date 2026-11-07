@@ -5,8 +5,8 @@ namespace Formwork\Tests\Unit\Services;
 use Formwork\Services\Container;
 use Formwork\Services\ServiceDefinition;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Services\Fixtures\SimpleService;
-use Formwork\Tests\Unit\Services\Fixtures\TestServiceLoader;
+use Formwork\Tests\Unit\Services\Fixtures\SimpleServiceFixture;
+use Formwork\Tests\Unit\Services\Fixtures\TestServiceLoaderFixture;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -40,11 +40,11 @@ final class ServiceDefinitionTest extends TestCase
     {
         $container = new Container();
         $serviceDefinition = $container->define('service')
-            ->loader(TestServiceLoader::class)
+            ->loader(TestServiceLoaderFixture::class)
             ->alias('service.alias');
 
-        $this->assertSame($serviceDefinition, $serviceDefinition->loader(TestServiceLoader::class));
-        $this->assertSame(TestServiceLoader::class, $serviceDefinition->getLoader());
+        $this->assertSame($serviceDefinition, $serviceDefinition->loader(TestServiceLoaderFixture::class));
+        $this->assertSame(TestServiceLoaderFixture::class, $serviceDefinition->getLoader());
         $this->assertTrue($container->has('service.alias'));
     }
 
@@ -59,7 +59,7 @@ final class ServiceDefinitionTest extends TestCase
 
     public function testDirectObjectDefinitionsExposeTheirObject(): void
     {
-        $simpleService = new SimpleService();
+        $simpleService = new SimpleServiceFixture();
         $serviceDefinition = (new Container())->define('service', $simpleService);
 
         $this->assertSame($simpleService, $serviceDefinition->getObject());
@@ -68,30 +68,30 @@ final class ServiceDefinitionTest extends TestCase
     public function testLazyFalseDoesNotResolveTheDefinition(): void
     {
         $container = new Container();
-        $serviceDefinition = $container->define(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleServiceFixture::class);
 
-        $this->assertFalse($container->isResolved(SimpleService::class));
+        $this->assertFalse($container->isResolved(SimpleServiceFixture::class));
         $this->assertSame($serviceDefinition, $serviceDefinition->lazy(false));
-        $this->assertFalse($container->isResolved(SimpleService::class));
+        $this->assertFalse($container->isResolved(SimpleServiceFixture::class));
     }
 
     public function testLazyTrueLeavesAnUnresolvedDefinitionUnresolved(): void
     {
         $container = new Container();
-        $serviceDefinition = $container->define(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleServiceFixture::class);
 
         $this->assertSame($serviceDefinition, $serviceDefinition->lazy(true));
-        $this->assertFalse($container->isResolved(SimpleService::class));
+        $this->assertFalse($container->isResolved(SimpleServiceFixture::class));
     }
 
     public function testDefinitionsAreLazyByDefault(): void
     {
-        $this->assertTrue((new Container())->define(SimpleService::class)->isLazy());
+        $this->assertTrue((new Container())->define(SimpleServiceFixture::class)->isLazy());
     }
 
     public function testLazinessCanBeChangedAndRestored(): void
     {
-        $serviceDefinition = (new Container())->define(SimpleService::class);
+        $serviceDefinition = (new Container())->define(SimpleServiceFixture::class);
 
         $serviceDefinition->lazy(false);
         $this->assertFalse($serviceDefinition->isLazy());
@@ -102,7 +102,7 @@ final class ServiceDefinitionTest extends TestCase
 
     public function testLazinessIsIndependentFromTheAliasesAndParametersOfTheDefinition(): void
     {
-        $serviceDefinition = (new Container())->define(SimpleService::class)
+        $serviceDefinition = (new Container())->define(SimpleServiceFixture::class)
             ->alias('alias')
             ->parameter('name', 'value')
             ->lazy(false);
@@ -114,28 +114,28 @@ final class ServiceDefinitionTest extends TestCase
     public function testCallingLazyFalseAfterResolutionDoesNotReplaceTheInstance(): void
     {
         $container = new Container();
-        $serviceDefinition = $container->define(SimpleService::class);
-        $simpleService = $container->get(SimpleService::class);
+        $serviceDefinition = $container->define(SimpleServiceFixture::class);
+        $simpleService = $container->get(SimpleServiceFixture::class);
 
         $serviceDefinition->lazy(false);
 
-        $this->assertSame($simpleService, $container->get(SimpleService::class));
+        $this->assertSame($simpleService, $container->get(SimpleServiceFixture::class));
     }
 
     public function testObjectDefinitionsRejectLoaders(): void
     {
-        $serviceDefinition = (new Container())->define('service', new SimpleService());
+        $serviceDefinition = (new Container())->define('service', new SimpleServiceFixture());
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Instantiated object cannot have loaders');
-        $serviceDefinition->loader(TestServiceLoader::class);
+        $serviceDefinition->loader(TestServiceLoaderFixture::class);
     }
 
     public function testAliasesResolveToTheSameInstanceAsTheDefinition(): void
     {
         $container = new Container();
-        $container->define(SimpleService::class)->alias('simple');
+        $container->define(SimpleServiceFixture::class)->alias('simple');
 
-        $this->assertSame($container->get(SimpleService::class), $container->get('simple'));
+        $this->assertSame($container->get(SimpleServiceFixture::class), $container->get('simple'));
     }
 }

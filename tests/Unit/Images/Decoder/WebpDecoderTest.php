@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Images\Decoder;
 
 use Formwork\Images\Decoder\WebpDecoder;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
@@ -14,7 +14,7 @@ final class WebpDecoderTest extends TestCase
 {
     public function testChunksAreDecoded(): void
     {
-        $data = GdImages::webpFile(GdImages::webpChunk('VP8X', str_repeat("\x00", 10)), GdImages::webpChunk('EXIF', 'abc'));
+        $data = GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8X', str_repeat("\x00", 10)), GdImagesFixture::webpChunk('EXIF', 'abc'));
 
         $chunks = iterator_to_array((new WebpDecoder())->decode($data), false);
 
@@ -26,7 +26,7 @@ final class WebpDecoderTest extends TestCase
 
     public function testPaddingIsNotPartOfTheValue(): void
     {
-        $data = GdImages::webpFile(GdImages::webpChunk('ICCP', 'abc'), GdImages::webpChunk('EXIF', 'de'));
+        $data = GdImagesFixture::webpFile(GdImagesFixture::webpChunk('ICCP', 'abc'), GdImagesFixture::webpChunk('EXIF', 'de'));
 
         $chunks = iterator_to_array((new WebpDecoder())->decode($data), false);
 
@@ -36,7 +36,7 @@ final class WebpDecoderTest extends TestCase
 
     public function testMissingPaddingOfTheLastChunkIsTolerated(): void
     {
-        $data = substr(GdImages::webpFile(GdImages::webpChunk('EXIF', 'abc')), 0, -1);
+        $data = substr(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('EXIF', 'abc')), 0, -1);
 
         $chunks = iterator_to_array((new WebpDecoder())->decode($data), false);
 
@@ -45,14 +45,14 @@ final class WebpDecoderTest extends TestCase
 
     public function testDataAfterTheRiffContainerIsIgnored(): void
     {
-        $data = GdImages::webpFile(GdImages::webpChunk('EXIF', 'ab')) . GdImages::webpChunk('EXIF', 'cd');
+        $data = GdImagesFixture::webpFile(GdImagesFixture::webpChunk('EXIF', 'ab')) . GdImagesFixture::webpChunk('EXIF', 'cd');
 
         $this->assertCount(1, iterator_to_array((new WebpDecoder())->decode($data)));
     }
 
     public function testRealImagesAreDecoded(): void
     {
-        $data = GdImages::webp();
+        $data = GdImagesFixture::webp();
 
         $types = array_column(iterator_to_array((new WebpDecoder())->decode($data), false), 'type');
 

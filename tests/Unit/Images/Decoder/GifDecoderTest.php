@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Images\Decoder;
 
 use Formwork\Images\Decoder\GifDecoder;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
@@ -82,7 +82,7 @@ final class GifDecoderTest extends TestCase
 
     public function testRealImagesAreDecoded(): void
     {
-        $data = GdImages::gif();
+        $data = GdImagesFixture::gif();
 
         $types = array_column(iterator_to_array((new GifDecoder())->decode($data), false), 'type');
 

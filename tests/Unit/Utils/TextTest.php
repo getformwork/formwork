@@ -14,6 +14,7 @@ final class TextTest extends TestCase
     protected function tearDown(): void
     {
         Environment::enableExtension('mbstring');
+        parent::tearDown();
     }
 
     public function testNormalizeWhitespace(): void

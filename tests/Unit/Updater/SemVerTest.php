@@ -33,14 +33,14 @@ final class SemVerTest extends TestCase
     /**
      * @return iterable<string, array{int, int, int}>
      */
-    public static function negativeComponents(): iterable
+    public static function negativeComponentsProvider(): iterable
     {
         yield 'major' => [-1, 0, 0];
         yield 'minor' => [0, -1, 0];
         yield 'patch' => [0, 0, -1];
     }
 
-    #[DataProvider('negativeComponents')]
+    #[DataProvider('negativeComponentsProvider')]
     public function testNegativeComponentsAreRejected(int $major, int $minor, int $patch): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -51,7 +51,7 @@ final class SemVerTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public static function validVersions(): iterable
+    public static function validVersionsProvider(): iterable
     {
         yield 'simple' => ['1.2.3', '1.2.3'];
         yield 'zero' => ['0.0.0', '0.0.0'];
@@ -69,7 +69,7 @@ final class SemVerTest extends TestCase
         yield 'lowercase rc alias' => ['1.0.0-rc.3', '1.0.0-RC.3'];
     }
 
-    #[DataProvider('validVersions')]
+    #[DataProvider('validVersionsProvider')]
     public function testValidVersionsAreParsedAndNormalized(string $input, string $expected): void
     {
         $this->assertSame($expected, (string) SemVer::fromString($input));
@@ -78,7 +78,7 @@ final class SemVerTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function invalidVersions(): iterable
+    public static function invalidVersionsProvider(): iterable
     {
         yield 'empty' => [''];
         yield 'single number' => ['1'];
@@ -103,7 +103,7 @@ final class SemVerTest extends TestCase
         yield 'null byte' => ["1.2.3\0"];
     }
 
-    #[DataProvider('invalidVersions')]
+    #[DataProvider('invalidVersionsProvider')]
     public function testInvalidVersionsAreRejected(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -196,7 +196,7 @@ final class SemVerTest extends TestCase
     /**
      * @return iterable<string, array{string, string, string, bool}>
      */
-    public static function comparisons(): iterable
+    public static function comparisonsProvider(): iterable
     {
         yield 'equal' => ['1.2.3', '1.2.3', '==', true];
         yield 'not equal' => ['1.2.3', '1.2.4', '!=', true];
@@ -221,7 +221,7 @@ final class SemVerTest extends TestCase
         yield 'patch level is not a prerelease' => ['1.0.0-pl', '1.0.0', '>', true];
     }
 
-    #[DataProvider('comparisons')]
+    #[DataProvider('comparisonsProvider')]
     public function testComparison(string $left, string $right, string $operator, bool $expected): void
     {
         $this->assertSame($expected, SemVer::fromString($left)->compareWith(SemVer::fromString($right), $operator));
@@ -255,7 +255,7 @@ final class SemVerTest extends TestCase
     /**
      * @return iterable<string, array{string, string, string, bool}>
      */
-    public static function ranges(): iterable
+    public static function rangesProvider(): iterable
     {
         yield '^ same version' => ['1.2.3', '1.2.3', '^', true];
         yield '^ later patch' => ['1.2.3', '1.2.9', '^', true];
@@ -273,7 +273,7 @@ final class SemVerTest extends TestCase
         yield '^ ignores build metadata' => ['1.2.3', '1.5.0+build', '^', true];
     }
 
-    #[DataProvider('ranges')]
+    #[DataProvider('rangesProvider')]
     public function testRangeOperators(string $base, string $candidate, string $operator, bool $expected): void
     {
         $this->assertSame($expected, SemVer::fromString($base)->compareWithString($candidate, $operator));

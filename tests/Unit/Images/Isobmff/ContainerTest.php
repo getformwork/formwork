@@ -13,7 +13,7 @@ use Formwork\Images\Isobmff\ItemLocationBox;
 use Formwork\Images\Isobmff\ItemReferenceBox;
 use Formwork\Images\Isobmff\MetaBox;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\AvifFile;
+use Formwork\Tests\Unit\Images\Fixtures\AvifFileFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
@@ -24,13 +24,13 @@ final class ContainerTest extends TestCase
 {
     public function testTheMajorBrandIsRead(): void
     {
-        $this->assertSame('avif', $this->parse(AvifFile::create())->majorBrand());
-        $this->assertSame('avis', $this->parse(AvifFile::create()->asSequence())->majorBrand());
+        $this->assertSame('avif', $this->parse(AvifFileFixture::create())->majorBrand());
+        $this->assertSame('avis', $this->parse(AvifFileFixture::create()->asSequence())->majorBrand());
     }
 
     public function testTheMetadataIsFound(): void
     {
-        $container = $this->parse(AvifFile::create());
+        $container = $this->parse(AvifFileFixture::create());
 
         $this->assertInstanceOf(MetaBox::class, $container->meta());
         $this->assertSame($container->meta(), $container->requireMeta());
@@ -38,7 +38,7 @@ final class ContainerTest extends TestCase
 
     public function testTheMissingMetadataIsReported(): void
     {
-        $container = Container::parse(new AvifDecoder(), AvifFile::box('ftyp', 'avif' . pack('N', 0) . 'avif'));
+        $container = Container::parse(new AvifDecoder(), AvifFileFixture::box('ftyp', 'avif' . pack('N', 0) . 'avif'));
 
         $this->assertNull($container->meta());
 
@@ -50,70 +50,70 @@ final class ContainerTest extends TestCase
 
     public function testItemsAreFoundByType(): void
     {
-        $container = $this->parse(AvifFile::create()->withAlpha()->withExif('TIFF'));
+        $container = $this->parse(AvifFileFixture::create()->withAlpha()->withExif('TIFF'));
 
-        $this->assertSame([AvifFile::PRIMARY_ID, AvifFile::ALPHA_ID], $container->itemIdsByType('av01'));
-        $this->assertSame([AvifFile::EXIF_ID], $container->itemIdsByType(ItemInfoEntry::EXIF_TYPE));
+        $this->assertSame([AvifFileFixture::PRIMARY_ID, AvifFileFixture::ALPHA_ID], $container->itemIdsByType('av01'));
+        $this->assertSame([AvifFileFixture::EXIF_ID], $container->itemIdsByType(ItemInfoEntry::EXIF_TYPE));
         $this->assertSame([], $container->itemIdsByType('mime'));
     }
 
     public function testItemsHaveNoTypeWithoutTheItemInformation(): void
     {
-        $container = Container::parse(new AvifDecoder(), AvifFile::box('ftyp', 'avif' . pack('N', 0) . 'avif'));
+        $container = Container::parse(new AvifDecoder(), AvifFileFixture::box('ftyp', 'avif' . pack('N', 0) . 'avif'));
 
         $this->assertSame([], $container->itemIdsByType('av01'));
     }
 
     public function testTheDataOfItemsStoredInTheFileIsRead(): void
     {
-        $container = $this->parse(AvifFile::create()->withAlpha());
+        $container = $this->parse(AvifFileFixture::create()->withAlpha());
 
-        $this->assertSame(AvifFile::PRIMARY_DATA, $container->itemData(AvifFile::PRIMARY_ID));
-        $this->assertSame(AvifFile::ALPHA_DATA, $container->itemData(AvifFile::ALPHA_ID));
+        $this->assertSame(AvifFileFixture::PRIMARY_DATA, $container->itemData(AvifFileFixture::PRIMARY_ID));
+        $this->assertSame(AvifFileFixture::ALPHA_DATA, $container->itemData(AvifFileFixture::ALPHA_ID));
     }
 
     public function testTheDataOfItemsStoredInTheItemDataBoxIsRead(): void
     {
-        $container = $this->parse(AvifFile::create()->withRawExif('in the item data box')->withLocationVersion(1)->withItemDataBox());
+        $container = $this->parse(AvifFileFixture::create()->withRawExif('in the item data box')->withLocationVersion(1)->withItemDataBox());
 
-        $this->assertSame('in the item data box', $container->itemData(AvifFile::EXIF_ID));
+        $this->assertSame('in the item data box', $container->itemData(AvifFileFixture::EXIF_ID));
     }
 
     public function testTheDataOfUnknownItemsIsNotRead(): void
     {
-        $this->assertNull($this->parse(AvifFile::create())->itemData(99));
+        $this->assertNull($this->parse(AvifFileFixture::create())->itemData(99));
     }
 
     public function testTheDataOfItemsStoredInOtherFilesIsNotRead(): void
     {
-        $container = $this->parse(AvifFile::create()->withRawExif('elsewhere')->withDataReference(AvifFile::EXIF_ID));
+        $container = $this->parse(AvifFileFixture::create()->withRawExif('elsewhere')->withDataReference(AvifFileFixture::EXIF_ID));
 
-        $this->assertNull($container->itemData(AvifFile::EXIF_ID));
+        $this->assertNull($container->itemData(AvifFileFixture::EXIF_ID));
     }
 
     public function testExtentsWithoutALengthAreNotSupported(): void
     {
-        $container = $this->parse(AvifFile::create()->withRawExif('data')->withExtentOverride(AvifFile::EXIF_ID, length: 0));
+        $container = $this->parse(AvifFileFixture::create()->withRawExif('data')->withExtentOverride(AvifFileFixture::EXIF_ID, length: 0));
 
         $this->expectException(UnsupportedFeatureException::class);
         $this->expectExceptionMessage('Item extents without an explicit length are not supported');
 
-        $container->itemData(AvifFile::EXIF_ID);
+        $container->itemData(AvifFileFixture::EXIF_ID);
     }
 
     public function testExtentsBeyondTheAvailableDataAreRejected(): void
     {
-        $container = $this->parse(AvifFile::create()->withRawExif('data')->withExtentOverride(AvifFile::EXIF_ID, offset: 100000));
+        $container = $this->parse(AvifFileFixture::create()->withRawExif('data')->withExtentOverride(AvifFileFixture::EXIF_ID, offset: 100000));
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Item extent exceeds the available data');
 
-        $container->itemData(AvifFile::EXIF_ID);
+        $container->itemData(AvifFileFixture::EXIF_ID);
     }
 
     public function testItemsAreAdded(): void
     {
-        $container = $this->parse(AvifFile::create());
+        $container = $this->parse(AvifFileFixture::create());
         $id = $container->addItem(ItemInfoEntry::EXIF_TYPE, 'added');
 
         $this->assertSame(2, $id);
@@ -123,18 +123,18 @@ final class ContainerTest extends TestCase
 
     public function testAddedItemsAreWrittenToTheFile(): void
     {
-        $container = $this->parse(AvifFile::create());
+        $container = $this->parse(AvifFileFixture::create());
         $id = $container->addItem(ItemInfoEntry::EXIF_TYPE, 'added');
 
         $rewritten = Container::parse(new AvifDecoder(), $container->toString());
 
         $this->assertSame('added', $rewritten->itemData($id));
-        $this->assertSame(AvifFile::PRIMARY_DATA, $rewritten->itemData(AvifFile::PRIMARY_ID));
+        $this->assertSame(AvifFileFixture::PRIMARY_DATA, $rewritten->itemData(AvifFileFixture::PRIMARY_ID));
     }
 
     public function testItemsWithoutDataHaveNoExtents(): void
     {
-        $container = $this->parse(AvifFile::create());
+        $container = $this->parse(AvifFileFixture::create());
         $id = $container->addItem(ItemInfoEntry::EXIF_TYPE, '');
 
         $rewritten = Container::parse(new AvifDecoder(), $container->toString());
@@ -145,8 +145,8 @@ final class ContainerTest extends TestCase
 
     public function testReferencesAreAddedToFilesWithoutThem(): void
     {
-        $container = $this->parse(AvifFile::create());
-        $container->addReference(ItemReferenceBox::CONTENT_DESCRIBES, 2, AvifFile::PRIMARY_ID);
+        $container = $this->parse(AvifFileFixture::create());
+        $container->addReference(ItemReferenceBox::CONTENT_DESCRIBES, 2, AvifFileFixture::PRIMARY_ID);
 
         $rewritten = Container::parse(new AvifDecoder(), $container->toString());
 
@@ -156,8 +156,8 @@ final class ContainerTest extends TestCase
 
     public function testReferencesAreAddedToTheExistingBox(): void
     {
-        $container = $this->parse(AvifFile::create()->withAlpha());
-        $container->addReference(ItemReferenceBox::CONTENT_DESCRIBES, 4, AvifFile::PRIMARY_ID);
+        $container = $this->parse(AvifFileFixture::create()->withAlpha());
+        $container->addReference(ItemReferenceBox::CONTENT_DESCRIBES, 4, AvifFileFixture::PRIMARY_ID);
 
         $this->assertSame(1, substr_count($container->toString(), ItemReferenceBox::TYPE));
         $this->assertStringContainsString('auxl', $container->toString());
@@ -165,20 +165,20 @@ final class ContainerTest extends TestCase
 
     public function testItemsAreRemovedWithTheirDataAndReferences(): void
     {
-        $container = $this->parse(AvifFile::create()->withAlpha()->withRawExif('metadata'));
-        $container->removeItem(AvifFile::EXIF_ID);
+        $container = $this->parse(AvifFileFixture::create()->withAlpha()->withRawExif('metadata'));
+        $container->removeItem(AvifFileFixture::EXIF_ID);
 
         $rewritten = Container::parse(new AvifDecoder(), $container->toString());
 
         $this->assertSame([], $rewritten->itemIdsByType(ItemInfoEntry::EXIF_TYPE));
-        $this->assertNull($rewritten->itemData(AvifFile::EXIF_ID));
+        $this->assertNull($rewritten->itemData(AvifFileFixture::EXIF_ID));
         $this->assertStringNotContainsString('metadata', $rewritten->toString());
         $this->assertStringNotContainsString(ItemReferenceBox::CONTENT_DESCRIBES, $rewritten->toString());
     }
 
     public function testRemovedItemsDoNotKeepTheirAddedData(): void
     {
-        $container = $this->parse(AvifFile::create());
+        $container = $this->parse(AvifFileFixture::create());
         $id = $container->addItem(ItemInfoEntry::EXIF_TYPE, 'added');
         $container->removeItem($id);
 
@@ -186,21 +186,21 @@ final class ContainerTest extends TestCase
     }
 
     #[DataProvider('layoutProvider')]
-    public function testTheDataOfTheItemsSurvivesTheRewriting(AvifFile $file): void
+    public function testTheDataOfTheItemsSurvivesTheRewriting(AvifFileFixture $file): void
     {
         $rewritten = Container::parse(new AvifDecoder(), $this->parse($file)->toString());
 
-        $this->assertSame(AvifFile::PRIMARY_DATA, $rewritten->itemData(AvifFile::PRIMARY_ID));
-        $this->assertSame(AvifFile::ALPHA_DATA, $rewritten->itemData(AvifFile::ALPHA_ID));
-        $this->assertSame('metadata', $rewritten->itemData(AvifFile::EXIF_ID));
+        $this->assertSame(AvifFileFixture::PRIMARY_DATA, $rewritten->itemData(AvifFileFixture::PRIMARY_ID));
+        $this->assertSame(AvifFileFixture::ALPHA_DATA, $rewritten->itemData(AvifFileFixture::ALPHA_ID));
+        $this->assertSame('metadata', $rewritten->itemData(AvifFileFixture::EXIF_ID));
     }
 
     /**
-     * @return iterable<string, array{AvifFile}>
+     * @return iterable<string, array{AvifFileFixture}>
      */
     public static function layoutProvider(): iterable
     {
-        $file = static fn(): AvifFile => AvifFile::create()->withAlpha()->withRawExif('metadata');
+        $file = static fn(): AvifFileFixture => AvifFileFixture::create()->withAlpha()->withRawExif('metadata');
 
         yield 'media data after the metadata' => [$file()];
         yield 'media data before the metadata' => [$file()->withMediaDataFirst()];
@@ -213,16 +213,16 @@ final class ContainerTest extends TestCase
 
     public function testTheRewrittenFileKeepsTheOtherBoxes(): void
     {
-        $rewritten = $this->parse(AvifFile::create()->withFreeSpace())->toString();
+        $rewritten = $this->parse(AvifFileFixture::create()->withFreeSpace())->toString();
 
         $this->assertStringContainsString('free-space', $rewritten);
         $this->assertSame('avif', Container::parse(new AvifDecoder(), $rewritten)->majorBrand());
-        $this->assertSame(AvifFile::PRIMARY_DATA, Container::parse(new AvifDecoder(), $rewritten)->itemData(AvifFile::PRIMARY_ID));
+        $this->assertSame(AvifFileFixture::PRIMARY_DATA, Container::parse(new AvifDecoder(), $rewritten)->itemData(AvifFileFixture::PRIMARY_ID));
     }
 
     public function testTheRewritingIsIdempotent(): void
     {
-        $once = $this->parse(AvifFile::create()->withAlpha()->withRawExif('metadata'))->toString();
+        $once = $this->parse(AvifFileFixture::create()->withAlpha()->withRawExif('metadata'))->toString();
         $twice = Container::parse(new AvifDecoder(), $once)->toString();
 
         $this->assertSame($once, $twice);
@@ -230,7 +230,7 @@ final class ContainerTest extends TestCase
 
     public function testImageSequencesExposeTheirTimeline(): void
     {
-        $sequence = $this->parse(AvifFile::create()->withFrames(6, 2))->imageSequence();
+        $sequence = $this->parse(AvifFileFixture::create()->withFrames(6, 2))->imageSequence();
 
         $this->assertInstanceOf(ImageSequence::class, $sequence);
         $this->assertSame(6, $sequence->frameCount);
@@ -239,12 +239,12 @@ final class ContainerTest extends TestCase
 
     public function testStillImagesHaveNoTimeline(): void
     {
-        $this->assertNull($this->parse(AvifFile::create())->imageSequence());
+        $this->assertNull($this->parse(AvifFileFixture::create())->imageSequence());
     }
 
     public function testImageSequencesCannotBeRewritten(): void
     {
-        $container = $this->parse(AvifFile::create()->asSequence());
+        $container = $this->parse(AvifFileFixture::create()->asSequence());
 
         $this->expectException(UnsupportedFeatureException::class);
         $this->expectExceptionMessage('Modifying AVIF image sequences is not supported');
@@ -254,23 +254,23 @@ final class ContainerTest extends TestCase
 
     public function testItemsPointingToOtherFilesAreLeftUntouched(): void
     {
-        $container = $this->parse(AvifFile::create()->withRawExif('elsewhere')->withDataReference(AvifFile::EXIF_ID));
-        $before = $container->requireMeta()->require(ItemLocationBox::class)->find(AvifFile::EXIF_ID);
+        $container = $this->parse(AvifFileFixture::create()->withRawExif('elsewhere')->withDataReference(AvifFileFixture::EXIF_ID));
+        $before = $container->requireMeta()->require(ItemLocationBox::class)->find(AvifFileFixture::EXIF_ID);
 
         $rewritten = Container::parse(new AvifDecoder(), $container->toString());
 
-        $this->assertEquals($before, $rewritten->requireMeta()->require(ItemLocationBox::class)->find(AvifFile::EXIF_ID));
+        $this->assertEquals($before, $rewritten->requireMeta()->require(ItemLocationBox::class)->find(AvifFileFixture::EXIF_ID));
     }
 
     public function testTheItemInformationIsRequiredToAddItems(): void
     {
-        $container = $this->parse(AvifFile::create());
-        $container->requireMeta()->require(ItemInfoBox::class)->remove(AvifFile::PRIMARY_ID);
+        $container = $this->parse(AvifFileFixture::create());
+        $container->requireMeta()->require(ItemInfoBox::class)->remove(AvifFileFixture::PRIMARY_ID);
 
         $this->assertSame(1, $container->addItem(ItemInfoEntry::EXIF_TYPE, 'added'));
     }
 
-    private function parse(AvifFile $file): Container
+    private function parse(AvifFileFixture $file): Container
     {
         return Container::parse(new AvifDecoder(), $file->build());
     }

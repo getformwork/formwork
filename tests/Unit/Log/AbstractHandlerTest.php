@@ -8,7 +8,7 @@ use Formwork\Log\Handler\AbstractHandler;
 use Formwork\Log\Handler\HandlerInterface;
 use Formwork\Log\Logger;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Log\Fixtures\ExposedHandler;
+use Formwork\Tests\Unit\Log\Fixtures\ExposedHandlerFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,12 +19,12 @@ final class AbstractHandlerTest extends TestCase
 {
     public function testHandlersImplementTheirInterface(): void
     {
-        $this->assertInstanceOf(HandlerInterface::class, new ExposedHandler(new JsonFormatter()));
+        $this->assertInstanceOf(HandlerInterface::class, new ExposedHandlerFixture(new JsonFormatter()));
     }
 
     public function testDebugIsTheDefaultLevelAndAcceptsEverything(): void
     {
-        $exposedHandler = new ExposedHandler(new JsonFormatter());
+        $exposedHandler = new ExposedHandlerFixture(new JsonFormatter());
 
         foreach (array_keys(Logger::LOG_LEVELS) as $level) {
             $this->assertTrue($exposedHandler->accepts($level), $level);
@@ -37,7 +37,7 @@ final class AbstractHandlerTest extends TestCase
     #[DataProvider('thresholdProvider')]
     public function testOnlyRecordsAtLeastAsSevereAsTheThresholdAreAccepted(string $threshold, array $accepted): void
     {
-        $exposedHandler = new ExposedHandler(new JsonFormatter(), $this->unchecked($threshold));
+        $exposedHandler = new ExposedHandlerFixture(new JsonFormatter(), $this->unchecked($threshold));
 
         $actual = array_values(array_filter(
             array_keys(Logger::LOG_LEVELS),
@@ -64,14 +64,14 @@ final class AbstractHandlerTest extends TestCase
 
     public function testInvalidThresholdsAreRejected(): void
     {
-        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new ExposedHandler(new JsonFormatter(), $this->unchecked('verbose')));
+        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new ExposedHandlerFixture(new JsonFormatter(), $this->unchecked('verbose')));
 
         $this->assertSame('Invalid log level: "verbose"', $invalidArgumentException->getMessage());
     }
 
     public function testInvalidRecordLevelsAreRejected(): void
     {
-        $exposedHandler = new ExposedHandler(new JsonFormatter());
+        $exposedHandler = new ExposedHandlerFixture(new JsonFormatter());
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid log level: "verbose"');
@@ -80,7 +80,7 @@ final class AbstractHandlerTest extends TestCase
 
     public function testHandleUsesTheThreshold(): void
     {
-        $exposedHandler = new ExposedHandler(new JsonFormatter(), LogLevel::ERROR);
+        $exposedHandler = new ExposedHandlerFixture(new JsonFormatter(), LogLevel::ERROR);
 
         $exposedHandler->handle(new DateTimeImmutable(), 'debug', 'ignored', []);
         $exposedHandler->handle(new DateTimeImmutable(), 'error', 'kept', []);

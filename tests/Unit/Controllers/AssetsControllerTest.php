@@ -9,7 +9,6 @@ use Formwork\Http\ResponseStatus;
 use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -90,7 +89,7 @@ final class AssetsControllerTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public static function imageTraversals(): iterable
+    public static function imageTraversalsProvider(): iterable
     {
         yield 'parent as id' => ['..', 'secret.txt'];
         yield 'parent in the name' => ['abc123', '../../secret.txt'];
@@ -100,7 +99,7 @@ final class AssetsControllerTest extends TestCase
         yield 'null byte' => ['abc123', "photo.jpg\0../../secret.txt"];
     }
 
-    #[DataProvider('imageTraversals')]
+    #[DataProvider('imageTraversalsProvider')]
     public function testFilesOutsideTheImagesDirectoryAreNeverServed(string $id, string $name): void
     {
         $response = $this->controller()->asset(new RouteParams(['type' => 'images', 'id' => $id, 'name' => $name]));
@@ -137,7 +136,7 @@ final class AssetsControllerTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function templateTraversals(): iterable
+    public static function templateTraversalsProvider(): iterable
     {
         yield 'parent directory' => ['../secret.php'];
         yield 'two parents' => ['../../outside.txt'];
@@ -147,7 +146,7 @@ final class AssetsControllerTest extends TestCase
         yield 'absolute path' => ['/etc/hostname'];
     }
 
-    #[DataProvider('templateTraversals')]
+    #[DataProvider('templateTraversalsProvider')]
     public function testTemplateSourcesAndOtherFilesAreNotServedAsAssets(string $file): void
     {
         $response = $this->controller()->template(new RouteParams(['file' => $file]));

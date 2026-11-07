@@ -53,7 +53,7 @@ final class ImageRendererTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function hostileValues(): iterable
+    public static function hostileValuesProvider(): iterable
     {
         yield 'alt' => ['![" onerror="alert(1)](cat.png)'];
         yield 'title' => ['![x](cat.png "\" onerror=\"alert(1)")'];
@@ -61,7 +61,7 @@ final class ImageRendererTest extends TestCase
         yield 'angle brackets in alt' => ['![<script>alert(1)</script>](cat.png)'];
     }
 
-    #[DataProvider('hostileValues')]
+    #[DataProvider('hostileValuesProvider')]
     public function testHostileValuesCannotBreakOutOfTheAttributes(string $markdown): void
     {
         $html = $this->parse($markdown);

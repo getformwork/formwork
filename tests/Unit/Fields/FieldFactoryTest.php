@@ -7,7 +7,7 @@ use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Schemes\Fixtures\BuildsSchemes;
+use Formwork\Tests\Unit\Schemes\BuildsSchemes;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;

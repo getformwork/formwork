@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Images\Decoder;
 
 use Formwork\Images\Decoder\PngDecoder;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
@@ -16,7 +16,7 @@ final class PngDecoderTest extends TestCase
 
     public function testChunksAreDecoded(): void
     {
-        $data = self::HEADER . GdImages::pngChunk('IHDR', 'header') . GdImages::pngChunk('tEXt', 'ab') . GdImages::pngChunk('IEND', '');
+        $data = self::HEADER . GdImagesFixture::pngChunk('IHDR', 'header') . GdImagesFixture::pngChunk('tEXt', 'ab') . GdImagesFixture::pngChunk('IEND', '');
 
         $chunks = iterator_to_array((new PngDecoder())->decode($data), false);
 
@@ -29,14 +29,14 @@ final class PngDecoderTest extends TestCase
 
     public function testDataAfterTheEndChunkIsIgnored(): void
     {
-        $data = self::HEADER . GdImages::pngChunk('IEND', '') . 'trailing garbage';
+        $data = self::HEADER . GdImagesFixture::pngChunk('IEND', '') . 'trailing garbage';
 
         $this->assertCount(1, iterator_to_array((new PngDecoder())->decode($data)));
     }
 
     public function testRealImagesAreDecoded(): void
     {
-        $data = GdImages::png();
+        $data = GdImagesFixture::png();
 
         $types = array_column(iterator_to_array((new PngDecoder())->decode($data), false), 'type');
 
@@ -73,7 +73,7 @@ final class PngDecoderTest extends TestCase
 
     public function testChunksWithoutChecksumAreNotDecoded(): void
     {
-        $data = substr(self::HEADER . GdImages::pngChunk('tEXt', 'ab'), 0, -2);
+        $data = substr(self::HEADER . GdImagesFixture::pngChunk('tEXt', 'ab'), 0, -2);
 
         $this->expectException(UnexpectedValueException::class);
 

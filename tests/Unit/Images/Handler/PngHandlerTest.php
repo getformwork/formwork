@@ -8,7 +8,7 @@ use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\JpegHandler;
 use Formwork\Images\Handler\PngHandler;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use UnexpectedValueException;
 
@@ -21,7 +21,7 @@ final class PngHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new PngHandler(GdImages::png(40, 30)))->getInfo();
+        $info = (new PngHandler(GdImagesFixture::png(40, 30)))->getInfo();
 
         $this->assertSame('image/png', $info->mimeType());
         $this->assertSame(40, $info->width());
@@ -51,7 +51,7 @@ final class PngHandlerTest extends TestCase
 
     public function testAnimationsAreRecognized(): void
     {
-        $data = $this->withChunk(GdImages::png(), 'acTL', pack('NN', 3, 2));
+        $data = $this->withChunk(GdImagesFixture::png(), 'acTL', pack('NN', 3, 2));
 
         $handler = new PngHandler($data);
 
@@ -63,7 +63,7 @@ final class PngHandlerTest extends TestCase
 
     public function testTruncatedHeaderChunksAreNotAccepted(): void
     {
-        $handler = new PngHandler(self::HEADER . GdImages::pngChunk('IHDR', "\x00\x00\x00\x01") . GdImages::pngChunk('IEND', ''));
+        $handler = new PngHandler(self::HEADER . GdImagesFixture::pngChunk('IHDR', "\x00\x00\x00\x01") . GdImagesFixture::pngChunk('IEND', ''));
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Invalid IHDR chunk');
@@ -73,7 +73,7 @@ final class PngHandlerTest extends TestCase
 
     public function testInvalidPalettesAreNotAccepted(): void
     {
-        $handler = new PngHandler($this->withChunk(GdImages::png(), 'PLTE', "\x00\x00\x00\x00"));
+        $handler = new PngHandler($this->withChunk(GdImagesFixture::png(), 'PLTE', "\x00\x00\x00\x00"));
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Invalid palette size');
@@ -83,7 +83,7 @@ final class PngHandlerTest extends TestCase
 
     public function testColorProfilesAreSetAndRead(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
 
         $this->assertFalse($handler->hasColorProfile());
         $this->assertNull($handler->getColorProfile());
@@ -98,7 +98,7 @@ final class PngHandlerTest extends TestCase
 
     public function testColorProfilesAreReplacedInsteadOfDuplicated(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
 
         $handler->setColorProfile($this->colorProfile());
         $handler->setColorProfile($this->colorProfile());
@@ -108,27 +108,27 @@ final class PngHandlerTest extends TestCase
 
     public function testColorProfilesAreRemoved(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
         $handler->setColorProfile($this->colorProfile());
 
         $handler->removeColorProfile();
 
         $this->assertFalse($handler->hasColorProfile());
-        $this->assertSame(GdImages::png(), $handler->getData());
+        $this->assertSame(GdImagesFixture::png(), $handler->getData());
     }
 
     public function testRemovingAMissingColorProfileLeavesTheDataUntouched(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
 
         $handler->removeColorProfile();
 
-        $this->assertSame(GdImages::png(), $handler->getData());
+        $this->assertSame(GdImagesFixture::png(), $handler->getData());
     }
 
     public function testInvalidColorProfilesAreNotAccepted(): void
     {
-        $handler = new PngHandler($this->withChunk(GdImages::png(), 'iCCP', "name\x00\x00not compressed"));
+        $handler = new PngHandler($this->withChunk(GdImagesFixture::png(), 'iCCP', "name\x00\x00not compressed"));
 
         $this->assertTrue($handler->hasColorProfile());
 
@@ -140,7 +140,7 @@ final class PngHandlerTest extends TestCase
 
     public function testUnterminatedColorProfileNamesAreNotAccepted(): void
     {
-        $handler = new PngHandler($this->withChunk(GdImages::png(), 'iCCP', 'name'));
+        $handler = new PngHandler($this->withChunk(GdImagesFixture::png(), 'iCCP', 'name'));
 
         $this->expectException(UnexpectedValueException::class);
 
@@ -149,7 +149,7 @@ final class PngHandlerTest extends TestCase
 
     public function testExifDataIsSetAndRead(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
 
         $this->assertFalse($handler->hasExifData());
         $this->assertNull($handler->getExifData());
@@ -163,7 +163,7 @@ final class PngHandlerTest extends TestCase
 
     public function testExifDataIsReplacedInsteadOfDuplicated(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
 
         $handler->setExifData($this->exifData());
         $handler->setExifData($this->exifData());
@@ -173,18 +173,18 @@ final class PngHandlerTest extends TestCase
 
     public function testExifDataIsRemoved(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
         $handler->setExifData($this->exifData());
 
         $handler->removeExifData();
 
         $this->assertFalse($handler->hasExifData());
-        $this->assertSame(GdImages::png(), $handler->getData());
+        $this->assertSame(GdImagesFixture::png(), $handler->getData());
     }
 
     public function testMetadataIsPreservedWhenConvertingToAnotherFormat(): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
         $handler->setColorProfile($this->colorProfile());
         $handler->setExifData($this->exifData());
 
@@ -198,7 +198,7 @@ final class PngHandlerTest extends TestCase
 
     public function testImagesAreCreatedFromGdImages(): void
     {
-        $handler = PngHandler::fromGdImage(GdImages::image(16, 12));
+        $handler = PngHandler::fromGdImage(GdImagesFixture::image(16, 12));
 
         $this->assertSame(16, $handler->getInfo()->width());
         $this->assertSame(12, $handler->getInfo()->height());
@@ -207,7 +207,7 @@ final class PngHandlerTest extends TestCase
 
     public function testDataFromAnotherFormatIsNotAccepted(): void
     {
-        $handler = new PngHandler(GdImages::jpeg());
+        $handler = new PngHandler(GdImagesFixture::jpeg());
 
         $this->expectException(\InvalidArgumentException::class);
 
@@ -231,7 +231,7 @@ final class PngHandlerTest extends TestCase
     {
         $offset = strlen(self::HEADER) + 25;
 
-        return substr($png, 0, $offset) . GdImages::pngChunk($type, $data) . substr($png, $offset);
+        return substr($png, 0, $offset) . GdImagesFixture::pngChunk($type, $data) . substr($png, $offset);
     }
 
     private function countChunks(string $png, string $type): int

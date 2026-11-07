@@ -11,7 +11,7 @@ use Formwork\Images\Handler\PngHandler;
 use Formwork\Images\Handler\WebpHandler;
 use Formwork\Images\Transform\TransformCollection;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -23,7 +23,7 @@ final class AbstractHandlerTest extends TestCase
     /**
      * @return iterable<string, array{class-string<AbstractHandler>}>
      */
-    public static function targetHandlers(): iterable
+    public static function targetHandlersProvider(): iterable
     {
         yield 'WebP' => [WebpHandler::class];
         yield 'JPEG' => [JpegHandler::class];
@@ -33,10 +33,10 @@ final class AbstractHandlerTest extends TestCase
     /**
      * @param class-string<AbstractHandler> $target
      */
-    #[DataProvider('targetHandlers')]
+    #[DataProvider('targetHandlersProvider')]
     public function testRgbColorProfilesArePreservedWhenProcessing(string $target): void
     {
-        $handler = new PngHandler(GdImages::png());
+        $handler = new PngHandler(GdImagesFixture::png());
         $handler->setColorProfile($this->colorProfile('RGB '));
 
         $processed = $handler->process(null, $target);
@@ -47,12 +47,12 @@ final class AbstractHandlerTest extends TestCase
     /**
      * @param class-string<AbstractHandler> $target
      */
-    #[DataProvider('targetHandlers')]
+    #[DataProvider('targetHandlersProvider')]
     public function testColorProfilesOfOtherColorSpacesAreDroppedWhenProcessing(string $target): void
     {
         foreach (['CMYK', 'GRAY', 'Lab ', 'ABCD'] as $signature) {
             // A JPEG source avoids libpng warnings about profiles inconsistent with the image
-            $handler = new JpegHandler(GdImages::jpeg());
+            $handler = new JpegHandler(GdImagesFixture::jpeg());
             $handler->setColorProfile($this->colorProfile($signature));
 
             // An empty collection forces processing even when the target is the source handler

@@ -4,8 +4,7 @@ namespace Formwork\Tests\Unit\Users;
 
 use Formwork\Authentication\Authenticator;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Users\Fixtures\BuildsUsers;
-use Formwork\Tests\Unit\Users\Fixtures\TestableUser;
+use Formwork\Tests\Unit\Users\Fixtures\TestableUserFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\RoleCollection;
@@ -75,7 +74,7 @@ final class UserCollectionTest extends TestCase
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('getUser')->willReturn(null);
         foreach ($users as $user) {
-            $this->assertInstanceOf(TestableUser::class, $user);
+            $this->assertInstanceOf(TestableUserFixture::class, $user);
             $user->authenticator = $authenticator;
         }
 

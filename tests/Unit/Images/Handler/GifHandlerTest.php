@@ -8,7 +8,7 @@ use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\Exceptions\UnsupportedFeatureException;
 use Formwork\Images\Handler\GifHandler;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use GdImage;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -23,7 +23,7 @@ final class GifHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new GifHandler(GdImages::gif(40, 30)))->getInfo();
+        $info = (new GifHandler(GdImagesFixture::gif(40, 30)))->getInfo();
 
         $this->assertSame('image/gif', $info->mimeType());
         $this->assertSame(40, $info->width());
@@ -35,7 +35,7 @@ final class GifHandlerTest extends TestCase
 
     public function testEncodedGdImagesWithTransparencyHaveAnAlphaChannel(): void
     {
-        $this->assertTrue(GifHandler::fromGdImage(GdImages::image())->getInfo()->hasAlphaChannel());
+        $this->assertTrue(GifHandler::fromGdImage(GdImagesFixture::image())->getInfo()->hasAlphaChannel());
     }
 
     public function testTheNumberOfColorsIsTheSizeOfTheGlobalColorTable(): void
@@ -85,7 +85,7 @@ final class GifHandlerTest extends TestCase
 
     public function testTruncatedImagesAreNotAccepted(): void
     {
-        $handler = new GifHandler(substr(GdImages::gif(), 0, 30));
+        $handler = new GifHandler(substr(GdImagesFixture::gif(), 0, 30));
 
         $this->expectException(UnexpectedValueException::class);
 
@@ -94,7 +94,7 @@ final class GifHandlerTest extends TestCase
 
     public function testTransparencyIsPreservedWhenEncodingGdImages(): void
     {
-        $handler = GifHandler::fromGdImage(GdImages::image(20, 20));
+        $handler = GifHandler::fromGdImage(GdImagesFixture::image(20, 20));
 
         $image = imagecreatefromstring($handler->getData());
 
@@ -106,7 +106,7 @@ final class GifHandlerTest extends TestCase
 
     public function testTransparencyIsPreservedWhenEncodingPaletteImages(): void
     {
-        $palette = imagecreatefromstring(GifHandler::fromGdImage(GdImages::image(20, 20))->getData());
+        $palette = imagecreatefromstring(GifHandler::fromGdImage(GdImagesFixture::image(20, 20))->getData());
         $this->assertNotFalse($palette);
         $this->assertFalse(imageistruecolor($palette));
 
@@ -119,14 +119,14 @@ final class GifHandlerTest extends TestCase
 
     public function testTheNumberOfColorsCanBeLimited(): void
     {
-        $handler = GifHandler::fromGdImage(GdImages::image(20, 20), ['gifColors' => 4]);
+        $handler = GifHandler::fromGdImage(GdImagesFixture::image(20, 20), ['gifColors' => 4]);
 
         $this->assertLessThanOrEqual(4, $handler->getInfo()->colorNumber());
     }
 
     public function testMetadataIsNotSupported(): void
     {
-        $handler = new GifHandler(GdImages::gif());
+        $handler = new GifHandler(GdImagesFixture::gif());
 
         $this->assertFalse(GifHandler::supportsColorProfile());
         $this->assertFalse(GifHandler::supportsExifData());
@@ -142,7 +142,7 @@ final class GifHandlerTest extends TestCase
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $operation(new GifHandler(GdImages::gif()));
+        $operation(new GifHandler(GdImagesFixture::gif()));
     }
 
     /**

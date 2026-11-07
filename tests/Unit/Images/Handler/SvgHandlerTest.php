@@ -8,7 +8,7 @@ use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\Exceptions\UnsupportedFeatureException;
 use Formwork\Images\Handler\SvgHandler;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Images\Fixtures\GdImages;
+use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -81,7 +81,7 @@ final class SvgHandlerTest extends TestCase
         yield 'get exif data' => [static fn(SvgHandler $h): ?ExifData => $h->getExifData()];
         yield 'set exif data' => [static fn(SvgHandler $h) => $h->setExifData($exif)];
         yield 'remove exif data' => [static fn(SvgHandler $h) => $h->removeExifData()];
-        yield 'from gd image' => [static fn(SvgHandler $h) => SvgHandler::fromGdImage(GdImages::image())];
+        yield 'from gd image' => [static fn(SvgHandler $h) => SvgHandler::fromGdImage(GdImagesFixture::image())];
     }
 
     private function handler(string $data): SvgHandler

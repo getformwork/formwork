@@ -18,8 +18,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Statistics\Statistics;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Controllers\Fixtures\BuildsControllers;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
+use Formwork\Tests\Unit\Pages\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translation;
@@ -150,7 +149,7 @@ final class PageControllerTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function fileTraversals(): iterable
+    public static function fileTraversalsProvider(): iterable
     {
         yield 'parent segment' => ['/about/../draft/page.md'];
         yield 'deep parents' => ['/about/../../../../../../../etc/hostname'];
@@ -159,7 +158,7 @@ final class PageControllerTest extends TestCase
         yield 'page content files' => ['/about/page.md'];
     }
 
-    #[DataProvider('fileTraversals')]
+    #[DataProvider('fileTraversalsProvider')]
     public function testFilesOutsideThePageDirectoryAreNeverServed(string $route): void
     {
         $response = $this->load($route);

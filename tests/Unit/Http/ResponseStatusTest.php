@@ -21,6 +21,9 @@ final class ResponseStatusTest extends TestCase
         $this->assertSame($responseStatus, ResponseStatus::fromCode($code));
     }
 
+    /**
+     * @return \Iterator<string, array{ResponseStatus, int, ResponseStatusType}>
+     */
     public static function statusProvider(): \Iterator
     {
         yield 'informational' => [ResponseStatus::Continue, 100, ResponseStatusType::Informational];

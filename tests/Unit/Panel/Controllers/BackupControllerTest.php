@@ -11,7 +11,7 @@ use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\BackupController;
 use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Panel\Fixtures\BuildsPanelControllers;
+use Formwork\Tests\Unit\Panel\BuildsPanelControllers;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;

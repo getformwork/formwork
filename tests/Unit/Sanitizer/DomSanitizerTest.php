@@ -5,7 +5,7 @@ namespace Formwork\Tests\Unit\Sanitizer;
 use Formwork\Sanitizer\DomSanitizer;
 use Formwork\Sanitizer\SanitizeElementsMethod;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Sanitizer\Fixtures\UriAttributeSanitizer;
+use Formwork\Tests\Unit\Sanitizer\Fixtures\UriAttributeSanitizerFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -193,7 +193,7 @@ final class DomSanitizerTest extends TestCase
 
     public function testEveryDeclaredUriAttributeIsChecked(): void
     {
-        $uriAttributeSanitizer = (new UriAttributeSanitizer())
+        $uriAttributeSanitizer = (new UriAttributeSanitizerFixture())
             ->allowedElements(['a', 'img'])
             ->allowedAttributes(['href', 'src', 'title']);
 
@@ -202,9 +202,9 @@ final class DomSanitizerTest extends TestCase
         $this->assertSame('<a title="t">x</a><img title="i">', $html);
     }
 
-    private function uriSanitizer(): UriAttributeSanitizer
+    private function uriSanitizer(): UriAttributeSanitizerFixture
     {
-        return (new UriAttributeSanitizer())
+        return (new UriAttributeSanitizerFixture())
             ->allowedElements(['a'])
             ->allowedAttributes(['href']);
     }

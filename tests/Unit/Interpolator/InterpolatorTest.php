@@ -6,7 +6,7 @@ use Formwork\Interpolator\Errors\SyntaxError;
 use Formwork\Interpolator\Exceptions\InterpolationException;
 use Formwork\Interpolator\Interpolator;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Interpolator\Fixtures\InterpolationTarget;
+use Formwork\Tests\Unit\Interpolator\Fixtures\InterpolationTargetFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
@@ -26,7 +26,7 @@ final class InterpolatorTest extends TestCase
     public function testObjectsAndFunctionsCanBeCombined(): void
     {
         $vars = [
-            'user'    => new InterpolationTarget(),
+            'user'    => new InterpolationTargetFixture(),
             'default' => static fn(mixed $value, mixed $fallback): mixed => $value ?? $fallback,
         ];
 

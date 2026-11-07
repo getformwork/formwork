@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Debug;
 
 use Formwork\Debug\CodeDumper;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Debug\Fixtures\CodeDumperTarget;
+use Formwork\Tests\Unit\Debug\Fixtures\CodeDumperTargetFixture;
 use Formwork\Utils\Exceptions\FileNotFoundException;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -138,13 +138,13 @@ final class CodeDumperTest extends TestCase
         $html = $this->dumpFrame([
             'file'     => self::SAMPLE,
             'line'     => 10,
-            'class'    => CodeDumperTarget::class,
+            'class'    => CodeDumperTargetFixture::class,
             'function' => 'describe',
             'type'     => '::',
             'args'     => ['Ada', 7, 'extra-one', 'extra-two'],
         ]);
 
-        $this->assertStringContainsString('<span class="__name">' . CodeDumperTarget::class . '</span>::<span class="__name">describe</span>()', $html);
+        $this->assertStringContainsString('<span class="__name">' . CodeDumperTargetFixture::class . '</span>::<span class="__name">describe</span>()', $html);
         $this->assertStringContainsString('<code>$name</code>', $html);
         $this->assertStringContainsString('"Ada"', $html);
         $this->assertStringContainsString('<code>$count</code>', $html);
@@ -159,7 +159,7 @@ final class CodeDumperTest extends TestCase
         $html = $this->dumpFrame([
             'file'     => self::SAMPLE,
             'line'     => 10,
-            'class'    => CodeDumperTarget::class,
+            'class'    => CodeDumperTargetFixture::class,
             'function' => 'describe',
             'type'     => '::',
             'args'     => ['Ada'],
@@ -174,7 +174,7 @@ final class CodeDumperTest extends TestCase
         $html = $this->dumpFrame([
             'file'     => self::SAMPLE,
             'line'     => 10,
-            'class'    => CodeDumperTarget::class,
+            'class'    => CodeDumperTargetFixture::class,
             'function' => 'method',
             'type'     => '->',
             'args'     => ['hunter2-super-secret'],

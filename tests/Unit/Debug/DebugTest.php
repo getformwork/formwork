@@ -5,8 +5,8 @@ namespace Formwork\Tests\Unit\Debug;
 use DOMDocument;
 use Formwork\Debug\Debug;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Debug\Fixtures\DumpEnum;
-use Formwork\Tests\Unit\Debug\Fixtures\DumpTarget;
+use Formwork\Tests\Unit\Debug\Fixtures\DumpEnumFixture;
+use Formwork\Tests\Unit\Debug\Fixtures\DumpTargetFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -165,10 +165,10 @@ final class DebugTest extends TestCase
 
     public function testObjectsShowTheirClassIdAndProperties(): void
     {
-        $dumpTarget = new DumpTarget();
+        $dumpTarget = new DumpTargetFixture();
         $output = $this->body($dumpTarget);
 
-        $this->assertStringContainsString(DumpTarget::class, $output);
+        $this->assertStringContainsString(DumpTargetFixture::class, $output);
         $this->assertStringContainsString('#' . spl_object_id($dumpTarget), $output);
         $this->assertStringContainsString('"public value"', $output);
         $this->assertStringContainsString('"promoted value"', $output);
@@ -177,7 +177,7 @@ final class DebugTest extends TestCase
 
     public function testVisibilityOfPropertiesIsShown(): void
     {
-        $output = $this->body(new DumpTarget());
+        $output = $this->body(new DumpTargetFixture());
 
         $this->assertMatchesRegularExpression('/__visibility-public" title="Public property">public<\/span><span class="__type-property">visible</', $output);
         $this->assertMatchesRegularExpression('/__visibility-protected" title="Protected property">protected<\/span><span class="__type-property">guarded</', $output);
@@ -194,13 +194,13 @@ final class DebugTest extends TestCase
 
     public function testEnumsAreDumpedByCase(): void
     {
-        $this->assertSame('<span class="__type-name">' . DumpEnum::class . '</span>::<span class="__type-name">Second</span>', $this->body(DumpEnum::Second));
+        $this->assertSame('<span class="__type-name">' . DumpEnumFixture::class . '</span>::<span class="__type-name">Second</span>', $this->body(DumpEnumFixture::Second));
     }
 
     public function testCircularReferencesAreCut(): void
     {
-        $a = new DumpTarget();
-        $b = new DumpTarget();
+        $a = new DumpTargetFixture();
+        $b = new DumpTargetFixture();
         $a->next = $b;
         $b->next = $a;
 
@@ -211,7 +211,7 @@ final class DebugTest extends TestCase
 
     public function testDumpingTheSameObjectTwiceDoesNotReportAReference(): void
     {
-        $dumpTarget = new DumpTarget();
+        $dumpTarget = new DumpTargetFixture();
 
         $first = $this->body($dumpTarget);
         $second = $this->body($dumpTarget);
@@ -225,7 +225,7 @@ final class DebugTest extends TestCase
 
     public function testTheSameObjectUsedTwiceInOneStructureIsDumpedOnceAndReferenced(): void
     {
-        $dumpTarget = new DumpTarget('shared');
+        $dumpTarget = new DumpTargetFixture('shared');
 
         $output = $this->body([$dumpTarget, $dumpTarget]);
 
@@ -345,7 +345,7 @@ final class DebugTest extends TestCase
     /**
      * @return iterable<string, array{?string, bool}>
      */
-    public static function acceptHeaders(): iterable
+    public static function acceptHeadersProvider(): iterable
     {
         yield 'html' => ['text/html', true];
         yield 'browser' => ['text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', true];
@@ -354,7 +354,7 @@ final class DebugTest extends TestCase
         yield 'missing' => [null, false];
     }
 
-    #[DataProvider('acceptHeaders')]
+    #[DataProvider('acceptHeadersProvider')]
     public function testDumpOnlyOutputsForClientsAcceptingHtml(?string $accept, bool $expected): void
     {
         if ($accept === null) {

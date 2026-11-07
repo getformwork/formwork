@@ -9,7 +9,7 @@ use Formwork\Metadata\Metadata;
 use Formwork\Pages\Exceptions\PageNotFoundException;
 use Formwork\Pages\Page;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
+use Formwork\Tests\Unit\Pages\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -110,7 +110,7 @@ final class SiteTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function dotRoutes(): iterable
+    public static function dotRoutesProvider(): iterable
     {
         yield 'current directory' => ['/first/./nested'];
         yield 'parent directory' => ['/first/../second'];
@@ -121,7 +121,7 @@ final class SiteTest extends TestCase
         yield 'null byte' => ["/first\0"];
     }
 
-    #[DataProvider('dotRoutes')]
+    #[DataProvider('dotRoutesProvider')]
     public function testRoutesWithDotSegmentsNeverEscapeTheContentTree(string $route): void
     {
         $this->assertNull($this->site->findPage($route)?->route());

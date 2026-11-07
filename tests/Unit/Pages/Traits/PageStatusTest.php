@@ -5,7 +5,7 @@ namespace Formwork\Tests\Unit\Pages\Traits;
 use Formwork\Pages\Page;
 use Formwork\Pages\Traits\PageStatus;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Pages\Fixtures\BuildsPageSites;
+use Formwork\Tests\Unit\Pages\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversTrait;
@@ -22,7 +22,7 @@ final class PageStatusTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public static function validDates(): iterable
+    public static function validDatesProvider(): iterable
     {
         yield 'date only, past' => ['publishDate: "2000-01-01"', Page::PAGE_STATUS_PUBLISHED];
         yield 'date only, future' => ['publishDate: "2099-01-01"', Page::PAGE_STATUS_NOT_PUBLISHED];
@@ -35,7 +35,7 @@ final class PageStatusTest extends TestCase
         yield 'unpublished flag wins over the dates' => ["published: false\npublishDate: \"2000-01-01\"", Page::PAGE_STATUS_NOT_PUBLISHED];
     }
 
-    #[DataProvider('validDates')]
+    #[DataProvider('validDatesProvider')]
     public function testStatusFromFrontmatter(string $frontmatter, string $expected): void
     {
         $this->assertSame($expected, $this->pageWith($frontmatter)->status());

@@ -15,6 +15,7 @@ final class YamlTest extends TestCase
 {
     protected function setUp(): void
     {
+        parent::setUp();
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/yaml', TESTS_TMP_PATH, overwrite: true);
     }
 

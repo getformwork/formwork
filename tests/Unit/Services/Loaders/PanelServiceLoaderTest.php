@@ -46,7 +46,7 @@ final class PanelServiceLoaderTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public static function panelRoutes(): iterable
+    public static function panelRoutesProvider(): iterable
     {
         /** @var array{routes: array<string, array{path: string}>} $data */
         $data = Php::parseFile(TestInstallation::rootPath() . '/panel/config/routes/routes.php');
@@ -56,7 +56,7 @@ final class PanelServiceLoaderTest extends TestCase
         }
     }
 
-    #[DataProvider('panelRoutes')]
+    #[DataProvider('panelRoutesProvider')]
     public function testEveryPanelRouteIsRedirectedAwayFromRemoteClientsWhenThereAreNoUsers(string $name, string $path): void
     {
         $response = $this->gate($name, $path, users: [], localhost: false);
@@ -65,7 +65,7 @@ final class PanelServiceLoaderTest extends TestCase
         $this->assertSame((string) parse_url(App::instance()->uri()->path('/'), PHP_URL_PATH), $this->path($response));
     }
 
-    #[DataProvider('panelRoutes')]
+    #[DataProvider('panelRoutesProvider')]
     public function testOnlySetupRoutesAreReachableFromLocalhostWhenThereAreNoUsers(string $name, string $path): void
     {
         $response = $this->gate($name, $path, users: [], localhost: true);
@@ -79,7 +79,7 @@ final class PanelServiceLoaderTest extends TestCase
         $this->assertStringEndsWith('/register/', $this->path($response));
     }
 
-    #[DataProvider('panelRoutes')]
+    #[DataProvider('panelRoutesProvider')]
     public function testOnlyAuthenticationRoutesAreReachableWithoutLoggingIn(string $name, string $path): void
     {
         try {
@@ -99,13 +99,13 @@ final class PanelServiceLoaderTest extends TestCase
         $this->assertStringEndsWith('/login/', $this->path($response));
     }
 
-    #[DataProvider('panelRoutes')]
+    #[DataProvider('panelRoutesProvider')]
     public function testLoggedInUsersCanReachEveryPanelRoute(string $name, string $path): void
     {
         $this->assertNull($this->gate($name, $path, users: ['alice'], localhost: false, loggedIn: true));
     }
 
-    #[DataProvider('panelRoutes')]
+    #[DataProvider('panelRoutesProvider')]
     public function testRoutesOutsideThePanelAreNeverTouched(string $name, string $path): void
     {
         $this->assertNull($this->gate($name, $path, users: [], localhost: false, prefix: '/'));

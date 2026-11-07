@@ -148,7 +148,7 @@ final class AssetsTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function traversalKeys(): iterable
+    public static function traversalKeysProvider(): iterable
     {
         yield 'parent of the template namespace' => ['../secret.txt'];
         yield 'nested then parent' => ['css/../../secret.txt'];
@@ -162,7 +162,7 @@ final class AssetsTest extends TestCase
         yield 'null byte' => ["css/site.css\0../../secret.txt"];
     }
 
-    #[DataProvider('traversalKeys')]
+    #[DataProvider('traversalKeysProvider')]
     public function testAssetsOutsideTheNamespaceRootCannotBeRequested(string $key): void
     {
         try {

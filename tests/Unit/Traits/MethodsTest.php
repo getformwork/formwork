@@ -4,7 +4,7 @@ namespace Formwork\Tests\Unit\Traits;
 
 use BadMethodCallException;
 use Formwork\Tests\TestCase;
-use Formwork\Tests\Unit\Traits\Fixtures\ObjectWithMethods;
+use Formwork\Tests\Unit\Traits\Fixtures\ObjectWithMethodsFixture;
 use Formwork\Traits\Methods;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use RuntimeException;
@@ -14,7 +14,7 @@ final class MethodsTest extends TestCase
 {
     public function testObjectsStartWithoutMethods(): void
     {
-        $objectWithMethods = new ObjectWithMethods();
+        $objectWithMethods = new ObjectWithMethodsFixture();
 
         $this->assertSame([], $objectWithMethods->getMethods());
         $this->assertFalse($objectWithMethods->hasMethod('anything'));
@@ -22,7 +22,7 @@ final class MethodsTest extends TestCase
 
     public function testDefinedMethodsAreCalledThroughTheMagicCall(): void
     {
-        $objectWithMethods = new ObjectWithMethods(['add' => static fn(int $a, int $b): int => $a + $b]);
+        $objectWithMethods = new ObjectWithMethodsFixture(['add' => static fn(int $a, int $b): int => $a + $b]);
 
         $this->assertTrue($objectWithMethods->hasMethod('add'));
         $this->assertSame(5, $objectWithMethods->add(2, 3));
@@ -30,7 +30,7 @@ final class MethodsTest extends TestCase
 
     public function testMethodsReceiveAllTheArguments(): void
     {
-        $objectWithMethods = new ObjectWithMethods(['collect' => static fn(mixed ...$arguments): array => $arguments]);
+        $objectWithMethods = new ObjectWithMethodsFixture(['collect' => static fn(mixed ...$arguments): array => $arguments]);
 
         $this->assertSame([], $objectWithMethods->collect());
         $this->assertSame([1, 'two', null, [3]], $objectWithMethods->collect(1, 'two', null, [3]));
@@ -38,7 +38,7 @@ final class MethodsTest extends TestCase
 
     public function testMethodsCanReturnAnyValue(): void
     {
-        $objectWithMethods = new ObjectWithMethods([
+        $objectWithMethods = new ObjectWithMethodsFixture([
             'nothing' => static fn() => null,
             'false'   => static fn() => false,
             'zero'    => static fn() => 0,
@@ -52,23 +52,23 @@ final class MethodsTest extends TestCase
     public function testMethodsAreAvailableThroughGetMethods(): void
     {
         $closure = static fn(): string => 'value';
-        $objectWithMethods = new ObjectWithMethods(['first' => $closure]);
+        $objectWithMethods = new ObjectWithMethodsFixture(['first' => $closure]);
 
         $this->assertSame(['first' => $closure], $objectWithMethods->getMethods());
     }
 
     public function testUndefinedMethodsThrowABadMethodCallException(): void
     {
-        $objectWithMethods = new ObjectWithMethods(['defined' => static fn() => null]);
+        $objectWithMethods = new ObjectWithMethodsFixture(['defined' => static fn() => null]);
 
         $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Call to undefined method ' . ObjectWithMethods::class . '::missing()');
+        $this->expectExceptionMessage('Call to undefined method ' . ObjectWithMethodsFixture::class . '::missing()');
         $objectWithMethods->missing();
     }
 
     public function testMethodNamesAreCaseSensitive(): void
     {
-        $objectWithMethods = new ObjectWithMethods(['lower' => static fn(): string => 'ok']);
+        $objectWithMethods = new ObjectWithMethodsFixture(['lower' => static fn(): string => 'ok']);
 
         $this->assertTrue($objectWithMethods->hasMethod('lower'));
         $this->assertFalse($objectWithMethods->hasMethod('LOWER'));
@@ -76,7 +76,7 @@ final class MethodsTest extends TestCase
 
     public function testExceptionsThrownByMethodsPropagate(): void
     {
-        $objectWithMethods = new ObjectWithMethods(['fail' => static function (): never {
+        $objectWithMethods = new ObjectWithMethodsFixture(['fail' => static function (): never {
             throw new RuntimeException('method failed');
         }]);
 
@@ -87,14 +87,14 @@ final class MethodsTest extends TestCase
 
     public function testCallMethodInvokesTheClosureDirectly(): void
     {
-        $objectWithMethods = new ObjectWithMethods(['join' => static fn(string $a, string $b): string => $a . $b]);
+        $objectWithMethods = new ObjectWithMethodsFixture(['join' => static fn(string $a, string $b): string => $a . $b]);
 
         $this->assertSame('ab', $objectWithMethods->invoke('join', ['a', 'b']));
     }
 
     public function testNullMethodsAreConsideredUndefined(): void
     {
-        $objectWithMethods = new ObjectWithMethods($this->unchecked(['nothing' => null]));
+        $objectWithMethods = new ObjectWithMethodsFixture($this->unchecked(['nothing' => null]));
 
         $this->assertFalse($objectWithMethods->hasMethod('nothing'));
         $this->expectException(BadMethodCallException::class);
