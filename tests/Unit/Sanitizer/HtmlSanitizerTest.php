@@ -316,4 +316,46 @@ final class HtmlSanitizerTest extends TestCase
 
         $this->assertLessThan(1.0, (hrtime(true) - $start) / 1e9);
     }
+
+    #[DataProvider('svgStyleMarkupProvider')]
+    public function testMarkupInsideSvgStyleIsRemoved(string $html): void
+    {
+        $output = (new HtmlSanitizer())->sanitize($html);
+
+        $this->assertStringNotContainsString('onerror', $output);
+        $this->assertStringNotContainsString('onload', $output);
+        $this->assertStringNotContainsString('srcdoc', $output);
+        $this->assertStringNotContainsString('formaction', $output);
+    }
+
+    /**
+     * @return \Iterator<string, array{string}>
+     */
+    public static function svgStyleMarkupProvider(): \Iterator
+    {
+        yield 'img' => ['<svg><style><img src=x onerror=alert(1)></style></svg>'];
+        yield 'div' => ['<svg><style><div><img src=x onerror=alert(1)></div></style></svg>'];
+        yield 'body' => ['<svg><style><body onload=alert(1)></style></svg>'];
+        yield 'button' => ['<svg><style><form><button formaction=javascript:alert(1)></style></svg>'];
+        yield 'iframe' => ['<svg><style><iframe srcdoc="<script>alert(1)</script>"></style></svg>'];
+        yield 'end tag' => ['<svg><style></p><img src=x onerror=alert(1)></style></svg>'];
+        yield 'comment' => ['<svg><style><!--><img src=x onerror=alert(1)></style></svg>'];
+        yield 'cdata' => ['<svg><style><![CDATA[<img src=x onerror=alert(1)>]]></style></svg>'];
+        yield 'bogus comment' => ['<svg><style><?x><img src=x onerror=alert(1)></style></svg>'];
+        yield 'unclosed tag' => ['<svg><style><img src=x onerror=alert(1) </style></svg>'];
+    }
+
+    public function testSvgStyleWithoutMarkupIsPreserved(): void
+    {
+        $html = '<svg><style>.a{fill:red}</style></svg>';
+
+        $this->assertStringContainsString('<style>.a{fill:red}</style>', (new HtmlSanitizer())->sanitize($html));
+    }
+
+    public function testSvgStyleWithLessThanCharacterAsTextIsPreserved(): void
+    {
+        $html = '<svg><style>a[title="<"]{fill:red}b[title="a < 1"]{fill:blue}</style></svg>';
+
+        $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
+    }
 }

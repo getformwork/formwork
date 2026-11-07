@@ -47,6 +47,17 @@ class SvgSanitizer extends DomSanitizer
         $this->addExplicitSvgNamespace($domDocumentFragment);
     }
 
+    protected function sanitizeNode(DOMElement $domElement): void
+    {
+        // Browsers parse markup inside `<style>` in foreign content, raw-text parsers do not: reject it
+        if ($domElement->nodeName === 'style' && preg_match('/<[a-z\/!?]/i', $domElement->textContent) === 1) {
+            $domElement->remove();
+            return;
+        }
+
+        parent::sanitizeNode($domElement);
+    }
+
     protected function sanitizeNodeAttribute(DOMElement $domElement, DOMAttr $domAttr): void
     {
         parent::sanitizeNodeAttribute($domElement, $domAttr);
