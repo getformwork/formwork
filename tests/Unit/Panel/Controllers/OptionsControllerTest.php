@@ -45,7 +45,7 @@ final class OptionsControllerTest extends TestCase
         $original = Yaml::parseFile($path);
 
         try {
-            $controller = $this->makeController(OptionsController::class, []);
+            $controller = $this->makeController(OptionsController::class);
             $reflectionMethod = new ReflectionMethod($controller, 'updateOptions');
 
             $reflectionMethod->invoke($controller, 'site', $submitted, $existing, self::formSaveDefaults());

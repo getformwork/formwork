@@ -320,10 +320,10 @@ final class UsersControllerActionsTest extends TestCase
         return $this->makeController(
             UsersController::class,
             $permissions,
-            ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->imagesPath]]],
-            $input,
-            [Site::class => $site],
-            $user,
+            system: ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->imagesPath]]],
+            input: $input,
+            services: [Site::class => $site],
+            user: $user,
             server: $server,
         );
     }

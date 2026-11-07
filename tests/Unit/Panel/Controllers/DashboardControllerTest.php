@@ -47,7 +47,7 @@ final class DashboardControllerTest extends TestCase
         $user->method('permissions')->willReturn(new Permissions(['panel.dashboard' => false]));
         $user->expects($this->once())->method('logout');
 
-        $response = $this->makeController(DashboardController::class, [], user: $user)->index($this->statistics());
+        $response = $this->makeController(DashboardController::class, user: $user)->index($this->statistics());
 
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }

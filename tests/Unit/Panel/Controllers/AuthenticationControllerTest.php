@@ -90,7 +90,7 @@ final class AuthenticationControllerTest extends TestCase
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('login')->willReturn($this->createStub(User::class));
 
-        $controller = $this->makeController(AuthenticationController::class, [], input: ['login' => 'admin', 'password' => 'secret']);
+        $controller = $this->makeController(AuthenticationController::class, input: ['login' => 'admin', 'password' => 'secret']);
         $this->panelRequest?->session()->set(AuthenticationController::SESSION_REDIRECT_KEY, '/pages/');
 
         $response = $controller->login($this->schemes(), $authenticator);
@@ -174,7 +174,7 @@ final class AuthenticationControllerTest extends TestCase
         $users = $this->createStub(Users::class);
         $users->method('loggedIn')->willReturn(null);
 
-        $response = $this->makeController(AuthenticationController::class, [], users: $users)->logout();
+        $response = $this->makeController(AuthenticationController::class, users: $users)->logout();
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
@@ -217,7 +217,7 @@ final class AuthenticationControllerTest extends TestCase
      */
     private function controller(User $user, array $system = [], array $services = []): AuthenticationController
     {
-        return $this->makeController(AuthenticationController::class, [], $system, services: $services, user: $user);
+        return $this->makeController(AuthenticationController::class, system: $system, services: $services, user: $user);
     }
 
     private function schemes(): Schemes

@@ -151,58 +151,32 @@ trait BuildsPanelControllers
      *
      * @return T
      */
-    protected function makeController(string $class, array $permissions, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = []): object
+    protected function makeController(string $class, array $permissions = [], array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = []): object
     {
         $app = App::instance();
 
         $config = new Config(['system' => array_replace_recursive($app->config()->get('system'), ['panel' => ['root' => '/panel/']], $system)], resolved: true);
 
-        $sessionPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'sessions');
-        if (!FileSystem::isDirectory($sessionPath, assertExists: false)) {
-            FileSystem::createDirectory($sessionPath, recursive: true);
-        }
+        $request = $this->panelRequest($input, $query, $server, $files, $previousSession);
 
-        $request = new PanelRequestFixture($input, $query, [], [], [
-            'REQUEST_METHOD' => 'POST',
-            'SERVER_NAME'    => 'localhost',
-            'SERVER_PORT'    => '80',
-            'REMOTE_ADDR'    => '203.0.113.7',
-            ...$server,
-        ]);
-        $request->session()->setPath($sessionPath);
-        $request->previousSession = $previousSession;
-        $request->withFiles($files);
-        $this->closePanelSession();
-        $this->panelRequest = $request;
-
-        if ($user === null) {
-            $user = $this->createStub(User::class);
-            $user->method('permissions')->willReturn(new Permissions($permissions));
-        }
+        $user ??= $this->stubUser($permissions);
 
         if ($users === null) {
             $users = $this->createStub(Users::class);
             $users->method('loggedIn')->willReturn($user);
         }
 
-        $router = $this->createStub(Router::class);
-        $router->method('generate')->willReturnCallback(static fn(string $name, array $params = []): string => '/route/' . $name);
-
         $container = new ControllerContainerFixture();
         $container->realErrorsController = $realErrorsController;
-        $translations = new Translations($config);
-        $translations->loadFromPath(TestInstallation::systemPath() . '/translations');
-        $translations->loadFromPath(TestInstallation::rootPath() . '/panel/translations');
-        $translations->setCurrent('en');
 
         foreach ([
             Container::class       => $container,
             App::class             => $app,
             Config::class          => $config,
             Request::class         => $request,
-            Router::class          => $router,
+            Router::class          => $this->panelRouter(),
             EventDispatcher::class => new EventDispatcher(),
-            Translations::class    => $translations,
+            Translations::class    => $this->panelTranslations($config),
             Site::class            => $this->createStub(Site::class),
             Users::class           => $users,
             Modals::class          => $this->createStub(Modals::class),
@@ -222,6 +196,59 @@ trait BuildsPanelControllers
         $container->define(Panel::class);
 
         return $container->build($class);
+    }
+
+    /**
+     * Create the request of the panel, keeping it to close its session later
+     *
+     * @param array<string, mixed>  $input
+     * @param array<string, string> $query
+     * @param array<string, string> $server
+     * @param array<string, mixed>  $files
+     */
+    private function panelRequest(array $input, array $query, array $server, array $files, bool $previousSession): PanelRequestFixture
+    {
+        $sessionPath = FileSystem::joinPaths(TESTS_TMP_PATH, 'sessions');
+
+        if (!FileSystem::isDirectory($sessionPath, assertExists: false)) {
+            FileSystem::createDirectory($sessionPath, recursive: true);
+        }
+
+        $request = new PanelRequestFixture($input, $query, server: [
+            'REQUEST_METHOD' => 'POST',
+            'SERVER_NAME'    => 'localhost',
+            'SERVER_PORT'    => '80',
+            'REMOTE_ADDR'    => '203.0.113.7',
+            ...$server,
+        ]);
+        $request->session()->setPath($sessionPath);
+        $request->previousSession = $previousSession;
+        $request->withFiles($files);
+
+        $this->closePanelSession();
+
+        return $this->panelRequest = $request;
+    }
+
+    /**
+     * Create a router generating `/route/<name>` URIs
+     */
+    private function panelRouter(): Router
+    {
+        $router = $this->createStub(Router::class);
+        $router->method('generate')->willReturnCallback(static fn(string $name, array $params = []): string => '/route/' . $name);
+
+        return $router;
+    }
+
+    private function panelTranslations(Config $config): Translations
+    {
+        $translations = new Translations($config);
+        $translations->loadFromPath(TestInstallation::systemPath() . '/translations');
+        $translations->loadFromPath(TestInstallation::rootPath() . '/panel/translations');
+        $translations->setCurrent('en');
+
+        return $translations;
     }
 
     /**

@@ -220,7 +220,7 @@ final class UsersControllerTest extends TestCase
         $current->method('canChangePasswordOf')->willReturn(true);
         $current->method('canChangeRoleOf')->willReturn(true);
 
-        $this->controller = $this->makeController(UsersController::class, [], user: $current);
+        $this->controller = $this->makeController(UsersController::class, user: $current);
 
         $fields = $user->fields();
         $fields->setValues(['title' => 'untitled', ...$submitted], null);

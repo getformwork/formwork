@@ -405,20 +405,10 @@ final class FilesControllerActionsTest extends TestCase
 
     /**
      * @param array<string, bool>   $permissions
-     * @param array<string, mixed>  $input
-     * @param array<string, string> $server
      * @param array<string, object> $services
-     * @param array<string, mixed>  $files
      */
-    private function controller(array $permissions = ['panel.files' => true], array $input = [], array $server = [], array $services = [], array $files = []): FilesController
+    private function controller(array $permissions = ['panel.files' => true], array $services = [], mixed ...$arguments): FilesController
     {
-        return $this->makeController(
-            FilesController::class,
-            $permissions,
-            input: $input,
-            services: [Site::class => $this->site, ...$services],
-            server: $server,
-            files: $files,
-        );
+        return $this->makeController(FilesController::class, $permissions, ...$arguments, services: [Site::class => $this->site, ...$services]);
     }
 }

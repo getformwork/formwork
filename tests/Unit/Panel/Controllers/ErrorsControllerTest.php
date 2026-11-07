@@ -125,7 +125,7 @@ final class ErrorsControllerTest extends TestCase
     {
         $this->restoreOutputBuffers();
 
-        return $this->makeController(ErrorsController::class, [], $system, realErrorsController: true, server: $server);
+        return $this->makeController(ErrorsController::class, system: $system, realErrorsController: true, server: $server);
     }
 
     /**
