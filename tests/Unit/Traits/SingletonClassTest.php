@@ -11,12 +11,25 @@ use Formwork\Tests\Unit\Traits\Fixtures\OtherLazySingletonFixture;
 use Formwork\Traits\SingletonClass;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversTrait;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use ReflectionProperty;
 
 #[CoversTrait(SingletonClass::class)]
 final class SingletonClassTest extends TestCase
 {
-    #[RunInSeparateProcess]
+    private const array FIXTURES = [BaseSingletonFixture::class, EagerSingletonFixture::class, LazySingletonFixture::class, OtherLazySingletonFixture::class];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->resetInstances();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->resetInstances();
+        parent::tearDown();
+    }
+
     public function testInstanceIsCreatedOnFirstUseAndShared(): void
     {
         $lazySingleton = LazySingletonFixture::instance();
@@ -27,7 +40,6 @@ final class SingletonClassTest extends TestCase
         $this->assertSame(5, LazySingletonFixture::instance()->counter);
     }
 
-    #[RunInSeparateProcess]
     public function testSingletonsCannotBeCloned(): void
     {
         $instance = LazySingletonFixture::instance();
@@ -37,7 +49,6 @@ final class SingletonClassTest extends TestCase
         $this->assertSame('Cannot clone ' . LazySingletonFixture::class . ', the class is a singleton', $logicException->getMessage());
     }
 
-    #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorBecomeTheInstance(): void
     {
         $eagerSingleton = new EagerSingletonFixture();
@@ -45,7 +56,6 @@ final class SingletonClassTest extends TestCase
         $this->assertSame($eagerSingleton, EagerSingletonFixture::instance());
     }
 
-    #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorCannotBeCreatedTwice(): void
     {
         new EagerSingletonFixture();
@@ -55,7 +65,6 @@ final class SingletonClassTest extends TestCase
         new EagerSingletonFixture();
     }
 
-    #[RunInSeparateProcess]
     public function testSingletonsRegisteredByTheConstructorCannotBeCreatedAfterInstance(): void
     {
         EagerSingletonFixture::instance();
@@ -64,14 +73,12 @@ final class SingletonClassTest extends TestCase
         new EagerSingletonFixture();
     }
 
-    #[RunInSeparateProcess]
     public function testEachClassHasItsOwnInstance(): void
     {
         $this->assertNotSame(LazySingletonFixture::instance(), OtherLazySingletonFixture::instance());
         $this->assertInstanceOf(OtherLazySingletonFixture::class, OtherLazySingletonFixture::instance());
     }
 
-    #[RunInSeparateProcess]
     public function testSubclassesGetTheirOwnInstance(): void
     {
         $derivedSingleton = DerivedSingletonFixture::instance();
@@ -82,12 +89,18 @@ final class SingletonClassTest extends TestCase
         $this->assertSame(BaseSingletonFixture::class, $baseSingleton::class);
     }
 
-    #[RunInSeparateProcess]
     public function testBaseInstanceIsNotReturnedForSubclasses(): void
     {
         $baseSingleton = BaseSingletonFixture::instance();
 
         $this->assertSame(DerivedSingletonFixture::class, DerivedSingletonFixture::instance()::class);
         $this->assertSame(BaseSingletonFixture::class, $baseSingleton::class);
+    }
+
+    private function resetInstances(): void
+    {
+        foreach (self::FIXTURES as $fixture) {
+            (new ReflectionProperty($fixture, 'instances'))->setValue(null, []);
+        }
     }
 }

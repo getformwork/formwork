@@ -34,7 +34,6 @@ final class LogTest extends TestCase
         $this->assertStringContainsString('Logger', $messages[0]);
     }
 
-    #[RunInSeparateProcess]
     public function testLogIsARegistry(): void
     {
         $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
@@ -42,7 +41,6 @@ final class LogTest extends TestCase
         $this->assertInstanceOf(Registry::class, new Log($this->file));
     }
 
-    #[RunInSeparateProcess]
     public function testMessagesAreStoredByTimestamp(): void
     {
         $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
@@ -54,7 +52,6 @@ final class LogTest extends TestCase
         $this->assertSame('First message', $log->get($key));
     }
 
-    #[RunInSeparateProcess]
     public function testMessagesLoggedAtDifferentTimesHaveDifferentKeys(): void
     {
         $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
@@ -68,7 +65,6 @@ final class LogTest extends TestCase
         $this->assertCount(2, $log->toArray());
     }
 
-    #[RunInSeparateProcess]
     public function testOnlyTheLatestMessagesWithinTheLimitAreSaved(): void
     {
         $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
@@ -84,7 +80,6 @@ final class LogTest extends TestCase
         $this->assertSame(['three', 'four', 'five'], $saved);
     }
 
-    #[RunInSeparateProcess]
     public function testMessagesWithinTheLimitAreAllSaved(): void
     {
         $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
@@ -98,7 +93,6 @@ final class LogTest extends TestCase
         $this->assertCount(2, json_decode(FileSystem::read($this->file), true));
     }
 
-    #[RunInSeparateProcess]
     public function testDefaultLimitIs128Messages(): void
     {
         $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
