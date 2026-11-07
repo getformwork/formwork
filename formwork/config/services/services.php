@@ -60,8 +60,11 @@ return function (Container $container) {
     $container->define(EventDispatcher::class)
         ->alias('events');
 
-    $container->define(Request::class, fn() => Request::fromGlobals())
-        ->alias('request');
+    // The request is already defined when the app handles a given one
+    if (!$container->has(Request::class)) {
+        $container->define(Request::class, fn() => Request::fromGlobals())
+            ->alias('request');
+    }
 
     $container->define(Session::class, fn(Request $request) => $request->session());
 

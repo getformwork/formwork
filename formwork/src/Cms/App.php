@@ -249,11 +249,18 @@ final class App
     }
 
     /**
-     * Run Formwork
+     * Handle a request and get the response, without sending it
+     *
+     * The request is handled by a fresh load of the app.
+     *
+     * @since 2.4.0
      */
-    public function run(): Response
+    public function handle(Request $request): Response
     {
-        $this->loadErrorHandler();
+        $this->unload();
+
+        $this->container->define(Request::class, $request)
+            ->alias('request');
 
         try {
             $this->load();
@@ -274,6 +281,18 @@ final class App
         $response->prepare($this->request());
 
         $this->events()->dispatch(new ResponseBeforeSendEvent($response, $this->request()));
+
+        return $response;
+    }
+
+    /**
+     * Run Formwork
+     */
+    public function run(): Response
+    {
+        $this->loadErrorHandler();
+
+        $response = $this->handle(Request::fromGlobals());
 
         $response->send();
 
