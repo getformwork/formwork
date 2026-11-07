@@ -3,18 +3,26 @@
 namespace Formwork\Services\Loaders;
 
 use Formwork\Config\Config;
+use Formwork\Controllers\ErrorsControllerInterface;
+use Formwork\Events\EventDispatcher;
+use Formwork\Http\Response;
+use Formwork\Http\ResponseStatus;
 use Formwork\Parsers\Yaml;
+use Formwork\Router\Events\RouteActionResolvedEvent;
 use Formwork\Services\Container;
+use Formwork\Services\DefinitionAwareServiceLoaderInterface;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 use Formwork\Translations\Translations;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Users\Permissions;
 use Formwork\Users\Role;
 use Formwork\Users\RoleCollection;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
+use ReflectionFunction;
 
-final class UsersServiceLoader implements ResolutionAwareServiceLoaderInterface
+final class UsersServiceLoader implements DefinitionAwareServiceLoaderInterface, ResolutionAwareServiceLoaderInterface
 {
     private RoleCollection $roleCollection;
 
@@ -25,6 +33,28 @@ final class UsersServiceLoader implements ResolutionAwareServiceLoaderInterface
         private Translations $translations,
         private UserFactory $userFactory,
     ) {}
+
+    /**
+     * Respond with the forbidden error to the actions requiring a permission the logged in user lacks
+     *
+     * @since 2.4.0
+     */
+    public static function onDefined(Container $container): void
+    {
+        $container->get(EventDispatcher::class)->on('routeActionResolved', static function (RouteActionResolvedEvent $routeActionResolvedEvent) use ($container): void {
+            $attributes = (new ReflectionFunction($routeActionResolvedEvent->action()))->getAttributes(Permission::class);
+
+            if ($attributes === []) {
+                return;
+            }
+
+            $user = $container->get(Users::class)->loggedIn();
+
+            if ($user === null || !$user->permissions()->has($attributes[0]->newInstance()->name)) {
+                $routeActionResolvedEvent->setAction(static fn(): Response => $container->get(ErrorsControllerInterface::class)->error(ResponseStatus::Forbidden));
+            }
+        });
+    }
 
     public function load(Container $container): Users
     {
