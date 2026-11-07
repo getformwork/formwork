@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Panel;
 
 use Formwork\Http\Response;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\TestInstallation;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -22,6 +23,13 @@ final class PanelRoutesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Panel assets are built from the sources and not versioned, and pages cannot be rendered without them
+        foreach (['css/panel.min.css', 'js/app.min.js'] as $asset) {
+            if (!is_file(TestInstallation::rootPath() . '/panel/assets/' . $asset)) {
+                $this->markTestSkipped('The assets of the Panel are not built.');
+            }
+        }
 
         $this->createAccount('alice');
         $this->createAccount('bob', 'editor');
