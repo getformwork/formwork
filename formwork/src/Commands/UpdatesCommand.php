@@ -116,7 +116,7 @@ final class UpdatesCommand implements CommandInterface
      */
     public function check(array $argv = []): void
     {
-        $force = $this->climate->arguments->defined('force');
+        $force = $this->climate->arguments->defined('force', $argv);
 
         $updater = $this->getUpdater(['force' => $force]);
 
@@ -155,10 +155,10 @@ final class UpdatesCommand implements CommandInterface
      */
     public function update(array $argv = []): void
     {
-        $force = $this->climate->arguments->defined('force');
-        $backup = !$this->climate->arguments->defined('no-backup');
-        $preferDist = !$this->climate->arguments->defined('no-prefer-dist');
-        $cleanup = !$this->climate->arguments->defined('no-cleanup');
+        $force = $this->climate->arguments->defined('force', $argv);
+        $backup = !$this->climate->arguments->defined('no-backup', $argv);
+        $preferDist = !$this->climate->arguments->defined('no-prefer-dist', $argv);
+        $cleanup = !$this->climate->arguments->defined('no-cleanup', $argv);
         $updater = $this->getUpdater([
             'force'               => $force,
             'preferDistAssets'    => $preferDist,
