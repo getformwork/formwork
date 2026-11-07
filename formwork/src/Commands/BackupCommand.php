@@ -4,9 +4,11 @@ namespace Formwork\Commands;
 
 use Formwork\Backup\Backupper;
 use Formwork\Cms\App;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
+use RuntimeException;
 
 /**
  * @since 2.1.0
@@ -105,7 +107,14 @@ final class BackupCommand implements CommandInterface
         $this->climate->out('Creating backup... this may take a while depending on the size of your installation.');
         /** @var string $hostname */
         $hostname = $this->climate->arguments->get('hostname') ?: null;
-        $file = $this->getBackupper($hostname)->backup();
+
+        try {
+            $file = $this->getBackupper($hostname)->backup();
+        } catch (RuntimeException|TranslatedException $e) {
+            $this->climate->error($e->getMessage());
+            exit(1);
+        }
+
         $this->climate->br()->out(sprintf('<green>Backup created:</green> %s', $file));
     }
 

@@ -5,6 +5,7 @@ namespace Formwork\Commands;
 use Formwork\Backup\Backupper;
 use Formwork\Cache\AbstractCache;
 use Formwork\Cms\App;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Updater\Updater;
 use League\CLImate\CLImate;
 use League\CLImate\Exceptions\InvalidArgumentException;
@@ -187,7 +188,7 @@ final class UpdatesCommand implements CommandInterface
             $backupper = $this->getBackupper();
             try {
                 $backupper->backup();
-            } catch (RuntimeException $e) {
+            } catch (RuntimeException|TranslatedException $e) {
                 $this->climate->error("Cannot make backup: {$e->getMessage()}");
                 exit(1);
             }

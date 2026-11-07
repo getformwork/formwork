@@ -48,7 +48,7 @@ final class Backupper
 
         $zipArchive = new ZipArchive();
 
-        if (($status = $zipArchive->open($destination, ZipArchive::CREATE)) === true) {
+        if (($status = @$zipArchive->open($destination, ZipArchive::CREATE)) === true) {
             foreach (FileSystem::listRecursive($source, FileSystem::LIST_ALL) as $file) {
                 if ($this->isCopiable($file)) {
                     $zipArchive->addFile(FileSystem::joinPaths($source, $file), $file);
@@ -57,16 +57,18 @@ final class Backupper
             $zipArchive->close();
         }
 
-        $this->deleteOldBackups();
-
         if ($previousMaxExecutionTime !== false) {
             ini_set('max_execution_time', $previousMaxExecutionTime);
         }
 
-        if (is_int($status) && $status !== ZipArchive::ER_OK) {
+        // ZipArchive::open() returns false instead of an error code if the archive cannot be opened at all
+        if ($status !== true) {
             /** @var key-of<ZipErrors::ERROR_MESSAGES> $status */
+            $status = $status === false ? ZipArchive::ER_OPEN : $status; // @phpstan-ignore identical.alwaysFalse
             throw new TranslatedException(ZipErrors::ERROR_MESSAGES[$status], ZipErrors::ERROR_LANGUAGE_STRINGS[$status]);
         }
+
+        $this->deleteOldBackups();
 
         return $destination;
     }
