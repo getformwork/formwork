@@ -123,7 +123,7 @@ class Router
      */
     public function setRequest(string $request): void
     {
-        $requestPath = Uri::path($request) ?? throw new UnexpectedValueException('Cannot get request path');
+        $requestPath = Path::normalize(Uri::path($request) ?? throw new UnexpectedValueException('Cannot get request path'));
         $this->requestUri = Str::wrap($requestPath, '/');
     }
 

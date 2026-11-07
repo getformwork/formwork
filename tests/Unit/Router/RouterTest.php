@@ -31,6 +31,20 @@ final class RouterTest extends TestCase
         $this->assertTrue($router->filters()->isEmpty());
     }
 
+    public function testSetRequestResolvesDotSegmentsOfAnAbsoluteFormRequestTarget(): void
+    {
+        $router = $this->router('http://evil.test/panel/users/images/..%5Caccounts%5Cadmin.yaml');
+
+        $this->assertSame('/panel/users/accounts/admin.yaml/', $router->request());
+    }
+
+    public function testSetRequestResolvesDotSegmentsOfANetworkPathReference(): void
+    {
+        $router = $this->router('//evil.test/panel/users/images/..%5Caccounts%5Cadmin.yaml');
+
+        $this->assertSame('/evil.test/panel/users/accounts/admin.yaml/', $router->request());
+    }
+
     public function testRequestPrefixAndSetRequestUseNormalizedPaths(): void
     {
         $router = $this->router('/admin/users');
