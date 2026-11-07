@@ -124,7 +124,7 @@ class Request
      * @param array<string, array<string, list<string>|string>> $files
      * @param array<string, string>                             $server
      */
-    public function __construct(array $input, array $query, array $cookies, array $files, array $server)
+    public function __construct(array $input = [], array $query = [], array $cookies = [], array $files = [], array $server = [])
     {
         $this->initialize($input, $query, $cookies, $files, $server);
     }
