@@ -255,7 +255,7 @@ final class AuthenticatorTest extends TestCase
 
     private function authenticator(int $limit = 10): Authenticator
     {
-        $request = new Request([], [], [], [], [
+        $request = new Request(server: [
             'REQUEST_METHOD' => 'GET',
             'REMOTE_ADDR'    => '203.0.113.7',
             'SERVER_NAME'    => 'localhost',

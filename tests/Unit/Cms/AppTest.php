@@ -153,7 +153,7 @@ final class AppTest extends TestCase
     #[DataProvider('handledRequestProvider')]
     public function testHandledRequestsAreTheGivenOnesNotTheGlobalOnes(string $uri, ResponseStatus $status, string $content): void
     {
-        $request = new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => $uri, 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => $uri, 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
 
         try {
             $response = App::instance()->handle($request);

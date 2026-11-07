@@ -987,7 +987,7 @@ final class FormTest extends TestCase
      */
     private function createRequest(RequestMethod $requestMethod, array $input = [], array $query = [], array $files = []): Request
     {
-        return new Request($input, $query, [], $files, ['REQUEST_METHOD' => $requestMethod->value]);
+        return new Request($input, $query, files: $files, server: ['REQUEST_METHOD' => $requestMethod->value]);
     }
 
     /**

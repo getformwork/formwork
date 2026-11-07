@@ -80,7 +80,7 @@ final class LanguagesServiceLoaderTest extends TestCase
         $this->translations = new Translations($config);
         $this->translations->loadFromPath(TESTS_TMP_PATH . '/translations');
 
-        $request = new Request([], [], [], [], ['REQUEST_URI' => $uri, 'SCRIPT_NAME' => '/index.php', 'REQUEST_METHOD' => 'GET']);
+        $request = new Request(server: ['REQUEST_URI' => $uri, 'SCRIPT_NAME' => '/index.php', 'REQUEST_METHOD' => 'GET']);
 
         $container = new Container();
         $container->define(Container::class, $container);

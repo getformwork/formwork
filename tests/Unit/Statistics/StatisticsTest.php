@@ -424,7 +424,7 @@ final class StatisticsTest extends TestCase
             'HTTP_REFERER'    => 'https://search.test/results',
         ];
 
-        $request = new Request([], [], [], [], array_filter($server, static fn(?string $value): bool => $value !== null));
+        $request = new Request(server: array_filter($server, static fn(?string $value): bool => $value !== null));
 
         return new Statistics(
             $options + [

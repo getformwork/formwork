@@ -56,7 +56,7 @@ trait BuildsUsers
         $users ??= $this->users();
 
         $config = new Config(['system' => ['users' => ['paths' => ['accounts' => $this->accountsPath, 'images' => $this->imagesPath]]]], resolved: true);
-        $request = new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
 
         $user = new TestableUserFixture($data, $config, $request, App::instance()->getService(FileFactory::class), $users);
 

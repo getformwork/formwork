@@ -62,7 +62,7 @@ final class AuthenticationServiceLoaderTest extends TestCase
             'limits'       => ['maxAttempts' => $maxAttempts, 'resetTime' => $resetTime],
         ]]], resolved: true);
 
-        $request = new Request([], [], [], [], ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
+        $request = new Request(server: ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
 
         $container = new Container();
         $container->define(Container::class, $container);

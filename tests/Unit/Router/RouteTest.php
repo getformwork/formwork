@@ -303,7 +303,7 @@ final class RouteTest extends TestCase
 
         return new Router(
             new Container(),
-            new Request([], [], [], [], $server),
+            new Request(server: $server),
             new EventDispatcher(),
         );
     }

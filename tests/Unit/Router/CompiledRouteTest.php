@@ -87,7 +87,7 @@ final class CompiledRouteTest extends TestCase
 
     private function compile(Route $route): CompiledRoute
     {
-        $router = new class (new Container(), new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/']), new EventDispatcher()) extends Router {
+        $router = new class (new Container(), new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/']), new EventDispatcher()) extends Router {
             public function compile(Route $route): CompiledRoute
             {
                 return $this->compileRoute($route);

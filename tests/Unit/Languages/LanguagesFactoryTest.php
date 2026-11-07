@@ -182,7 +182,7 @@ final class LanguagesFactoryTest extends TestCase
             'HTTP_ACCEPT_LANGUAGE' => $acceptLanguage,
         ], static fn(?string $value): bool => $value !== null);
 
-        $request = new Request([], [], [], [], $server);
+        $request = new Request(server: $server);
 
         return (new LanguagesFactory(new Container(), $request))->make($config);
     }

@@ -186,7 +186,7 @@ final class ConfigServiceLoaderTest extends TestCase
 
     private function request(string $host): Request
     {
-        return new Request([], [], [], [], [
+        return new Request(server: [
             'REQUEST_METHOD' => 'GET',
             'SERVER_NAME'    => 'localhost',
             'SERVER_PORT'    => '80',

@@ -43,7 +43,7 @@ trait BuildsStatistics
 
         return new Statistics(
             ['path' => $path, 'registries' => array_combine($names, array_map(static fn(string $name): string => $name . '.json', $names))],
-            new Request([], [], [], [], []),
+            new Request(),
             new Translation('en', Yaml::parseFile(TestInstallation::systemPath() . '/translations/en.yaml')),
         );
     }

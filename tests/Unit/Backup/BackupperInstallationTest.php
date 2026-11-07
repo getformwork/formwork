@@ -66,7 +66,7 @@ final class BackupperInstallationTest extends TestCase
      */
     private function backupper(array $options = []): Backupper
     {
-        return new Backupper(new Request([], [], [], [], []), [
+        return new Backupper(new Request(), [
             'path'             => TESTS_TMP_PATH . '/backups',
             'name'             => '{{hostname}}-backup',
             'maxExecutionTime' => '180',

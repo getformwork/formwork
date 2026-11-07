@@ -201,7 +201,7 @@ final class UsersControllerTest extends TestCase
         $user = new User(
             ['username' => 'subject', 'fullname' => 'Subject', ...$existing],
             $config,
-            new Request([], [], [], [], ['REQUEST_METHOD' => 'POST']),
+            new Request(server: ['REQUEST_METHOD' => 'POST']),
             $app->getService(FileFactory::class),
             $this->createStub(Users::class),
         );

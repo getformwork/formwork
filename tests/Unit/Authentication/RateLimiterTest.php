@@ -281,7 +281,7 @@ final class RateLimiterTest extends TestCase
         array $server = [],
         array $trustedProxies = [],
     ): RateLimiter {
-        $request = new Request([], [], [], [], $server + [
+        $request = new Request(server: $server + [
             'REQUEST_METHOD' => 'GET',
             'REMOTE_ADDR'    => $ip,
             'SERVER_NAME'    => 'localhost',

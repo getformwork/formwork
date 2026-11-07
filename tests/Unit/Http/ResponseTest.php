@@ -284,7 +284,7 @@ final class ResponseTest extends TestCase
      */
     private function request(RequestMethod $requestMethod = RequestMethod::GET, array $server = []): Request
     {
-        return new Request([], [], [], [], $server + [
+        return new Request(server: $server + [
             'REQUEST_METHOD' => $requestMethod->value,
             'SERVER_NAME'    => 'example.test',
             'SERVER_PORT'    => '80',

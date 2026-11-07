@@ -119,14 +119,10 @@ trait ProvidesCommandAssertions
         $root = $app->rootPath();
 
         $container->define(Updater::class, new Updater([
+            ...$app->config()->getArray('system.updates'),
             'registryFile'        => $root . '/updates.json',
             'tempFile'            => $root . '/update.zip',
-            'time'                => 900,
-            'force'               => false,
-            'preferDistAssets'    => true,
-            'lockTimeout'         => 300,
             'cleanupAfterInstall' => false,
-            'ignore'              => ['site/*'],
         ], $root, new OfflineClientFixture()));
     }
 

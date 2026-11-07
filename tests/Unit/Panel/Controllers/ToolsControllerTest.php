@@ -138,7 +138,7 @@ final class ToolsControllerTest extends TestCase
         FileSystem::createDirectory($path);
         FileSystem::write($path . '/backup.zip', 'zip');
 
-        $backupper = new Backupper(new Request([], [], [], [], []), ['path' => $path, 'name' => 'backup', 'maxExecutionTime' => 60, 'maxFiles' => 10, 'ignore' => []], App::instance()->rootPath(), App::instance());
+        $backupper = new Backupper(new Request(), ['path' => $path, 'name' => 'backup', 'maxExecutionTime' => 60, 'maxFiles' => 10, 'ignore' => []], App::instance()->rootPath(), App::instance());
 
         $responses = [
             $this->controller(['panel.tools.updates' => true])->updates(),

@@ -76,7 +76,7 @@ final class FileUriGeneratorTest extends TestCase
 
     public function testAbsoluteUriResolvesTheGeneratedUriAgainstTheRequestUri(): void
     {
-        $request = new Request([], [], [], [], [
+        $request = new Request(server: [
             'REQUEST_URI' => '/panel/current',
             'HTTP_HOST'   => 'example.test',
             'SERVER_NAME' => 'example.test',
@@ -125,6 +125,6 @@ final class FileUriGeneratorTest extends TestCase
 
     private function generator(Config $config, UriGenerator $uri): FileUriGenerator
     {
-        return new FileUriGenerator($config, new Request([], [], [], [], []), $uri);
+        return new FileUriGenerator($config, new Request(), $uri);
     }
 }

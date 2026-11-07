@@ -306,7 +306,7 @@ final class SessionTest extends TestCase
         $cookies = $cookieId !== null ? ['formwork_session' => $cookieId] : [];
         $_COOKIE = $cookies;
 
-        $session = new Session(new Request([], [], $cookies, [], [
+        $session = new Session(new Request(cookies: $cookies, server: [
             'REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80',
         ]));
         $session->setPath(TESTS_TMP_PATH . '/sessions');
@@ -354,7 +354,7 @@ final class SessionTest extends TestCase
 
     private function session(): Session
     {
-        return new Session(new Request([], [], [], [], [
+        return new Session(new Request(server: [
             'REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80',
         ]));
     }

@@ -123,7 +123,7 @@ trait BuildsUploads
             'panel'   => ['paths' => ['assets' => $app->config()->getString('system.panel.paths.assets')]],
         ]], resolved: true);
 
-        $fileUriGenerator = new FileUriGenerator($config, new Request([], [], [], [], []), $app->getService(UriGenerator::class));
+        $fileUriGenerator = new FileUriGenerator($config, new Request(), $app->getService(UriGenerator::class));
 
         // The associations of the file types are the ones of the application
         $associations = (new ReflectionProperty(FileFactory::class, 'associations'))->getValue($app->getService(FileFactory::class));

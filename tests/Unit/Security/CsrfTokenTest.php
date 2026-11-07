@@ -21,7 +21,7 @@ final class CsrfTokenTest extends TestCase
     {
         parent::setUp();
         $this->session = new InMemorySessionFixture();
-        $request = new Request([], [], [], [], ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
         (new ReflectionProperty(Request::class, 'session'))->setValue($request, $this->session);
         $this->csrfToken = new CsrfToken($request);
     }

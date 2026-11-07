@@ -72,7 +72,7 @@ final class PageControllerTest extends TestCase
         $this->cache = new ArrayCache('pages');
         $this->statisticsPath = TESTS_TMP_PATH . '/statistics';
 
-        $request = new Request([], [], [], [], ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET', 'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) Firefox/120.0']);
+        $request = new Request(server: ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET', 'HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64) Firefox/120.0']);
         $options = App::instance()->config()->getArray('site.statistics');
         $this->statistics = new Statistics([...$options, 'path' => $this->statisticsPath], $request, new Translation('en', []));
 

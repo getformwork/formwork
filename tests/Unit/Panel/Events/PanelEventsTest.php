@@ -22,7 +22,7 @@ final class PanelEventsTest extends TestCase
     public function testLoggedInEventExposesUserAndRequest(): void
     {
         $user = $this->createStub(User::class);
-        $request = new Request([], [], [], [], []);
+        $request = new Request();
 
         $event = new PanelLoggedInEvent($user, $request);
 

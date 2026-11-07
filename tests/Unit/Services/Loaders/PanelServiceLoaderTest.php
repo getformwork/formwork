@@ -153,7 +153,7 @@ final class PanelServiceLoaderTest extends TestCase
 
         $config = new Config(['system' => ['panel' => ['root' => $root]]], resolved: true);
 
-        $request = new Request([], [], [], [], ['REMOTE_ADDR' => $localhost ? '127.0.0.1' : '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
+        $request = new Request(server: ['REMOTE_ADDR' => $localhost ? '127.0.0.1' : '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
 
         $users = $this->createStub(Users::class);
         $users->method('isEmpty')->willReturn($usernames === []);

@@ -42,7 +42,7 @@ trait BuildsPanelClient
      */
     protected function send(string $method, string $uri, array $input = [], bool $script = false): Response
     {
-        $request = new Request($method === 'GET' ? [] : $input, $method === 'GET' ? $input : [], $this->panelCookies, [], [
+        $request = new Request($method === 'GET' ? [] : $input, $method === 'GET' ? $input : [], $this->panelCookies, server: [
             'REQUEST_METHOD' => $method,
             'REQUEST_URI'    => $uri,
             'SCRIPT_NAME'    => '/index.php',

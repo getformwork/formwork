@@ -198,7 +198,7 @@ final class UpdatesControllerTest extends TestCase
 
     private function backupper(): Backupper
     {
-        return new Backupper(new Request([], [], [], [], []), [
+        return new Backupper(new Request(), [
             'path'             => $this->backupPath,
             'name'             => 'backup',
             'maxExecutionTime' => 60,
