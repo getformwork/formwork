@@ -14,6 +14,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Utils\FileSystem;
+use Formwork\Utils\Path;
 
 final class UsersController extends AbstractController
 {
@@ -214,9 +215,10 @@ final class UsersController extends AbstractController
      */
     public function images(RouteParams $routeParams): Response
     {
-        $path = FileSystem::joinPaths($this->config->getString('system.users.paths.images'), $routeParams->get('image'));
+        $imagesPath = FileSystem::resolvePath($this->config->getString('system.users.paths.images'));
+        $path = FileSystem::resolvePath(FileSystem::joinPaths($imagesPath, $routeParams->get('image')));
 
-        if (FileSystem::isFile($path, assertExists: false)) {
+        if (Path::isRelativeTo($path, $imagesPath) && FileSystem::isFile($path, assertExists: false)) {
             return new FileResponse($path, headers: ['Cache-Control' => 'private, max-age=31536000, immutable'], autoEtag: true, autoLastModified: true);
         }
 
