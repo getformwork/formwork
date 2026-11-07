@@ -200,6 +200,7 @@ final class UsersController extends AbstractController
     /**
      * Users@images action
      */
+    #[Permission('panel.users.images')]
     public function images(RouteParams $routeParams): Response
     {
         $imagesPath = FileSystem::resolvePath($this->config->getString('system.users.paths.images'));

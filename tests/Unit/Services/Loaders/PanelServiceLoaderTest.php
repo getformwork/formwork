@@ -48,7 +48,7 @@ final class PanelServiceLoaderTest extends TestCase
      * Routes whose action requires no permission: they are the ones to log in or set up the panel, serve public files or
      * errors, or check the permission themselves
      */
-    private const array ACTIONS_WITHOUT_PERMISSION = ['panel.login', 'panel.logout', 'panel.register', 'panel.assets', 'panel.users.images', 'panel.errors.notFound', 'panel.dashboard'];
+    private const array ACTIONS_WITHOUT_PERMISSION = ['panel.login', 'panel.logout', 'panel.register', 'panel.assets', 'panel.errors.notFound', 'panel.dashboard'];
 
     /**
      * @return iterable<string, array{string, string}>
