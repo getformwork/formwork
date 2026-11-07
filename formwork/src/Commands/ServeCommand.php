@@ -213,6 +213,12 @@ final class ServeCommand implements CommandInterface
                     [, $requestPort] = $this->splitMessage($message);
                     $requestPort ??= '';
 
+                    // Connections closed without a request (e.g. browser preconnections) have nothing to log
+                    if (!isset($this->requestData[$requestPort]['info'])) {
+                        unset($this->requestData[$requestPort]);
+                        break;
+                    }
+
                     if (!preg_match(
                         '/^(?:\[(?<status>\d{3})\]: (?<method>[A-Z]+) (?<uri>[^ ]+)(?: -(?<description> .+))?|(?<message>.+))/',
                         $this->requestData[$requestPort]['info'],
@@ -306,7 +312,7 @@ final class ServeCommand implements CommandInterface
             return "<yellow>{$status}</yellow>";
         }
         if ($status <= 599) {
-            return "<red>{$status}<red>";
+            return "<red>{$status}</red>";
         }
 
         throw new UnexpectedValueException(sprintf('Unexpected status code %d', $status));
@@ -337,8 +343,9 @@ final class ServeCommand implements CommandInterface
     private function formatTime(float $dt): string
     {
         if ($dt > 60) {
-            $m = floor($dt / 60); // minutes
-            $s = round($dt % 60); // seconds
+            $seconds = (int) round($dt);
+            $m = intdiv($seconds, 60); // minutes
+            $s = $seconds % 60; // seconds
             return "{$m} m {$s} s";
         }
 
