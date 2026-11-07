@@ -9,6 +9,7 @@ use Formwork\Images\Handler\AvifHandler;
 use Formwork\Images\Handler\JpegHandler;
 use Formwork\Images\Handler\PngHandler;
 use Formwork\Images\Handler\WebpHandler;
+use Formwork\Images\Transform\TransformCollection;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Images\Fixtures\GdImages;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -50,10 +51,12 @@ final class AbstractHandlerTest extends TestCase
     public function testColorProfilesOfOtherColorSpacesAreDroppedWhenProcessing(string $target): void
     {
         foreach (['CMYK', 'GRAY', 'Lab ', 'ABCD'] as $signature) {
-            $handler = new PngHandler(GdImages::png());
+            // A JPEG source avoids libpng warnings about profiles inconsistent with the image
+            $handler = new JpegHandler(GdImages::jpeg());
             $handler->setColorProfile($this->colorProfile($signature));
 
-            $processed = $handler->process(null, $target);
+            // An empty collection forces processing even when the target is the source handler
+            $processed = $handler->process(new TransformCollection(), $target);
 
             $this->assertFalse($processed->hasColorProfile(), $signature);
         }
