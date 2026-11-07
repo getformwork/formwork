@@ -65,7 +65,7 @@ final class CacheCommand implements CommandInterface
         ]);
     }
 
-    public function __invoke(?array $argv = null): never
+    public function __invoke(?array $argv = null): int
     {
         $argv ??= $_SERVER['argv'] ?? [];
 
@@ -78,14 +78,14 @@ final class CacheCommand implements CommandInterface
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $action = (string) $this->climate->arguments->get('action');
@@ -94,15 +94,16 @@ final class CacheCommand implements CommandInterface
         if (isset($this->actions[$action])) {
             try {
                 $this->{$action}($type, $argv);
-                exit(0);
+
+                return 0;
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid action: %s.', $action));
-        exit(1);
+        return 1;
     }
 
     /**

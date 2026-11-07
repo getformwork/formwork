@@ -67,25 +67,25 @@ final class FormworkCommandRunner implements CommandInterface
         ]);
     }
 
-    public function __invoke(?array $argv = null): never
+    public function __invoke(?array $argv = null): int
     {
         $argv ??= $_SERVER['argv'] ?? [];
 
         if (count($argv) < 2 || $this->hasDirectArgument('help', $argv)) {
             $this->help($argv);
-            exit(0);
+            return 0;
         }
 
         if ($this->hasDirectArgument('version', $argv)) {
             $this->climate->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold>', App::VERSION));
-            exit(0);
+            return 0;
         }
 
         try {
             $this->climate->arguments->parse($argv);
         } catch (InvalidArgumentException $e) {
             $this->climate->error($e->getMessage());
-            exit(1);
+            return 1;
         }
 
         $command = (string) $this->climate->arguments->get('command');
@@ -97,15 +97,15 @@ final class FormworkCommandRunner implements CommandInterface
                 /** @var list<string> */
                 $arguments = [sprintf('%s %s', $argv[0], $command), ...array_slice($argv, 2)];
 
-                (new $commandClass())($arguments);
+                return (new $commandClass())($arguments);
             } catch (InvalidArgumentException $e) {
                 $this->climate->error($e->getMessage());
-                exit(1);
+                return 1;
             }
         }
 
         $this->climate->error(sprintf('Invalid command: %s.', $command));
-        exit(1);
+        return 1;
     }
 
     /**

@@ -67,7 +67,7 @@ final class ServeCommand implements CommandInterface
         $this->climate->style->addCommand('clear', "\033[H\033[2J\033[3J");
     }
 
-    public function __invoke(?array $argv = null): never
+    public function __invoke(?array $argv = null): int
     {
         $argv ??= $_SERVER['argv'] ?? [];
 
@@ -108,7 +108,7 @@ final class ServeCommand implements CommandInterface
 
         if ($this->climate->arguments->get('help')) {
             $this->climate->usage($argv);
-            exit(0);
+            return 0;
         }
 
         /** @var string */
@@ -116,7 +116,7 @@ final class ServeCommand implements CommandInterface
 
         if (!$this->isValidHost($host)) {
             $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>failed to listen on invalid host <bold>%s</bold></red>', App::VERSION, $host));
-            exit(1);
+            return 1;
         }
 
         /** @var int */
@@ -128,7 +128,8 @@ final class ServeCommand implements CommandInterface
         [$this->host, $this->port, $this->retryAttempts] = [$host, $port, $retryAttempts];
 
         $this->start();
-        exit(0);
+
+        return 0;
     }
 
     /**
