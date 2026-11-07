@@ -196,4 +196,12 @@ final class SvgSanitizerTest extends TestCase
         yield 'undefined entity' => ['<svg xmlns="http://www.w3.org/2000/svg"><text>&x;</text></svg>'];
         yield 'invalid unicode' => ["<svg><text>\xff</text></svg>", InvalidArgumentException::class];
     }
+
+    public function testCdataSectionIsConvertedToText(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><![CDATA[.a > b{fill:red}]]></style></svg>');
+
+        $this->assertStringNotContainsString('CDATA', $svg);
+        $this->assertStringContainsString('.a &gt; b{fill:red}', $svg);
+    }
 }
