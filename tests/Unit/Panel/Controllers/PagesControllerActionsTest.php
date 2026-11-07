@@ -20,6 +20,7 @@ use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\BuildsUploads;
+use Formwork\Tests\Unit\Users\BuildsPasswordHashes;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\User;
@@ -35,6 +36,7 @@ final class PagesControllerActionsTest extends TestCase
 {
     use BuildsPanelControllers;
     use BuildsUploads;
+    use BuildsPasswordHashes;
 
     private string $pagesPath;
 
@@ -453,7 +455,7 @@ final class PagesControllerActionsTest extends TestCase
             'email'        => 'tester@example.test',
             'role'         => 'admin',
             'language'     => 'en',
-            'passwordHash' => password_hash('password', PASSWORD_BCRYPT, ['cost' => 4]),
+            'passwordHash' => self::hashPassword('password'),
         ]);
     }
 }

@@ -6,6 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Parsers\Yaml;
+use Formwork\Tests\Unit\Users\BuildsPasswordHashes;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\After;
 use PHPUnit\Framework\TestCase;
@@ -17,6 +18,8 @@ use PHPUnit\Framework\TestCase;
  */
 trait BuildsPanelClient
 {
+    use BuildsPasswordHashes;
+
     /**
      * @var array<string, string>
      */
@@ -88,16 +91,13 @@ trait BuildsPanelClient
             FileSystem::createDirectory($accounts, recursive: true);
         }
 
-        // Hashing is deliberately slow, so each password is hashed once
-        static $hashes = [];
-
         FileSystem::write("{$accounts}/{$username}.yaml", Yaml::encode([
             'username' => $username,
             'fullname' => ucfirst($username),
             'email'    => "{$username}@example.test",
             'role'     => $role,
             'language' => 'en',
-            'hash'     => $hashes[$password] ??= password_hash($password, PASSWORD_BCRYPT, ['cost' => 4]),
+            'hash'     => self::hashPassword($password),
             ...$account,
         ]));
     }

@@ -15,6 +15,7 @@ use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\BuildsUploads;
+use Formwork\Tests\Unit\Users\BuildsPasswordHashes;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\User;
@@ -32,6 +33,7 @@ final class UsersControllerActionsTest extends TestCase
 {
     use BuildsPanelControllers;
     use BuildsUploads;
+    use BuildsPasswordHashes;
 
     private string $imagesPath;
 
@@ -274,7 +276,7 @@ final class UsersControllerActionsTest extends TestCase
                 'email'        => "{$username}@example.test",
                 'role'         => 'admin',
                 'language'     => 'en',
-                'passwordHash' => password_hash('password', PASSWORD_BCRYPT, ['cost' => 4]),
+                'passwordHash' => self::hashPassword('password'),
             ]);
 
             FileSystem::write($this->accountFile($username), "username: {$username}\n");
