@@ -10,9 +10,14 @@ use Formwork\Services\Container;
  */
 final class ControllerContainerFixture extends Container
 {
+    /**
+     * Whether the real errors controller is built, to test it
+     */
+    public bool $realErrorsController = false;
+
     public function build(string $class, array $parameters = []): object
     {
-        if ($class === ErrorsController::class) {
+        if ($class === ErrorsController::class && !$this->realErrorsController) {
             return new ForbiddenErrorsControllerFixture();
         }
 

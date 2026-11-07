@@ -16,6 +16,7 @@ use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FileUploader::class)]
 #[UsesApplication]
@@ -31,15 +32,30 @@ final class FileUploaderTest extends TestCase
         $this->assertSame(['text/plain', 'image/jpeg'], $fileUploader->allowedMimeTypes());
     }
 
-    public function testUploadRejectsAFileThatWasNotUploaded(): void
+    #[DataProvider('uploadErrorProvider')]
+    public function testUploadReportsTheErrorOfTheUpload(int $error, string $languageString): void
     {
-        $uploadedFile = $this->uploadedFile(UPLOAD_ERR_NO_FILE, 'missing.txt');
-        $fileUploader = new FileUploader($this->config(['txt']), new FileFactory(new Container(), $this->config(['txt'])));
+        $uploadedFile = $this->uploadedFile($error, 'big.jpg');
+        $fileUploader = new FileUploader($this->config(['jpg']), new FileFactory(new Container(), $this->config(['jpg'])));
 
-        $this->expectException(TranslatedException::class);
-        $this->expectExceptionMessage('No file uploaded');
-        $this->expectExceptionCode(0);
-        $fileUploader->upload($uploadedFile, TESTS_TMP_PATH);
+        $exception = $this->captureException(TranslatedException::class, fn(): File => $fileUploader->upload($uploadedFile, TESTS_TMP_PATH));
+
+        $this->assertInstanceOf(TranslatedException::class, $exception);
+        $this->assertSame($languageString, $exception->getLanguageString());
+    }
+
+    /**
+     * @return iterable<string, array{int, string}>
+     */
+    public static function uploadErrorProvider(): iterable
+    {
+        yield 'exceeds upload_max_filesize' => [UPLOAD_ERR_INI_SIZE, 'upload.error.size'];
+        yield 'exceeds MAX_FILE_SIZE' => [UPLOAD_ERR_FORM_SIZE, 'upload.error.size'];
+        yield 'partial upload' => [UPLOAD_ERR_PARTIAL, 'upload.error.partial'];
+        yield 'missing temporary folder' => [UPLOAD_ERR_NO_TMP_DIR, 'upload.error.noTemp'];
+        yield 'cannot write to disk' => [UPLOAD_ERR_CANT_WRITE, 'upload.error.cannotWrite'];
+        yield 'stopped by an extension' => [UPLOAD_ERR_EXTENSION, 'upload.error.phpExtension'];
+        yield 'no file' => [UPLOAD_ERR_NO_FILE, 'upload.error.noFile'];
     }
 
     public function testUploadRejectsAMIMETypeOutsideTheAllowedList(): void
