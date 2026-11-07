@@ -57,20 +57,6 @@ final class UpdatesControllerTest extends TestCase
         parent::tearDown();
     }
 
-    public function testCheckRequiresThePermission(): void
-    {
-        $response = $this->controller(['panel.updates.check' => false])->check($this->updater($this->nextMinor()));
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testUpdatePermissionDoesNotAllowChecking(): void
-    {
-        $response = $this->controller(['panel.updates.check' => false, 'panel.updates.update' => true])->check($this->updater($this->nextMinor()));
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
     public function testCheckReportsAvailableUpdates(): void
     {
         $response = $this->controller()->check($this->updater($this->nextMinor()));
@@ -102,23 +88,6 @@ final class UpdatesControllerTest extends TestCase
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
         $this->assertSame('error', Json::parse($response->content())['status']);
-    }
-
-    public function testUpdateRequiresThePermission(): void
-    {
-        $response = $this->controller(['panel.updates.update' => false])->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileDoesNotExist($this->root . '/updated.txt');
-        $this->assertDirectoryDoesNotExist($this->backupPath);
-    }
-
-    public function testCheckPermissionDoesNotAllowUpdating(): void
-    {
-        $response = $this->controller(['panel.updates.check' => true, 'panel.updates.update' => false])->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileDoesNotExist($this->root . '/updated.txt');
     }
 
     public function testUpdateInstallsTheReleaseAfterMakingABackup(): void

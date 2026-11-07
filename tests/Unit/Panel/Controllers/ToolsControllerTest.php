@@ -6,7 +6,6 @@ use Formwork\Backup\Backupper;
 use Formwork\Cms\App;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
-use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Controllers\ToolsController;
 use Formwork\Parsers\Json;
 use Formwork\Tests\TestCase;
@@ -15,7 +14,6 @@ use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ReflectionClass;
 use ReflectionMethod;
 
 #[CoversClass(ToolsController::class)]
@@ -56,36 +54,6 @@ final class ToolsControllerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertStringEndsWith('/route/panel.tools.backups', $response->headers()->get('Location'));
-    }
-
-    public function testIndexRequiresTheBackupsPermission(): void
-    {
-        $response = $this->controller(['panel.tools.backups' => false, 'panel.tools.updates' => true])->index();
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testBackupsRequireThePermission(): void
-    {
-        $backupper = (new ReflectionClass(Backupper::class))->newInstanceWithoutConstructor();
-
-        $response = $this->controller(['panel.tools.backups' => false])->backups($backupper);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testUpdatesRequireThePermission(): void
-    {
-        $response = $this->controller(['panel.tools.updates' => false, 'panel.tools.backups' => true])->updates();
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testInfoRequiresThePermission(): void
-    {
-        $response = $this->controller(['panel.tools.info' => false, 'panel.tools.backups' => true, 'panel.tools.updates' => true])->info();
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
 
     public function testRequiredDependenciesExcludePhpAndExtensions(): void

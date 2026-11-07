@@ -67,6 +67,7 @@ final class ErrorsControllerTest extends TestCase
      */
     public static function errorStatusProvider(): iterable
     {
+        yield 'forbidden' => [ResponseStatus::Forbidden];
         yield 'internal server error' => [ResponseStatus::InternalServerError];
         yield 'bad gateway' => [ResponseStatus::BadGateway];
         yield 'service unavailable' => [ResponseStatus::ServiceUnavailable];
@@ -81,7 +82,9 @@ final class ErrorsControllerTest extends TestCase
     {
         $this->expectErrorLog();
 
-        $this->controller()->internalServerError(new RuntimeException('Boom'));
+        $response = $this->controller()->internalServerError(new RuntimeException('Boom'));
+
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
     }
 
     public function testResponsesWithoutAThrowableAreNotLogged(): void

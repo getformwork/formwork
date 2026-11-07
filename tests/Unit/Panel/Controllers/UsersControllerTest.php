@@ -13,7 +13,6 @@ use Formwork\Forms\FormData;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
-use Formwork\Http\ResponseStatus;
 use Formwork\Model\Model;
 use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\UsersController;
@@ -110,14 +109,6 @@ final class UsersControllerTest extends TestCase
         $this->create('editor', $this->newUser(role: 'admin'));
 
         $this->assertNotSame('admin', $this->savedUser('newuser')['role']);
-    }
-
-    public function testCreatingUsersRequiresThePermission(): void
-    {
-        $response = $this->create('editor', $this->newUser(role: 'editor'), ['panel.users' => false]);
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileDoesNotExist(FileSystem::joinPaths($this->accountsPath, 'newuser.yaml'));
     }
 
     public function testNonAdministratorsCannotSubmitUnknownRoles(): void

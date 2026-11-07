@@ -110,22 +110,6 @@ final class PluginsControllerTest extends TestCase
         }
     }
 
-    public function testIndexRequiresThePermission(): void
-    {
-        $response = $this->controller(['panel.plugins' => false])->index();
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testPluginRequiresThePermission(): void
-    {
-        $this->loadPlugins();
-
-        $response = $this->controller(['panel.plugins' => false])->plugin(new RouteParams(['id' => 'alpha']), App::instance()->plugins());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
     public function testUnknownPluginsAreNotFound(): void
     {
         $response = $this->controller()->plugin(new RouteParams(['id' => 'missing']), App::instance()->plugins());
@@ -151,16 +135,6 @@ final class PluginsControllerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
         $this->assertSame('Hello', Yaml::parseFile($this->configFile('alpha'))['message']);
-    }
-
-    public function testEnablingRequiresThePermission(): void
-    {
-        $this->loadPlugins();
-
-        $response = $this->controller(['panel.plugins' => false])->enable(new RouteParams(['id' => 'beta']), App::instance()->plugins());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertFileDoesNotExist($this->configFile('beta'));
     }
 
     public function testUnknownPluginsCannotBeEnabled(): void
@@ -189,15 +163,6 @@ final class PluginsControllerTest extends TestCase
 
         $this->assertSame(ResponseStatus::OK, $response->status());
         $this->assertTrue(Yaml::parseFile($this->configFile('beta'))['enabled']);
-    }
-
-    public function testDisablingRequiresThePermission(): void
-    {
-        $this->loadPlugins();
-
-        $response = $this->controller(['panel.plugins' => false])->disable(new RouteParams(['id' => 'beta']), App::instance()->plugins());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
 
     public function testUnknownPluginsCannotBeDisabled(): void

@@ -2,20 +2,33 @@
 
 namespace Formwork\Tests\Unit\Services\Loaders;
 
+use Closure;
 use Formwork\Cms\App;
 use Formwork\Config\Config;
+use Formwork\Controllers\ErrorsControllerInterface;
+use Formwork\Events\EventDispatcher;
 use Formwork\Files\FileFactory;
 use Formwork\Http\Request;
+use Formwork\Http\Response;
+use Formwork\Http\ResponseStatus;
+use Formwork\Router\Events\RouteActionResolvedEvent;
+use Formwork\Router\Route;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\UsersServiceLoader;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Services\Loaders\Fixtures\PermissionActionsFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Translations\Translations;
+use Formwork\Users\Attributes\Permission;
+use Formwork\Users\Permissions;
+use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(UsersServiceLoader::class)]
 #[UsesApplication]
@@ -108,9 +121,93 @@ final class UsersServiceLoaderTest extends TestCase
         $this->assertSame($container->get(Users::class), $container->get(Users::class));
     }
 
+    public function testActionsAreKeptWhenTheUserHasTheirPermission(): void
+    {
+        $restricted = (new PermissionActionsFixture())->restricted(...);
+
+        $this->assertSame($restricted, $this->authorize($restricted, $this->userWith(['panel.test' => true])));
+    }
+
+    /**
+     * @param array<string, bool> $permissions
+     */
+    #[DataProvider('missingPermissionsProvider')]
+    public function testActionsAreForbiddenWhenTheUserLacksTheirPermission(array $permissions): void
+    {
+        $restricted = (new PermissionActionsFixture())->restricted(...);
+
+        $this->assertSame(ResponseStatus::Forbidden, $this->authorize($restricted, $this->userWith($permissions))()->status());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, bool>}>
+     */
+    public static function missingPermissionsProvider(): iterable
+    {
+        yield 'without permissions' => [[]];
+        yield 'with the permission denied' => [['panel.test' => false]];
+        yield 'with another permission' => [['panel.other' => true]];
+    }
+
+    public function testActionsAreForbiddenWhenNobodyIsLoggedIn(): void
+    {
+        $restricted = (new PermissionActionsFixture())->restricted(...);
+
+        $this->assertSame(ResponseStatus::Forbidden, $this->authorize($restricted, null)()->status());
+    }
+
+    public function testClosuresCanRequirePermissionsToo(): void
+    {
+        $restricted = #[Permission('panel.test')] static fn(): string => 'restricted';
+
+        $this->assertSame($restricted, $this->authorize($restricted, $this->userWith(['panel.test' => true])));
+        $this->assertSame(ResponseStatus::Forbidden, $this->authorize($restricted, null)()->status());
+    }
+
+    public function testActionsWithoutAPermissionAreNeverReplacedNorLoadUsers(): void
+    {
+        $open = (new PermissionActionsFixture())->open(...);
+
+        $this->assertSame($open, $this->authorize($open, null, usersAreAvailable: false));
+    }
+
     private function writeAccount(string $file, string $username): void
     {
         FileSystem::write($this->accountsPath . "/{$file}.yaml", "username: {$username}\nfullname: " . ucfirst($username) . "\nhash: '\$2y\$10\$abcdefghijklmnopqrstuuOe0oSWJEQ0VPYrTzm/BCUzLYRlCwV7a'\nemail: {$username}@example.com\nlanguage: en\n");
+    }
+
+    /**
+     * @param array<string, bool> $permissions
+     */
+    private function userWith(array $permissions): User
+    {
+        $user = $this->createStub(User::class);
+        $user->method('permissions')->willReturn(new Permissions($permissions));
+
+        return $user;
+    }
+
+    /**
+     * Resolve the action of a route with the listener registered when the loader is defined
+     */
+    private function authorize(Closure $action, ?User $user, bool $usersAreAvailable = true): Closure
+    {
+        $users = $this->createStub(Users::class);
+        $users->method('loggedIn')->willReturn($user);
+
+        $errors = $this->createStub(ErrorsControllerInterface::class);
+        $errors->method('error')->willReturnCallback(static fn(ResponseStatus $responseStatus): Response => new Response('Error', $responseStatus));
+
+        $events = new EventDispatcher();
+
+        $container = new Container();
+        $container->define(EventDispatcher::class, $events);
+        $container->define(Users::class, $usersAreAvailable ? $users : static fn() => throw new LogicException('Users must not be resolved'));
+        $container->define(ErrorsControllerInterface::class, $errors);
+
+        UsersServiceLoader::onDefined($container);
+
+        return $events->dispatch(new RouteActionResolvedEvent(new Route('test', '/test/'), $action))->action();
     }
 
     private function resolve(): Users
@@ -127,6 +224,7 @@ final class UsersServiceLoaderTest extends TestCase
 
         $container = new Container();
         $container->define(Container::class, $container);
+        $container->define(EventDispatcher::class);
         $container->define(Config::class, $config);
         $container->define(Request::class, new Request(server: ['REQUEST_METHOD' => 'GET', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']));
         $container->define(Translations::class, new Translations($config));

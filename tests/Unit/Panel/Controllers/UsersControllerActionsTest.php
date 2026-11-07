@@ -83,26 +83,6 @@ final class UsersControllerActionsTest extends TestCase
 
     /**
      * @param array<string, string> $params
-     */
-    #[DataProvider('deniedActionProvider')]
-    public function testActionsRequireTheirPermission(string $action, string $permission, array $params): void
-    {
-        $this->assertOutcome(['status' => 403], $this->call($this->controller([$permission => false]), $action, $params));
-    }
-
-    /**
-     * @return iterable<string, array{string, string, array<string, string>}>
-     */
-    public static function deniedActionProvider(): iterable
-    {
-        yield 'index' => ['index', 'panel.users.index', []];
-        yield 'delete' => ['delete', 'panel.users.delete', ['user' => 'bob']];
-        yield 'deleteImage' => ['deleteImage', 'panel.users.deleteImage', ['user' => 'bob']];
-        yield 'profile' => ['profile', 'panel.users.profile', ['user' => 'bob']];
-    }
-
-    /**
-     * @param array<string, string> $params
      * @param array<string, mixed>  $methods  Values returned by the methods of the current user
      * @param array<string, mixed>  $expected
      * @param array<string, bool>   $accounts Whether the account files must exist after the action

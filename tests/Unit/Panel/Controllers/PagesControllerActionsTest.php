@@ -68,28 +68,6 @@ final class PagesControllerActionsTest extends TestCase
         parent::tearDown();
     }
 
-    #[DataProvider('deniedActionProvider')]
-    public function testActionsRequireTheirPermission(string $action, string $permission): void
-    {
-        $this->assertOutcome(['status' => 403], $this->call($this->controller([$permission => false]), $action, ['page' => 'about']));
-        $this->assertDirectoryExists($this->pagesPath . '/about');
-    }
-
-    /**
-     * @return iterable<string, array{string, string}>
-     */
-    public static function deniedActionProvider(): iterable
-    {
-        yield 'index' => ['index', 'panel.pages.tree'];
-        yield 'tree' => ['tree', 'panel.pages.tree'];
-
-        foreach (['create', 'duplicate', 'edit', 'preview', 'delete', 'reorder'] as $action) {
-            yield $action => [$action, "panel.pages.{$action}"];
-        }
-
-        yield 'upload' => ['upload', 'panel.files.upload'];
-    }
-
     /**
      * @param array<string, string> $params
      * @param array<string, mixed>  $setup    Request `input`, `server`, `query` and kinds of `uploads`
@@ -192,7 +170,7 @@ final class PagesControllerActionsTest extends TestCase
         $modals = $this->createStub(Modals::class);
         $modals->method('get')->willReturn($modal);
 
-        $this->call($this->controller(server: ['REQUEST_METHOD' => 'GET'], query: ['createNew' => ''], services: [Modals::class => $modals]), 'edit', ['page' => 'about']);
+        $this->call($this->controller(services: [Modals::class => $modals], server: ['REQUEST_METHOD' => 'GET'], query: ['createNew' => '']), 'edit', ['page' => 'about']);
     }
 
     public function testInvalidPagesAreNotSaved(): void

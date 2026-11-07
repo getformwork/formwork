@@ -65,27 +65,6 @@ final class OptionsControllerTest extends TestCase
         $this->assertStringEndsWith('/route/panel.options.site', $response->headers()->get('Location'));
     }
 
-    public function testIndexRequiresTheSiteOptionsPermission(): void
-    {
-        $response = $this->makeController(OptionsController::class, ['panel.options.site' => false, 'panel.options.system' => true])->index();
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testSiteOptionsRequireThePermission(): void
-    {
-        $response = $this->makeController(OptionsController::class, ['panel.options.site' => false, 'panel.options.system' => true])->siteOptions($this->schemes());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
-    public function testSystemOptionsRequireThePermission(): void
-    {
-        $response = $this->makeController(OptionsController::class, ['panel.options.site' => true, 'panel.options.system' => false])->systemOptions($this->schemes());
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-    }
-
     public function testInvalidSiteOptionsAreNotSaved(): void
     {
         $path = App::instance()->rootPath() . '/site/config/site.yaml';

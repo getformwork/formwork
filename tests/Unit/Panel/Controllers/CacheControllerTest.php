@@ -53,15 +53,6 @@ final class CacheControllerTest extends TestCase
         parent::tearDown();
     }
 
-    public function testClearingRequiresThePermission(): void
-    {
-        $response = $this->controller(['panel.cache.clear' => false])->clear(new RouteParams([]));
-
-        $this->assertSame(ResponseStatus::Forbidden, $response->status());
-        $this->assertTrue($this->pagesCache->has('page'));
-        $this->assertFileExists($this->imagesPath . '/processed.jpg');
-    }
-
     public function testClearingOnlyClearsPagesByDefault(): void
     {
         $response = $this->controller()->clear(new RouteParams([]));

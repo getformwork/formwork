@@ -16,6 +16,7 @@ use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
 use Formwork\Tests\UsesApplication;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use Formwork\View\ViewFactory;
@@ -44,6 +45,12 @@ final class PanelServiceLoaderTest extends TestCase
     private const array SETUP_ROUTES = ['panel.register', 'panel.assets'];
 
     /**
+     * Routes whose action requires no permission: they are the ones to log in or set up the panel, serve public files or
+     * errors, or check the permission themselves
+     */
+    private const array ACTIONS_WITHOUT_PERMISSION = ['panel.login', 'panel.logout', 'panel.register', 'panel.assets', 'panel.users.images', 'panel.errors.notFound', 'panel.dashboard'];
+
+    /**
      * @return iterable<string, array{string, string}>
      */
     public static function panelRoutesProvider(): iterable
@@ -54,6 +61,36 @@ final class PanelServiceLoaderTest extends TestCase
         foreach ($data['routes'] as $name => $route) {
             yield $name => [$name, $route['path']];
         }
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function panelActionProvider(): iterable
+    {
+        /** @var array{routes: array<string, array{action?: mixed}>} $data */
+        $data = Php::parseFile(TestInstallation::rootPath() . '/panel/config/routes/routes.php');
+
+        foreach ($data['routes'] as $name => $route) {
+            if (is_string($route['action'] ?? null) && str_contains($route['action'], '@')) {
+                yield $name => [$name, $route['action']];
+            }
+        }
+    }
+
+    #[DataProvider('panelActionProvider')]
+    public function testEveryPanelActionDeclaresItsPermission(string $name, string $action): void
+    {
+        [$class, $method] = explode('@', $action);
+
+        $attributes = (new ReflectionMethod($class, $method))->getAttributes(Permission::class);
+
+        if (in_array($name, self::ACTIONS_WITHOUT_PERMISSION, true)) {
+            $this->assertSame([], $attributes, sprintf('Route "%s" is listed as not requiring a permission', $name));
+            return;
+        }
+
+        $this->assertCount(1, $attributes, sprintf('The action of route "%s" must declare the permission it requires', $name));
     }
 
     #[DataProvider('panelRoutesProvider')]

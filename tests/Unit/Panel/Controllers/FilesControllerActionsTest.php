@@ -84,25 +84,6 @@ final class FilesControllerActionsTest extends TestCase
         parent::tearDown();
     }
 
-    #[DataProvider('deniedActionProvider')]
-    public function testActionsRequireTheirPermission(string $action, string $permission): void
-    {
-        $response = $this->call($this->controller([$permission => false]), $action, ['model' => 'page', 'id' => '/about/', 'filename' => 'b.txt']);
-
-        $this->assertOutcome(['status' => 403], $response);
-        $this->assertFileExists($this->contentPath . '/b.txt');
-    }
-
-    /**
-     * @return iterable<string, array{string, string}>
-     */
-    public static function deniedActionProvider(): iterable
-    {
-        foreach (['index', 'list', 'edit', 'delete', 'rename', 'replace', 'upload'] as $action) {
-            yield $action => [$action, "panel.files.{$action}"];
-        }
-    }
-
     public function testListReturnsTheFilesOfTheModel(): void
     {
         $this->assertOutcome(['status' => 404], $this->call($this->controller(), 'list', ['model' => 'page', 'id' => '/missing/']));
@@ -313,7 +294,7 @@ final class FilesControllerActionsTest extends TestCase
      */
     private function replace(string $filename, array $files, array $server = []): Response
     {
-        return $this->controller(server: $server, services: [FileUploader::class => $this->uploader([$this->contentPath])], files: ['file' => $files])
+        return $this->controller(services: [FileUploader::class => $this->uploader([$this->contentPath])], server: $server, files: ['file' => $files])
             ->replace(new RouteParams($this->params($filename)), $this->uploader([$this->contentPath]));
     }
 
@@ -395,9 +376,9 @@ final class FilesControllerActionsTest extends TestCase
         $modals->method('get')->willReturn($modal);
 
         $controller = $this->controller(
+            services: [Modals::class => $modals],
             input: ['renameFileModal' => ['filename' => $newName]],
             server: $server,
-            services: [Modals::class => $modals],
         );
 
         return $controller->rename(new RouteParams($this->params($filename)), $this->fileFactory());
