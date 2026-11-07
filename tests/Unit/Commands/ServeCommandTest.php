@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Commands;
 use Formwork\Commands\ServeCommand;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
-use League\CLImate\CLImate;
 use League\CLImate\Util\Writer\Buffer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,14 +28,7 @@ final class ServeCommandTest extends TestCase
 
         $this->buffer = new Buffer();
 
-        $climate = new CLImate();
-        $climate->output->add('out', $this->buffer)->defaultTo('out');
-        $climate->output->add('error', $this->buffer);
-        $climate->forceAnsiOff();
-
-        // The command prints to the console it creates, which is replaced to capture the output
-        $this->command = new ServeCommand();
-        (new ReflectionProperty($this->command, 'climate'))->setValue($this->command, $climate);
+        $this->command = new ServeCommand($this->bufferedConsole($this->buffer));
     }
 
     /**

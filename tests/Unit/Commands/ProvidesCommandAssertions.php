@@ -42,18 +42,26 @@ trait ProvidesCommandAssertions
 
         $this->prepareCommand($app, $setup, $scenario);
 
-        // The command prints to the console it creates, whose output is replaced to capture it
-        $instance = new $command();
         $buffer = new Buffer();
-        /** @var CLImate $climate */
-        $climate = (new ReflectionProperty($instance, 'climate'))->getValue($instance);
-        $climate->output->add('out', $buffer)->defaultTo('out');
-        $climate->output->add('error', $buffer);
-        $climate->forceAnsiOff();
+
+        $instance = new $command($this->bufferedConsole($buffer));
 
         $code = $instance(['bin/formwork test', ...$arguments]);
 
         $this->assertOutput($buffer->get(), $code, $exitCode, $expectations);
+    }
+
+    /**
+     * Create a console writing standard output and error, without colors, to the given buffer
+     */
+    protected function bufferedConsole(Buffer $buffer): CLImate
+    {
+        $climate = new CLImate();
+        $climate->output->add('out', $buffer)->defaultTo('out');
+        $climate->output->add('error', $buffer);
+        $climate->forceAnsiOff();
+
+        return $climate;
     }
 
     /**
