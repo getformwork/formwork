@@ -9,11 +9,13 @@ use Formwork\Files\FileCollection;
 use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Http\JsonResponse;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Images\Image;
 use Formwork\Pages\Page;
 use Formwork\Router\RouteParams;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
@@ -26,12 +28,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@index action
      */
+    #[Permission('panel.files.index')]
     public function index(): Response
     {
-        if (!$this->hasPermission('panel.files.index')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         return new Response($this->view('@panel.files.index', [
             'title' => $this->translate('panel.files.files'),
             'files' => $this->getFiles(),
@@ -41,12 +40,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@list action
      */
+    #[Permission('panel.files.list')]
     public function list(RouteParams $routeParams): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.files.list')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $model = $this->getModel($routeParams);
 
         if ($model === null) {
@@ -77,12 +73,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@upload action
      */
-    public function upload(FileUploader $fileUploader): Response
+    #[Permission('panel.files.upload')]
+    public function upload(FileUploader $fileUploader): RedirectResponse
     {
-        if (!$this->hasPermission('panel.files.upload')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $form = $this->form('upload-file', $this->modal('uploadFile')->fields())
             ->processRequest($this->request, uploadFiles: false);
 
@@ -128,12 +121,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@edit action
      */
+    #[Permission('panel.files.edit')]
     public function edit(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.files.edit')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $model = $this->getModel($routeParams);
 
         $filename = $routeParams->get('filename');
@@ -173,12 +163,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@delete action
      */
+    #[Permission('panel.files.delete')]
     public function delete(RouteParams $routeParams): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.files.delete')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $model = $this->getModel($routeParams);
 
         $file = $model?->files()?->get($routeParams->get('filename'));
@@ -211,12 +198,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@rename action
      */
+    #[Permission('panel.files.rename')]
     public function rename(RouteParams $routeParams, FileFactory $fileFactory): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.files.rename')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $model = $this->getModel($routeParams);
 
         $modalName = $this->request->isXmlHttpRequest() ? 'renameFileItem' : 'renameFile';
@@ -296,12 +280,9 @@ final class FilesController extends AbstractController
     /**
      * FilesController@replace action
      */
+    #[Permission('panel.files.replace')]
     public function replace(RouteParams $routeParams, FileUploader $fileUploader): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.files.replace')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $model = $this->getModel($routeParams);
 
         $filename = $routeParams->get('filename');

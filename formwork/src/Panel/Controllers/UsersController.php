@@ -8,9 +8,11 @@ use Formwork\Fields\Field;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Forms\FormData;
 use Formwork\Http\FileResponse;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Images\Image;
 use Formwork\Router\RouteParams;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Utils\FileSystem;
@@ -21,12 +23,9 @@ final class UsersController extends AbstractController
     /**
      * Users@index action
      */
+    #[Permission('panel.users.index')]
     public function index(): Response
     {
-        if (!$this->hasPermission('panel.users.index')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         return new Response($this->view('@panel.users.index', [
             'title' => $this->translate('panel.users.users'),
             'users' => $this->site->users()->sortBy('username'),
@@ -36,12 +35,9 @@ final class UsersController extends AbstractController
     /**
      * Users@create action
      */
-    public function create(UserFactory $userFactory): Response
+    #[Permission('panel.users.create')]
+    public function create(UserFactory $userFactory): RedirectResponse
     {
-        if (!$this->hasPermission('panel.users.create')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $fields = $this->modal('newUser')->fields();
 
         $form = $this->form('new-user', $fields)
@@ -89,12 +85,9 @@ final class UsersController extends AbstractController
     /**
      * Users@delete action
      */
-    public function delete(RouteParams $routeParams): Response
+    #[Permission('panel.users.delete')]
+    public function delete(RouteParams $routeParams): RedirectResponse
     {
-        if (!$this->hasPermission('panel.users.delete')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $user = $this->site->users()->get($routeParams->get('user'));
 
         try {
@@ -121,12 +114,9 @@ final class UsersController extends AbstractController
     /**
      * Users@deleteImage action
      */
-    public function deleteImage(RouteParams $routeParams): Response
+    #[Permission('panel.users.deleteImage')]
+    public function deleteImage(RouteParams $routeParams): RedirectResponse
     {
-        if (!$this->hasPermission('panel.users.deleteImage')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $user = $this->site->users()->get($routeParams->get('user'));
 
         if ($user === null) {
@@ -151,12 +141,9 @@ final class UsersController extends AbstractController
     /**
      * Users@profile action
      */
+    #[Permission('panel.users.profile')]
     public function profile(RouteParams $routeParams, FileUploader $fileUploader): Response
     {
-        if (!$this->hasPermission('panel.users.profile')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $user = $this->site->users()->get($routeParams->get('user'));
 
         if ($user === null) {

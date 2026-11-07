@@ -10,6 +10,7 @@ use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Services\Attributes\Service;
 use Formwork\Updater\Updater;
+use Formwork\Users\Attributes\Permission;
 use RuntimeException;
 
 final class UpdatesController extends AbstractController
@@ -17,12 +18,9 @@ final class UpdatesController extends AbstractController
     /**
      * Updates@check action
      */
+    #[Permission('panel.updates.check')]
     public function check(Updater $updater): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.updates.check')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         try {
             $upToDate = $updater->checkUpdates();
         } catch (RuntimeException) {
@@ -44,16 +42,13 @@ final class UpdatesController extends AbstractController
     /**
      * Updates@update action
      */
+    #[Permission('panel.updates.update')]
     public function update(
         Updater $updater,
         #[Service('cache.pages')]
         AbstractCache $cache,
         Backupper $backupper,
     ): JsonResponse|Response {
-        if (!$this->hasPermission('panel.updates.update')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         if ($this->config->getBool('system.updates.backupBefore')) {
             try {
                 $backupper->backup();

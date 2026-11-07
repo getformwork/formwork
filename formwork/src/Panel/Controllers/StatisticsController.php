@@ -5,18 +5,16 @@ namespace Formwork\Panel\Controllers;
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
 use Formwork\Statistics\Statistics;
+use Formwork\Users\Attributes\Permission;
 
 final class StatisticsController extends AbstractController
 {
     /**
      * Statistics@index action
      */
+    #[Permission('panel.statistics')]
     public function index(Statistics $statistics): Response
     {
-        if (!$this->hasPermission('panel.statistics')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $pageViews = $statistics->getPageViews();
         $sources = $statistics->getSources();
         $devices = $statistics->getDevices();

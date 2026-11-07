@@ -8,6 +8,7 @@ use Formwork\Exceptions\TranslatedException;
 use Formwork\Files\File;
 use Formwork\Forms\FormData;
 use Formwork\Http\JsonResponse;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\RequestData;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
@@ -16,6 +17,7 @@ use Formwork\Pages\PageFactory;
 use Formwork\Panel\ContentHistory\ContentHistory;
 use Formwork\Panel\ContentHistory\ContentHistoryEvent;
 use Formwork\Router\RouteParams;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\Constraint;
 use Formwork\Utils\Date;
@@ -29,12 +31,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@index action
      */
-    public function index(): Response
+    #[Permission('panel.pages.tree')]
+    public function index(): RedirectResponse
     {
-        if (!$this->hasPermission('panel.pages.tree')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         return $this->redirect($this->generateRoute('panel.pages.tree'));
     }
 
@@ -43,12 +42,9 @@ final class PagesController extends AbstractController
      *
      * @since 2.1.0
      */
+    #[Permission('panel.pages.tree')]
     public function tree(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.pages.tree')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $parent = $routeParams->has('page')
             ? $this->site->findPage($routeParams->get('page'))
             : $this->site;
@@ -86,12 +82,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@create action
      */
-    public function create(PageFactory $pageFactory): Response
+    #[Permission('panel.pages.create')]
+    public function create(PageFactory $pageFactory): RedirectResponse
     {
-        if (!$this->hasPermission('panel.pages.create')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $form = $this->form('new-page', $this->modal('newPage')->fields())
             ->processRequest($this->request);
 
@@ -124,12 +117,9 @@ final class PagesController extends AbstractController
      *
      * @since 2.2.0
      */
-    public function duplicate(RouteParams $routeParams): Response
+    #[Permission('panel.pages.duplicate')]
+    public function duplicate(RouteParams $routeParams): RedirectResponse
     {
-        if (!$this->hasPermission('panel.pages.duplicate')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $page = $this->site->findPage($routeParams->get('page'));
 
         if ($page === null) {
@@ -174,12 +164,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@edit action
      */
+    #[Permission('panel.pages.edit')]
     public function edit(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.pages.edit')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $page = $this->site->findPage($routeParams->get('page'));
 
         if ($page === null) {
@@ -276,12 +263,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@preview action
      */
+    #[Permission('panel.pages.preview')]
     public function preview(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.pages.preview')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $page = $this->site->findPage($routeParams->get('page'));
 
         if ($page === null) {
@@ -326,12 +310,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@reorder action
      */
+    #[Permission('panel.pages.reorder')]
     public function reorder(): JsonResponse|Response
     {
-        if (!$this->hasPermission('panel.pages.reorder')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $requestData = $this->request->input();
 
         if (!$requestData->hasMultiple(['page', 'before', 'parent'])) {
@@ -378,12 +359,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@delete action
      */
+    #[Permission('panel.pages.delete')]
     public function delete(RouteParams $routeParams): Response
     {
-        if (!$this->hasPermission('panel.pages.delete')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $page = $this->site->findPage($routeParams->get('page'));
 
         if ($page === null) {
@@ -432,12 +410,9 @@ final class PagesController extends AbstractController
     /**
      * Pages@upload action
      */
+    #[Permission('panel.files.upload')]
     public function upload(RouteParams $routeParams): Response|JsonResponse
     {
-        if (!$this->hasPermission('panel.files.upload')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $page = $this->site->findPage($routeParams->get('page'));
 
         if ($page === null || $page->contentPath() === null) {

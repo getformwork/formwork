@@ -4,8 +4,10 @@ namespace Formwork\Panel\Controllers;
 
 use Formwork\Backup\Backupper;
 use Formwork\Data\Collection;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Parsers\Json;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
@@ -22,24 +24,18 @@ final class ToolsController extends AbstractController
     /**
      * Tools@index action
      */
-    public function index(): Response
+    #[Permission('panel.tools.backups')]
+    public function index(): RedirectResponse
     {
-        if (!$this->hasPermission('panel.tools.backups')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         return $this->redirect($this->generateRoute('panel.tools.backups'));
     }
 
     /**
      * Tools@backups action
      */
+    #[Permission('panel.tools.backups')]
     public function backups(Backupper $backupper): Response
     {
-        if (!$this->hasPermission('panel.tools.backups')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $backups = Arr::map($backupper->getBackups(), fn(string $path, int $timestamp): array => [
             'name'        => basename($path),
             'encodedName' => rawurlencode(base64_encode(basename($path))),
@@ -56,12 +52,9 @@ final class ToolsController extends AbstractController
     /**
      * Tools@updates action
      */
+    #[Permission('panel.tools.updates')]
     public function updates(): Response
     {
-        if (!$this->hasPermission('panel.tools.updates')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         return new Response($this->view('@panel.tools.updates', [
             'title'          => $this->translate('panel.tools.updates'),
             'currentVersion' => $this->app::VERSION,
@@ -71,12 +64,9 @@ final class ToolsController extends AbstractController
     /**
      * Tools@info action
      */
+    #[Permission('panel.tools.info')]
     public function info(): Response
     {
-        if (!$this->hasPermission('panel.tools.info')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $opcacheStatus = extension_loaded('zend opcache') ? (opcache_get_status(false) ?: []) : [];
 
         $gdInfo = extension_loaded('gd') ? gd_info() : [];

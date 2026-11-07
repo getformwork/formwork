@@ -3,9 +3,11 @@
 namespace Formwork\Panel\Controllers;
 
 use Formwork\Config\Config;
+use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
+use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use UnexpectedValueException;
@@ -15,24 +17,18 @@ final class OptionsController extends AbstractController
     /**
      * Options@index action
      */
-    public function index(): Response
+    #[Permission('panel.options.site')]
+    public function index(): RedirectResponse
     {
-        if (!$this->hasPermission('panel.options.site')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         return $this->redirect($this->generateRoute('panel.options.site'));
     }
 
     /**
      * Options@systemOptions action
      */
+    #[Permission('panel.options.system')]
     public function systemOptions(Schemes $schemes): Response
     {
-        if (!$this->hasPermission('panel.options.system')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $scheme = $schemes->get('config.system');
         $fields = $scheme->fields();
 
@@ -72,12 +68,9 @@ final class OptionsController extends AbstractController
     /**
      * Options@siteOptions action
      */
+    #[Permission('panel.options.site')]
     public function siteOptions(Schemes $schemes): Response
     {
-        if (!$this->hasPermission('panel.options.site')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
         $scheme = $schemes->get('config.site');
         $fields = $scheme->fields();
 
