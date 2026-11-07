@@ -219,11 +219,10 @@ final class UsersControllerActionsTest extends TestCase
 
         $controller = $this->makeController(
             UsersController::class,
-            ['panel.users' => true],
-            ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->userImagesPath()]]],
-            ['fullname' => 'Alice', 'email' => 'alice@example.test', 'language' => 'en', 'role' => 'admin', 'colorScheme' => 'light', ...$overrides],
-            [Site::class => $site, FileUploader::class => $uploader],
-            $this->users()->get('bob'),
+            system: ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->userImagesPath()]]],
+            input: ['fullname' => 'Alice', 'email' => 'alice@example.test', 'language' => 'en', 'role' => 'admin', 'colorScheme' => 'light', ...$overrides],
+            services: [Site::class => $site, FileUploader::class => $uploader],
+            user: $this->users()->get('bob'),
             server: ['REQUEST_METHOD' => 'POST'],
             files: $image === null ? [] : ['image' => $image],
         );
@@ -288,18 +287,16 @@ final class UsersControllerActionsTest extends TestCase
     }
 
     /**
-     * @param array<string, bool>   $permissions
      * @param array<string, mixed>  $input
      * @param array<string, string> $server
      */
-    private function controller(array $permissions = ['panel.users' => true], ?User $user = null, array $input = [], array $server = []): UsersController
+    private function controller(?User $user = null, array $input = [], array $server = []): UsersController
     {
         $site = $this->createStub(Site::class);
         $site->method('users')->willReturn($this->users());
 
         return $this->makeController(
             UsersController::class,
-            $permissions,
             system: ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->imagesPath]]],
             input: $input,
             services: [Site::class => $site],

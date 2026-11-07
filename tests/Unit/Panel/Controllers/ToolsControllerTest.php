@@ -50,7 +50,7 @@ final class ToolsControllerTest extends TestCase
 
     public function testIndexRedirectsToTheBackups(): void
     {
-        $response = $this->controller(['panel.tools.backups' => true])->index();
+        $response = $this->controller()->index();
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertStringEndsWith('/route/panel.tools.backups', $response->headers()->get('Location'));
@@ -109,10 +109,10 @@ final class ToolsControllerTest extends TestCase
         $backupper = new Backupper(new Request(), ['path' => $path, 'name' => 'backup', 'maxExecutionTime' => 60, 'maxFiles' => 10, 'ignore' => []], App::instance()->rootPath(), App::instance());
 
         $responses = [
-            $this->controller(['panel.tools.updates' => true])->updates(),
-            $this->controller(['panel.tools.backups' => true])->backups($backupper),
-            $this->controller(['panel.tools.info' => true])->info(),
-            $this->makeController(ToolsController::class, ['panel.tools.info' => true], ['debug' => ['enabled' => true]])->info(),
+            $this->controller()->updates(),
+            $this->controller()->backups($backupper),
+            $this->controller()->info(),
+            $this->makeController(ToolsController::class, system: ['debug' => ['enabled' => true]])->info(),
         ];
 
         foreach ($responses as $response) {
@@ -120,17 +120,14 @@ final class ToolsControllerTest extends TestCase
         }
     }
 
-    /**
-     * @param array<string, bool> $permissions
-     */
-    private function controller(array $permissions): ToolsController
+    private function controller(): ToolsController
     {
-        return $this->makeController(ToolsController::class, $permissions);
+        return $this->makeController(ToolsController::class);
     }
 
     private function invoke(string $method): mixed
     {
-        $controller = $this->controller([]);
+        $controller = $this->controller();
 
         return (new ReflectionMethod($controller, $method))->invoke($controller);
     }

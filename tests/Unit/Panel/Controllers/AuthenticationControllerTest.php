@@ -236,7 +236,6 @@ final class AuthenticationControllerTest extends TestCase
     {
         $controller = $this->makeController(
             AuthenticationController::class,
-            [],
             input: $input,
             services: $services,
             user: $user,

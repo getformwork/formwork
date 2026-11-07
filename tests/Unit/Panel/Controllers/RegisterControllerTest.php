@@ -162,7 +162,6 @@ final class RegisterControllerTest extends TestCase
 
         $controller = $this->makeController(
             RegisterController::class,
-            [],
             input: $input,
             services: [Site::class => $site, ...$services],
             server: ['REQUEST_METHOD' => $method],

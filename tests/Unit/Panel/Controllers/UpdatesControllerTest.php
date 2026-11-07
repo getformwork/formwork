@@ -157,12 +157,11 @@ final class UpdatesControllerTest extends TestCase
     }
 
     /**
-     * @param array<string, bool>  $permissions
      * @param array<string, mixed> $system
      */
-    private function controller(array $permissions = ['panel.updates.check' => true, 'panel.updates.update' => true], array $system = []): UpdatesController
+    private function controller(array $system = []): UpdatesController
     {
-        return $this->makeController(UpdatesController::class, $permissions, $system);
+        return $this->makeController(UpdatesController::class, $system);
     }
 
     private function backupper(): Backupper

@@ -159,8 +159,7 @@ final class AssetsControllerTest extends TestCase
     {
         $controller = $this->makeController(
             AssetsController::class,
-            [],
-            ['panel' => ['paths' => ['assets' => $this->assetsPath]]],
+            system: ['panel' => ['paths' => ['assets' => $this->assetsPath]]],
             query: $query,
         );
 

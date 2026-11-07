@@ -120,7 +120,6 @@ trait BuildsPanelControllers
 
     /**
      * @param class-string<T>       $class
-     * @param array<string, bool>   $permissions
      * @param array<string, mixed>  $system               Overrides of the `system` configuration
      * @param array<string, mixed>  $input                Request input
      * @param array<string, string> $query                Request query
@@ -134,7 +133,7 @@ trait BuildsPanelControllers
      *
      * @return T
      */
-    protected function makeController(string $class, array $permissions = [], array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = []): object
+    protected function makeController(string $class, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = []): object
     {
         $app = App::instance();
 
@@ -142,7 +141,7 @@ trait BuildsPanelControllers
 
         $request = $this->panelRequest($input, $query, $server, $files, $previousSession);
 
-        $user ??= $this->stubUser($permissions);
+        $user ??= $this->createStub(User::class);
 
         if ($users === null) {
             $users = $this->createStub(Users::class);

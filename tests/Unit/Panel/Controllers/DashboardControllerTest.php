@@ -36,7 +36,7 @@ final class DashboardControllerTest extends TestCase
 
     public function testDashboardRequiresThePermission(): void
     {
-        $response = $this->makeController(DashboardController::class, ['panel.dashboard' => false])->index($this->statistics());
+        $response = $this->makeController(DashboardController::class, user: $this->stubUser(['panel.dashboard' => false]))->index($this->statistics());
 
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
@@ -63,7 +63,7 @@ final class DashboardControllerTest extends TestCase
         $site = $this->createStub(Site::class);
         $site->method('descendants')->willReturn(new PageCollection([], new PaginationFactory(App::instance(), $this->createStub(Router::class))));
 
-        $controller = $this->makeController(DashboardController::class, ['panel.dashboard' => true], services: [Modals::class => $modals, Site::class => $site]);
+        $controller = $this->makeController(DashboardController::class, services: [Modals::class => $modals, Site::class => $site], user: $this->stubUser(['panel.dashboard' => true]));
 
         $this->assertSame(ResponseStatus::OK, $controller->index($this->seededStatistics())->status());
     }

@@ -184,16 +184,14 @@ final class CacheControllerTest extends TestCase
     }
 
     /**
-     * @param array<string, bool>   $permissions
      * @param array<string, mixed>  $system
      * @param array<string, object> $services
      */
-    private function controller(array $permissions = ['panel.cache.clear' => true], array $system = [], array $services = []): CacheController
+    private function controller(array $system = [], array $services = []): CacheController
     {
         return $this->makeController(
             CacheController::class,
-            $permissions,
-            array_replace_recursive(['images' => ['processPath' => $this->imagesPath]], $system),
+            system: array_replace_recursive(['images' => ['processPath' => $this->imagesPath]], $system),
             services: ['cache.pages' => $this->pagesCache, ...$services],
         );
     }

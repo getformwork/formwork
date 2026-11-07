@@ -298,18 +298,17 @@ final class UsersControllerTest extends TestCase
 
         $this->controller = $this->makeController(
             UsersController::class,
-            $permissions,
-            ['users' => ['paths' => ['accounts' => $this->accountsPath]]],
+            system: ['users' => ['paths' => ['accounts' => $this->accountsPath]]],
             // Modal fields are named after the modal, so their values are submitted as `newUser[field]`
-            ['newUser' => $input],
-            [
+            input: ['newUser' => $input],
+            services: [
                 Site::class         => $site,
                 Modals::class       => $modals,
                 FileUploader::class => $this->createStub(FileUploader::class),
                 FileFactory::class  => $app->getService(FileFactory::class),
             ],
-            $current,
-            $users,
+            user: $current,
+            users: $users,
         );
 
         return $this->controller->create(new UserFactory($this->containerOf($this->controller)));

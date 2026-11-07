@@ -323,10 +323,9 @@ final class FilesControllerActionsTest extends TestCase
 
         $controller = $this->makeController(
             FilesController::class,
-            ['panel.files' => true],
-            ['files' => ['paths' => ['site' => $destination]]],
-            ['uploadFileModal' => $input],
-            [Site::class => $this->site, Modals::class => $modals, FileUploader::class => $uploader],
+            system: ['files' => ['paths' => ['site' => $destination]]],
+            input: ['uploadFileModal' => $input],
+            services: [Site::class => $this->site, Modals::class => $modals, FileUploader::class => $uploader],
             server: ['REQUEST_METHOD' => 'POST'],
             files: $files === [] ? [] : ['uploadFileModal' => ['files' => $files]],
         );
@@ -385,11 +384,10 @@ final class FilesControllerActionsTest extends TestCase
     }
 
     /**
-     * @param array<string, bool>   $permissions
      * @param array<string, object> $services
      */
-    private function controller(array $permissions = ['panel.files' => true], array $services = [], mixed ...$arguments): FilesController
+    private function controller(array $services = [], mixed ...$arguments): FilesController
     {
-        return $this->makeController(FilesController::class, $permissions, ...$arguments, services: [Site::class => $this->site, ...$services]);
+        return $this->makeController(FilesController::class, ...$arguments, services: [Site::class => $this->site, ...$services]);
     }
 }

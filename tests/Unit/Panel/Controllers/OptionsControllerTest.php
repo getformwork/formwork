@@ -59,7 +59,7 @@ final class OptionsControllerTest extends TestCase
 
     public function testIndexRedirectsToTheSiteOptions(): void
     {
-        $response = $this->makeController(OptionsController::class, ['panel.options.site' => true])->index();
+        $response = $this->makeController(OptionsController::class)->index();
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertStringEndsWith('/route/panel.options.site', $response->headers()->get('Location'));
@@ -71,7 +71,7 @@ final class OptionsControllerTest extends TestCase
         $original = Yaml::parseFile($path);
 
         try {
-            $controller = $this->makeController(OptionsController::class, ['panel.options.site' => true], input: ['title' => ''], server: ['REQUEST_METHOD' => 'POST']);
+            $controller = $this->makeController(OptionsController::class, input: ['title' => ''], server: ['REQUEST_METHOD' => 'POST']);
 
             $response = $controller->siteOptions($this->schemes());
 
@@ -98,7 +98,7 @@ final class OptionsControllerTest extends TestCase
         $site->method('contentPath')->willReturn($content);
 
         try {
-            $controller = $this->makeController(OptionsController::class, ['panel.options.site' => true], input: ['title' => 'New title'], services: [Site::class => $site], server: ['REQUEST_METHOD' => 'POST']);
+            $controller = $this->makeController(OptionsController::class, input: ['title' => 'New title'], services: [Site::class => $site], server: ['REQUEST_METHOD' => 'POST']);
 
             $response = $controller->siteOptions($this->schemes());
 
@@ -129,7 +129,7 @@ final class OptionsControllerTest extends TestCase
         $site->method('contentPath')->willReturn($content);
 
         try {
-            $controller = $this->makeController(OptionsController::class, ['panel.options.site' => true], input: [], services: [Site::class => $site], server: ['REQUEST_METHOD' => 'POST']);
+            $controller = $this->makeController(OptionsController::class, input: [], services: [Site::class => $site], server: ['REQUEST_METHOD' => 'POST']);
 
             $controller->siteOptions($this->schemes());
 
@@ -146,11 +146,11 @@ final class OptionsControllerTest extends TestCase
         $site = $this->createStub(Site::class);
         $site->method('data')->willReturn(['title' => 'My site']);
 
-        $siteOptions = $this->makeController(OptionsController::class, ['panel.options.site' => true], services: [Site::class => $site], server: ['REQUEST_METHOD' => 'GET'])->siteOptions($this->schemes());
+        $siteOptions = $this->makeController(OptionsController::class, services: [Site::class => $site], server: ['REQUEST_METHOD' => 'GET'])->siteOptions($this->schemes());
 
         $this->assertOutcome(['status' => 200], $siteOptions);
 
-        $systemOptions = $this->makeController(OptionsController::class, ['panel.options.system' => true], server: ['REQUEST_METHOD' => 'GET'])->systemOptions($this->schemes());
+        $systemOptions = $this->makeController(OptionsController::class, server: ['REQUEST_METHOD' => 'GET'])->systemOptions($this->schemes());
 
         $this->assertOutcome(['status' => 200], $systemOptions);
     }

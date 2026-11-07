@@ -369,10 +369,9 @@ final class PagesControllerActionsTest extends TestCase
     }
 
     /**
-     * @param array<string, bool>   $permissions
      * @param array<string, object> $services
      */
-    private function controller(array $permissions = ['panel.pages' => true, 'panel.files.upload' => true], array $services = [], mixed ...$arguments): PagesController
+    private function controller(array $services = [], mixed ...$arguments): PagesController
     {
         $fieldFactory = App::instance()->getService(FieldFactory::class);
 
@@ -392,7 +391,6 @@ final class PagesControllerActionsTest extends TestCase
 
         return $this->makeController(
             PagesController::class,
-            $permissions,
             ...$arguments,
             services: [Site::class => $this->site, Modals::class => $modals, FileUploader::class => $this->uploader([$this->pagesPath], $this->pagesPath), ...$services],
         );

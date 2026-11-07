@@ -26,7 +26,7 @@ final class StatisticsControllerTest extends TestCase
 
     public function testStatisticsAreDisplayed(): void
     {
-        $response = $this->makeController(StatisticsController::class, ['panel.statistics' => true])->index($this->seededStatistics());
+        $response = $this->makeController(StatisticsController::class)->index($this->seededStatistics());
 
         $this->assertOutcome(['status' => 200], $response);
     }

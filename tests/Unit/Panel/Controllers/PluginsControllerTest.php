@@ -89,7 +89,6 @@ final class PluginsControllerTest extends TestCase
             $config = new Config(['plugins' => [$pluginName => $existingOptions]], resolved: true);
             $controller = $this->makeController(
                 PluginsController::class,
-                ['panel.plugins' => true],
                 services: [Config::class => $config],
             );
             $reflectionMethod = new ReflectionMethod($controller, 'updatePluginsOptions');
@@ -225,12 +224,11 @@ final class PluginsControllerTest extends TestCase
     }
 
     /**
-     * @param array<string, bool>   $permissions
      * @param array<string, mixed>  $input
      * @param array<string, string> $server
      */
-    private function controller(array $permissions = ['panel.plugins' => true], array $input = [], array $server = []): PluginsController
+    private function controller(array $input = [], array $server = []): PluginsController
     {
-        return $this->makeController(PluginsController::class, $permissions, input: $input, server: $server);
+        return $this->makeController(PluginsController::class, input: $input, server: $server);
     }
 }
