@@ -109,42 +109,31 @@ final class PanelTest extends TestCase
 
     public function testNobodyIsLoggedInWithoutAPreviousSession(): void
     {
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn($this->createStub(User::class));
-
-        $this->assertFalse($this->panel(users: $users)->isLoggedIn());
+        $this->assertFalse($this->panel(user: $this->createStub(User::class))->isLoggedIn());
     }
 
     public function testUserIsLoggedInWithAPreviousSessionAndAnAuthenticatedUser(): void
     {
-        $this->assertTrue($this->panel(users: $this->loggedInUsers(), previousSession: true)->isLoggedIn());
+        $this->assertTrue($this->panel(user: $this->createStub(User::class), previousSession: true)->isLoggedIn());
     }
 
     public function testUserIsNotLoggedInWithAPreviousSessionButNoAuthenticatedUser(): void
     {
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn(null);
-
-        $this->assertFalse($this->panel(users: $users, previousSession: true)->isLoggedIn());
+        $this->assertFalse($this->panel(previousSession: true)->isLoggedIn());
     }
 
     public function testLoggedInUserIsReturned(): void
     {
         $user = $this->createStub(User::class);
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn($user);
 
-        $this->assertSame($user, $this->panel(users: $users)->user());
+        $this->assertSame($user, $this->panel(user: $user)->user());
     }
 
     public function testUserIsRequired(): void
     {
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn(null);
-
         $this->expectException(UserNotLoggedException::class);
 
-        $this->panel(users: $users)->user();
+        $this->panel()->user();
     }
 
     public function testNotificationsAreEmptyByDefault(): void
@@ -281,10 +270,8 @@ final class PanelTest extends TestCase
     {
         $user = $this->createStub(User::class);
         $user->method('colorScheme')->willReturn(ColorScheme::Dark);
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn($user);
 
-        $panel = $this->panel(system: ['panel' => ['colorScheme' => 'light']], users: $users, previousSession: true);
+        $panel = $this->panel(system: ['panel' => ['colorScheme' => 'light']], user: $user, previousSession: true);
 
         $this->assertSame(ColorScheme::Dark, $panel->colorScheme());
         $this->assertSame('dark', $panel->compatibleColorSchemes());
@@ -325,14 +312,6 @@ final class PanelTest extends TestCase
         $this->assertSame($navigation, $panel->navigation());
     }
 
-    private function loggedInUsers(): Users
-    {
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn($this->createStub(User::class));
-
-        return $users;
-    }
-
     /**
      * @param array<string, mixed>  $system
      * @param array<string, string> $server
@@ -343,7 +322,7 @@ final class PanelTest extends TestCase
         array $system = [],
         array $server = [],
         array $cookies = [],
-        ?Users $users = null,
+        ?User $user = null,
         ?Modals $modals = null,
         ?Assets $assets = null,
         ?EventDispatcher $events = null,
@@ -375,6 +354,9 @@ final class PanelTest extends TestCase
         $translations->loadFromPath(TestInstallation::rootPath() . '/panel/translations');
         $translations->setCurrent('en');
 
+        $users = $this->createStub(Users::class);
+        $users->method('loggedIn')->willReturn($user);
+
         $container = new Container();
         $container->define(App::class, $app);
         $container->define(Site::class, $this->createStub(Site::class));
@@ -383,7 +365,7 @@ final class PanelTest extends TestCase
             $container,
             $config,
             $request,
-            $users ?? $this->createStub(Users::class),
+            $users,
             $modals ?? $this->createStub(Modals::class),
             $translations,
             $assets ?? $this->createStub(Assets::class),

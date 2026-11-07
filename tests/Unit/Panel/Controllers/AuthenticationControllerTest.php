@@ -39,10 +39,7 @@ final class AuthenticationControllerTest extends TestCase
 
     public function testLoggedInUsersAreRedirectedToThePanel(): void
     {
-        $users = $this->createStub(Users::class);
-        $users->method('loggedIn')->willReturn($this->createStub(User::class));
-
-        $response = $this->login(method: 'GET', users: $users, previousSession: true);
+        $response = $this->login(method: 'GET', user: $this->createStub(User::class), previousSession: true);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
@@ -137,7 +134,7 @@ final class AuthenticationControllerTest extends TestCase
 
     public function testLogoutNotifiesTheUser(): void
     {
-        $controller = $this->controller($this->createStub(User::class));
+        $controller = $this->controller();
 
         $controller->logout();
 
@@ -162,7 +159,7 @@ final class AuthenticationControllerTest extends TestCase
 
     public function testLogoutCanRedirectToTheHomePage(): void
     {
-        $response = $this->controller($this->createStub(User::class), ['panel' => ['logoutRedirect' => 'home']])->logout();
+        $response = $this->controller(system: ['panel' => ['logoutRedirect' => 'home']])->logout();
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertStringEndsWith('/', $response->headers()->get('Location'));
@@ -215,7 +212,7 @@ final class AuthenticationControllerTest extends TestCase
      * @param array<string, mixed>  $system
      * @param array<string, object> $services
      */
-    private function controller(User $user, array $system = [], array $services = []): AuthenticationController
+    private function controller(?User $user = null, array $system = [], array $services = []): AuthenticationController
     {
         return $this->makeController(AuthenticationController::class, system: $system, services: $services, user: $user);
     }
@@ -235,14 +232,14 @@ final class AuthenticationControllerTest extends TestCase
      * @param array<string, string> $input
      * @param array<string, object> $services
      */
-    private function login(array $input = [], string $method = 'POST', ?Authenticator $authenticator = null, ?Users $users = null, bool $previousSession = false, array $services = []): Response
+    private function login(array $input = [], string $method = 'POST', ?Authenticator $authenticator = null, ?User $user = null, bool $previousSession = false, array $services = []): Response
     {
         $controller = $this->makeController(
             AuthenticationController::class,
             [],
             input: $input,
             services: $services,
-            users: $users,
+            user: $user,
             server: ['REQUEST_METHOD' => $method],
             previousSession: $previousSession,
         );
