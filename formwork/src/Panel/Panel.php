@@ -137,7 +137,7 @@ final class Panel
      */
     public function notify(string $text, string|MessageType $type = MessageType::Info): void
     {
-        $this->request->session()->messages()->set(is_string($type) ? MessageType::from($type) : $type, $text);
+        $this->request->session()->messages()->add(is_string($type) ? MessageType::from($type) : $type, $text);
     }
 
     /**
@@ -201,7 +201,7 @@ final class Panel
 
         if ($colorScheme === ColorScheme::Auto) {
             // Get color scheme from cookie to avoid flash of incorrect color scheme
-            return ColorScheme::from($this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value));
+            return ColorScheme::tryFrom($this->request->cookies()->get('formwork_preferred_color_scheme', $colorScheme->value)) ?? $colorScheme;
         }
 
         return $colorScheme;
