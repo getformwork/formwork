@@ -16,11 +16,6 @@ use RuntimeException;
 final class BackupCommand implements CommandInterface
 {
     /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
-    /**
      * App instance
      */
     private App $app;
@@ -37,10 +32,8 @@ final class BackupCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         $this->climate->arguments->add([
             'action' => [
                 'description' => 'Backup action to perform (make, list)',

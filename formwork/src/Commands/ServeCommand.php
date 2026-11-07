@@ -50,19 +50,12 @@ final class ServeCommand implements CommandInterface
     private Process $process;
 
     /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
-    /**
      * Server start time
      */
     private float $startTime;
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         // Fix clear command for terminals that don't clear the scrollback buffer with the default clear command
         $this->climate->style->addCommand('clear', "\033[H\033[2J\033[3J");
     }

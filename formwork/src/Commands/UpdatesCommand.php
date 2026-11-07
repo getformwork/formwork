@@ -16,11 +16,6 @@ use RuntimeException;
  */
 final class UpdatesCommand implements CommandInterface
 {
-    /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
     private App $app;
 
     /**
@@ -35,10 +30,8 @@ final class UpdatesCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         $this->climate->arguments->add([
             'action' => [
                 'description' => 'Updates action to perform (check, update)',

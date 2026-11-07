@@ -18,11 +18,6 @@ use Psr\Log\LoggerInterface;
  */
 final class CacheCommand implements CommandInterface
 {
-    /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
     private App $app;
 
     private ?LoggerInterface $logger = null;
@@ -42,10 +37,8 @@ final class CacheCommand implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         $this->climate->arguments->add([
             'action' => [
                 'description' => 'Cache action to perform (clear, invalidate, stats)',

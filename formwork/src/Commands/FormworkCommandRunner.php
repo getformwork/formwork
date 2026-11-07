@@ -12,11 +12,6 @@ use League\CLImate\Exceptions\InvalidArgumentException;
 final class FormworkCommandRunner implements CommandInterface
 {
     /**
-     * CLImate instance
-     */
-    private CLImate $climate;
-
-    /**
      * @var array<string, array{description: string, command: class-string<CommandInterface>}>
      */
     private array $commands = [
@@ -38,10 +33,8 @@ final class FormworkCommandRunner implements CommandInterface
         ],
     ];
 
-    public function __construct()
+    public function __construct(private CLImate $climate = new CLImate())
     {
-        $this->climate = new CLImate();
-
         $this->climate->description(sprintf('<bold>Formwork <cyan>%s</cyan></bold> CLI', App::VERSION));
 
         $this->climate->arguments->add([
