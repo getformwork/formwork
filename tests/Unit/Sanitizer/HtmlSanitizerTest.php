@@ -359,6 +359,20 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
     }
 
+    public function testSvgStyleWithCdataWrapperIsPreserved(): void
+    {
+        $html = '<svg><style><![CDATA[.a > b{fill:red}]]></style></svg>';
+
+        $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
+    }
+
+    public function testSvgStyleWithCommentHidingMarkupIsRemoved(): void
+    {
+        $output = (new HtmlSanitizer())->sanitize('<svg><style><!--><img src=x onerror=alert(1)>--></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $output);
+    }
+
     public function testCdataSectionIsConvertedToText(): void
     {
         $output = (new HtmlSanitizer())->sanitize('<div><![CDATA[><img src=x onerror=alert(1)>]]></div>');

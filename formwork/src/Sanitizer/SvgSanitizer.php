@@ -3,6 +3,7 @@
 namespace Formwork\Sanitizer;
 
 use DOMAttr;
+use DOMComment;
 use DOMDocument;
 use DOMDocumentFragment;
 use DOMElement;
@@ -49,8 +50,7 @@ class SvgSanitizer extends DomSanitizer
 
     protected function sanitizeNode(DOMElement $domElement): void
     {
-        // Browsers parse markup inside `<style>` in foreign content, raw-text parsers do not: reject it
-        if ($domElement->nodeName === 'style' && preg_match('/<[a-z\/!?]/i', $domElement->textContent) === 1) {
+        if ($domElement->nodeName === 'style' && !$this->isSafeStyle($domElement)) {
             $domElement->remove();
             return;
         }
@@ -109,6 +109,30 @@ class SvgSanitizer extends DomSanitizer
         $domElement->append(...$svg->childNodes);
 
         $svg->replaceWith($domElement);
+    }
+
+    /**
+     * Return whether a `<style>` element cannot hide markup from the HTML parser of browsers
+     */
+    private function isSafeStyle(DOMElement $domElement): bool
+    {
+        // Browsers close comments in foreign content at `<!-->`, so they cannot be kept
+        for ($i = $domElement->childNodes->length - 1; $i >= 0; $i--) {
+            $childNode = $domElement->childNodes->item($i);
+            if ($childNode instanceof DOMComment) {
+                $domElement->removeChild($childNode);
+            }
+        }
+
+        // Standalone SVG is serialized as XML, which escapes text, so markup cannot be injected
+        if (!$this->embedded) {
+            return true;
+        }
+
+        // Embedded SVG is serialized as HTML, where style text is raw. Raw-text parsers keep CDATA delimiters as text, which are valid in foreign content
+        $text = str_replace(['<![CDATA[', ']]>'], '', $domElement->textContent);
+
+        return preg_match('/<[a-z\/!?]/i', $text) !== 1;
     }
 
     /**

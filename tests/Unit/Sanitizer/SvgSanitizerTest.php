@@ -204,4 +204,19 @@ final class SvgSanitizerTest extends TestCase
         $this->assertStringNotContainsString('CDATA', $svg);
         $this->assertStringContainsString('.a &gt; b{fill:red}', $svg);
     }
+
+    public function testCommentInsideStyleIsRemoved(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><!--><img src=x onerror=alert(1)>--></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+        $this->assertStringNotContainsString('<!--', $svg);
+    }
+
+    public function testStyleWithEscapedLessThanCharacterInCdataIsPreserved(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><![CDATA[[title="<a"]{fill:red}]]></style></svg>');
+
+        $this->assertStringContainsString('[title="&lt;a"]{fill:red}', $svg);
+    }
 }

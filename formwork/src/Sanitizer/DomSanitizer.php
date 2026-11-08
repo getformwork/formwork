@@ -63,6 +63,11 @@ class DomSanitizer
      */
     protected bool $allowExternalUris = true;
 
+    /**
+     * Whether the markup is embedded in a document sanitized by another sanitizer
+     */
+    protected bool $embedded = false;
+
     public function __construct(
         protected DomParserInterface $domParser = new Html5Parser(),
     ) {
@@ -210,6 +215,7 @@ class DomSanitizer
         if (isset($this->elementSanitizers[$domElement->nodeName])) {
             $sanitizer = new $this->elementSanitizers[$domElement->nodeName]();
             $sanitizer->allowExternalUris = $this->allowExternalUris;
+            $sanitizer->embedded = true;
             $sanitizer->sanitizeNode($domElement);
             return;
         }
