@@ -7,6 +7,7 @@ use DOMComment;
 use DOMDocument;
 use DOMDocumentFragment;
 use DOMElement;
+use DOMProcessingInstruction;
 use Formwork\Sanitizer\Parser\DomParserInterface;
 use Formwork\Sanitizer\Parser\PhpDomParser;
 use Formwork\Sanitizer\Reference\SvgReference;
@@ -116,16 +117,16 @@ class SvgSanitizer extends DomSanitizer
      */
     private function isSafeStyle(DOMElement $domElement): bool
     {
-        // Browsers close comments in foreign content at `<!-->`, so they cannot be kept
+        // Browsers end comments and bogus comments early in foreign content (e.g. at `<!-->`), so they cannot be kept
         for ($i = $domElement->childNodes->length - 1; $i >= 0; $i--) {
             $childNode = $domElement->childNodes->item($i);
-            if ($childNode instanceof DOMComment) {
+            if ($childNode instanceof DOMComment || $childNode instanceof DOMProcessingInstruction) {
                 $domElement->removeChild($childNode);
             }
         }
 
-        // Standalone SVG is serialized as XML, which escapes text, so markup cannot be injected
-        if (!$this->embedded) {
+        // Standalone SVG serialized as XML has its text escaped, so markup cannot be injected
+        if (!$this->embedded && $this->domParser instanceof PhpDomParser) {
             return true;
         }
 

@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Sanitizer;
 
+use Formwork\Sanitizer\Parser\Html5Parser;
 use Formwork\Sanitizer\Reference\SvgReference;
 use Formwork\Sanitizer\SvgSanitizer;
 use Formwork\Tests\TestCase;
@@ -218,5 +219,20 @@ final class SvgSanitizerTest extends TestCase
         $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><![CDATA[[title="<a"]{fill:red}]]></style></svg>');
 
         $this->assertStringContainsString('[title="&lt;a"]{fill:red}', $svg);
+    }
+
+    public function testProcessingInstructionInsideStyleIsRemoved(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><?x ><img src=x onerror=alert(1)>?></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+        $this->assertStringNotContainsString('<?x', $svg);
+    }
+
+    public function testStyleWithMarkupIsRemovedWhenSerializedAsHtml(): void
+    {
+        $svg = (new SvgSanitizer(new Html5Parser()))->sanitize('<svg><style><img src=x onerror=alert(1)></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
     }
 }
