@@ -129,10 +129,37 @@ class SvgSanitizer extends DomSanitizer
             return true;
         }
 
-        // Embedded SVG is serialized as HTML, where style text is raw. Raw-text parsers keep CDATA delimiters as text, which are valid in foreign content
-        $text = str_replace(['<![CDATA[', ']]>'], '', $domElement->textContent);
+        // Embedded SVG is serialized as HTML, where style text is raw
+        $text = $this->unwrapCdata($domElement->textContent);
 
-        return preg_match('/<[a-z\/!?]/i', $text) !== 1;
+        // Fail closed if the text cannot be checked
+        return $text !== null && preg_match('/<[a-z\/!?]/i', $text) === 0;
+    }
+
+    /**
+     * Replace complete CDATA sections with their content, or return `null` if one is unterminated
+     *
+     * Raw-text parsers keep CDATA delimiters as text, but browsers read them in foreign content.
+     * An unterminated section is not unwrapped, as browsers would end it at a later `]]>`.
+     */
+    private function unwrapCdata(string $text): ?string
+    {
+        $result = '';
+        $offset = 0;
+
+        while (($start = strpos($text, '<![CDATA[', $offset)) !== false) {
+            $contentStart = $start + strlen('<![CDATA[');
+            $end = strpos($text, ']]>', $contentStart);
+
+            if ($end === false) {
+                return null;
+            }
+
+            $result .= substr($text, $offset, $start - $offset) . substr($text, $contentStart, $end - $contentStart);
+            $offset = $end + strlen(']]>');
+        }
+
+        return $result . substr($text, $offset);
     }
 
     /**

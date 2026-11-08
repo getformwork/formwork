@@ -6,6 +6,7 @@ use Formwork\Sanitizer\HtmlSanitizer;
 use Formwork\Sanitizer\Reference\HtmlReference;
 use Formwork\Sanitizer\SanitizeElementsMethod;
 use Formwork\Tests\TestCase;
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -369,6 +370,31 @@ final class HtmlSanitizerTest extends TestCase
     public function testSvgStyleWithCommentHidingMarkupIsRemoved(): void
     {
         $output = (new HtmlSanitizer())->sanitize('<svg><style><!--><img src=x onerror=alert(1)>--></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $output);
+    }
+
+    #[DataProvider('unterminatedCdataProvider')]
+    public function testSvgStyleWithUnterminatedCdataIsRemoved(string $html): void
+    {
+        $output = (new HtmlSanitizer())->sanitize($html);
+
+        $this->assertStringNotContainsString('<style', $output);
+        $this->assertStringNotContainsString('<![CDATA[', $output);
+    }
+
+    /**
+     * @return Generator<string, array{string}>
+     */
+    public static function unterminatedCdataProvider(): Generator
+    {
+        yield 'terminator in attribute' => ['<svg><style><![CDATA[</style></svg><p title="]]><img src=x onerror=alert(1)>">x</p>'];
+        yield 'nested opener' => ['<svg><style><![CDATA[a<![CDATA[b]]><img src=x onerror=alert(1)></style></svg>'];
+    }
+
+    public function testSvgStyleWithOversizedCdataFollowedByMarkupIsRemoved(): void
+    {
+        $output = (new HtmlSanitizer())->sanitize('<svg><style><![CDATA[' . str_repeat('a', 1_500_000) . ']]><img src=x onerror=alert(1)></style></svg>');
 
         $this->assertStringNotContainsString('<img', $output);
     }
