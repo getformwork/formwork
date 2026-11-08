@@ -3,9 +3,13 @@
 namespace Formwork\Sanitizer;
 
 use DOMAttr;
+use DOMComment;
 use DOMDocument;
 use DOMDocumentFragment;
 use DOMElement;
+use DOMNode;
+use DOMNodeList;
+use DOMProcessingInstruction;
 use Formwork\Sanitizer\Parser\DomParserInterface;
 use Formwork\Sanitizer\Parser\PhpDomParser;
 use Formwork\Sanitizer\Reference\SvgReference;
@@ -45,6 +49,31 @@ class SvgSanitizer extends DomSanitizer
     {
         parent::sanitizeDocumentFragment($domDocumentFragment);
         $this->addExplicitSvgNamespace($domDocumentFragment);
+    }
+
+    /**
+     * @param DOMNodeList<DOMNode> $domNodeList
+     */
+    protected function sanitizeNodes(DOMNodeList $domNodeList): void
+    {
+        for ($i = $domNodeList->length - 1; $i >= 0; $i--) {
+            $node = $domNodeList->item($i);
+            if ($node instanceof DOMProcessingInstruction || ($node instanceof DOMComment && !$this->isSafeComment($node->data))) {
+                $node->parentNode?->removeChild($node);
+            }
+        }
+
+        parent::sanitizeNodes($domNodeList);
+    }
+
+    protected function sanitizeNode(DOMElement $domElement): void
+    {
+        if ($domElement->nodeName === 'style' && !$this->isSafeStyle($domElement)) {
+            $domElement->remove();
+            return;
+        }
+
+        parent::sanitizeNode($domElement);
     }
 
     protected function sanitizeNodeAttribute(DOMElement $domElement, DOMAttr $domAttr): void
@@ -98,6 +127,63 @@ class SvgSanitizer extends DomSanitizer
         $domElement->append(...$svg->childNodes);
 
         $svg->replaceWith($domElement);
+    }
+
+    /**
+     * Return whether a `<style>` element cannot hide markup from the HTML parser of browsers
+     */
+    private function isSafeStyle(DOMElement $domElement): bool
+    {
+        // Standalone SVG serialized as XML has its text escaped, so markup cannot be injected
+        if (!$this->embedded && $this->domParser instanceof PhpDomParser) {
+            return true;
+        }
+
+        // Embedded SVG is serialized as HTML, where style text is raw
+        $text = $this->unwrapCdata($domElement->textContent);
+
+        // Fail closed if the text cannot be checked
+        return $text !== null && preg_match('/<[a-z\/!?]/i', $text) === 0;
+    }
+
+    /**
+     * Replace complete CDATA sections with their content, or return `null` if one is unterminated
+     *
+     * Raw-text parsers keep CDATA delimiters as text, but browsers read them in foreign content.
+     * An unterminated section is not unwrapped, as browsers would end it at a later `]]>`.
+     */
+    private function unwrapCdata(string $text): ?string
+    {
+        $result = '';
+        $offset = 0;
+
+        while (($start = strpos($text, '<![CDATA[', $offset)) !== false) {
+            $contentStart = $start + strlen('<![CDATA[');
+            $end = strpos($text, ']]>', $contentStart);
+
+            if ($end === false) {
+                return null;
+            }
+
+            $result .= substr($text, $offset, $start - $offset) . substr($text, $contentStart, $end - $contentStart);
+            $offset = $end + strlen(']]>');
+        }
+
+        return $result . substr($text, $offset);
+    }
+
+    /**
+     * Return whether a comment is read by browsers as it is by XML parsers
+     *
+     * Browsers end comments in foreign content early at `<!-->` and `<!--->`, and at `--!>`,
+     * so the markup that follows would be parsed. Processing instructions are always removed.
+     */
+    private function isSafeComment(string $data): bool
+    {
+        return !str_starts_with($data, '>')
+            && !str_starts_with($data, '->')
+            && !str_contains($data, '--')
+            && !str_ends_with($data, '-');
     }
 
     /**

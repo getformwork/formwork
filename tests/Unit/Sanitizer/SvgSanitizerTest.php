@@ -2,9 +2,11 @@
 
 namespace Formwork\Tests\Unit\Sanitizer;
 
+use Formwork\Sanitizer\Parser\Html5Parser;
 use Formwork\Sanitizer\Reference\SvgReference;
 use Formwork\Sanitizer\SvgSanitizer;
 use Formwork\Tests\TestCase;
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -195,5 +197,72 @@ final class SvgSanitizerTest extends TestCase
         yield 'external entity' => ['<!DOCTYPE svg [<!ENTITY x SYSTEM "file:///nonexistent/secret">]><svg xmlns="http://www.w3.org/2000/svg"><text>&x;</text></svg>'];
         yield 'undefined entity' => ['<svg xmlns="http://www.w3.org/2000/svg"><text>&x;</text></svg>'];
         yield 'invalid unicode' => ["<svg><text>\xff</text></svg>", InvalidArgumentException::class];
+    }
+
+    public function testCdataSectionIsConvertedToText(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><![CDATA[.a > b{fill:red}]]></style></svg>');
+
+        $this->assertStringNotContainsString('CDATA', $svg);
+        $this->assertStringContainsString('.a &gt; b{fill:red}', $svg);
+    }
+
+    public function testCommentInsideStyleIsRemoved(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><!--><img src=x onerror=alert(1)>--></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+        $this->assertStringNotContainsString('<!--', $svg);
+    }
+
+    public function testStyleWithEscapedLessThanCharacterInCdataIsPreserved(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><![CDATA[[title="<a"]{fill:red}]]></style></svg>');
+
+        $this->assertStringContainsString('[title="&lt;a"]{fill:red}', $svg);
+    }
+
+    public function testProcessingInstructionInsideStyleIsRemoved(): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg"><style><?x ><img src=x onerror=alert(1)>?></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+        $this->assertStringNotContainsString('<?x', $svg);
+    }
+
+    public function testStyleWithMarkupIsRemovedWhenSerializedAsHtml(): void
+    {
+        $svg = (new SvgSanitizer(new Html5Parser()))->sanitize('<svg><style><img src=x onerror=alert(1)></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+    }
+
+    #[DataProvider('hiddenMarkupProvider')]
+    public function testCommentsAndProcessingInstructionsAreRemoved(string $content): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg">' . $content . '</svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+        $this->assertStringNotContainsString('<?x', $svg);
+    }
+
+    /**
+     * @return Generator<string, array{string}>
+     */
+    public static function hiddenMarkupProvider(): Generator
+    {
+        yield 'comment in root' => ['<!--><img src=x onerror=alert(1)>-->'];
+        yield 'comment in group' => ['<g><!--><img src=x onerror=alert(1)>--></g>'];
+        yield 'comment in title' => ['<title><!--><img src=x onerror=alert(1)>--></title>'];
+        yield 'processing instruction' => ['<g><?x ><img src=x onerror=alert(1)>?></g>'];
+        yield 'comment starting with dash' => ['<g><!---><img src=x onerror=alert(1)>--></g>'];
+        yield 'consecutive comments' => ['<g><!--a--><!--b--><!--><img src=x onerror=alert(1)>--></g>'];
+    }
+
+    public function testHarmlessCommentIsPreserved(): void
+    {
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg"><g><!-- a note, with a-dash --><path d="M0 0"/></g></svg>';
+
+        $this->assertSame($svg, (new SvgSanitizer())->sanitize($svg));
     }
 }

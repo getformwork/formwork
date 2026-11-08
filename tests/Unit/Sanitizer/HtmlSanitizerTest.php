@@ -6,6 +6,7 @@ use Formwork\Sanitizer\HtmlSanitizer;
 use Formwork\Sanitizer\Reference\HtmlReference;
 use Formwork\Sanitizer\SanitizeElementsMethod;
 use Formwork\Tests\TestCase;
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -315,5 +316,108 @@ final class HtmlSanitizerTest extends TestCase
         (new HtmlSanitizer())->sanitize('<meta http-equiv="refresh" content="0' . str_repeat(' ', 200_000) . 'x' . str_repeat(' ', 200_000) . '">');
 
         $this->assertLessThan(1.0, (hrtime(true) - $start) / 1e9);
+    }
+
+    #[DataProvider('svgStyleMarkupProvider')]
+    public function testMarkupInsideSvgStyleIsRemoved(string $html): void
+    {
+        $output = (new HtmlSanitizer())->sanitize($html);
+
+        $this->assertStringNotContainsString('onerror', $output);
+        $this->assertStringNotContainsString('onload', $output);
+        $this->assertStringNotContainsString('srcdoc', $output);
+        $this->assertStringNotContainsString('formaction', $output);
+    }
+
+    /**
+     * @return \Iterator<string, array{string}>
+     */
+    public static function svgStyleMarkupProvider(): \Iterator
+    {
+        yield 'img' => ['<svg><style><img src=x onerror=alert(1)></style></svg>'];
+        yield 'div' => ['<svg><style><div><img src=x onerror=alert(1)></div></style></svg>'];
+        yield 'body' => ['<svg><style><body onload=alert(1)></style></svg>'];
+        yield 'button' => ['<svg><style><form><button formaction=javascript:alert(1)></style></svg>'];
+        yield 'iframe' => ['<svg><style><iframe srcdoc="<script>alert(1)</script>"></style></svg>'];
+        yield 'end tag' => ['<svg><style></p><img src=x onerror=alert(1)></style></svg>'];
+        yield 'comment' => ['<svg><style><!--><img src=x onerror=alert(1)></style></svg>'];
+        yield 'cdata' => ['<svg><style><![CDATA[<img src=x onerror=alert(1)>]]></style></svg>'];
+        yield 'bogus comment' => ['<svg><style><?x><img src=x onerror=alert(1)></style></svg>'];
+        yield 'unclosed tag' => ['<svg><style><img src=x onerror=alert(1) </style></svg>'];
+    }
+
+    public function testSvgStyleWithoutMarkupIsPreserved(): void
+    {
+        $html = '<svg><style>.a{fill:red}</style></svg>';
+
+        $this->assertStringContainsString('<style>.a{fill:red}</style>', (new HtmlSanitizer())->sanitize($html));
+    }
+
+    public function testSvgStyleWithLessThanCharacterAsTextIsPreserved(): void
+    {
+        $html = '<svg><style>a[title="<"]{fill:red}b[title="a < 1"]{fill:blue}</style></svg>';
+
+        $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
+    }
+
+    public function testSvgStyleWithCdataWrapperIsPreserved(): void
+    {
+        $html = '<svg><style><![CDATA[.a > b{fill:red}]]></style></svg>';
+
+        $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
+    }
+
+    public function testSvgStyleWithCommentHidingMarkupIsRemoved(): void
+    {
+        $output = (new HtmlSanitizer())->sanitize('<svg><style><!--><img src=x onerror=alert(1)>--></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $output);
+    }
+
+    #[DataProvider('unterminatedCdataProvider')]
+    public function testSvgStyleWithUnterminatedCdataIsRemoved(string $html): void
+    {
+        $output = (new HtmlSanitizer())->sanitize($html);
+
+        $this->assertStringNotContainsString('<style', $output);
+        $this->assertStringNotContainsString('<![CDATA[', $output);
+    }
+
+    /**
+     * @return Generator<string, array{string}>
+     */
+    public static function unterminatedCdataProvider(): Generator
+    {
+        yield 'terminator in attribute' => ['<svg><style><![CDATA[</style></svg><p title="]]><img src=x onerror=alert(1)>">x</p>'];
+        yield 'nested opener' => ['<svg><style><![CDATA[a<![CDATA[b]]><img src=x onerror=alert(1)></style></svg>'];
+    }
+
+    public function testSvgStyleWithOversizedCdataFollowedByMarkupIsRemoved(): void
+    {
+        $output = (new HtmlSanitizer())->sanitize('<svg><style><![CDATA[' . str_repeat('a', 1_500_000) . ']]><img src=x onerror=alert(1)></style></svg>');
+
+        $this->assertStringNotContainsString('<img', $output);
+    }
+
+    public function testHarmlessCommentInsideSvgIsPreserved(): void
+    {
+        $html = '<svg><g><!-- a note --><path d="M0 0" /></g></svg>';
+
+        $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
+    }
+
+    public function testCdataSectionIsConvertedToText(): void
+    {
+        $output = (new HtmlSanitizer())->sanitize('<div><![CDATA[><img src=x onerror=alert(1)>]]></div>');
+
+        $this->assertSame('<div>&gt;&lt;img src=x onerror=alert(1)&gt;</div>', $output);
+    }
+
+    public function testCdataSectionInsideSvgIsConvertedToText(): void
+    {
+        $output = (new HtmlSanitizer())->sanitize('<svg><text><![CDATA[a < b]]></text></svg>');
+
+        $this->assertStringNotContainsString('CDATA', $output);
+        $this->assertStringContainsString('a &lt; b', $output);
     }
 }
