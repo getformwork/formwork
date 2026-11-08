@@ -40,11 +40,11 @@ composer create-project getformwork/formwork
 
 Composer will create a `formwork` folder with a fresh ready-to-use Formwork installation.
 
-To use the administration panel you need to build the [assets](#building-administration-panel-assets-with-yarn).
+To use the administration panel you need to build the [assets](#building-administration-panel-assets-with-pnpm).
 
 ### Cloning from GitHub
 
-If you want to get the currently worked master version, you can clone the GitHub repository and then install the dependencies with Composer.
+If you want to get the current development version (`2.x` branch), you can clone the GitHub repository and then install the dependencies with Composer.
 
 1. Clone the repository in your webroot:
 
@@ -59,7 +59,7 @@ cd formwork
 composer install
 ```
 
-3. Build the administration panel [assets](#building-administration-panel-assets-with-yarn).
+3. Build the administration panel [assets](#building-administration-panel-assets-with-pnpm).
 
 ### Building administration panel assets with pnpm
 
@@ -89,3 +89,21 @@ If you prefer you can run the Formwork server through Composer:
 ```shell
 composer serve
 ```
+
+## Documentation
+
+Guides and API reference are available on [getformwork.org](https://getformwork.org).
+
+## Community and support
+
+- 💬 Ask questions and share ideas in [GitHub Discussions](https://github.com/getformwork/formwork/discussions) or on the [Discord chat](https://discord.gg/5Q3BmNY)
+- 🐛 Report bugs and request features in the [issue tracker](https://github.com/getformwork/formwork/issues)
+- 🔒 Report vulnerabilities privately, following the [security policy](SECURITY.md)
+
+## Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) before opening an issue or a pull request.
+
+## License
+
+Formwork is open-source software released under the [MIT License](LICENSE).
