@@ -41,6 +41,8 @@ class Registry
 
     /**
      * Return whether the registry has changes that are not saved yet
+     *
+     * @since 2.3.18
      */
     public function isModified(): bool
     {

@@ -1,5 +1,45 @@
 # Changelog
 
+# [2.3.18](https://github.com/getformwork/formwork/releases/tag/2.3.18)
+
+**Security**
+
+- Sanitize markup hidden in SVG comments, CDATA and style elements
+- Fix `UsersController::images()` serving files outside the images path
+- Add permission to `UsersController@images` action
+- Do not serve files of unpublished or non-routable pages
+- Propagate `allowExternalUris` to embedded element sanitizers in `DomSanitizer`
+- Fix `srcset` and meta refresh URL detection in `HtmlSanitizer`
+- Normalize request path in `Router::setRequest()`
+
+**Enhancements**
+
+- Add `Registry::isModified()`
+- Quote `ETag` header values
+- Write files through a hidden temporary file and remove it on failure in `FileSystem::write()`
+
+**Bug fixes**
+
+- Remove the document prolog before parsing markup in `PhpDomParser`
+- Fix `UpdatesCommand` ignoring options of the given arguments
+- Fix `UpdatesCommand` suggesting a wrong command to update
+- Fix backup failures not being reported when the archive cannot be created
+- Fix `CacheCommand` failing when the images cache directory is missing
+- Fix `PagesController` throwing on invalid reorder and upload requests
+- Fix `ServeCommand` output and time formatting issues
+- Fix `ContentHistory` keeping all items when the limit is zero
+- Fix `Panel` replacing notifications and failing on invalid color scheme cookie
+- Fix metadata and invalid names in `FilesController` delete and rename
+- Fix `FileUploader` reporting every failed upload as a missing file
+- Fix redundant registry writes when tracking visits
+- Fix validation checks for minLength and maxLength in textarea field
+- Fix route generation for already encoded parameter values
+- Fix regex in `FileSystem::shorthandToBytes()` to correctly match byte units
+- Fix PHP 8.5 `NAN` to string coercion warnings
+- Fix PHP 8.5 cast warning in `Constraint::isInIntegerRange()`
+- Fix missing panel translation strings
+- Invalidate OPcache after writing the file in `Php::encodeToFile()`
+
 # [2.3.17](https://github.com/getformwork/formwork/releases/tag/2.3.17)
 
 **Security**
