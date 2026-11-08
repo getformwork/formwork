@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an improvement or a new feature
+labels: ["🚀 enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests are welcome, but please check that your idea fits the scope of Formwork. For early-stage ideas consider starting a thread in [Discussions](https://github.com/getformwork/formwork/discussions/categories/ideas).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do and what is currently missing or hard?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like it to work? Include API or UI examples if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

@@ -1,0 +1,51 @@
+name: Bug report
+description: Report something that does not work as expected
+labels: ["🐛 bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please check that it is not already fixed in the latest release and that there is no similar issue.
+        For questions use [Discussions](https://github.com/getformwork/formwork/discussions); for vulnerabilities see the [security policy](https://github.com/getformwork/formwork/security/policy).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps (or a small code/content sample) to reproduce the problem.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: formwork-version
+    attributes:
+      label: Formwork version
+      placeholder: e.g. 2.3.18
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: e.g. 8.3.12
+    validations:
+      required: true
+  - type: input
+    id: server
+    attributes:
+      label: Web server and OS
+      placeholder: e.g. Apache 2.4 on Ubuntu 24.04, PHP built-in server on macOS
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Relevant errors from `logs/` or the browser console, if any.
+      render: shell

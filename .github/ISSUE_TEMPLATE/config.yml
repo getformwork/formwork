@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or support request
+    url: https://github.com/getformwork/formwork/discussions/categories/q-a
+    about: Ask questions about using Formwork in GitHub Discussions.
+  - name: Idea or feature proposal
+    url: https://github.com/getformwork/formwork/discussions/categories/ideas
+    about: Discuss new ideas before opening a feature request.
+  - name: Chat on Discord
+    url: https://discord.gg/5Q3BmNY
+    about: Talk with the community and the maintainers.
+  - name: Report a security vulnerability
+    url: https://github.com/getformwork/formwork/security/advisories/new
+    about: Please report vulnerabilities privately, not in public issues.
