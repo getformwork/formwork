@@ -9,30 +9,31 @@ permissions:
 
 jobs:
   release:
-
     runs-on: ubuntu-latest
 
+    env:
+      TAG: ${{ github.event.release.tag_name }}
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # master
         with:
-            php-version: '8.3'
-            tools: composer
+          php-version: "8.3"
+          tools: composer
 
       - name: Install dependencies
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
-          version: 10
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: latest
+          package-json-file: panel/package.json
+          cache: false
+          install: false
 
       - name: Build panel assets
         run: |
@@ -42,12 +43,13 @@ jobs:
 
       - name: Create archive
         run: |
-            zip -r formwork-${{ github.event.release.tag_name }}.zip . -x \
-            \*.git/\* \
-            \*.github/\* \
-            \*node_modules/\*
+          zip -r "formwork-${TAG}.zip" . -x \
+          \*.git/\* \
+          \*.github/\* \
+          \*node_modules/\*
 
       - name: Upload release assets
-        uses: svenstaro/upload-release-action@v2
-        with:
-          file: formwork-${{ github.event.release.tag_name }}.zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload "$TAG" "formwork-${TAG}.zip" --clobber

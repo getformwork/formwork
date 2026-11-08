@@ -7,6 +7,8 @@ updates:
     ignore:
         - dependency-name: "*"
           update-types: ["version-update:semver-major"]
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "npm"
     directory: "/panel"
@@ -15,3 +17,5 @@ updates:
     ignore:
         - dependency-name: "*"
           update-types: ["version-update:semver-major"]
+    cooldown:
+      default-days: 7

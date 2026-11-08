@@ -5,13 +5,13 @@ on:
     branches:
       - 2.x
     paths:
-        - 'panel/src/**'
+      - "panel/src/**"
 
   pull_request:
     branches:
       - 2.x
     paths:
-        - 'panel/src/**'
+      - "panel/src/**"
 
 permissions:
   contents: read
@@ -21,19 +21,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
         with:
           version: 10
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: latest
           cache: pnpm
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: |
