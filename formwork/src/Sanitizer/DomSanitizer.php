@@ -3,6 +3,7 @@
 namespace Formwork\Sanitizer;
 
 use DOMAttr;
+use DOMCdataSection;
 use DOMDocumentFragment;
 use DOMElement;
 use DOMNode;
@@ -62,6 +63,11 @@ class DomSanitizer
      * Whether to allow external URIs
      */
     protected bool $allowExternalUris = true;
+
+    /**
+     * Whether the markup is embedded in a document sanitized by another sanitizer
+     */
+    protected bool $embedded = false;
 
     public function __construct(
         protected DomParserInterface $domParser = new Html5Parser(),
@@ -176,6 +182,12 @@ class DomSanitizer
         for ($i = $domNodeList->length; $i >= 0; $i--) {
             $node = $domNodeList->item($i);
 
+            // Browsers read CDATA sections as comments outside foreign content, so convert them to text
+            if ($node instanceof DOMCdataSection && $node->parentNode !== null) {
+                $node->parentNode->replaceChild(new DOMText($node->data), $node);
+                continue;
+            }
+
             if (!($node instanceof DOMElement)) {
                 continue;
             }
@@ -204,6 +216,7 @@ class DomSanitizer
         if (isset($this->elementSanitizers[$domElement->nodeName])) {
             $sanitizer = new $this->elementSanitizers[$domElement->nodeName]();
             $sanitizer->allowExternalUris = $this->allowExternalUris;
+            $sanitizer->embedded = true;
             $sanitizer->sanitizeNode($domElement);
             return;
         }
