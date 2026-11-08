@@ -6,6 +6,7 @@ use Formwork\Sanitizer\Parser\Html5Parser;
 use Formwork\Sanitizer\Reference\SvgReference;
 use Formwork\Sanitizer\SvgSanitizer;
 use Formwork\Tests\TestCase;
+use Generator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -234,5 +235,34 @@ final class SvgSanitizerTest extends TestCase
         $svg = (new SvgSanitizer(new Html5Parser()))->sanitize('<svg><style><img src=x onerror=alert(1)></style></svg>');
 
         $this->assertStringNotContainsString('<img', $svg);
+    }
+
+    #[DataProvider('hiddenMarkupProvider')]
+    public function testCommentsAndProcessingInstructionsAreRemoved(string $content): void
+    {
+        $svg = (new SvgSanitizer())->sanitize('<svg xmlns="http://www.w3.org/2000/svg">' . $content . '</svg>');
+
+        $this->assertStringNotContainsString('<img', $svg);
+        $this->assertStringNotContainsString('<?x', $svg);
+    }
+
+    /**
+     * @return Generator<string, array{string}>
+     */
+    public static function hiddenMarkupProvider(): Generator
+    {
+        yield 'comment in root' => ['<!--><img src=x onerror=alert(1)>-->'];
+        yield 'comment in group' => ['<g><!--><img src=x onerror=alert(1)>--></g>'];
+        yield 'comment in title' => ['<title><!--><img src=x onerror=alert(1)>--></title>'];
+        yield 'processing instruction' => ['<g><?x ><img src=x onerror=alert(1)>?></g>'];
+        yield 'comment starting with dash' => ['<g><!---><img src=x onerror=alert(1)>--></g>'];
+        yield 'consecutive comments' => ['<g><!--a--><!--b--><!--><img src=x onerror=alert(1)>--></g>'];
+    }
+
+    public function testHarmlessCommentIsPreserved(): void
+    {
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg"><g><!-- a note, with a-dash --><path d="M0 0"/></g></svg>';
+
+        $this->assertSame($svg, (new SvgSanitizer())->sanitize($svg));
     }
 }

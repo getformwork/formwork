@@ -399,6 +399,13 @@ final class HtmlSanitizerTest extends TestCase
         $this->assertStringNotContainsString('<img', $output);
     }
 
+    public function testHarmlessCommentInsideSvgIsPreserved(): void
+    {
+        $html = '<svg><g><!-- a note --><path d="M0 0" /></g></svg>';
+
+        $this->assertSame($html, (new HtmlSanitizer())->sanitize($html));
+    }
+
     public function testCdataSectionIsConvertedToText(): void
     {
         $output = (new HtmlSanitizer())->sanitize('<div><![CDATA[><img src=x onerror=alert(1)>]]></div>');

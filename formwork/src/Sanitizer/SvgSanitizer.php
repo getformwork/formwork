@@ -7,6 +7,8 @@ use DOMComment;
 use DOMDocument;
 use DOMDocumentFragment;
 use DOMElement;
+use DOMNode;
+use DOMNodeList;
 use DOMProcessingInstruction;
 use Formwork\Sanitizer\Parser\DomParserInterface;
 use Formwork\Sanitizer\Parser\PhpDomParser;
@@ -47,6 +49,21 @@ class SvgSanitizer extends DomSanitizer
     {
         parent::sanitizeDocumentFragment($domDocumentFragment);
         $this->addExplicitSvgNamespace($domDocumentFragment);
+    }
+
+    /**
+     * @param DOMNodeList<DOMNode> $domNodeList
+     */
+    protected function sanitizeNodes(DOMNodeList $domNodeList): void
+    {
+        for ($i = $domNodeList->length - 1; $i >= 0; $i--) {
+            $node = $domNodeList->item($i);
+            if ($node instanceof DOMProcessingInstruction || ($node instanceof DOMComment && !$this->isSafeComment($node->data))) {
+                $node->parentNode?->removeChild($node);
+            }
+        }
+
+        parent::sanitizeNodes($domNodeList);
     }
 
     protected function sanitizeNode(DOMElement $domElement): void
@@ -117,14 +134,6 @@ class SvgSanitizer extends DomSanitizer
      */
     private function isSafeStyle(DOMElement $domElement): bool
     {
-        // Browsers end comments and bogus comments early in foreign content (e.g. at `<!-->`), so they cannot be kept
-        for ($i = $domElement->childNodes->length - 1; $i >= 0; $i--) {
-            $childNode = $domElement->childNodes->item($i);
-            if ($childNode instanceof DOMComment || $childNode instanceof DOMProcessingInstruction) {
-                $domElement->removeChild($childNode);
-            }
-        }
-
         // Standalone SVG serialized as XML has its text escaped, so markup cannot be injected
         if (!$this->embedded && $this->domParser instanceof PhpDomParser) {
             return true;
@@ -161,6 +170,20 @@ class SvgSanitizer extends DomSanitizer
         }
 
         return $result . substr($text, $offset);
+    }
+
+    /**
+     * Return whether a comment is read by browsers as it is by XML parsers
+     *
+     * Browsers end comments in foreign content early at `<!-->` and `<!--->`, and at `--!>`,
+     * so the markup that follows would be parsed. Processing instructions are always removed.
+     */
+    private function isSafeComment(string $data): bool
+    {
+        return !str_starts_with($data, '>')
+            && !str_starts_with($data, '->')
+            && !str_contains($data, '--')
+            && !str_ends_with($data, '-');
     }
 
     /**
