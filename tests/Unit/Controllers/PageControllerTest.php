@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Controllers;
 
 use Formwork\Cache\AbstractCache;
 use Formwork\Cache\ArrayCache;
+use Formwork\Cache\CacheItem;
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Controllers\PageController;
@@ -326,7 +327,7 @@ final class PageControllerTest extends TestCase
         $this->load('/timed/', system: ['cache' => ['stores' => ['pages' => ['enabled' => true]]]]);
 
         $item = $this->cache->getItem(rawurlencode('/timed/'));
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItem::class, $item);
         $this->assertSame(60, $item->expirationTime() - $item->cachedTime());
     }
 
@@ -350,7 +351,7 @@ final class PageControllerTest extends TestCase
 
         $this->assertContains('The "cache.time" page option is deprecated since Formwork 2.4.0. Use "cache.ttl" instead.', $deprecations);
         $item = $this->cache->getItem(rawurlencode('/timed/'));
-        $this->assertNotNull($item);
+        $this->assertInstanceOf(CacheItem::class, $item);
         $this->assertSame(60, $item->expirationTime() - $item->cachedTime());
     }
 
