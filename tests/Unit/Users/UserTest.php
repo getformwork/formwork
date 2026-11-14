@@ -343,6 +343,16 @@ final class UserTest extends TestCase
         $testableUser->set('email', 'ALICE@Example.test');
     }
 
+    public function testUsersCanChangeTheCaseOfTheirOwnEmail(): void
+    {
+        $users = $this->users();
+        $testableUser = $this->makeUser(['username' => 'alice', 'email' => 'Alice@Example.test'], $users);
+
+        $testableUser->set('email', 'alice@example.test');
+
+        $this->assertSame('alice@example.test', $testableUser->data()['email']);
+    }
+
     public function testUsersCanKeepTheirOwnEmail(): void
     {
         $testableUser = $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test']);

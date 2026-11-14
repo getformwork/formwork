@@ -360,7 +360,10 @@ class User extends Model
             throw new InvalidValueException(sprintf('Invalid e-mail address "%s"', $email));
         }
 
-        if ($email !== $this->email() && $this->users->some(fn(User $user) => strcasecmp((string) $user->email(), $email) === 0)) {
+        if ($email !== $this->email() && $this->users->some(
+            // The user itself is excluded, so that only the case of its address can be changed
+            fn(User $user) => $user->username() !== $this->username() && strcasecmp((string) $user->email(), $email) === 0
+        )) {
             throw new TranslatedException(sprintf('Cannot change the email of the user "%s", the address is already used', $this->username()), 'panel.users.user.cannotChangeEmail.alreadyUsed');
         }
 
