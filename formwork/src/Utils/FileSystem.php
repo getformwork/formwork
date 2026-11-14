@@ -544,6 +544,10 @@ final class FileSystem
         if (!$overwrite) {
             self::assertExists($destination, false);
         }
+        // Copying a directory into itself would copy the destination over and over again
+        if (Path::isRelativeTo(self::resolvePath($destination), self::resolvePath($source))) {
+            throw new InvalidArgumentException(sprintf('%s() cannot copy a directory into itself', __METHOD__));
+        }
         if (!self::exists($destination)) {
             self::createDirectory($destination, true);
         }
