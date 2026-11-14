@@ -23,11 +23,11 @@ return function (App $app) {
                     throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
                 }
 
-                if ($field->has('min') && strlen((string) $value) < $field->get('min')) {
+                if ($field->has('min') && mb_strlen((string) $value) < $field->get('min')) {
                     throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->get('min')), 'valueTooShort', ['min' => $field->get('min')]);
                 }
 
-                if ($field->has('max') && strlen((string) $value) > $field->get('max')) {
+                if ($field->has('max') && mb_strlen((string) $value) > $field->get('max')) {
                     throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->get('max')), 'valueTooLong', ['max' => $field->get('max')]);
                 }
 
