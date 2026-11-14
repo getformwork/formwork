@@ -348,6 +348,39 @@ final class PageTest extends TestCase
         $child->set('parent', '/missing-parent');
     }
 
+    #[DataProvider('ownSubtreeParentProvider')]
+    public function testPagesCannotBeMovedUnderThemselvesOrTheirDescendants(string $parent): void
+    {
+        $page = $this->siteFromFixture()->findPage('/parent/');
+        $this->assertInstanceOf(Page::class, $page);
+        $previousParent = $page->parent();
+
+        $invalidValueException = $this->captureException(InvalidValueException::class, fn() => $page->set('parent', $parent));
+
+        $this->assertSame('invalidParent', $invalidValueException->getIdentifier());
+        $this->assertSame($previousParent, $page->parent());
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function ownSubtreeParentProvider(): iterable
+    {
+        yield 'the page itself' => ['/parent/'];
+        yield 'a child of the page' => ['/parent/child/'];
+    }
+
+    public function testPagesCanBeMovedUnderOtherPages(): void
+    {
+        $site = $this->siteFromFixture();
+        $page = $site->findPage('/parent/');
+        $this->assertInstanceOf(Page::class, $page);
+
+        $page->set('parent', '/about/');
+
+        $this->assertSame($site->findPage('/about/'), $page->parent());
+    }
+
     /**
      * @param class-string<Throwable> $exception
      */

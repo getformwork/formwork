@@ -220,6 +220,14 @@ final class PagesControllerActionsTest extends TestCase
         $this->assertFileDoesNotExist(($this->site->findPage('about')?->contentPath() ?? '') . '/.history');
     }
 
+    public function testPagesCannotBeMovedUnderThemselves(): void
+    {
+        $response = $this->call($this->controller(input: $this->pageInput('about', ['parent' => '/about/']), server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator()), 'edit', ['page' => 'about']);
+
+        $this->assertOutcome(['to' => 'panel.pages.edit', 'notices' => ['error']], $response);
+        $this->assertDirectoryDoesNotExist($this->pagesPath . '/about/about');
+    }
+
     public function testPagesCanBePublishedWhileEditing(): void
     {
         $page = $this->site->findPage('about');
