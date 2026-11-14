@@ -16,9 +16,9 @@ final class Blur extends AbstractTransform
      */
     private const array CONVOLUTION_KERNELS = [
         BlurMode::Smooth->value => [
-            [0.075, 0.125, 0.075],
-            [0.125, 0.200, 0.125],
-            [0.075, 0.125, 0.075],
+            [1 / 16, 1 / 16, 1 / 16],
+            [1 / 16, 1 / 2, 1 / 16],
+            [1 / 16, 1 / 16, 1 / 16],
         ],
 
         BlurMode::Mean->value => [
