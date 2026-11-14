@@ -791,7 +791,8 @@ final class Arr
 
         if (is_callable($sortBy)) {
             $function = $preserveKeys ? 'uasort' : 'usort';
-            $function($array, $sortBy);
+            // The arguments of the callback are swapped to sort in descending order
+            $function($array, $direction === SORT_ASC ? $sortBy : static fn($a, $b): int => $sortBy($b, $a));
             return $array;
         }
 
