@@ -424,7 +424,8 @@ class Router
         foreach ($matches as $i => $match) {
             if ($match !== null) {
                 $param = $names[$i];
-                $params[$param] = $match;
+                // The request path keeps encoded the characters that would change its structure, like `/` or `?`
+                $params[$param] = rawurldecode($match);
             }
         }
 
