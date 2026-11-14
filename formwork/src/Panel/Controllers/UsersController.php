@@ -51,8 +51,10 @@ final class UsersController extends AbstractController
             return $this->redirect($this->generateRoute('panel.users'));
         }
 
-        // Ensure there isn't a user with the same username
-        if ($this->site->users()->has($form->data()->get('username'))) {
+        $username = (string) $form->data()->get('username');
+
+        // Ensure there isn't a user with the same username, also with a different case, as accounts are stored in files named after them
+        if ($this->site->users()->some(fn(User $user) => strcasecmp((string) $user->username(), $username) === 0)) {
             $this->panel->notify($this->translate('panel.users.user.cannotCreate.alreadyExists'), 'error');
             return $this->redirect($this->generateRoute('panel.users'));
         }
