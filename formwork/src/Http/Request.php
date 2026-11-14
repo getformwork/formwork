@@ -620,17 +620,23 @@ class Request
      * Normalize files data
      *
      * @param array<mixed> $files
+     * @param string|null  $parentName Name of the parent field of nested files
      *
      * @return array<mixed>
      */
-    protected function prepareFiles(array $files): array
+    protected function prepareFiles(array $files, ?string $parentName = null): array
     {
         $result = [];
 
         foreach ($files as $fieldName => $data) {
-            $fieldName = rawurldecode($fieldName);
+            $fieldName = rawurldecode((string) $fieldName);
+
+            // Nested fields are named like in forms, e.g. `form[images]`
+            $name = $parentName === null ? $fieldName : "{$parentName}[{$fieldName}]";
 
             if (is_array($data['name'])) {
+                $fieldFiles = [];
+
                 foreach (array_keys($data['name']) as $i) {
                     $props = [
                         'name'      => $data['name'][$i],
@@ -641,17 +647,15 @@ class Request
                         'size'      => $data['size'][$i] ?? '',
                     ];
 
-                    if (is_array($data['name'][$i])) {
-                        $result[$fieldName] = $this->prepareFiles([$i => $props]);
-                    } else {
-                        /**
-                         * @var array<string, list<UploadedFile>> $result
-                         */
-                        $result[$fieldName][] = new UploadedFile($fieldName, $props);
-                    }
+                    // Keys are kept, so that the files of different nested fields do not replace each other
+                    $fieldFiles[$i] = is_array($data['name'][$i])
+                        ? $this->prepareFiles([$i => $props], $name)[$i]
+                        : new UploadedFile(is_int($i) ? $name : "{$name}[{$i}]", $props);
                 }
+
+                $result[$fieldName] = $fieldFiles;
             } else {
-                $result[$fieldName] = new UploadedFile($fieldName, $data);
+                $result[$fieldName] = new UploadedFile($name, $data);
             }
         }
 

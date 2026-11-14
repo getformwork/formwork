@@ -446,6 +446,50 @@ final class RequestTest extends TestCase
         $this->assertCount(3, $request->files()->getAll());
     }
 
+    public function testNestedUploadedFilesOfDifferentFieldsAreKept(): void
+    {
+        // Like PHP builds `$_FILES` for the fields `form[a][]`, `form[b][]` and `form[c]`
+        $form = [
+            'name'      => ['a' => ['a1.txt', 'a2.txt'], 'b' => ['b.txt'], 'c' => 'c.txt'],
+            'full_path' => ['a' => ['a1.txt', 'a2.txt'], 'b' => ['b.txt'], 'c' => 'c.txt'],
+            'type'      => ['a' => ['text/plain', 'text/plain'], 'b' => ['text/plain'], 'c' => 'text/plain'],
+            'tmp_name'  => ['a' => ['/tmp/php-a1', '/tmp/php-a2'], 'b' => ['/tmp/php-b'], 'c' => '/tmp/php-c'],
+            'error'     => ['a' => [UPLOAD_ERR_OK, UPLOAD_ERR_OK], 'b' => [UPLOAD_ERR_OK], 'c' => UPLOAD_ERR_OK],
+            'size'      => ['a' => ['1', '2'], 'b' => ['3'], 'c' => '4'],
+        ];
+
+        // Like PHP builds `$_FILES` for the fields `gallery[images][cover][]` and `gallery[images][thumbs][]`
+        $gallery = [
+            'name'      => ['images' => ['cover' => ['cover.png'], 'thumbs' => ['thumb.png']]],
+            'full_path' => ['images' => ['cover' => ['cover.png'], 'thumbs' => ['thumb.png']]],
+            'type'      => ['images' => ['cover' => ['image/png'], 'thumbs' => ['image/png']]],
+            'tmp_name'  => ['images' => ['cover' => ['/tmp/php-cover'], 'thumbs' => ['/tmp/php-thumb']]],
+            'error'     => ['images' => ['cover' => [UPLOAD_ERR_OK], 'thumbs' => [UPLOAD_ERR_OK]]],
+            'size'      => ['images' => ['cover' => ['5'], 'thumbs' => ['6']]],
+        ];
+
+        $request = $this->request(files: ['form' => $form, 'gallery' => $gallery]);
+
+        $formFiles = $request->files()->get('form');
+        $galleryFiles = $request->files()->get('gallery');
+
+        $this->assertIsArray($formFiles);
+        $this->assertSame(['a', 'b', 'c'], array_keys($formFiles));
+        $this->assertSame(['a1.txt', 'a2.txt'], array_map(static fn(UploadedFile $file): string => $file->clientName(), $formFiles['a']));
+        $this->assertSame('form[a]', $formFiles['a'][0]->fieldName());
+        $this->assertSame('b.txt', $formFiles['b'][0]->clientName());
+        $this->assertInstanceOf(UploadedFile::class, $formFiles['c']);
+        $this->assertSame('form[c]', $formFiles['c']->fieldName());
+
+        $this->assertIsArray($galleryFiles);
+        $this->assertSame(['cover', 'thumbs'], array_keys($galleryFiles['images']));
+        $this->assertSame('cover.png', $galleryFiles['images']['cover'][0]->clientName());
+        $this->assertSame('gallery[images][thumbs]', $galleryFiles['images']['thumbs'][0]->fieldName());
+
+        // Every file is kept
+        $this->assertCount(6, $request->files()->getAll());
+    }
+
     public function testSessionIsMemoizedAndPreviousSessionIsAbsentWithoutCookie(): void
     {
         $request = $this->request();
