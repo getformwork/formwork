@@ -460,7 +460,9 @@ class Image extends File
      */
     public function saveAs(string $path, ?string $mimeType = null): void
     {
-        $handler = match ($mimeType ?? $this->mimeType()) {
+        $mimeType ??= $this->mimeType();
+
+        $handler = match ($mimeType) {
             'image/jpeg'    => JpegHandler::class,
             'image/png'     => PngHandler::class,
             'image/gif'     => GifHandler::class,
@@ -474,17 +476,19 @@ class Image extends File
             if (!$this->transforms->isEmpty()) {
                 throw new UnsupportedTransformsException(sprintf('Image type %s does not support transformations', $this->mimeType()));
             }
-            if ($mimeType === $this->mimeType()) {
-                $this->handler()->saveAs($path);
-                return;
+
+            if ($mimeType !== $this->mimeType()) {
+                throw new UnsupportedConversionException(sprintf('Unsupported image conversion from %s to %s', $this->mimeType(), $mimeType));
             }
-            throw new UnsupportedConversionException(sprintf('Unsupported image conversion from %s to %s', $this->mimeType(), $mimeType));
-        }
 
-        $this->handler()->process($this->transforms, $handler)->saveAs($path);
+            // Images that cannot be transformed are saved as they are
+            $this->handler()->saveAs($path);
+        } else {
+            $this->handler()->process($this->transforms, $handler)->saveAs($path);
 
-        if (!$this->transforms->isEmpty()) {
-            $this->transforms = new TransformCollection();
+            if (!$this->transforms->isEmpty()) {
+                $this->transforms = new TransformCollection();
+            }
         }
     }
 
