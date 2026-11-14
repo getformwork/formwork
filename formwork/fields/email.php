@@ -26,11 +26,11 @@ return function (App $app) {
                     throw new ValidationException(sprintf('The value of field "%s" of type "%s" is not a valid e-mail address', $field->name(), $field->type()), 'invalidEmail');
                 }
 
-                if ($field->has('minLength') && strlen($value) < $field->minLength()) {
+                if ($field->has('minLength') && mb_strlen($value) < $field->minLength()) {
                     throw new ValidationException(sprintf('The minimum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->minLength()), 'valueTooShort', ['minLength' => $field->minLength()]);
                 }
 
-                if ($field->has('maxLength') && strlen($value) > $field->maxLength()) {
+                if ($field->has('maxLength') && mb_strlen($value) > $field->maxLength()) {
                     throw new ValidationException(sprintf('The maximum allowed length for field "%s" of type "%s" is %d', $field->name(), $field->type(), $field->maxLength()), 'valueTooLong', ['maxLength' => $field->maxLength()]);
                 }
 

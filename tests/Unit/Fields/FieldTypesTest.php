@@ -109,6 +109,33 @@ final class FieldTypesTest extends TestCase
     }
 
     /**
+     * @param array<string, mixed> $data
+     */
+    #[DataProvider('lengthProvider')]
+    public function testLengthsAreCountedInCharacters(string $type, array $data, string $value, bool $expected): void
+    {
+        $field = App::instance()->getService(FieldFactory::class)->make('field', ['type' => $type, ...$data]);
+
+        $field->set('value', $value);
+
+        $this->assertSame($expected, $field->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{string, array<string, mixed>, string, bool}>
+     */
+    public static function lengthProvider(): iterable
+    {
+        foreach (['text', 'textarea'] as $type) {
+            yield "{$type}: accented characters within the maximum length" => [$type, ['maxLength' => 3], 'èèè', true];
+            yield "{$type}: accented characters over the maximum length" => [$type, ['maxLength' => 3], 'èèèè', false];
+            yield "{$type}: non-Latin characters within the maximum length" => [$type, ['maxLength' => 3], '日本語', true];
+            yield "{$type}: accented characters below the minimum length" => [$type, ['minLength' => 4], 'èèè', false];
+            yield "{$type}: accented characters at the minimum length" => [$type, ['minLength' => 3], 'èèè', true];
+        }
+    }
+
+    /**
      * @return iterable<string, array{string}>
      */
     public static function stringFieldTypeProvider(): iterable
