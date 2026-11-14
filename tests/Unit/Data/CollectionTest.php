@@ -821,6 +821,22 @@ final class CollectionTest extends TestCase
         $this->assertSame(['a' => 'item1', 'b' => 'item2', 'c' => 'item3'], $unionCollection->toArray());
     }
 
+    public function testUnionOfListsJoinsValues(): void
+    {
+        $collection1 = Collection::from(['a', 'b']);
+        $collection2 = Collection::from(['b', 'c', 'd']);
+
+        $this->assertSame(['a', 'b', 'c', 'd'], $collection1->union($collection2)->toArray());
+    }
+
+    public function testUnionOfTypedListsRejectsValuesOfOtherTypes(): void
+    {
+        $collection = Collection::from(['a', 'b'], typed: true);
+
+        $this->expectException(LogicException::class);
+        $collection->union(Collection::from([1, 2]));
+    }
+
     public function testUnionTypedCollectionsAcceptEveryListedType(): void
     {
         $collection = Collection::of('int|string', [1, 'two'], mutable: true);

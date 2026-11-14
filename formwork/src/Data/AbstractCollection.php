@@ -596,14 +596,22 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return a copy of the collection with the union of the values of the given collections
      *
+     * Associative collections are joined by key, other collections by value
+     *
      * @param self<T> ...$collections
+     *
+     * @throws LogicException If a value type is invalid
      */
     public function union(self ...$collections): static
     {
         $collection = $this->clone();
 
         foreach ($collections as $otherCollection) {
-            $collection->data += $otherCollection->data;
+            if ($collection->isAssociative()) {
+                $collection->data += $otherCollection->data;
+            } else {
+                $collection = $collection->with(...$otherCollection->data);
+            }
         }
 
         return $collection;
