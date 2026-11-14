@@ -4,6 +4,7 @@ namespace Formwork\Images\Transform;
 
 use Formwork\Images\ImageInfo;
 use GdImage;
+use InvalidArgumentException;
 
 final class Flip extends AbstractTransform
 {
@@ -23,11 +24,13 @@ final class Flip extends AbstractTransform
     ) {}
 
     /**
-     * @param array{direction: FlipDirection, ...} $data
+     * The `direction` key is accepted too for backward compatibility
+     *
+     * @param array{flipDirection?: FlipDirection, direction?: FlipDirection, ...} $data
      */
     public static function fromArray(array $data): self
     {
-        return new self($data['direction']);
+        return new self($data['flipDirection'] ?? $data['direction'] ?? throw new InvalidArgumentException('Missing flip direction'));
     }
 
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage

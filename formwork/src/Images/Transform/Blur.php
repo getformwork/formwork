@@ -44,11 +44,13 @@ final class Blur extends AbstractTransform
     }
 
     /**
-     * @param array{amount: int, mode: BlurMode, ...} $data
+     * The `mode` key is accepted too for backward compatibility
+     *
+     * @param array{amount: int, blurMode?: BlurMode, mode?: BlurMode, ...} $data
      */
     public static function fromArray(array $data): self
     {
-        return new self($data['amount'], $data['mode']);
+        return new self($data['amount'], $data['blurMode'] ?? $data['mode'] ?? throw new InvalidArgumentException('Missing blur mode'));
     }
 
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage

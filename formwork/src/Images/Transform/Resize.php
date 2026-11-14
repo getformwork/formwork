@@ -29,11 +29,13 @@ final class Resize extends AbstractTransform
     }
 
     /**
-     * @param array{width: int|null, height: int|null, mode: ResizeMode, ...} $data
+     * The `mode` key is accepted too for backward compatibility
+     *
+     * @param array{width?: int|null, height?: int|null, resizeMode?: ResizeMode, mode?: ResizeMode, ...} $data
      */
     public static function fromArray(array $data): self
     {
-        return new self($data['width'], $data['height'], $data['mode']);
+        return new self($data['width'] ?? null, $data['height'] ?? null, $data['resizeMode'] ?? $data['mode'] ?? ResizeMode::Cover);
     }
 
     public function apply(GdImage $gdImage, ImageInfo $imageInfo): GdImage
