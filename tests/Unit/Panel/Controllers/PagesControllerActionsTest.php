@@ -15,6 +15,7 @@ use Formwork\Panel\ContentHistory\ContentHistoryItem;
 use Formwork\Panel\Controllers\PagesController;
 use Formwork\Panel\Modals\Modal;
 use Formwork\Panel\Modals\Modals;
+use Formwork\Parsers\Json;
 use Formwork\Schemes\Schemes;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
@@ -123,11 +124,10 @@ final class PagesControllerActionsTest extends TestCase
         yield 'delete of an unknown page with a script request' => ['delete', ['page' => 'missing'], ['server' => $ajax], ['status' => 500]];
         yield 'delete in an unavailable language' => ['delete', ['page' => 'about', 'language' => 'xx'], ['server' => $ajax], ['status' => 500], ['about' => true]];
         yield 'reorder without parameters' => ['reorder', [], $reorder([]), ['status' => 400]];
-        yield 'reorder without the page before' => ['reorder', [], $reorder(['page' => 'about']), ['status' => 400]];
-        yield 'reorder without the parent' => ['reorder', [], $reorder(['page' => 'about', 'before' => 'blog']), ['status' => 400]];
-        yield 'reorder of an unknown page' => ['reorder', [], $reorder(['page' => '/missing/', 'before' => '/about/', 'parent' => '.']), ['status' => 500, 'json' => ['status' => 'error']]];
-        yield 'reorder before an unknown page' => ['reorder', [], $reorder(['page' => '/about/', 'before' => '/missing/', 'parent' => '.']), ['status' => 500]];
-        yield 'reorder in a page without children' => ['reorder', [], $reorder(['page' => '/about/', 'before' => '/blog/', 'parent' => 'about']), ['status' => 500]];
+        yield 'reorder without the order' => ['reorder', [], $reorder(['parent' => '.']), ['status' => 400]];
+        yield 'reorder without the parent' => ['reorder', [], $reorder(['order' => '["/blog/", "/about/"]']), ['status' => 400]];
+        yield 'reorder with an order that is not valid JSON' => ['reorder', [], $reorder(['order' => '/blog/', 'parent' => '.']), ['status' => 500, 'json' => ['status' => 'error']]];
+        yield 'reorder in a page without children' => ['reorder', [], $reorder(['order' => '["/blog/", "/about/"]', 'parent' => 'about']), ['status' => 500]];
         yield 'upload to an unknown page' => ['upload', ['page' => 'missing'], [], ['status' => 500]];
         yield 'upload without files' => ['upload', ['page' => 'about'], ['server' => $post], ['status' => 500]];
         yield 'upload of an empty file field' => ['upload', ['page' => 'about'], ['server' => $post, 'uploads' => [UPLOAD_ERR_NO_FILE]], ['status' => 500]];
@@ -157,7 +157,7 @@ final class PagesControllerActionsTest extends TestCase
      */
     public static function failingActionProvider(): iterable
     {
-        yield 'reorder in an unknown parent' => ['reorder', ['input' => ['page' => '/about/', 'before' => '/blog/', 'parent' => 'missing']]];
+        yield 'reorder in an unknown parent' => ['reorder', ['input' => ['order' => '["/blog/", "/about/"]', 'parent' => 'missing']]];
         yield 'upload of a file of a disallowed type' => ['upload', ['uploads' => ['text']]];
         yield 'upload of a file with an existing name' => ['upload', ['uploads' => ['png'], 'twice' => true]];
     }
@@ -265,7 +265,7 @@ final class PagesControllerActionsTest extends TestCase
     {
         $this->numberPages();
 
-        $response = $this->call($this->controller(input: ['page' => '/blog/', 'before' => '/about/', 'parent' => '.']), 'reorder');
+        $response = $this->call($this->controller(input: ['order' => Json::encode(['/error/', '/blog/', '/index/', '/about/']), 'parent' => '.']), 'reorder');
 
         $this->assertOutcome(['status' => 200], $response);
         $this->assertDirectoryExists($this->pagesPath . '/1-blog');
@@ -273,6 +273,79 @@ final class PagesControllerActionsTest extends TestCase
         // Pages that are not orderable are left alone
         $this->assertDirectoryExists($this->pagesPath . '/error');
         $this->assertDirectoryExists($this->pagesPath . '/index');
+    }
+
+    /**
+     * @param list<string> $order
+     * @param list<string> $expected
+     */
+    #[DataProvider('reorderProvider')]
+    public function testPagesAreNumberedInTheGivenOrder(array $order, array $expected): void
+    {
+        FileSystem::copyDirectory($this->pagesPath . '/about', $this->pagesPath . '/3-third');
+        $this->numberPages();
+
+        $response = $this->call($this->controller(input: ['order' => Json::encode([...$order, '/index/', '/error/']), 'parent' => '.']), 'reorder');
+
+        $this->assertOutcome(['status' => 200], $response);
+
+        foreach ($expected as $directory) {
+            $this->assertDirectoryExists($this->pagesPath . '/' . $directory);
+        }
+    }
+
+    /**
+     * @return iterable<string, array{list<string>, list<string>}>
+     */
+    public static function reorderProvider(): iterable
+    {
+        yield 'a page moved up' => [['/about/', '/third/', '/blog/'], ['1-about', '2-third', '3-blog']];
+        yield 'a page moved down' => [['/blog/', '/about/', '/third/'], ['1-blog', '2-about', '3-third']];
+        yield 'a page moved to the end' => [['/blog/', '/third/', '/about/'], ['1-blog', '2-third', '3-about']];
+    }
+
+    /**
+     * @param list<string> $order
+     */
+    #[DataProvider('invalidOrderProvider')]
+    public function testPagesAreNotReorderedWithAnInvalidOrder(array $order): void
+    {
+        $this->numberPages();
+
+        $response = $this->call($this->controller(input: ['order' => Json::encode($order), 'parent' => '.']), 'reorder');
+
+        $this->assertOutcome(['status' => 500], $response);
+        $this->assertDirectoryExists($this->pagesPath . '/1-about');
+        $this->assertDirectoryExists($this->pagesPath . '/2-blog');
+    }
+
+    /**
+     * @return iterable<string, array{list<string>}>
+     */
+    public static function invalidOrderProvider(): iterable
+    {
+        yield 'a missing page' => [['/blog/', '/index/', '/error/']];
+        yield 'an unknown page' => [['/blog/', '/about/', '/index/', '/error/', '/missing/']];
+        yield 'a page replaced by an unknown one' => [['/blog/', '/missing/', '/index/', '/error/']];
+        yield 'a duplicated page' => [['/blog/', '/blog/', '/about/', '/index/', '/error/']];
+    }
+
+    public function testReversedChildrenAreNumberedFromTheLastDisplayedPage(): void
+    {
+        // The blog displays its children reversed, posts are replaced by orderable pages
+        foreach (['20240101-first' => '1-first', '20240102-second' => '2-second', '20240103-third' => '3-third'] as $post => $page) {
+            rename($this->pagesPath . "/blog/{$post}", $this->pagesPath . "/blog/{$page}");
+            rename($this->pagesPath . "/blog/{$page}/post.md", $this->pagesPath . "/blog/{$page}/page.md");
+        }
+
+        $this->numberPages();
+
+        $response = $this->call($this->controller(input: ['order' => Json::encode(['/blog/first/', '/blog/third/', '/blog/second/']), 'parent' => '/blog/']), 'reorder');
+
+        $this->assertOutcome(['status' => 200], $response);
+        $this->assertDirectoryExists($this->pagesPath . '/2-blog/1-second');
+        $this->assertDirectoryExists($this->pagesPath . '/2-blog/2-third');
+        $this->assertDirectoryExists($this->pagesPath . '/2-blog/3-first');
     }
 
     public function testFilesAreUploadedToPages(): void

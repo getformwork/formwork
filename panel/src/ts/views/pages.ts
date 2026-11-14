@@ -396,8 +396,7 @@ async function createSortable(element: HTMLElement) {
             sortable.option("disabled", true);
 
             const data = {
-                page: event.item.dataset.route,
-                before: (event.item.nextElementSibling as HTMLElement).dataset.route,
+                order: JSON.stringify(Array.from(element.children, (item) => (item as HTMLElement).dataset.route)),
                 parent: element.dataset.parent,
             };
 

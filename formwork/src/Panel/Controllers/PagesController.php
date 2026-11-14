@@ -16,6 +16,7 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageFactory;
 use Formwork\Panel\ContentHistory\ContentHistory;
 use Formwork\Panel\ContentHistory\ContentHistoryEvent;
+use Formwork\Parsers\Json;
 use Formwork\Router\RouteParams;
 use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
@@ -24,6 +25,7 @@ use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\Utils\Uri;
+use JsonException;
 use UnexpectedValueException;
 
 final class PagesController extends AbstractController
@@ -55,7 +57,10 @@ final class PagesController extends AbstractController
             return $this->forward(ErrorsController::class, 'notFound');
         }
 
-        $pageCollection = $parent->children();
+        $pageCollection = $parent->scheme()->options()->get('children.reverse', false)
+            ? $parent->children()->reverse()
+            : $parent->children();
+
         $indexOffset = $pageCollection->indexOf($this->site->indexPage());
 
         if ($indexOffset !== null) {
@@ -315,7 +320,7 @@ final class PagesController extends AbstractController
     {
         $requestData = $this->request->input();
 
-        if (!$requestData->hasMultiple(['page', 'before', 'parent'])) {
+        if (!$requestData->hasMultiple(['order', 'parent'])) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'));
         }
 
@@ -333,20 +338,35 @@ final class PagesController extends AbstractController
         }
 
         $pageCollection = $parent->children();
-        $keys = $pageCollection->keys();
 
-        $from = Arr::indexOf($keys, $requestData->get('page'));
-        $to = Arr::indexOf($keys, $requestData->get('before'));
-
-        if ($from === null || $to === null) {
+        try {
+            $order = Json::parse((string) $requestData->get('order'));
+        } catch (JsonException) {
             return JsonResponse::error($this->translate('panel.pages.page.cannotMove'), ResponseStatus::InternalServerError);
         }
 
-        $pageCollection->moveItem($from, $to);
+        // The order must contain all the children of the parent exactly once
+        if (Arr::sort($order, preserveKeys: false) !== Arr::sort($pageCollection->keys(), preserveKeys: false)) {
+            return JsonResponse::error($this->translate('panel.pages.page.cannotMove'), ResponseStatus::InternalServerError);
+        }
 
-        /** @var Page $page */
-        foreach ($pageCollection->filterBy('orderable')->values() as $i => $page) {
-            $num = $i + 1;
+        // Reversed children are displayed from the last to the first
+        if ($parent->scheme()->options()->get('children.reverse', false)) {
+            $order = array_reverse($order);
+        }
+
+        $num = 0;
+
+        foreach ($order as $route) {
+            /** @var Page $page */
+            $page = $pageCollection->get($route);
+
+            if (!$page->orderable()) {
+                continue;
+            }
+
+            $num++;
+
             if ($num !== $page->num()) {
                 $page->set('num', $num);
                 $page->save();
