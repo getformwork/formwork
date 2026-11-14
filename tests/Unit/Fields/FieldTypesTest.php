@@ -87,6 +87,27 @@ final class FieldTypesTest extends TestCase
         $this->assertStringContainsString('0.5', (string) $field->getValidationError());
     }
 
+    #[DataProvider('patternValueProvider')]
+    public function testFieldPatternsWorkWithAnyCharacter(string $pattern, string $value, bool $expected): void
+    {
+        $field = App::instance()->getService(FieldFactory::class)->make('field', ['type' => 'text', 'pattern' => $pattern]);
+
+        $field->set('value', $value);
+
+        $this->assertSame($expected, $field->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{string, string, bool}>
+     */
+    public static function patternValueProvider(): iterable
+    {
+        yield 'a slash' => ['\d+/\d+', '1/2', true];
+        yield 'a value not matching a pattern with a slash' => ['\d+/\d+', '12', false];
+        yield 'a literal dollar' => ['\d+\$', '5$', true];
+        yield 'a value not matching a pattern with a literal dollar' => ['\d+\$', '5', false];
+    }
+
     /**
      * @return iterable<string, array{string}>
      */

@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Utils;
 
 use Formwork\Tests\TestCase;
 use Formwork\Utils\Constraint;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
@@ -177,6 +178,44 @@ final class ConstraintTest extends TestCase
     {
         $this->assertTrue(Constraint::matchesRegex('hello', '/e/', entireMatch: false));
         $this->assertFalse(Constraint::matchesRegex('hello', '/e/', entireMatch: true));
+    }
+
+    #[DataProvider('regexProvider')]
+    public function testMatchesRegexesLikeHtmlInputPatterns(string $value, string $regex, bool $expected): void
+    {
+        $this->assertSame($expected, Constraint::matchesRegex($value, $regex));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, bool}>
+     */
+    public static function regexProvider(): iterable
+    {
+        yield 'a simple regex' => ['abc', '[a-z]{2,3}', true];
+        yield 'a partial match' => ['abcd', '[a-z]{2,3}', false];
+        yield 'an alternation' => ['ab', 'a|ab', true];
+        yield 'a slash' => ['1/2', '\d+/\d+', true];
+        yield 'a leading slash' => ['/path', '/[a-z]+', true];
+        yield 'a trailing slash' => ['path/', '[a-z]+/', true];
+        yield 'a literal dollar' => ['5$', '\d+\$', true];
+        yield 'a literal caret' => ['^5', '\^\d', true];
+        yield 'a hash' => ['#ffffff', '#[0-9A-Fa-f]{6}', true];
+        yield 'a parenthesis in a character class' => [')', '[)]', true];
+        yield 'a tilde' => ['a~b', 'a~b', true];
+        yield 'a final newline' => ["abc\n", '[a-z]+', false];
+        yield 'unicode characters' => ['èéà', '\p{L}+', true];
+        yield 'unicode characters with a dot' => ['è', '.', true];
+        yield 'a value that is not valid UTF-8' => ["\xff", '.+', false];
+        yield 'a regex enclosed in slashes' => ['abc', '/[a-z]+/', true];
+        yield 'a regex enclosed in slashes with anchors' => ['abc', '/^[a-z]+$/', true];
+        yield 'a regex enclosed in slashes with a final newline' => ["abc\n", '/^[a-z]+$/', false];
+        yield 'a regex enclosed in slashes containing slashes' => ['1/2', '/\d+\/\d+/', true];
+    }
+
+    public function testInvalidRegexesAreReported(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Constraint::matchesRegex('hello', '(unclosed');
     }
 
     public function testIsInRange(): void

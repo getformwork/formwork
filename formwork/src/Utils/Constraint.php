@@ -4,6 +4,7 @@ namespace Formwork\Utils;
 
 use Error;
 use Formwork\Traits\StaticClass;
+use InvalidArgumentException;
 
 final class Constraint
 {
@@ -105,14 +106,39 @@ final class Constraint
     /**
      * Return whether a value matches the specified regex pattern
      *
+     * Regexes enclosed in slashes, like `/^[a-z]+$/`, are accepted too
+     *
      * @param bool $entireMatch Whether to match the entire string or allow partial matches
+     *
+     * @throws InvalidArgumentException If the regex is invalid
      */
     public static function matchesRegex(string $value, string $regex, bool $entireMatch = true): bool
     {
-        if ($entireMatch) {
-            $regex = '^(?:' . trim($regex, '^$/') . ')$';
+        $pattern = strlen($regex) > 1 && str_starts_with($regex, '/') && str_ends_with($regex, '/')
+            ? substr($regex, 1, -1)
+            : $regex;
+
+        // `\z` is used instead of `$`, which also matches before a final newline
+        $pattern = $entireMatch ? "^(?:{$pattern})\\z" : $pattern;
+
+        // The regex is delimited by a control character, which is escaped if present, so that no character of the regex conflicts with the delimiters
+        $pattern = "\x01" . str_replace("\x01", '\x01', $pattern) . "\x01u";
+
+        // Compilation errors are reported only as warnings, so previous errors are cleared to tell them apart
+        error_clear_last();
+
+        $result = @preg_match($pattern, $value);
+
+        if ($result === false) {
+            // Values that are not valid UTF-8 cannot match
+            if (preg_last_error() === PREG_BAD_UTF8_ERROR) {
+                return false;
+            }
+
+            throw new InvalidArgumentException(sprintf('Invalid regex "%s": %s', $regex, error_get_last()['message'] ?? preg_last_error_msg()));
         }
-        return (bool) @preg_match(Str::wrap($regex, '/'), $value);
+
+        return (bool) $result;
     }
 
     /**
