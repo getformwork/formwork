@@ -5,6 +5,6 @@
 <?php if ($this->assets()->has('@panel/js/app.min.js')): ?>
     <script type="module">
         import { app } from "<?= $this->assets()->get('@panel/js/app.min.js')->uri(includeVersion: true) ?>";
-        app.load(<?= Formwork\Parsers\Json::encode($panel->getAppConfig()) ?>);
+        app.load(<?= Formwork\Parsers\Json::encode($panel->getAppConfig(), ['escapeHtml' => true]) ?>);
     </script>
 <?php endif ?>

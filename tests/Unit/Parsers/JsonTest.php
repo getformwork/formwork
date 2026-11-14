@@ -105,6 +105,18 @@ final class JsonTest extends TestCase
         $this->assertSame('{"name":"\u00e8"}', Json::encode(['name' => 'è'], ['escapeUnicode' => true]));
     }
 
+    public function testEncodeCanEscapeHtmlToEmbedDataInScripts(): void
+    {
+        $data = ['title' => '</script><script>alert(1)</script>', 'and' => 'Tom & Jerry'];
+
+        $json = Json::encode($data, ['escapeHtml' => true]);
+
+        $this->assertStringNotContainsString('</script>', $json);
+        $this->assertStringNotContainsString('&', $json);
+        $this->assertSame($data, Json::parse($json));
+        $this->assertStringContainsString('</script>', Json::encode($data));
+    }
+
     public function testEncodePreservesZeroFractions(): void
     {
         $this->assertSame('[1.0,2]', Json::encode([1.0, 2]));

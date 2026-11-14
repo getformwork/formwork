@@ -17,12 +17,13 @@ final class Json extends AbstractEncoder
     /**
      * Default options used to encode JSON
      *
-     * @var array{forceObject: bool, prettyPrint: bool, escapeUnicode: bool}
+     * @var array{forceObject: bool, prettyPrint: bool, escapeUnicode: bool, escapeHtml: bool}
      */
     private const array DEFAULT_ENCODE_OPTIONS = [
         'forceObject'   => false,
         'prettyPrint'   => false,
         'escapeUnicode' => false,
+        'escapeHtml'    => false,
     ];
 
     /**
@@ -40,8 +41,8 @@ final class Json extends AbstractEncoder
     /**
      * Encode data to JSON format
      *
-     * @param array<mixed>                                                        $data
-     * @param array{forceObject?: bool, prettyPrint?: bool, escapeUnicode?: bool} $options
+     * @param array<mixed>                                                                           $data
+     * @param array{forceObject?: bool, prettyPrint?: bool, escapeUnicode?: bool, escapeHtml?: bool} $options
      */
     public static function encode($data, array $options = []): string
     {
@@ -55,6 +56,10 @@ final class Json extends AbstractEncoder
         }
         if ($data === [] || $options['forceObject']) {
             $flags |= JSON_FORCE_OBJECT;
+        }
+        if ($options['escapeHtml']) {
+            // Tags and ampersands are escaped, so that the data can be embedded in `<script>` elements
+            $flags |= JSON_HEX_TAG | JSON_HEX_AMP;
         }
         return json_encode($data, $flags);
     }
