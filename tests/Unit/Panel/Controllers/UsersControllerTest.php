@@ -34,6 +34,7 @@ use Formwork\Users\RoleCollection;
 use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -137,6 +138,18 @@ final class UsersControllerTest extends TestCase
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertSame('error', $this->lastMessageType());
+        $this->assertSame('admin', $this->savedUser('existing')['role']);
+    }
+
+    public function testUsernamesDifferingOnlyInCaseAreNotCreated(): void
+    {
+        FileSystem::write(FileSystem::joinPaths($this->accountsPath, 'existing.yaml'), "username: existing\nrole: admin\n");
+
+        $response = $this->create('admin', $this->newUser(role: 'editor', username: 'Existing'), existing: ['existing']);
+
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('error', $this->lastMessageType());
+        // On case-insensitive file systems the account of the existing user would be overwritten
         $this->assertSame('admin', $this->savedUser('existing')['role']);
     }
 
@@ -286,6 +299,9 @@ final class UsersControllerTest extends TestCase
         $users->method('loggedIn')->willReturn($current);
         $users->method('roles')->willReturn($roleCollection);
         $users->method('has')->willReturnCallback(static fn(string $username): bool => in_array($username, $existing, true));
+
+        $existingUsers = array_map(static fn(string $username): User => $app->getService(UserFactory::class)->make(['username' => $username]), $existing);
+        $users->method('some')->willReturnCallback(static fn(callable $callback): bool => Arr::some($existingUsers, $callback));
 
         $site = $this->createStub(Site::class);
         $site->method('users')->willReturn($users);
