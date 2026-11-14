@@ -34,12 +34,15 @@ return function (App $app) {
                     $value = array_map(trim(...), explode(',', $value));
                 }
 
-                if (!is_array($value)) {
+                // Tags can only be strings or numbers, not nested arrays or other values
+                if (!is_array($value) || !Arr::every($value, static fn($item): bool => is_string($item) || is_int($item) || is_float($item))) {
                     throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
                 }
 
+                $value = array_map(static fn(int|float|string $item): string => (string) $item, $value);
+
                 if ($field->has('pattern')) {
-                    $value = array_filter($value, static fn($item): bool => Constraint::matchesRegex($item, $field->get('pattern')));
+                    $value = array_filter($value, static fn(string $item): bool => Constraint::matchesRegex($item, $field->get('pattern')));
                 }
 
                 if ($field->limit() !== null && count($value) > $field->limit()) {

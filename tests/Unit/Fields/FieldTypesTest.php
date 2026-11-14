@@ -136,6 +136,57 @@ final class FieldTypesTest extends TestCase
     }
 
     /**
+     * @param array<string, mixed> $data
+     */
+    #[DataProvider('optionValueProvider')]
+    public function testFieldsAcceptOnlyTheirAllowedValues(string $type, array $data, mixed $value, bool $expected): void
+    {
+        $field = App::instance()->getService(FieldFactory::class)->make('field', ['type' => $type, ...$data]);
+
+        $field->set('value', $value);
+
+        $this->assertSame($expected, $field->isValid());
+    }
+
+    /**
+     * @return iterable<string, array{string, array<string, mixed>, mixed, bool}>
+     */
+    public static function optionValueProvider(): iterable
+    {
+        $toggle = ['options' => [1 => 'Enabled', 0 => 'Disabled']];
+        $schemes = ['options' => ['light' => 'Light', 'dark' => 'Dark']];
+
+        yield 'togglegroup: a submitted enabled option' => ['togglegroup', $toggle, '1', true];
+        yield 'togglegroup: a submitted disabled option' => ['togglegroup', $toggle, '0', true];
+        yield 'togglegroup: a boolean option' => ['togglegroup', $toggle, true, true];
+        yield 'togglegroup: a string option' => ['togglegroup', $schemes, 'dark', true];
+        yield 'togglegroup: no value' => ['togglegroup', $schemes, null, true];
+        yield 'togglegroup: a missing numeric option' => ['togglegroup', $toggle, '2', false];
+        yield 'togglegroup: a missing string option' => ['togglegroup', $schemes, 'blue', false];
+        yield 'togglegroup: an array' => ['togglegroup', $schemes, ['dark'], false];
+        yield 'togglegroup: a truthy value that is not an option' => ['togglegroup', $toggle, 'true', false];
+        yield 'template: an existing template' => ['template', [], 'page', true];
+        yield 'template: no value' => ['template', [], '', true];
+        yield 'template: a missing template' => ['template', [], 'missing', false];
+        yield 'template: an array' => ['template', [], ['page'], false];
+        yield 'tags: a list of tags' => ['tags', [], ['news', 'ideas'], true];
+        yield 'tags: tags separated by commas' => ['tags', [], 'news, ideas', true];
+        yield 'tags: numeric tags' => ['tags', [], [2024, 1.5], true];
+        yield 'tags: nested arrays' => ['tags', [], [['news']], false];
+        yield 'tags: booleans' => ['tags', [], [true], false];
+    }
+
+    public function testNumericTagsAreConvertedToStrings(): void
+    {
+        $field = App::instance()->getService(FieldFactory::class)->make('field', ['type' => 'tags', 'pattern' => '\d+']);
+
+        $field->set('value', [2024, 'news']);
+        $field->validate();
+
+        $this->assertSame(['2024'], $field->value());
+    }
+
+    /**
      * @return iterable<string, array{string}>
      */
     public static function stringFieldTypeProvider(): iterable

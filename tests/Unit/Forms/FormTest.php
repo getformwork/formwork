@@ -843,7 +843,12 @@ final class FormTest extends TestCase
 
         yield 'togglegroup' => [
             'togglegroup',
-            [],
+            [
+                'options' => [
+                    'first'  => 'First',
+                    'second' => 'Second',
+                ],
+            ],
             'first',
             'first',
             null,
