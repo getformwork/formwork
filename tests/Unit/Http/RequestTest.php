@@ -280,6 +280,36 @@ final class RequestTest extends TestCase
         $this->assertTrue($request->isSecure());
     }
 
+    /**
+     * @param array<string, string> $headers
+     */
+    #[DataProvider('forwardedForProvider')]
+    public function testClientAddressIsTheRightmostForwardedOneThatIsNotOfATrustedProxy(array $headers, string $expected): void
+    {
+        $request = $this->request(['REMOTE_ADDR' => '10.0.0.10', ...$headers]);
+        $request->setTrustedProxies(['10.0.0.10', '10.0.0.20']);
+
+        $this->assertSame($expected, $request->ip());
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>, string}>
+     */
+    public static function forwardedForProvider(): iterable
+    {
+        yield 'an address added by the client' => [['HTTP_X_FORWARDED_FOR' => '1.2.3.4, 203.0.113.7'], '203.0.113.7'];
+        yield 'an address added by the client to Forwarded' => [['HTTP_FORWARDED' => 'for=1.2.3.4, for=203.0.113.7'], '203.0.113.7'];
+        yield 'a chain of trusted proxies' => [['HTTP_X_FORWARDED_FOR' => '1.2.3.4, 203.0.113.7, 10.0.0.20'], '203.0.113.7'];
+        yield 'an IPv4 address with port' => [['HTTP_FORWARDED' => 'for="192.0.2.43:8080"'], '192.0.2.43'];
+        yield 'an IPv6 address with port' => [['HTTP_FORWARDED' => 'for="[2001:db8::1]:4711"'], '2001:db8::1'];
+        yield 'an IPv6 address without port' => [['HTTP_FORWARDED' => 'for="[2001:db8::1]"'], '2001:db8::1'];
+        // The address of the proxy is used when the one of the client is unknown
+        yield 'an unknown address' => [['HTTP_FORWARDED' => 'for=unknown'], '10.0.0.10'];
+        yield 'an obfuscated address' => [['HTTP_FORWARDED' => 'for=_hidden'], '10.0.0.10'];
+        yield 'an address before an unknown one' => [['HTTP_FORWARDED' => 'for=1.2.3.4, for=unknown'], '10.0.0.10'];
+        yield 'an invalid address' => [['HTTP_X_FORWARDED_FOR' => 'not-an-address'], '10.0.0.10'];
+    }
+
     public function testUntrustedForwardedHeadersAreIgnored(): void
     {
         $request = $this->request([

@@ -200,8 +200,24 @@ class Request
     {
         $ip = $this->server->get('REMOTE_ADDR');
 
-        if ($this->isFromTrustedProxy()) {
-            return $this->getForwardedDirective('for')[0] ?? $ip;
+        if (!$this->isFromTrustedProxy()) {
+            return $ip;
+        }
+
+        // Each proxy appends the address it received the request from, so only the leftmost addresses can be set by the client.
+        // The client address is then the rightmost one that is not of a trusted proxy
+        foreach (array_reverse($this->getForwardedDirective('for')) as $forwardedFor) {
+            // Remove brackets and ports, as in `[2001:db8::1]:4711` or `192.0.2.1:8080`
+            $address = preg_replace('/^\[(.+)\](?::\d+)?$|^([^:]+):\d+$/', '$1$2', $forwardedFor);
+
+            // Addresses before unknown or obfuscated ones, like `unknown` or `_hidden`, cannot be trusted
+            if ($address === null || !Constraint::isIp($address)) {
+                break;
+            }
+
+            if (!in_array($address, $this->trustedProxies, true)) {
+                return $address;
+            }
         }
 
         return $ip;
