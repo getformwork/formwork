@@ -1074,21 +1074,22 @@ class Page extends Model implements Stringable
     /**
      * Set page parent
      *
-     * @throws InvalidValueException If the parent is invalid
+     * @throws InvalidValueException If the parent is invalid, is the page itself or one of its descendants
      */
     protected function setParent(Page|Site|string $parent): void
     {
-        $previousParent = $this->parent();
-        if ($parent instanceof Page || $parent instanceof Site) {
-            $this->parent = $parent;
-        } elseif ($parent === '.') {
-            $this->parent = $this->site();
-        } else {
-            $this->parent = $this->site()->findPage($parent) ?? throw new InvalidValueException('Invalid parent', 'invalidParent');
+        if ($parent === '.') {
+            $parent = $this->site();
+        } elseif (is_string($parent)) {
+            $parent = $this->site()->findPage($parent) ?? throw new InvalidValueException('Invalid parent', 'invalidParent');
         }
-        if ($this->parent !== $previousParent && $this->isIndexOrErrorPage()) {
+        if ($parent !== $this->parent() && $this->isIndexOrErrorPage()) {
             throw new InvalidValueException('Cannot change parent of index or error pages', 'invalidParent');
         }
+        if ($parent === $this || ($parent instanceof Page && $parent->isDescendantOf($this))) {
+            throw new InvalidValueException('Cannot change parent to the page itself or one of its descendants', 'invalidParent');
+        }
+        $this->parent = $parent;
     }
 
     /**
