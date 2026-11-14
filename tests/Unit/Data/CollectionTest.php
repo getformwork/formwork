@@ -7,6 +7,7 @@ use Formwork\Data\AbstractCollection;
 use Formwork\Data\Collection;
 use Formwork\Data\CollectionDataProxy;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Utils\Fixtures\StringableFixture;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -863,6 +864,41 @@ final class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, $differenceCollection);
         $this->assertNotSame($collection1, $differenceCollection);
         $this->assertSame(['a' => 'item1', 'c' => 'item3'], $differenceCollection->toArray());
+    }
+
+    public function testSetOperationsCompareObjectsByIdentity(): void
+    {
+        // Different objects with the same string representation
+        $first = new StringableFixture('same');
+        $second = new StringableFixture('same');
+        $collection = Collection::from([$first, $second]);
+
+        $this->assertSame([$first], $collection->difference(Collection::from([$second]))->values());
+        $this->assertSame([$second], $collection->intersection(Collection::from([$second]))->values());
+        $this->assertSame([$first, $second], $collection->unique()->values());
+        $this->assertSame([], $collection->duplicates()->values());
+    }
+
+    public function testSetOperationsCompareScalarsStrictly(): void
+    {
+        $collection = Collection::from(['1', 1, 1.0, true]);
+
+        $this->assertSame(['1', 1.0, true], $collection->difference(Collection::from([1]))->values());
+        $this->assertSame([1], $collection->intersection(Collection::from([1]))->values());
+        $this->assertSame(['1', 1, 1.0, true], $collection->unique()->values());
+        $this->assertSame([], $collection->duplicates()->values());
+    }
+
+    public function testSetOperationsAcceptValuesThatCannotBeConvertedToStrings(): void
+    {
+        $object = new stdClass();
+        $array = ['a'];
+        $collection = Collection::from([$object, $array, $object, $array]);
+
+        $this->assertSame([$array, $array], $collection->difference(Collection::from([$object]))->values());
+        $this->assertSame([$object, $object], $collection->intersection(Collection::from([$object]))->values());
+        $this->assertSame([$object, $array], $collection->unique()->values());
+        $this->assertSame([$object, $array], $collection->duplicates()->values());
     }
 
     public function testAdd(): void

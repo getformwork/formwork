@@ -291,11 +291,14 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
 
     /**
      * Return a copy of the collection with duplicates removed
+     *
+     * Values are compared strictly, only the first occurrence of each one is kept
      */
     public function unique(): static
     {
         $collection = $this->clone();
-        $collection->data = array_unique($collection->data);
+        // `array_unique()` is not used since it compares values as strings, and different objects with the same string representation would be considered duplicates
+        $collection->data = Arr::filter($collection->data, fn($value, $key) => array_search($value, $collection->data, true) === $key);
         return $collection;
     }
 
@@ -603,6 +606,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return a copy of the collection with the intersection of the values of the given collections
      *
+     * Values are compared strictly
+     *
      * @param self<T> ...$collections
      */
     public function intersection(self ...$collections): static
@@ -610,7 +615,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         $collection = $this->clone();
 
         foreach ($collections as $otherCollection) {
-            $collection->data = array_intersect($collection->data, $otherCollection->data);
+            // `array_intersect()` is not used since it compares values as strings, and different objects with the same string representation would be considered equal
+            $collection->data = Arr::filter($collection->data, fn($value) => in_array($value, $otherCollection->data, true));
         }
 
         return $collection;
@@ -619,6 +625,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     /**
      * Return a copy of the collection with the values of the given collections removed
      *
+     * Values are compared strictly
+     *
      * @param self<T> ...$collections
      */
     public function difference(self ...$collections): static
@@ -626,7 +634,8 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
         $collection = $this->clone();
 
         foreach ($collections as $otherCollection) {
-            $collection->data = array_diff($collection->data, $otherCollection->data);
+            // `array_diff()` is not used since it compares values as strings, and different objects with the same string representation would be considered equal
+            $collection->data = Arr::filter($collection->data, fn($value) => !in_array($value, $otherCollection->data, true));
         }
 
         return $collection;

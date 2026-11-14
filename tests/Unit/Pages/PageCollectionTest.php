@@ -193,6 +193,19 @@ final class PageCollectionTest extends TestCase
         $this->assertSame([$child, $about], $collection->withoutSiblings($about)->values());
     }
 
+    public function testPagesWithTheSameTitleOfARelatedPageAreNotRemoved(): void
+    {
+        $page = $this->page('/blog');
+        $child = $this->page('/blog/hello-world');
+        $about = $this->page('/about');
+        // Pages are converted to strings by their title
+        $about->set('title', (string) $child->title());
+        $collection = $this->collection($page, $child, $about);
+
+        $this->assertSame([$page, $about], $collection->withoutChildren($page)->values());
+        $this->assertSame([$page, $about], $collection->withoutDescendants($page)->values());
+    }
+
     public function testPaginationDoesNotMutateTheSourceCollection(): void
     {
         $page = $this->page('/about');

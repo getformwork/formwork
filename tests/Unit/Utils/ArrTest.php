@@ -405,6 +405,16 @@ final class ArrTest extends TestCase
         $this->assertSame([3 => 'banana'], Arr::duplicates($data));
     }
 
+    public function testDuplicatesAreComparedStrictly(): void
+    {
+        $first = new StringableFixture('same');
+        $second = new StringableFixture('same');
+
+        $this->assertSame([], Arr::duplicates(['1', 1, 1.0, true]));
+        $this->assertSame([], Arr::duplicates([$first, $second]));
+        $this->assertSame([2 => $first], Arr::duplicates([$first, $second, $first]));
+    }
+
     public function testAppendMissing(): void
     {
         $data = [

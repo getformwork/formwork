@@ -317,6 +317,8 @@ final class Arr
     /**
      * Return the duplicate items of the array
      *
+     * Values are compared strictly, the first occurrence of each one is not considered a duplicate
+     *
      * @template TKey of array-key
      * @template TValue
      *
@@ -326,7 +328,8 @@ final class Arr
      */
     public static function duplicates(array $array): array
     {
-        return array_diff_key($array, array_unique($array));
+        // `array_unique()` is not used since it compares values as strings, and different objects with the same string representation would be considered duplicates
+        return self::filter($array, fn($value, $key) => array_search($value, $array, true) !== $key);
     }
 
     /**
