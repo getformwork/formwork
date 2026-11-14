@@ -2,7 +2,6 @@
 
 namespace Formwork\Http;
 
-use Formwork\Http\Utils\Header;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use LogicException;
@@ -43,7 +42,7 @@ class FileResponse extends Response
 
         $headers += [
             'Content-Type'        => FileSystem::mimeType($path),
-            'Content-Disposition' => $download ? Header::make(['attachment', 'filename' => basename($path)]) : 'inline',
+            'Content-Disposition' => $download ? self::attachmentDisposition(basename($path)) : 'inline',
             'Content-Length'      => (string) $this->fileSize,
         ];
 
@@ -177,8 +176,28 @@ class FileResponse extends Response
         if (!$this->download) {
             throw new LogicException('Cannot set filename for inline file response');
         }
-        $this->headers->set('Content-Disposition', Header::make(['attachment', 'filename' => $filename]));
+        $this->headers->set('Content-Disposition', self::attachmentDisposition($filename));
         return $this;
+    }
+
+    /**
+     * Make the `Content-Disposition` header value to download a file with the given name
+     */
+    protected static function attachmentDisposition(string $filename): string
+    {
+        // The name is quoted with only printable ASCII characters, and is also given encoded as UTF-8 when it has other characters (RFC 6266)
+        $fallback = preg_replace('/[^\x20-\x7E]/u', '_', $filename, -1, $replacements)
+            ?? preg_replace('/[^\x20-\x7E]/', '_', $filename, -1, $replacements);
+        $fallback = addcslashes((string) $fallback, '"\\');
+
+        $disposition = "attachment; filename=\"{$fallback}\"";
+
+        if ($replacements > 0) {
+            $encoded = rawurlencode($filename);
+            $disposition .= "; filename*=UTF-8''{$encoded}";
+        }
+
+        return $disposition;
     }
 
     protected function flush(): void

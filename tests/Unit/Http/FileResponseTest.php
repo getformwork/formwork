@@ -29,7 +29,28 @@ final class FileResponseTest extends TestCase
         $this->assertMatchesRegularExpression('/^W\/"[0-9a-f]{64}"$/', (string) $fileResponse->headers()->get('ETag'));
         $this->assertTrue($fileResponse->headers()->has('Last-Modified'));
         $this->assertSame($fileResponse, $fileResponse->setFilename('download.txt'));
-        $this->assertSame('attachment; filename=download.txt', $fileResponse->headers()->get('Content-Disposition'));
+        $this->assertSame('attachment; filename="download.txt"', $fileResponse->headers()->get('Content-Disposition'));
+    }
+
+    #[DataProvider('downloadNameProvider')]
+    public function testDownloadNamesAreQuotedAndEncoded(string $filename, string $expected): void
+    {
+        $fileResponse = new FileResponse($this->fixturePath(), download: true);
+
+        $fileResponse->setFilename($filename);
+
+        $this->assertSame($expected, $fileResponse->headers()->get('Content-Disposition'));
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function downloadNameProvider(): iterable
+    {
+        yield 'spaces and semicolons' => ['My file; v2.pdf', 'attachment; filename="My file; v2.pdf"'];
+        yield 'quotes and backslashes' => ['say "hi"\.txt', 'attachment; filename="say \"hi\"\\\.txt"'];
+        yield 'non-ASCII characters' => ['Città.pdf', "attachment; filename=\"Citt_.pdf\"; filename*=UTF-8''Citt%C3%A0.pdf"];
+        yield 'line breaks' => ["a\r\nb.txt", "attachment; filename=\"a__b.txt\"; filename*=UTF-8''a%0D%0Ab.txt"];
     }
 
     public function testFileResponseAddsAcceptRangesForHeadAndSkipsRangesForEmptyResponses(): void
