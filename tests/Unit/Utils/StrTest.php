@@ -93,6 +93,27 @@ final class StrTest extends TestCase
         yield 'leading and trailing hyphens' => ['--hello--', 'hello'];
         yield 'trailing symbol after a space' => ['Hello World ~', 'hello-world'];
         yield 'leading symbol before a space' => ['~ Hello', 'hello'];
+        yield 'newlines become hyphens' => ["Hello\nWorld", 'hello-world'];
+        yield 'tabs become hyphens' => ["Hello\tWorld", 'hello-world'];
+        yield 'Windows newlines become a single hyphen' => ["Line\r\nBreak", 'line-break'];
+        yield 'non-breaking spaces become hyphens' => ["Hello\u{00A0}World", 'hello-world'];
+        yield 'backslashes followed by letters' => ['C:\new\temp', 'c-new-temp'];
+        yield 'characters not allowed at the start' => ['世界 hello', 'hello'];
+        yield 'characters not allowed at the end' => ['Hello 世界', 'hello'];
+        yield 'characters not allowed between hyphens' => ['a - 世 - b', 'a-b'];
+        yield 'Polish letters' => ['Łódź Kraków', 'lodz-krakow'];
+        yield 'Croatian letters' => ['Đorđe Čačak', 'dorde-cacak'];
+        yield 'Turkish letters' => ['Şişli Iğdır', 'sisli-igdir'];
+        yield 'Romanian letters' => ['Târgu Mureș Brașov', 'targu-mures-brasov'];
+        yield 'Czech letters' => ['Dvořák Kůň', 'dvorak-kun'];
+        yield 'Hungarian letters' => ['Győr Szőlő Űr', 'gyor-szolo-ur'];
+        yield 'Latvian letters' => ['Rīga Ķemeri', 'riga-kemeri'];
+        yield 'typographic apostrophes become hyphens' => ['L’amore', 'l-amore'];
+        yield 'quotes become hyphens' => ['"Hello" “world”', 'hello-world'];
+        yield 'Unicode whitespace becomes hyphens' => ["Em\u{2003}space\u{3000}here", 'em-space-here'];
+        // Like `\s` in JavaScript, which makes the slugs of the Panel
+        yield 'zero width no-break spaces become hyphens' => ["Zero\u{FEFF}width", 'zero-width'];
+        yield 'next line characters are removed' => ["Next\u{0085}line", 'nextline'];
         yield 'only symbols' => ['!!!', ''];
         yield 'empty' => ['', ''];
     }
