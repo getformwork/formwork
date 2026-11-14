@@ -27,6 +27,23 @@ class ExifDateTime extends DateTimeImmutable implements Stringable
      */
     public static function createFromExifData(string $datetime, ?string $subseconds = null, ?string $timeoffset = null): self|false
     {
-        return parent::createFromFormat(self::EXIF_EXTENDED, sprintf('%s.%s%s', $datetime, rtrim($subseconds ?? '0', "\x00\x20"), $timeoffset ?? '+00:00'));
+        // EXIF strings can be padded with spaces or null bytes
+        $datetime = trim($datetime, "\x00\x20");
+        $subseconds = trim($subseconds ?? '', "\x00\x20");
+        $timeoffset = trim($timeoffset ?? '', "\x00\x20");
+
+        // Null bytes cannot be parsed as dates
+        if (str_contains($datetime, "\x00")) {
+            return false;
+        }
+
+        // Subseconds are the digits of a decimal fraction, of which only microseconds can be parsed
+        $subseconds = ctype_digit($subseconds) ? substr($subseconds, 0, 6) : '0';
+
+        if (!preg_match('/^[+-]\d{2}:\d{2}$/', $timeoffset)) {
+            $timeoffset = '+00:00';
+        }
+
+        return parent::createFromFormat(self::EXIF_EXTENDED, "{$datetime}.{$subseconds}{$timeoffset}");
     }
 }
