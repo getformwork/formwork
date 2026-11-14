@@ -12,6 +12,7 @@ use Formwork\Cms\UriGenerator;
 use Formwork\Config\Config;
 use Formwork\Events\EventDispatcher;
 use Formwork\Fields\Dynamic\DynamicFieldValue;
+use Formwork\Http\FileResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Panel;
@@ -26,6 +27,7 @@ use Formwork\Tests\UsesApplication;
 use Formwork\Translations\Translations;
 use Formwork\Updater\SemVer;
 use Formwork\Updater\Updater;
+use Formwork\Utils\FileSystem;
 use LogicException;
 use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -173,6 +175,25 @@ final class AppTest extends TestCase
     {
         yield 'a page' => ['/about/', ResponseStatus::OK, 'About content'];
         yield 'a missing page' => ['/missing/', ResponseStatus::NotFound, 'Page Not Found content'];
+    }
+
+    public function testFilesWithCharactersNotAllowedInUrisAreServedFromTheirUri(): void
+    {
+        $app = App::instance();
+        $path = $app->site()->findPage('/about/')?->contentPath() . 'My photo #1.png';
+        imagepng(imagecreatetruecolor(2, 2), $path);
+
+        try {
+            $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/about/My%20photo%20%231.png', 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+
+            $response = $app->handle($request);
+
+            $this->assertInstanceOf(FileResponse::class, $response);
+            $this->assertSame(ResponseStatus::OK, $response->status());
+        } finally {
+            FileSystem::delete($path);
+            $this->reload();
+        }
     }
 
     public function testLoadingDoesNotInstallTheErrorHandler(): void

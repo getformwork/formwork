@@ -177,7 +177,10 @@ class Request
      */
     public function uri(): string
     {
-        $uri = rawurldecode((string) $this->server->get('REQUEST_URI'));
+        $requestUri = (string) $this->server->get('REQUEST_URI');
+        $path = Str::before($requestUri, '?');
+        // Only the path is decoded, keeping encoded the characters that would change its structure (/, ?, #)
+        $uri = rawurldecode(str_ireplace(['%2F', '%3F', '%23'], ['%252F', '%253F', '%2523'], $path)) . substr($requestUri, strlen($path));
         $root = $this->root();
         if (str_starts_with($uri, $root)) {
             return Path::join(['/', Str::removeStart($uri, $root)]);

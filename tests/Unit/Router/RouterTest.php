@@ -93,6 +93,15 @@ final class RouterTest extends TestCase
         $this->assertSame(['id' => '42'], $router->params()->toArray());
     }
 
+    public function testRouteParamsAreDecoded(): void
+    {
+        $router = $this->router('/files/photo%20%231.png/');
+        $router->addRoute('file', '/files/{name}')
+            ->action(static fn(RouteParams $routeParams): Response => new Response($routeParams->get('name')));
+
+        $this->assertSame('photo #1.png', $router->dispatch()->content());
+    }
+
     public function testDispatchesTheFirstMatchingRouteAndSkipsNonMatchingRoutes(): void
     {
         $router = $this->router('/posts/42/');

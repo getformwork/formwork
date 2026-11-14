@@ -58,6 +58,27 @@ final class RequestTest extends TestCase
         $this->assertSame('/about', $request->uri());
     }
 
+    #[DataProvider('encodedUriProvider')]
+    public function testUriPathIsDecodedKeepingItsStructure(string $requestUri, string $expected): void
+    {
+        $request = $this->request(['SCRIPT_NAME' => '/index.php', 'REQUEST_URI' => $requestUri]);
+
+        $this->assertSame($expected, $request->uri());
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function encodedUriProvider(): iterable
+    {
+        yield 'spaces and accented letters' => ['/my%20page/%C3%A8/', '/my page/è/'];
+        yield 'an encoded slash' => ['/a%2Fb/', '/a%2Fb/'];
+        yield 'an encoded question mark' => ['/a%3Fb/', '/a%3Fb/'];
+        yield 'an encoded hash' => ['/photo%20%231.png', '/photo %231.png'];
+        yield 'an encoded ampersand in the query' => ['/search/?q=a%26b', '/search/?q=a%26b'];
+        yield 'an encoded question mark in the query' => ['/search/?q=what%3F', '/search/?q=what%3F'];
+    }
+
     public function testUriIsPreservedWhenItDoesNotStartWithTheRequestRoot(): void
     {
         $request = $this->request([
