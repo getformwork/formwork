@@ -221,6 +221,19 @@ final class FileUploaderTest extends TestCase
         $this->assertStringNotContainsString('onload', $content);
     }
 
+    public function testSvgImagesThatCannotBeSanitizedAreNotUploaded(): void
+    {
+        $temp = TESTS_TMP_PATH . '/source.svg';
+        FileSystem::write($temp, '<?xml version="1.0"?><!DOCTYPE svg [<!ENTITY a "x">]><svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script><text>&a;</text></svg>');
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/uploads');
+        $fileUploader = new FileUploader($this->config(['svg'], [TESTS_TMP_PATH]), App::instance()->getService(FileFactory::class));
+
+        $translatedException = $this->captureException(TranslatedException::class, fn() => $fileUploader->upload($this->movableUpload($temp, 'icon.svg'), TESTS_TMP_PATH . '/uploads'));
+
+        $this->assertSame('upload.error.invalidSvg', $translatedException->getLanguageString());
+        $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/uploads/icon.svg');
+    }
+
     private function movableUpload(string $temp, string $clientName): UploadedFile
     {
         $uploaded = $this->createStub(UploadedFile::class);

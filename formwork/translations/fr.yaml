@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Chemin de destination trop long
 upload.error.fileName: Nom de fichier non valide
 upload.error.fileNameTooLong: Nom de fichier trop long
 upload.error.hiddenFiles: Impossible de téléverser des fichiers cachés commençant par un point
+upload.error.invalidSvg: Image SVG non valide
 upload.error.mimeType: Type de fichier non autorisé
 upload.error.noFile: Aucun fichier n’a été téléchargé
 upload.error.noTemp: Absence du dossier temporaire

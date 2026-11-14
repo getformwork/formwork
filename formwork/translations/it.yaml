@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Il percorso di destinazione è troppo lungo
 upload.error.fileName: Nome del file non valido
 upload.error.fileNameTooLong: Il nome del file è troppo lungo
 upload.error.hiddenFiles: Impossibile caricare i file che iniziano con ’.’
+upload.error.invalidSvg: Immagine SVG non valida
 upload.error.mimeType: Il tipo di file non è consentito
 upload.error.noFile: Nessun file caricato
 upload.error.noTemp: Cartella temporanea mancante

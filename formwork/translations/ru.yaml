@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Слишком длинный путь назн
 upload.error.fileName: Неверное имя файла
 upload.error.fileNameTooLong: Слишком длинное имя файла
 upload.error.hiddenFiles: Невозможно загрузить скрытые файлы, начинающиеся с точки
+upload.error.invalidSvg: Недопустимое изображение SVG
 upload.error.mimeType: Тип файла не допускается
 upload.error.noFile: Файл не был загружен
 upload.error.noTemp: Отсутствующие временную папку

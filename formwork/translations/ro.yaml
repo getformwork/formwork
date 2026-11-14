@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Calea destinației este prea lungă
 upload.error.fileName: Nume de fișier nevalid
 upload.error.fileNameTooLong: Numele fișierului este prea lung
 upload.error.hiddenFiles: Nu se pot încărca fișiere ascunse care încep cu punct
+upload.error.invalidSvg: Imagine SVG nevalidă
 upload.error.mimeType: Tip de fișier nepermis
 upload.error.noFile: Niciun fișier nu a fost încărcat
 upload.error.noTemp: Lipsește un dosar temporar

@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Bestemmingspad te lang
 upload.error.fileName: Ongeldige bestandsnaam
 upload.error.fileNameTooLong: Bestandsnaam te lang
 upload.error.hiddenFiles: Verborgen bestanden die met een punt beginnen kunnen niet worden geüpload
+upload.error.invalidSvg: Ongeldige SVG-afbeelding
 upload.error.mimeType: Bestandstype niet toegestaan
 upload.error.noFile: Er is geen bestand geüpload
 upload.error.noTemp: Tijdelijke map ontbreekt

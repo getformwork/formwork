@@ -14,6 +14,8 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\MimeType;
 use Formwork\Utils\Path;
 use Formwork\Utils\Str;
+use InvalidArgumentException;
+use UnexpectedValueException;
 
 class FileUploader
 {
@@ -82,31 +84,41 @@ class FileUploader
 
         $filename = "{$slug}.{$extension}";
 
+        // Sanitize SVG images before they are moved, so that unsafe data never reaches the destination
+        if ($mimeType === 'image/svg+xml') {
+            $this->sanitizeSvg($uploadedFile->tempPath());
+        }
+
         $uploadedFile->move($destinationPath, $filename, $overwrite);
 
         $file = $this->fileFactory->make(FileSystem::joinPaths($destinationPath, $filename));
 
-        if ($file instanceof Image) {
-            switch ($file->mimeType()) {
-                case 'image/jpeg':
-                case 'image/png':
-                case 'image/webp':
-                case 'image/avif':
-                    // Process JPEG, PNG, WebP and AVIF images according to system options (e.g. quality)
-                    if ($this->config->getBool('system.uploads.processImages') && !$file->info()->isAnimation()) {
-                        $file->save();
-                    }
-                    break;
-
-                case 'image/svg+xml':
-                    // Sanitize SVG images
-                    $svgSanitizer = new SvgSanitizer();
-                    $data = FileSystem::read($file->path());
-                    FileSystem::write($file->path(), $svgSanitizer->sanitize($data));
-                    break;
-            }
+        // Process JPEG, PNG, WebP and AVIF images according to system options (e.g. quality)
+        if (
+            $file instanceof Image
+            && in_array($file->mimeType(), ['image/jpeg', 'image/png', 'image/webp', 'image/avif'], true)
+            && $this->config->getBool('system.uploads.processImages')
+            && !$file->info()->isAnimation()
+        ) {
+            $file->save();
         }
 
         return $file;
+    }
+
+    /**
+     * Sanitize an SVG image in place
+     *
+     * @throws TranslatedException If the SVG image cannot be sanitized
+     */
+    protected function sanitizeSvg(string $path): void
+    {
+        try {
+            $data = (new SvgSanitizer())->sanitize(FileSystem::read($path));
+        } catch (InvalidArgumentException|UnexpectedValueException $e) {
+            throw new TranslatedException(sprintf('Cannot sanitize SVG image: %s', $e->getMessage()), 'upload.error.invalidSvg', previous: $e);
+        }
+
+        FileSystem::write($path, $data);
     }
 }

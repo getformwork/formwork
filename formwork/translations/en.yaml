@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Destination path too long
 upload.error.fileName: Invalid file name
 upload.error.fileNameTooLong: File name too long
 upload.error.hiddenFiles: Cannot upload hidden files beginning with a dot
+upload.error.invalidSvg: Invalid SVG image
 upload.error.mimeType: File type not allowed
 upload.error.noFile: No file was uploaded
 upload.error.noTemp: Missing a temporary folder

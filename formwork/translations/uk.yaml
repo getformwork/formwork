@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Шлях призначення занадто 
 upload.error.fileName: Невірна назва файлу
 upload.error.fileNameTooLong: Назва файлу занадто довга
 upload.error.hiddenFiles: Не можна завантажити приховані файли, що починаються з крапки
+upload.error.invalidSvg: Недійсне зображення SVG
 upload.error.mimeType: Тип файлу не дозволено
 upload.error.noFile: Файл не було завантажено
 upload.error.noTemp: Відсутня тимчасова папка

@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Hedef yol çok uzun
 upload.error.fileName: Geçersiz dosya adı
 upload.error.fileNameTooLong: Dosya adı çok uzun
 upload.error.hiddenFiles: Nokta ile başlayan gizli dosyalar yüklenemez
+upload.error.invalidSvg: Geçersiz SVG görüntüsü
 upload.error.mimeType: Dosya türüne izin verilmiyor
 upload.error.noFile: Dosya yüklenmedi
 upload.error.noTemp: Geçici klasör eksik

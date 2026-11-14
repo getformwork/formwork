@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Η διαδρομή προορισμού είν
 upload.error.fileName: Μη έγκυρο όνομα αρχείου
 upload.error.fileNameTooLong: Το όνομα του αρχείου είναι πολύ μεγάλο
 upload.error.hiddenFiles: Δεν επιτρέπεται η μεταφόρτωση κρυφών αρχείων που ξεκινούν με τελεία
+upload.error.invalidSvg: Μη έγκυρη εικόνα SVG
 upload.error.mimeType: Μη επιτρεπόμενος τύπος αρχείου
 upload.error.noFile: Δεν απεστάλη αρχείο
 upload.error.noTemp: Λείπει προσωρινός φάκελος

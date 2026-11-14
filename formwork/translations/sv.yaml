@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Sökvägen till destinationen är för lång
 upload.error.fileName: Ogiltigt filnamn
 upload.error.fileNameTooLong: Filnamnet är för långt
 upload.error.hiddenFiles: Kan inte ladda upp dolda filer som börjar med en punkt
+upload.error.invalidSvg: Ogiltig SVG-bild
 upload.error.mimeType: Filtypen är inte tillåten
 upload.error.noFile: Ingen fil laddades upp
 upload.error.noTemp: Saknar temporär mapp

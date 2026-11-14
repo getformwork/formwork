@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Caminho de destino demasiado longo
 upload.error.fileName: Nome do ficheiro inválido
 upload.error.fileNameTooLong: Nome do ficheiro demasiado longo
 upload.error.hiddenFiles: Não é possível efectuar envio de ficheros ocultos que começam com um ponto
+upload.error.invalidSvg: Imagem SVG inválida
 upload.error.mimeType: Tipo de ficheiro inválido
 upload.error.noFile: Nenhum ficheiro foi enviado
 upload.error.noTemp: Pasta temporária inexistente

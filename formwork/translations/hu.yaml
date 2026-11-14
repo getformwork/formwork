@@ -124,6 +124,7 @@ upload.error.destinationTooLong: A célútvonal túl hosszú
 upload.error.fileName: Érvénytelen fájlnév
 upload.error.fileNameTooLong: A fájlnév túl hosszú
 upload.error.hiddenFiles: Ponttal kezdődő rejtett fájlok nem tölthetők fel
+upload.error.invalidSvg: Érvénytelen SVG-kép
 upload.error.mimeType: Nem engedélyezett fájltípus
 upload.error.noFile: Nem lett fájl feltöltve
 upload.error.noTemp: Hiányzik az ideiglenes mappa

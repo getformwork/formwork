@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Ziel-Pfad ist zu lang
 upload.error.fileName: Ungültiger Dateiname
 upload.error.fileNameTooLong: Dateiname ist zu lang
 upload.error.hiddenFiles: Versteckte Dateien mit einem Punkt am Anfang können nicht hochgeladen werden
+upload.error.invalidSvg: Ungültiges SVG-Bild
 upload.error.mimeType: Dateityp ist nicht erlaubt
 upload.error.noFile: Keine Datei hochgeladen
 upload.error.noTemp: Temporärer Ordner fehlt

@@ -124,6 +124,7 @@ upload.error.destinationTooLong: Zbyt długa ścieżka docelowa
 upload.error.fileName: Nieprawidłowa nazwa pliku
 upload.error.fileNameTooLong: Zbyt długa nazwa pliku
 upload.error.hiddenFiles: Nie można przesyłać ukrytych plików zaczynających się od kropki
+upload.error.invalidSvg: Nieprawidłowy obraz SVG
 upload.error.mimeType: Niedozwolony typ pliku
 upload.error.noFile: Nie przesłano żadnego pliku
 upload.error.noTemp: Brak folderu tymczasowego
