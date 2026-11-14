@@ -15,6 +15,11 @@ use UnexpectedValueException;
 final class OptionsController extends AbstractController
 {
     /**
+     * Regex matching config interpolation sequences, like `${system.panel.path}`
+     */
+    private const string CONFIG_INTERPOLATION_REGEX = '/\$\{[%a-z._]+\}/i';
+
+    /**
      * Options@index action
      */
     #[Permission('panel.options.site')]
@@ -142,8 +147,9 @@ final class OptionsController extends AbstractController
     {
         $old = $options;
 
-        // Replace with form data so removed array keys are not retained
-        foreach ($formData as $key => $value) {
+        // Replace with form data so removed array keys are not retained, escaping
+        // interpolation sequences so that they are not resolved as config references
+        foreach ($this->escapeConfigValues($formData) as $key => $value) {
             Arr::set($options, $key, $value);
         }
 
@@ -158,5 +164,24 @@ final class OptionsController extends AbstractController
 
         // Return false if options do not differ
         return false;
+    }
+
+    /**
+     * Escape the interpolation sequences in config values, so that they are kept literally when the config is resolved
+     *
+     * @template T of array<mixed>
+     *
+     * @param T $data
+     *
+     * @return T
+     */
+    private function escapeConfigValues(array $data): array
+    {
+        array_walk_recursive($data, function (&$value): void {
+            if (is_string($value)) {
+                $value = (string) preg_replace(self::CONFIG_INTERPOLATION_REGEX, '\\\$0', $value);
+            }
+        });
+        return $data;
     }
 }

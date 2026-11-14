@@ -136,6 +136,15 @@ final class PluginsControllerTest extends TestCase
         $this->assertSame('Hello', Yaml::parseFile($this->configFile('alpha'))['message']);
     }
 
+    public function testInterpolationSequencesInPluginOptionsAreSavedEscaped(): void
+    {
+        $this->loadPlugins();
+
+        $this->controller(input: ['message' => 'Hello ${name}'], server: ['REQUEST_METHOD' => 'POST'])->plugin(new RouteParams(['id' => 'alpha']), App::instance()->plugins());
+
+        $this->assertSame('Hello \${name}', Yaml::parseFile($this->configFile('alpha'))['message']);
+    }
+
     public function testUnknownPluginsCannotBeEnabled(): void
     {
         $response = $this->controller()->enable(new RouteParams(['id' => 'missing']), App::instance()->plugins());

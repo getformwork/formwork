@@ -115,6 +115,30 @@ final class OptionsControllerTest extends TestCase
         }
     }
 
+    public function testInterpolationSequencesInSiteOptionsAreSavedEscaped(): void
+    {
+        $path = App::instance()->rootPath() . '/site/config/site.yaml';
+        $original = Yaml::parseFile($path);
+
+        $content = TESTS_TMP_PATH . '/content';
+        FileSystem::createDirectory($content);
+
+        $site = $this->createStub(Site::class);
+        $site->method('data')->willReturn(['title' => 'Old title']);
+        $site->method('contentPath')->willReturn($content);
+
+        try {
+            $controller = $this->makeController(OptionsController::class, input: ['title' => 'Costs ${price}'], services: [Site::class => $site], server: ['REQUEST_METHOD' => 'POST']);
+
+            $controller->siteOptions($this->schemes());
+
+            $this->assertSame('Costs \${price}', Yaml::parseFile($path)['title']);
+        } finally {
+            Yaml::encodeToFile($original, $path);
+            $this->closePanelSession();
+        }
+    }
+
     public function testUnchangedSiteOptionsDoNotInvalidateTheCache(): void
     {
         $path = App::instance()->rootPath() . '/site/config/site.yaml';

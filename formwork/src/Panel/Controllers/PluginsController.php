@@ -22,6 +22,11 @@ use Formwork\Utils\Str;
 final class PluginsController extends AbstractController
 {
     /**
+     * Regex matching config interpolation sequences, like `${system.panel.path}`
+     */
+    private const string CONFIG_INTERPOLATION_REGEX = '/\$\{[%a-z._]+\}/i';
+
+    /**
      * Plugins@index action
      */
     #[Permission('panel.plugins')]
@@ -144,6 +149,10 @@ final class PluginsController extends AbstractController
             Arr::set($options, $key, $value);
         }
 
+        // Escape interpolation sequences, as the options come from the resolved config and the form data,
+        // so that they are not resolved as config references
+        $options = $this->escapeConfigValues($options);
+
         // Keep only the overrides of the plugin manifest defaults
         $options = Arr::exclude($options, Arr::undot($plugin->manifest()->config()));
 
@@ -172,5 +181,24 @@ final class PluginsController extends AbstractController
             'previousPlugin' => $plugins->nth($pluginIndex - 1),
             'nextPlugin'     => $plugins->nth($pluginIndex + 1),
         ];
+    }
+
+    /**
+     * Escape the interpolation sequences in config values, so that they are kept literally when the config is resolved
+     *
+     * @template T of array<mixed>
+     *
+     * @param T $data
+     *
+     * @return T
+     */
+    private function escapeConfigValues(array $data): array
+    {
+        array_walk_recursive($data, function (&$value): void {
+            if (is_string($value)) {
+                $value = (string) preg_replace(self::CONFIG_INTERPOLATION_REGEX, '\\\$0', $value);
+            }
+        });
+        return $data;
     }
 }
