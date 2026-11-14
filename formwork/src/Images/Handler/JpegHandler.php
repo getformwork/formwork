@@ -192,11 +192,18 @@ final class JpegHandler extends AbstractHandler
 
         ob_start();
 
-        if (imagejpeg($gdImage, null, $this->options['jpegQuality']) === false) {
-            throw new RuntimeException('Cannot set data from GdImage');
+        try {
+            if (imagejpeg($gdImage, null, $this->options['jpegQuality']) === false) {
+                throw new RuntimeException('Cannot set data from GdImage');
+            }
+        } finally {
+            // The buffer is closed also when the image cannot be output
+            $data = (string) ob_get_clean();
         }
 
-        $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
+        $this->data = $data !== ''
+            ? $data
+            : throw new UnexpectedValueException('Unexpected empty image data');
     }
 
     /**

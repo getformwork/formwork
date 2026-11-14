@@ -226,11 +226,18 @@ final class WebpHandler extends AbstractHandler
 
         ob_start();
 
-        if (imagewebp($gdImage, null, $this->options['webpQuality']) === false) {
-            throw new RuntimeException('Cannot set data from GdImage');
+        try {
+            if (imagewebp($gdImage, null, $this->options['webpQuality']) === false) {
+                throw new RuntimeException('Cannot set data from GdImage');
+            }
+        } finally {
+            // The buffer is closed also when the image cannot be output
+            $data = (string) ob_get_clean();
         }
 
-        $this->data = ob_get_clean() ?: throw new UnexpectedValueException('Unexpected empty image data');
+        $this->data = $data !== ''
+            ? $data
+            : throw new UnexpectedValueException('Unexpected empty image data');
 
         $this->setChunks($this->extendedChunks());
     }

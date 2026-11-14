@@ -178,14 +178,19 @@ final class AvifHandler extends AbstractHandler
         }
 
         ob_start();
-        $success = imageavif($gdImage, null, $this->options['avifQuality']);
-        $data = (string) ob_get_clean();
 
-        if ($success === false) {
-            throw new RuntimeException('Cannot set data from GdImage');
+        try {
+            if (imageavif($gdImage, null, $this->options['avifQuality']) === false) {
+                throw new RuntimeException('Cannot set data from GdImage');
+            }
+        } finally {
+            // The buffer is closed also when the image cannot be output
+            $data = (string) ob_get_clean();
         }
 
-        $this->data = $data !== '' ? $data : throw new UnexpectedValueException('Unexpected empty image data');
+        $this->data = $data !== ''
+            ? $data
+            : throw new UnexpectedValueException('Unexpected empty image data');
     }
 
     /**
