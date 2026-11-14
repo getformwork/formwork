@@ -57,7 +57,7 @@
             <?php foreach ($pageViews as $page => $views) : ?>
                 <tr>
                     <td class="table-cell statistics-histogram-cell" style="--percentage: <?= round($views / $totalViews * 100, 2) ?>%">
-                        <div class="truncate"><?= $this->icon($page === '/' ? 'page-home' : 'page') ?> <?= $page ?></div>
+                        <div class="truncate"><?= $this->icon($page === '/' ? 'page-home' : 'page') ?> <?= $this->escape($page) ?></div>
                     </td>
                     <td class="table-cell text-align-right"><?= $views ?></td>
                 </tr>
