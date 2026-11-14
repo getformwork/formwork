@@ -94,6 +94,7 @@ class LinkTooltipView {
                 removeOnMouseout: false,
                 delay: 0,
                 zIndex: 18,
+                html: true,
             },
         );
 

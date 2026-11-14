@@ -16,6 +16,7 @@ export interface TooltipOptions {
     removeOnMouseout: boolean;
     removeOnMousedown: boolean;
     zIndex: number | null;
+    html: boolean;
 }
 
 /**
@@ -67,6 +68,7 @@ export class Tooltip {
             removeOnMouseout: true,
             removeOnMousedown: true,
             zIndex: null,
+            html: false,
         };
 
         this.text = text;
@@ -75,7 +77,12 @@ export class Tooltip {
         this.element = document.createElement("div");
         this.element.className = "tooltip";
         this.element.role = "tooltip";
-        this.element.innerHTML = this.text;
+
+        if (this.options.html) {
+            this.element.innerHTML = this.text;
+        } else {
+            this.element.textContent = this.text;
+        }
     }
 
     /**

@@ -26,7 +26,13 @@ export const hoverTooltip = (options: HoverTooltipOptions): ChartPlugin => ({
             hide();
             const strokeWidth = parseFloat(getComputedStyle(element).strokeWidth);
             // Tooltip expects an HTMLElement as reference, but only uses the bounding rect of SVG points
-            tooltip = new Tooltip(options.renderTooltip(index), { referenceElement: element as unknown as HTMLElement, offset: { x: 0, y: -strokeWidth }, delay: 0, removeOnMouseout: false });
+            tooltip = new Tooltip(options.renderTooltip(index), {
+                referenceElement: element as unknown as HTMLElement,
+                offset: { x: 0, y: -strokeWidth },
+                delay: 0,
+                removeOnMouseout: false,
+                html: true,
+            });
             // Prevents the tooltip from stealing the pointer and causing flickering
             tooltip.element.style.pointerEvents = "none";
             tooltip.show();
