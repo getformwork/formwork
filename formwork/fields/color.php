@@ -18,6 +18,10 @@ return function (App $app) {
                     return null;
                 }
 
+                if (!is_string($value)) {
+                    throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
+                }
+
                 if (!Constraint::matchesRegex($value, '#[0-9A-Fa-f]{6}')) {
                     throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
                 }

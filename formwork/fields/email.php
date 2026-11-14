@@ -18,12 +18,12 @@ return function (App $app) {
                     return '';
                 }
 
-                if (!Constraint::isEmail($value)) {
-                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" is not a valid e-mail address', $field->name(), $field->type()), 'invalidEmail');
-                }
-
                 if (!is_string($value)) {
                     throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
+                }
+
+                if (!Constraint::isEmail($value)) {
+                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" is not a valid e-mail address', $field->name(), $field->type()), 'invalidEmail');
                 }
 
                 if ($field->has('minLength') && strlen($value) < $field->minLength()) {

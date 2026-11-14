@@ -104,6 +104,10 @@ return function (App $app): array {
                     return null;
                 }
 
+                if (!is_string($value)) {
+                    throw new ValidationException(sprintf('Invalid value for field "%s" of type "%s"', $field->name(), $field->type()));
+                }
+
                 $inputFormats = [
                     $app->config()->getString('system.date.dateFormat'),
                     $app->config()->getString('system.date.datetimeFormat'),
