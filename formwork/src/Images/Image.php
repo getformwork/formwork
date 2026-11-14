@@ -396,7 +396,11 @@ class Image extends File
 
         $image = new Image($path, $this->options);
         $image->data = $this->data;
-        $image->uriGenerator = $this->uriGenerator;
+
+        // Images not created by the file factory have no URI generator
+        if (isset($this->uriGenerator)) {
+            $image->uriGenerator = $this->uriGenerator;
+        }
 
         if (!$this->transforms->isEmpty()) {
             $this->transforms = new TransformCollection();
