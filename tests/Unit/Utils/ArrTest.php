@@ -1391,6 +1391,16 @@ final class ArrTest extends TestCase
         $this->assertSame($expected, Arr::sort($data, sortBy: fn($a, $b) => $a['count'] <=> $b['count'], preserveKeys: false));
     }
 
+    public function testSortWithCallableHonorsTheDirection(): void
+    {
+        $data = ['b' => 2, 'c' => 3, 'a' => 1];
+        $callback = static fn(int $a, int $b): int => $a <=> $b;
+
+        $this->assertSame([3, 2, 1], Arr::sort([2, 3, 1], SORT_DESC, sortBy: $callback, preserveKeys: false));
+        $this->assertSame(['c' => 3, 'b' => 2, 'a' => 1], Arr::sort($data, SORT_DESC, sortBy: $callback));
+        $this->assertSame(['a' => 1, 'b' => 2, 'c' => 3], Arr::sort($data, SORT_ASC, sortBy: $callback));
+    }
+
     public function testSortWithOrderArray(): void
     {
         $expected = [
