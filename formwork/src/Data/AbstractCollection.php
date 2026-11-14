@@ -545,12 +545,18 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
      * If a value is already in the collection, it will not be added
      *
      * @param T ...$values
+     *
+     * @throws LogicException If a value type is invalid
      */
     public function with(mixed ...$values): static
     {
         $collection = $this->clone();
 
         foreach ($values as $value) {
+            if ($this->dataType !== null && !Constraint::isOfType($value, $this->dataType, unionTypes: true)) {
+                throw new LogicException(sprintf('Value must be of type %s to be added, %s given', $this->dataType, get_debug_type($value)));
+            }
+
             if (!$collection->contains($value)) {
                 $collection->data[] = $value;
             }

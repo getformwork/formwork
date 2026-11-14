@@ -780,6 +780,15 @@ final class CollectionTest extends TestCase
         $this->assertSame(['item1', 'item2'], $newCollection->values());
     }
 
+    public function testWithRejectsValuesOfOtherTypes(): void
+    {
+        $collection = Collection::from(['a', 'b'], typed: true);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Value must be of type string to be added, int given');
+        $collection->with(42);
+    }
+
     public function testWithout(): void
     {
         $collection = Collection::from(['item1', 'item2', 'item3']);
