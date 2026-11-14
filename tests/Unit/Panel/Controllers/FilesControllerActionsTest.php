@@ -231,6 +231,18 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertOutcome(['status' => 500, 'json' => ['message' => $this->uploadErrorText($languageString)]], $response);
     }
 
+    public function testReplacingKeepsTheNameOfTheFile(): void
+    {
+        FileSystem::write($this->contentPath . '/Read_Me.text', 'old');
+
+        $response = $this->replace('Read_Me.text', [$this->uploadedText('file', 'new.txt')], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
+
+        $this->assertOutcome(['status' => 200, 'json' => ['data' => ['filename' => 'Read_Me.text']]], $response);
+        $this->assertSame('plain text', FileSystem::read($this->contentPath . '/Read_Me.text'));
+        $this->assertFileDoesNotExist($this->contentPath . '/read-me.txt');
+        $this->assertFileDoesNotExist($this->contentPath . '/read-me.text');
+    }
+
     public function testReplacingKeepsTheMetadataOfTheFile(): void
     {
         $this->replace('a.txt', [$this->uploadedText('file', 'new.txt')]);
@@ -339,7 +351,7 @@ final class FilesControllerActionsTest extends TestCase
 
         $files = [];
 
-        foreach (['a.txt', 'b.txt', 'c.txt'] as $name) {
+        foreach (['a.txt', 'b.txt', 'c.txt', 'Read_Me.text'] as $name) {
             if (FileSystem::exists($this->contentPath . '/' . $name)) {
                 $files[$name] = $factory->make($this->contentPath . '/' . $name);
             }

@@ -306,13 +306,7 @@ final class FilesController extends AbstractController
             }
 
             try {
-                $file = $fileUploader->upload(
-                    $files[0],
-                    dirname($file->path()),
-                    FileSystem::name($filename),
-                    [$model->files()->get($filename)->mimeType()], // @phpstan-ignore method.nonObject
-                    overwrite: true,
-                );
+                $file = $fileUploader->replace($files[0], $file);
             } catch (TranslatedException $e) {
                 if ($this->request->isXmlHttpRequest()) {
                     return JsonResponse::error($this->translate('upload.error', $this->translate($e->getLanguageString())), ResponseStatus::InternalServerError);

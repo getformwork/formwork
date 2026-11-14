@@ -234,6 +234,50 @@ final class FileUploaderTest extends TestCase
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/uploads/icon.svg');
     }
 
+    /**
+     * @param list<string> $extensions
+     */
+    #[DataProvider('replacedFileProvider')]
+    public function testReplacedFilesKeepTheirName(string $filename, string $clientName, array $extensions): void
+    {
+        $temp = TESTS_TMP_PATH . '/upload.tmp';
+        FileSystem::write($temp, 'new content');
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/files');
+        FileSystem::write(TESTS_TMP_PATH . '/files/' . $filename, 'old content');
+        $fileFactory = App::instance()->getService(FileFactory::class);
+        $fileUploader = new FileUploader($this->config($extensions), $fileFactory);
+
+        $file = $fileUploader->replace($this->movableUpload($temp, $clientName), $fileFactory->make(TESTS_TMP_PATH . '/files/' . $filename));
+
+        $this->assertSame(TESTS_TMP_PATH . '/files/' . $filename, $file->path());
+        $this->assertSame('new content', FileSystem::read($file->path()));
+        $this->assertSame([$filename], iterator_to_array(FileSystem::listFiles(TESTS_TMP_PATH . '/files'), false));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, list<string>}>
+     */
+    public static function replacedFileProvider(): iterable
+    {
+        yield 'another extension of the same type' => ['notes.text', 'new.txt', ['txt', 'text']];
+        yield 'a name that is not a slug' => ['Notes_A.txt', 'new.txt', ['txt']];
+    }
+
+    public function testFilesCannotBeReplacedWithFilesOfAnotherType(): void
+    {
+        $temp = TESTS_TMP_PATH . '/upload.tmp';
+        FileSystem::write($temp, '<svg xmlns="http://www.w3.org/2000/svg"/>');
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/files');
+        FileSystem::write(TESTS_TMP_PATH . '/files/notes.txt', 'old content');
+        $fileFactory = App::instance()->getService(FileFactory::class);
+        $fileUploader = new FileUploader($this->config(['txt', 'svg']), $fileFactory);
+
+        $translatedException = $this->captureException(TranslatedException::class, fn() => $fileUploader->replace($this->movableUpload($temp, 'image.svg'), $fileFactory->make(TESTS_TMP_PATH . '/files/notes.txt')));
+
+        $this->assertSame('upload.error.mimeType', $translatedException->getLanguageString());
+        $this->assertSame('old content', FileSystem::read(TESTS_TMP_PATH . '/files/notes.txt'));
+    }
+
     private function movableUpload(string $temp, string $clientName): UploadedFile
     {
         $uploaded = $this->createStub(UploadedFile::class);

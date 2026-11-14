@@ -54,23 +54,7 @@ class FileUploader
      */
     public function upload(UploadedFile $uploadedFile, string $destinationPath, ?string $name = null, ?array $allowedMimeTypes = null, bool $overwrite = false): File
     {
-        if (!$uploadedFile->isUploaded()) {
-            throw new TranslatedException(sprintf('Cannot upload file "%s": %s', $uploadedFile->fieldName(), $uploadedFile->getErrorMessage()), $uploadedFile->getErrorTranslationString());
-        }
-
-        $mimeType = MimeType::fromFile($uploadedFile->tempPath());
-
-        $allowedMimeTypes ??= $this->allowedMimeTypes;
-
-        if (!in_array($mimeType, $allowedMimeTypes, true)) {
-            throw new TranslatedException(sprintf('Invalid mime type %s for file uploads', $mimeType), 'upload.error.mimeType');
-        }
-
-        $resolvedPath = FileSystem::resolvePath($destinationPath);
-
-        if (!Arr::some($this->baseDestinations, fn(string $basePath) => Path::isRelativeTo($resolvedPath, FileSystem::resolvePath($basePath)))) {
-            throw new TranslatedException('Invalid destination path', 'upload.error.cannotMoveToDestination');
-        }
+        $mimeType = $this->validateUploadedFile($uploadedFile, $allowedMimeTypes ?? $this->allowedMimeTypes);
 
         $clientExtension = FileSystem::extension($uploadedFile->clientName());
 
@@ -82,7 +66,53 @@ class FileUploader
             throw new TranslatedException('Invalid file name', 'upload.error.fileName');
         }
 
-        $filename = "{$slug}.{$extension}";
+        return $this->store($uploadedFile, $destinationPath, "{$slug}.{$extension}", $mimeType, $overwrite);
+    }
+
+    /**
+     * Replace the given file with an uploaded one of the same MIME type, keeping its name
+     */
+    public function replace(UploadedFile $uploadedFile, File $file): File
+    {
+        $mimeType = $this->validateUploadedFile($uploadedFile, [$file->mimeType()]);
+
+        return $this->store($uploadedFile, dirname($file->path()), basename($file->path()), $mimeType, overwrite: true);
+    }
+
+    /**
+     * Validate an uploaded file and return its MIME type
+     *
+     * @param array<string> $allowedMimeTypes
+     *
+     * @throws TranslatedException If the file was not uploaded or its MIME type is not allowed
+     */
+    protected function validateUploadedFile(UploadedFile $uploadedFile, array $allowedMimeTypes): string
+    {
+        if (!$uploadedFile->isUploaded()) {
+            throw new TranslatedException(sprintf('Cannot upload file "%s": %s', $uploadedFile->fieldName(), $uploadedFile->getErrorMessage()), $uploadedFile->getErrorTranslationString());
+        }
+
+        $mimeType = MimeType::fromFile($uploadedFile->tempPath());
+
+        if (!in_array($mimeType, $allowedMimeTypes, true)) {
+            throw new TranslatedException(sprintf('Invalid mime type %s for file uploads', $mimeType), 'upload.error.mimeType');
+        }
+
+        return $mimeType;
+    }
+
+    /**
+     * Move an uploaded file to the destination with the given filename and return the corresponding File instance
+     *
+     * @throws TranslatedException If the destination is not allowed
+     */
+    protected function store(UploadedFile $uploadedFile, string $destinationPath, string $filename, string $mimeType, bool $overwrite): File
+    {
+        $resolvedPath = FileSystem::resolvePath($destinationPath);
+
+        if (!Arr::some($this->baseDestinations, fn(string $basePath) => Path::isRelativeTo($resolvedPath, FileSystem::resolvePath($basePath)))) {
+            throw new TranslatedException('Invalid destination path', 'upload.error.cannotMoveToDestination');
+        }
 
         // Sanitize SVG images before they are moved, so that unsafe data never reaches the destination
         if ($mimeType === 'image/svg+xml') {
