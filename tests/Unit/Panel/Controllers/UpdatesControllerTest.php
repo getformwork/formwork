@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Backup\Backupper;
 use Formwork\Cache\ArrayCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Cms\App;
 use Formwork\Http\Client;
 use Formwork\Http\JsonResponse;
@@ -47,7 +48,7 @@ final class UpdatesControllerTest extends TestCase
 
         $this->backupPath = TESTS_TMP_PATH . '/backups';
 
-        $this->cache = new ArrayCache('pages');
+        $this->cache = new ArrayCache();
         $this->cache->set('page', 'cached');
     }
 
@@ -92,7 +93,7 @@ final class UpdatesControllerTest extends TestCase
 
     public function testUpdateInstallsTheReleaseAfterMakingABackup(): void
     {
-        $response = $this->controller()->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
+        $response = $this->controller()->update($this->updater($this->nextMinor()), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame(ResponseStatus::OK, $response->status());
@@ -102,7 +103,7 @@ final class UpdatesControllerTest extends TestCase
 
     public function testBackupIsSkippedWhenDisabled(): void
     {
-        $response = $this->controller(system: ['updates' => ['backupBefore' => false]])->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
+        $response = $this->controller(system: ['updates' => ['backupBefore' => false]])->update($this->updater($this->nextMinor()), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
         $this->assertSame(ResponseStatus::OK, $response->status());
         $this->assertFileExists($this->root . '/updated.txt');
@@ -113,7 +114,7 @@ final class UpdatesControllerTest extends TestCase
     {
         FileSystem::write($this->backupPath, 'not a directory');
 
-        $response = $this->controller()->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
+        $response = $this->controller()->update($this->updater($this->nextMinor()), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
         $this->assertSame('error', Json::parse($response->content())['status']);
@@ -123,7 +124,7 @@ final class UpdatesControllerTest extends TestCase
     public function testInstallationFailureIsReportedAsAnError(): void
     {
         $response = $this->controller(system: ['updates' => ['backupBefore' => false]])
-            ->update($this->updater($this->nextMinor(), archive: false), $this->cache, $this->backupper());
+            ->update($this->updater($this->nextMinor(), archive: false), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
         $this->assertSame(ResponseStatus::InternalServerError, $response->status());
         $this->assertSame('error', Json::parse($response->content())['status']);
@@ -132,24 +133,24 @@ final class UpdatesControllerTest extends TestCase
 
     public function testPagesCacheIsClearedAfterUpdatingWhenEnabled(): void
     {
-        $this->controller(system: ['cache' => ['enabled' => true], 'updates' => ['backupBefore' => false]])
-            ->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
+        $this->controller(system: ['cache' => ['stores' => ['pages' => ['enabled' => true]]], 'updates' => ['backupBefore' => false]])
+            ->update($this->updater($this->nextMinor()), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
         $this->assertFalse($this->cache->has('page'));
     }
 
-    public function testPagesCacheIsLeftUntouchedWhenDisabled(): void
+    public function testCachesAreClearedEvenWhenPagesCacheIsDisabled(): void
     {
-        $this->controller(system: ['cache' => ['enabled' => false], 'updates' => ['backupBefore' => false]])
-            ->update($this->updater($this->nextMinor()), $this->cache, $this->backupper());
+        $this->controller(system: ['cache' => ['stores' => ['pages' => ['enabled' => false]]], 'updates' => ['backupBefore' => false]])
+            ->update($this->updater($this->nextMinor()), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
-        $this->assertTrue($this->cache->has('page'));
+        $this->assertFalse($this->cache->has('page'));
     }
 
     public function testUpdateOfAnUpToDateInstallationDoesNotReportAnInstallation(): void
     {
         $response = $this->controller(system: ['updates' => ['backupBefore' => false]])
-            ->update($this->updater(App::VERSION), $this->cache, $this->backupper());
+            ->update($this->updater(App::VERSION), new CacheManager(['pages' => $this->cache]), $this->backupper());
 
         $this->assertSame(ResponseStatus::OK, $response->status());
         $this->assertFileDoesNotExist($this->root . '/updated.txt');

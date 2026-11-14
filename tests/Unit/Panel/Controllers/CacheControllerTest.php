@@ -3,6 +3,7 @@
 namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Cache\ArrayCache;
+use Formwork\Cache\CacheManager;
 use Formwork\Cms\Site;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\ResponseStatus;
@@ -35,7 +36,7 @@ final class CacheControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->pagesCache = new ArrayCache('pages');
+        $this->pagesCache = new ArrayCache();
         $this->pagesCache->set('page', 'cached');
 
         $this->imagesPath = TESTS_TMP_PATH . '/images';
@@ -192,7 +193,7 @@ final class CacheControllerTest extends TestCase
         return $this->makeController(
             CacheController::class,
             system: array_replace_recursive(['images' => ['processPath' => $this->imagesPath]], $system),
-            services: ['cache.pages' => $this->pagesCache, ...$services],
+            services: [CacheManager::class => new CacheManager(['pages' => $this->pagesCache]), ...$services],
         );
     }
 }
