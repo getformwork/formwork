@@ -70,6 +70,43 @@ final class ImageTest extends TestCase
         $image->saveAs(TESTS_TMP_PATH . '/converted.png', 'image/png');
     }
 
+    public function testSavingImagesWithoutTransformsWritesOnlyTheirMetadata(): void
+    {
+        $image = $this->jpegImage();
+        $hash = hash_file('sha256', $image->path());
+
+        // Like when editing the metadata of a file from the Panel
+        $image->set('alt', 'A photo');
+        $image->save();
+
+        $this->assertSame($hash, hash_file('sha256', $image->path()));
+        $this->assertStringContainsString('alt: \'A photo\'', FileSystem::read($image->path() . '.meta.yaml'));
+    }
+
+    public function testSavingImagesWithTransformsEncodesThemAgain(): void
+    {
+        $image = $this->jpegImage();
+        $path = $image->path();
+
+        $image->resize(50, 25)->save();
+
+        $saved = App::instance()->getService(FileFactory::class)->make($path);
+        $this->assertInstanceOf(Image::class, $saved);
+        $this->assertSame(50, $saved->info()->width());
+        $this->assertSame(25, $saved->info()->height());
+    }
+
+    private function jpegImage(): Image
+    {
+        $path = TESTS_TMP_PATH . '/photo.jpg';
+        imagejpeg(imagecreatetruecolor(200, 100), $path, 100);
+
+        $image = App::instance()->getService(FileFactory::class)->make($path);
+        $this->assertInstanceOf(Image::class, $image);
+
+        return $image;
+    }
+
     private function svgImage(): Image
     {
         $path = TESTS_TMP_PATH . '/image.svg';

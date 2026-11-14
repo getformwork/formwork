@@ -130,7 +130,8 @@ class FileUploader
             && $this->config->getBool('system.uploads.processImages')
             && !$file->info()->isAnimation()
         ) {
-            $file->save();
+            // The image is encoded again with the system options
+            $file->saveAs($file->path());
         }
 
         return $file;

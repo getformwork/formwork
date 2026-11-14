@@ -368,9 +368,17 @@ class Image extends File
 
     /**
      * Save image and its metadata
+     *
+     * The image is encoded again only if it has transforms
      */
     public function save(): void
     {
+        // Encoding the image again would degrade its quality, while only its metadata could have changed
+        if ($this->transforms->isEmpty()) {
+            parent::save();
+            return;
+        }
+
         $this->saveAs($this->path, saveMetadata: true);
     }
 

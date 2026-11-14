@@ -278,6 +278,23 @@ final class FileUploaderTest extends TestCase
         $this->assertSame('old content', FileSystem::read(TESTS_TMP_PATH . '/files/notes.txt'));
     }
 
+    public function testUploadedImagesAreEncodedAgainWithTheSystemOptions(): void
+    {
+        $temp = TESTS_TMP_PATH . '/upload.jpg';
+        imagejpeg(imagecreatetruecolor(200, 100), $temp, 100);
+        $hash = hash_file('sha256', $temp);
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/uploads');
+        $config = new Config(['system' => [
+            'files'   => ['allowedExtensions' => ['jpg'], 'uploads' => ['baseDestinations' => [TESTS_TMP_PATH]]],
+            'uploads' => ['processImages' => true],
+        ]], resolved: true);
+        $fileUploader = new FileUploader($config, App::instance()->getService(FileFactory::class));
+
+        $file = $fileUploader->upload($this->movableUpload($temp, 'photo.jpg'), TESTS_TMP_PATH . '/uploads');
+
+        $this->assertNotSame($hash, hash_file('sha256', $file->path()));
+    }
+
     private function movableUpload(string $temp, string $clientName): UploadedFile
     {
         $uploaded = $this->createStub(UploadedFile::class);
