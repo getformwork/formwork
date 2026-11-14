@@ -10,6 +10,7 @@ use Formwork\Utils\Exceptions\FileSystemException;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FileSystem::class)]
 #[UsesTempDirectory]
@@ -542,6 +543,28 @@ final class FileSystemTest extends TestCase
         FileSystem::copyDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . '/dir');
     }
 
+    #[DataProvider('ownSubtreeDestinationProvider')]
+    public function testCopyDirectoryThrowsOnDestinationInsideTheSource(string $destination): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        FileSystem::copyDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . $destination, overwrite: true);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function ownSubtreeDestinationProvider(): iterable
+    {
+        yield 'the source itself' => ['/dir'];
+        yield 'a subdirectory of the source' => ['/dir/copy'];
+        yield 'a path resolving inside the source' => ['/other/../dir/copy'];
+    }
+
+    public function testCopyDirectoryToADirectoryWithASimilarName(): void
+    {
+        $this->assertTrue(FileSystem::copyDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . '/dir-copy'));
+    }
+
     public function testCopyDirectoryThrowsOnSystemError(): void
     {
         NativeFunctionsFixture::disable('copy');
@@ -656,6 +679,12 @@ final class FileSystemTest extends TestCase
     {
         $this->expectException(FileSystemException::class);
         FileSystem::moveDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . '/dir');
+    }
+
+    public function testMoveDirectoryThrowsOnDestinationInsideTheSource(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        FileSystem::moveDirectory(TESTS_TMP_PATH . '/dir', TESTS_TMP_PATH . '/dir/moved');
     }
 
     public function testMoveDirectoryThrowsOnSystemError(): void
