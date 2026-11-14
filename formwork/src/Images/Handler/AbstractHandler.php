@@ -107,15 +107,11 @@ abstract class AbstractHandler implements HandlerInterface
             }
         }
 
-        if ($handler === static::class) {
-            $this->setDataFromGdImage($image);
-            $instance = $this;
-        } else {
-            /**
-             * @var AbstractHandler
-             */
-            $instance = $handler::fromGdImage($image, $this->options);
-        }
+        // A new handler is always made, so that the data of the processed image does not replace the one of the original image
+        /**
+         * @var AbstractHandler
+         */
+        $instance = $handler::fromGdImage($image, $this->options);
 
         if (isset($colorProfile)) {
             $instance->setColorProfile($colorProfile);

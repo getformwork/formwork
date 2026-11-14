@@ -96,6 +96,30 @@ final class ImageTest extends TestCase
         $this->assertSame(25, $saved->info()->height());
     }
 
+    public function testSavingImagesToOtherPathsDoesNotChangeTheirInfo(): void
+    {
+        $image = $this->jpegImage();
+
+        $image->resize(20, 10)->saveAs(TESTS_TMP_PATH . '/resized.jpg');
+
+        $this->assertSame(200, $image->info()->width());
+        $this->assertSame(100, $image->info()->height());
+
+        $resized = App::instance()->getService(FileFactory::class)->make(TESTS_TMP_PATH . '/resized.jpg');
+        $this->assertInstanceOf(Image::class, $resized);
+        $this->assertSame(20, $resized->info()->width());
+    }
+
+    public function testSavingImagesWithTransformsUpdatesTheirInfo(): void
+    {
+        $image = $this->jpegImage();
+
+        $image->resize(50, 25)->save();
+
+        $this->assertSame(50, $image->info()->width());
+        $this->assertSame(25, $image->info()->height());
+    }
+
     private function jpegImage(): Image
     {
         $path = TESTS_TMP_PATH . '/photo.jpg';

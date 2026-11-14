@@ -502,6 +502,11 @@ class Image extends File
             }
         }
 
+        // The handler of the image is outdated after replacing its file
+        if ($path === $this->path) {
+            unset($this->handler);
+        }
+
         if ($saveMetadata) {
             $this->writeMetadata($path);
         }
