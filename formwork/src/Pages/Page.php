@@ -272,7 +272,7 @@ class Page extends Model implements Stringable
      * @param string|null $language Language code to save the page in
      *
      * @throws UnexpectedValueException If parent or parent content path is missing
-     * @throws InvalidValueException    If the language is invalid
+     * @throws InvalidValueException    If the language is invalid or a page with the same route already exists
      */
     public function save(?string $language = null): void
     {
@@ -290,7 +290,7 @@ class Page extends Model implements Stringable
      * @param string|null          $language Language code to duplicate the page in
      *
      * @throws UnexpectedValueException If parent or parent content path is missing
-     * @throws InvalidValueException    If the language is invalid
+     * @throws InvalidValueException    If the language is invalid or a page with the same route already exists
      *
      * @since 2.2.0
      */
@@ -906,7 +906,7 @@ class Page extends Model implements Stringable
      * @param bool        $copy     Whether to copy the page instead of moving it
      *
      * @throws UnexpectedValueException If parent or parent content path is missing
-     * @throws InvalidValueException    If the language is invalid
+     * @throws InvalidValueException    If the language is invalid or a page with the same route already exists
      *
      * @since 2.2.0
      */
@@ -946,6 +946,13 @@ class Page extends Model implements Stringable
             (string) $this->parent()?->contentPath(),
             $contentDir . '/'
         );
+
+        // The route is checked here since both the parent and the slug may have changed
+        $existingPage = $this->site()->findPage($this->parent()?->route() . $this->slug() . '/');
+
+        if ($existingPage !== null && $existingPage->contentPath() !== $this->contentPath()) {
+            throw new InvalidValueException('A page with the same route already exists', 'alreadyExists');
+        }
 
         $differ = $contentPath !== $this->contentPath()
             || $contentTemplate !== $this->template->name()
@@ -1064,7 +1071,7 @@ class Page extends Model implements Stringable
     /**
      * Set page slug
      *
-     * @throws InvalidValueException If the slug is invalid, for index or error pages, or if a page with the same route already exists
+     * @throws InvalidValueException If the slug is invalid or for index or error pages
      */
     #[Setter]
     protected function setSlug(string $slug): void
@@ -1077,9 +1084,6 @@ class Page extends Model implements Stringable
         }
         if ($this->isIndexPage() || $this->isErrorPage()) {
             throw new InvalidValueException('Cannot change slug of index or error pages', 'indexOrErrorPageSlug');
-        }
-        if ($this->site()->findPage($this->parent()?->route() . $slug . '/') !== null) {
-            throw new InvalidValueException('A page with the same route already exists', 'alreadyExists');
         }
         $this->slug = $slug;
     }

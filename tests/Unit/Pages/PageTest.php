@@ -381,6 +381,68 @@ final class PageTest extends TestCase
         $this->assertSame($site->findPage('/about/'), $page->parent());
     }
 
+    public function testPagesCannotBeSavedWithTheRouteOfAnotherPage(): void
+    {
+        $site = $this->siteFromFixture();
+        $page = $site->findPage('/original/');
+        $this->assertInstanceOf(Page::class, $page);
+
+        $page->set('slug', 'about');
+
+        $invalidValueException = $this->captureException(InvalidValueException::class, $page->save(...));
+
+        $this->assertSame('alreadyExists', $invalidValueException->getIdentifier());
+        $this->assertDirectoryExists($site->contentPath() . '/original');
+    }
+
+    public function testPagesCannotBeMovedWithTheSameRouteOfAnotherPage(): void
+    {
+        $site = $this->siteFromFixture();
+        // A numbered copy of the page under the new parent has a different directory name, but the same route
+        FileSystem::copyDirectory($site->contentPath() . '/parent/child', $site->contentPath() . '/blog/1-child');
+        $page = $site->findPage('/parent/child/');
+        $this->assertInstanceOf(Page::class, $page);
+
+        $page->set('parent', '/blog/');
+
+        $invalidValueException = $this->captureException(InvalidValueException::class, $page->save(...));
+
+        $this->assertSame('alreadyExists', $invalidValueException->getIdentifier());
+        $this->assertDirectoryExists($site->contentPath() . '/parent/child');
+        $this->assertDirectoryDoesNotExist($site->contentPath() . '/blog/child');
+    }
+
+    public function testPagesCannotBeMovedAndRenamedWithTheRouteOfAnotherPage(): void
+    {
+        $site = $this->siteFromFixture();
+        FileSystem::moveDirectory($site->contentPath() . '/blog/hello-world', $site->contentPath() . '/blog/1-hello-world');
+        $page = $site->findPage('/parent/child/');
+        $this->assertInstanceOf(Page::class, $page);
+
+        // The slug is set first, when it is still unique under the previous parent
+        $page->setMultiple(['slug' => 'hello-world', 'parent' => '/blog/']);
+
+        $invalidValueException = $this->captureException(InvalidValueException::class, $page->save(...));
+
+        $this->assertSame('alreadyExists', $invalidValueException->getIdentifier());
+        $this->assertDirectoryExists($site->contentPath() . '/parent/child');
+        $this->assertDirectoryDoesNotExist($site->contentPath() . '/blog/hello-world');
+    }
+
+    public function testPagesCanBeRenamedWithTheSlugOfAPageUnderThePreviousParent(): void
+    {
+        $site = $this->siteFromFixture();
+        $page = $site->findPage('/original/');
+        $this->assertInstanceOf(Page::class, $page);
+
+        $page->setMultiple(['slug' => 'about', 'parent' => '/blog/']);
+        $page->save();
+
+        $this->assertSame('/blog/about/', $page->route());
+        $this->assertDirectoryExists($site->contentPath() . '/blog/about');
+        $this->assertDirectoryExists($site->contentPath() . '/about');
+    }
+
     /**
      * @param class-string<Throwable> $exception
      */
