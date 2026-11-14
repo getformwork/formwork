@@ -15,7 +15,7 @@ return function (App $app) {
              *
              * If not set, no minimum value is enforced
              */
-            'min' => function (Field $field): ?int {
+            'min' => function (Field $field): int|float|null {
                 return $field->get('min');
             },
 
@@ -24,17 +24,23 @@ return function (App $app) {
              *
              * If not set, no maximum value is enforced
              */
-            'max' => function (Field $field): ?int {
+            'max' => function (Field $field): int|float|null {
                 return $field->get('max');
             },
 
             /**
              * Return the step value for the field
              *
-             * If not set, no step value is enforced
+             * If not set, no step value is enforced. Like in browsers, steps that are not positive numbers fall back to 1
              */
-            'step' => function (Field $field): ?int {
-                return $field->get('step');
+            'step' => function (Field $field): int|float|null {
+                $step = $field->get('step');
+
+                if ($step === null) {
+                    return null;
+                }
+
+                return is_numeric($step) && $step > 0 ? $step + 0 : 1;
             },
 
             /**
@@ -53,15 +59,20 @@ return function (App $app) {
                 $value += 0;
 
                 if ($field->has('min') && $value < $field->min()) {
-                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be greater than or equal to %d', $field->name(), $field->type(), $field->get('min')), 'valueTooSmall', ['min' => $field->get('min')]);
+                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be greater than or equal to %s', $field->name(), $field->type(), $field->get('min')), 'valueTooSmall', ['min' => $field->get('min')]);
                 }
 
                 if ($field->has('max') && $value > $field->max()) {
-                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be less than or equal to %d', $field->name(), $field->type(), $field->get('max')), 'valueTooLarge', ['max' => $field->get('max')]);
+                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" must be less than or equal to %s', $field->name(), $field->type(), $field->get('max')), 'valueTooLarge', ['max' => $field->get('max')]);
                 }
 
-                if ($field->has('step') && ($value - $field->get('min', 0)) % $field->step() !== 0) {
-                    throw new ValidationException(sprintf('The value of field "%s" of type "%s" does not conform to the step value %d', $field->name(), $field->type(), $field->get('step')), 'stepMismatch', ['step' => $field->get('step')]);
+                if ($field->has('step')) {
+                    // The value must be an integral number of steps from the minimum, tolerating the errors of floating point arithmetic
+                    $steps = ($value - $field->get('min', 0)) / $field->step();
+
+                    if (abs($steps - round($steps)) > 2 ** -24) {
+                        throw new ValidationException(sprintf('The value of field "%s" of type "%s" is not an integral multiple of the step value %s', $field->name(), $field->type(), $field->step()), 'stepMismatch', ['step' => $field->step()]);
+                    }
                 }
 
                 return $value;

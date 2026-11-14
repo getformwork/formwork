@@ -27,13 +27,13 @@ fields.error.invalidEmail: Nieprawidłowy adres e-mail
 fields.error.invalidValue: Nieprawidłowa wartość
 fields.error.patternMismatch: Wartość nie pasuje do wymaganego wzorca
 fields.error.requiredValue: Pole jest wymagane
-fields.error.stepMismatch: Wartość nie odpowiada wymaganemu krokowi %d
+fields.error.stepMismatch: Wartość nie odpowiada wymaganemu krokowi %s
 fields.error.tooManyItems: Maksymalna liczba dozwolonych elementów to %d
 fields.error.valueAlreadyExists: Wartość już istnieje
-fields.error.valueTooLarge: Wartość jest większa niż %d
+fields.error.valueTooLarge: Wartość jest większa niż %s
 fields.error.valueTooLong: Wartość przekracza wymagane %d znaków
 fields.error.valueTooShort: Wartość jest krótsza niż wymagane %d znaków
-fields.error.valueTooSmall: Wartość jest mniejsza niż %d
+fields.error.valueTooSmall: Wartość jest mniejsza niż %s
 fields.file.none: (Brak)
 fields.file.uploadLabel: <strong>Kliknij</strong>, aby wybrać plik do przesłania, lub <strong>przeciągnij</strong> go tutaj
 fields.image.none: (Brak)

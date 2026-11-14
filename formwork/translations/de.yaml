@@ -27,13 +27,13 @@ fields.error.invalidEmail: Ungültige E-Mail-Adresse
 fields.error.invalidValue: Ungültiger Wert
 fields.error.patternMismatch: Der Wert entspricht nicht dem erforderlichen Muster
 fields.error.requiredValue: Dieses Feld ist erforderlich
-fields.error.stepMismatch: Der Wert entspricht nicht dem Schrittintervall von %d
+fields.error.stepMismatch: Der Wert entspricht nicht dem Schrittintervall von %s
 fields.error.tooManyItems: Die maximal zulässige Anzahl von Elementen ist %d
 fields.error.valueAlreadyExists: Der Wert existiert bereits
-fields.error.valueTooLarge: Der Wert ist größer als %d
+fields.error.valueTooLarge: Der Wert ist größer als %s
 fields.error.valueTooLong: Der Wert überschreitet die erforderlichen %d Zeichen
 fields.error.valueTooShort: Der Wert ist kürzer als die erforderlichen %d Zeichen
-fields.error.valueTooSmall: Der Wert ist kleiner als %d
+fields.error.valueTooSmall: Der Wert ist kleiner als %s
 fields.file.none: (Keine)
 fields.file.uploadLabel: <strong>Klicken</strong>, um eine Datei auszuwählen oder <strong>ziehen</strong>, um sie hier abzulegen
 fields.image.none: (Keine)

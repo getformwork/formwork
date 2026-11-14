@@ -27,13 +27,13 @@ fields.error.invalidEmail: Érvénytelen e-mail cím
 fields.error.invalidValue: Érvénytelen érték
 fields.error.patternMismatch: Az érték nem felel meg az előírt mintának
 fields.error.requiredValue: A mező kitöltése kötelező
-fields.error.stepMismatch: 'Az érték nem felel meg a megadott lépésköznek: %d'
+fields.error.stepMismatch: 'Az érték nem felel meg a megadott lépésköznek: %s'
 fields.error.tooManyItems: 'A megengedett elemek maximális száma: %d'
 fields.error.valueAlreadyExists: Az érték már létezik
-fields.error.valueTooLarge: Az érték nagyobb mint %d
+fields.error.valueTooLarge: Az érték nagyobb mint %s
 fields.error.valueTooLong: Az érték hosszabb a megengedett %d karakternél
 fields.error.valueTooShort: Az érték rövidebb a megkövetelt %d karakternél
-fields.error.valueTooSmall: Az érték kisebb mint %d
+fields.error.valueTooSmall: Az érték kisebb mint %s
 fields.file.none: (Nincs)
 fields.file.uploadLabel: <strong>Kattints</strong> a fájl kiválasztásához vagy <strong>húzd</strong> ide
 fields.image.none: (Nincs)

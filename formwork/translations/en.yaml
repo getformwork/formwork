@@ -27,13 +27,13 @@ fields.error.invalidEmail: Invalid email address
 fields.error.invalidValue: Invalid value
 fields.error.patternMismatch: The value does not match the required pattern
 fields.error.requiredValue: The field is required
-fields.error.stepMismatch: The value does not conform to the required step interval of %d
+fields.error.stepMismatch: The value does not conform to the required step interval of %s
 fields.error.tooManyItems: The maximum number of items allowed is %d
 fields.error.valueAlreadyExists: The value already exists
-fields.error.valueTooLarge: The value is larger than %d
+fields.error.valueTooLarge: The value is larger than %s
 fields.error.valueTooLong: The value is longer than the %d characters required
 fields.error.valueTooShort: The value is shorter than the %d characters required
-fields.error.valueTooSmall: The value is smaller than %d
+fields.error.valueTooSmall: The value is smaller than %s
 fields.file.none: (None)
 fields.file.uploadLabel: <strong>Click</strong> to choose a file to upload or <strong>drag</strong> it here
 fields.image.none: (None)

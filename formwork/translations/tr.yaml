@@ -27,13 +27,13 @@ fields.error.invalidEmail: Geçersiz e-posta adresi
 fields.error.invalidValue: Geçersiz değer
 fields.error.patternMismatch: Değer gerekli desene uymuyor
 fields.error.requiredValue: Bu alan zorunludur
-fields.error.stepMismatch: Değer %d adım aralığına uymuyor
+fields.error.stepMismatch: Değer %s adım aralığına uymuyor
 fields.error.tooManyItems: 'İzin verilen en fazla öğe sayısı: %d'
 fields.error.valueAlreadyExists: Değer zaten mevcut
-fields.error.valueTooLarge: Değer %d değerinden büyük
+fields.error.valueTooLarge: Değer %s değerinden büyük
 fields.error.valueTooLong: Değer gerekli %d karakterden uzun
 fields.error.valueTooShort: Değer gerekli %d karakterden kısa
-fields.error.valueTooSmall: Değer %d değerinden küçük
+fields.error.valueTooSmall: Değer %s değerinden küçük
 fields.file.none: (Yok)
 fields.file.uploadLabel: Bir dosya seçmek için <strong>tıklayın</strong> veya buraya <strong>sürükleyin</strong>
 fields.image.none: (Yok)

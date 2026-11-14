@@ -27,13 +27,13 @@ fields.error.invalidEmail: Ogiltig e-postadress
 fields.error.invalidValue: Ogiltigt värde
 fields.error.patternMismatch: Värdet matchar inte det obligatoriska mönstret
 fields.error.requiredValue: Fältet är obligatoriskt
-fields.error.stepMismatch: Värdet överensstämmer inte med det obligatoriska stegintevallet %d
+fields.error.stepMismatch: Värdet överensstämmer inte med det obligatoriska stegintevallet %s
 fields.error.tooManyItems: Det maximala antalet tillåtna objekt är %d
 fields.error.valueAlreadyExists: Värdet finns redan
-fields.error.valueTooLarge: Värdet är större än %d
+fields.error.valueTooLarge: Värdet är större än %s
 fields.error.valueTooLong: Värdet är längre än de %d tecken som krävs
 fields.error.valueTooShort: Värdet är kortare än de %d tecken som krävs
-fields.error.valueTooSmall: Värdet är mindre än %d
+fields.error.valueTooSmall: Värdet är mindre än %s
 fields.file.none: (Ingen)
 fields.file.uploadLabel: <strong>Klicka</strong> för att välja en fil att ladda upp eller <strong>dra</strong> den hit
 fields.image.none: (Ingen)

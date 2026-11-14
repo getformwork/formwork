@@ -27,13 +27,13 @@ fields.error.invalidEmail: Неправильна електронна адре�
 fields.error.invalidValue: Неприпустиме значення
 fields.error.patternMismatch: Значення не відповідає потрібному шаблону
 fields.error.requiredValue: Поле є обов’язковим
-fields.error.stepMismatch: Значення не відповідає кроку %d
+fields.error.stepMismatch: Значення не відповідає кроку %s
 fields.error.tooManyItems: Максимальна кількість дозволених елементів — %d
 fields.error.valueAlreadyExists: Значення вже існує
-fields.error.valueTooLarge: Значення більше ніж %d
+fields.error.valueTooLarge: Значення більше ніж %s
 fields.error.valueTooLong: Значення перевищує %d необхідних символів
 fields.error.valueTooShort: Значення менше %d необхідних символів
-fields.error.valueTooSmall: Значення менше ніж %d
+fields.error.valueTooSmall: Значення менше ніж %s
 fields.file.none: (Немає)
 fields.file.uploadLabel: <strong>Натисніть</strong> щоб вибрати файл для завантаження або <strong>перетягніть</strong> його сюди
 fields.image.none: (Немає)

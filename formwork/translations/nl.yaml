@@ -27,13 +27,13 @@ fields.error.invalidEmail: Ongeldig e-mailadres
 fields.error.invalidValue: Ongeldige waarde
 fields.error.patternMismatch: Waarde komt niet overeen met het vereiste patroon
 fields.error.requiredValue: Dit veld is verplicht
-fields.error.stepMismatch: Waarde voldoet niet aan de stapgrootte van %d
+fields.error.stepMismatch: Waarde voldoet niet aan de stapgrootte van %s
 fields.error.tooManyItems: Het maximaal toegestane aantal items is %d
 fields.error.valueAlreadyExists: Waarde bestaat al
-fields.error.valueTooLarge: Waarde is groter dan %d
+fields.error.valueTooLarge: Waarde is groter dan %s
 fields.error.valueTooLong: Waarde is langer dan de vereiste %d tekens
 fields.error.valueTooShort: Waarde is korter dan de vereiste %d tekens
-fields.error.valueTooSmall: Waarde is kleiner dan %d
+fields.error.valueTooSmall: Waarde is kleiner dan %s
 fields.file.none: (Geen)
 fields.file.uploadLabel: <strong>Klik</strong> om een bestand te kiezen of <strong>sleep</strong> het hierheen
 fields.image.none: (Geen)
