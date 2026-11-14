@@ -35,6 +35,13 @@ class Request
     protected const array FORWARDED_DIRECTIVES = ['for', 'host', 'proto', 'port'];
 
     /**
+     * List of headers added by proxies when forwarding requests
+     *
+     * @var list<string>
+     */
+    protected const array FORWARDING_HEADERS = ['Forwarded', 'X-Forwarded-For', 'X-Forwarded-Host', 'X-Forwarded-Proto', 'X-Forwarded-Port', 'X-Real-Ip'];
+
+    /**
      * Request input data. Corresponds to `$_POST`
      *
      * @var RequestData<array<string, string>>
@@ -350,10 +357,31 @@ class Request
 
     /**
      * Return whether a request comes from localhost
+     *
+     * Requests forwarded by untrusted proxies are never considered as coming from localhost,
+     * since a proxy running on the same host would make every client appear as local
      */
     public function isLocalhost(): bool
     {
+        if (!$this->isFromTrustedProxy() && $this->isForwarded()) {
+            return false;
+        }
+
         return in_array($this->ip(), self::LOCALHOST_IP_ADDRESSES, true);
+    }
+
+    /**
+     * Return whether a request has been forwarded by a proxy
+     */
+    public function isForwarded(): bool
+    {
+        foreach (self::FORWARDING_HEADERS as $header) {
+            if ($this->headers->has($header)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

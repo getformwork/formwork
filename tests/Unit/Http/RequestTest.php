@@ -506,6 +506,45 @@ final class RequestTest extends TestCase
         $this->assertSame($expected, $this->request(['REMOTE_ADDR' => $ip])->isLocalhost());
     }
 
+    #[DataProvider('forwardingHeaderProvider')]
+    public function testRequestsForwardedByUntrustedProxiesAreNotLocalhost(string $header): void
+    {
+        $request = $this->request(['REMOTE_ADDR' => '127.0.0.1', $header => '203.0.113.7']);
+
+        $this->assertTrue($request->isForwarded());
+        $this->assertFalse($request->isLocalhost());
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function forwardingHeaderProvider(): iterable
+    {
+        yield 'Forwarded' => ['HTTP_FORWARDED'];
+        yield 'X-Forwarded-For' => ['HTTP_X_FORWARDED_FOR'];
+        yield 'X-Forwarded-Host' => ['HTTP_X_FORWARDED_HOST'];
+        yield 'X-Forwarded-Proto' => ['HTTP_X_FORWARDED_PROTO'];
+        yield 'X-Forwarded-Port' => ['HTTP_X_FORWARDED_PORT'];
+        yield 'X-Real-IP' => ['HTTP_X_REAL_IP'];
+    }
+
+    public function testRequestsForwardedByTrustedProxiesAreLocalhostWhenTheClientIs(): void
+    {
+        $local = $this->request(['REMOTE_ADDR' => '10.0.0.10', 'HTTP_X_FORWARDED_FOR' => '127.0.0.1']);
+        $local->setTrustedProxies(['10.0.0.10']);
+
+        $remote = $this->request(['REMOTE_ADDR' => '127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '203.0.113.7']);
+        $remote->setTrustedProxies(['127.0.0.1']);
+
+        $this->assertTrue($local->isLocalhost());
+        $this->assertFalse($remote->isLocalhost());
+    }
+
+    public function testRequestsWithoutForwardingHeadersAreNotForwarded(): void
+    {
+        $this->assertFalse($this->request(['REMOTE_ADDR' => '127.0.0.1'])->isForwarded());
+    }
+
     /**
      * @return iterable<string, array{string, bool}>
      */
