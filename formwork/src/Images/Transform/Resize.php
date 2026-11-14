@@ -52,16 +52,17 @@ final class Resize extends AbstractTransform
 
         $sourceRatio = $sourceWidth / $sourceHeight;
 
-        $this->width ??= (int) (($this->height ?? $sourceHeight) * $sourceRatio);
-        $this->height ??= (int) (($this->width ?? $sourceWidth) / $sourceRatio);
+        // A missing dimension is computed from the ratio of the image, without changing the transform, which could be applied to other images
+        $targetWidth = $this->width ?? (int) (($this->height ?? $sourceHeight) * $sourceRatio);
+        $targetHeight = $this->height ?? (int) ($targetWidth / $sourceRatio);
 
-        $destinationRatio = $this->width / $this->height;
+        $destinationRatio = $targetWidth / $targetHeight;
 
-        $destinationWidth = $this->width;
-        $destinationHeight = $this->height;
+        $destinationWidth = $targetWidth;
+        $destinationHeight = $targetHeight;
 
-        $width = $this->width;
-        $height = $this->height;
+        $width = $targetWidth;
+        $height = $targetHeight;
 
         switch ($this->resizeMode) {
             case ResizeMode::Fill:
@@ -81,21 +82,21 @@ final class Resize extends AbstractTransform
 
             case ResizeMode::Contain:
                 if ($sourceRatio < $destinationRatio) {
-                    $destinationWidth = $this->height * $sourceRatio;
+                    $destinationWidth = $targetHeight * $sourceRatio;
                     $width = (int) $destinationWidth;
                 } else {
-                    $destinationHeight = $this->width / $sourceRatio;
+                    $destinationHeight = $targetWidth / $sourceRatio;
                     $height = (int) $destinationHeight;
                 }
                 break;
 
             case ResizeMode::Center:
                 if ($sourceRatio < $destinationRatio) {
-                    $destinationWidth = $this->height * $sourceRatio;
-                    $destinationX = ($this->width - $destinationWidth) / 2;
+                    $destinationWidth = $targetHeight * $sourceRatio;
+                    $destinationX = ($targetWidth - $destinationWidth) / 2;
                 } else {
-                    $destinationHeight = $this->width / $sourceRatio;
-                    $destinationY = ($this->height - $destinationHeight) / 2;
+                    $destinationHeight = $targetWidth / $sourceRatio;
+                    $destinationY = ($targetHeight - $destinationHeight) / 2;
                 }
                 break;
         }
