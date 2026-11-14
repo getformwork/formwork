@@ -1,0 +1,1 @@
+<?= $this->content() ?>|<?= $this->defined('side') ? 'yes' : 'no' ?>

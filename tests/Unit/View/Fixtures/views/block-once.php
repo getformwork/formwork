@@ -1,0 +1,1 @@
+<?php $this->layout('checks-block') ?><?php if ($this->first()) : ?><?php $this->define('side') ?>Side<?php $this->end() ?><?php endif ?>Body

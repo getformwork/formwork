@@ -139,6 +139,11 @@ class View
             throw new RenderingException(sprintf('%s() not allowed while rendering', __METHOD__));
         }
 
+        // The state of previous renderings is reset, so that the view can be rendered again, also after an error
+        unset($this->layout);
+        $this->blocks = [];
+        $this->incompleteBlocks = [];
+
         // Keep track of the output buffer level,
         // so we can revert to this level if an error occurs
         $level = ob_get_level();
@@ -155,6 +160,8 @@ class View
             }
 
             throw $e;
+        } finally {
+            $this->rendering = false;
         }
 
         $contents = ob_get_clean();

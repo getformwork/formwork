@@ -244,6 +244,66 @@ final class ViewTest extends TestCase
         $this->assertSame($level, ob_get_level());
     }
 
+    public function testViewCanBeRenderedAgainAfterAnException(): void
+    {
+        $calls = 0;
+        $view = $this->view('fails-once', methods: ['check' => static function () use (&$calls): void {
+            if ($calls++ === 0) {
+                throw new RuntimeException('first rendering');
+            }
+        }]);
+
+        $this->captureException(RuntimeException::class, $view->render(...));
+
+        $this->assertSame('rendered', $view->render());
+    }
+
+    public function testIncompleteBlocksAreReportedOnlyForTheCurrentRendering(): void
+    {
+        $view = $this->view('incomplete');
+
+        $this->captureException(RenderingException::class, $view->render(...));
+
+        $this->expectException(RenderingException::class);
+        $this->expectExceptionMessage('Incomplete blocks found: "x". Use');
+        $view->render();
+    }
+
+    public function testViewsWithLayoutCanBeRenderedMoreThanOnce(): void
+    {
+        $view = $this->view('uses-layout');
+
+        $this->assertSame('[Inner]', $view->render());
+        $this->assertSame('[Inner]', $view->render());
+    }
+
+    public function testBlocksAreAvailableToTheLayoutAtEachRendering(): void
+    {
+        $view = $this->view('blocks');
+
+        $this->assertSame('Body|Side|yes|no', $view->render());
+        $this->assertSame('Body|Side|yes|no', $view->render());
+    }
+
+    public function testBlocksAreAvailableToTheLayoutsOfLayouts(): void
+    {
+        $view = $this->view('nested-blocks');
+
+        $this->assertSame('[outer(Core)|Side]', $view->render());
+        $this->assertSame('[outer(Core)|Side]', $view->render());
+    }
+
+    public function testBlocksOfPreviousRenderingsAreNotAvailable(): void
+    {
+        $calls = 0;
+        $view = $this->view('block-once', methods: ['first' => static function () use (&$calls): bool {
+            return $calls++ === 0;
+        }]);
+
+        $this->assertSame('Body|yes', $view->render());
+        $this->assertSame('Body|no', $view->render());
+    }
+
     public function testRenderingIsNotAllowedWhileRendering(): void
     {
         $view = $this->view('empty', methods: []);

@@ -1,0 +1,1 @@
+<?php $this->layout('outer-blocks') ?><?php $this->define('side') ?>Side<?php $this->end() ?>Core

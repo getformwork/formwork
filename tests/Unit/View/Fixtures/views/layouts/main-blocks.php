@@ -1,0 +1,1 @@
+[<?= $this->content() ?>|<?= $this->block('side') ?>]
