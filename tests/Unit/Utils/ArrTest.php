@@ -77,6 +77,36 @@ final class ArrTest extends TestCase
         $this->assertSame('2025-04-01', Arr::get($data, 'date'));
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
+    #[DataProvider('scalarSegmentProvider')]
+    public function testSetReportsSegmentsThatAreNotArrays(array $data, string $key, string $message): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage($message);
+        Arr::set($data, $key, 'value');
+    }
+
+    /**
+     * @return iterable<string, array{array<string, mixed>, string, string}>
+     */
+    public static function scalarSegmentProvider(): iterable
+    {
+        yield 'a string' => [['site' => 'Formwork'], 'site.title', 'Cannot set "site.title": "site" is not an array'];
+        yield 'a nested number' => [['a' => ['b' => 1]], 'a.b.c', 'Cannot set "a.b.c": "a.b" is not an array'];
+        yield 'a boolean' => [['enabled' => true], 'enabled.value', 'Cannot set "enabled.value": "enabled" is not an array'];
+    }
+
+    public function testSetCreatesArraysInPlaceOfNullSegments(): void
+    {
+        $data = ['user' => null];
+
+        Arr::set($data, 'user.name', 'Alice');
+
+        $this->assertSame('Alice', Arr::get($data, 'user.name'));
+    }
+
     public function testRemove(): void
     {
         $data = [

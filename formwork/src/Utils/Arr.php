@@ -67,6 +67,8 @@ final class Arr
      *
      * @param array<array-key, TValue> $array
      * @param TValue                   $value
+     *
+     * @throws UnexpectedValueException If a segment of the key is not an array
      */
     public static function set(array &$array, string $key, mixed $value): void
     {
@@ -76,9 +78,11 @@ final class Arr
         }
         $segments = explode('.', $key);
         $key = array_pop($segments);
-        foreach ($segments as $segment) {
+        foreach ($segments as $i => $segment) {
             if (!array_key_exists($segment, $array)) {
                 $array[$segment] = [];
+            } elseif (is_scalar($array[$segment])) {
+                throw new UnexpectedValueException(sprintf('Cannot set "%s": "%s" is not an array', implode('.', [...$segments, $key]), implode('.', array_slice($segments, 0, $i + 1))));
             }
             $array = &$array[$segment];
         }
