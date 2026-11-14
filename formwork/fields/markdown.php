@@ -43,6 +43,9 @@ return function (App $app, Site $site) {
 
             /**
              * Get the field value as plain text
+             *
+             * Since HTML entities are decoded, the result can contain characters like `<` and `&`
+             * and must be escaped when printed in HTML
              */
             'toPlainText' => function (Field $field): string {
                 return Str::removeHTML($field->toHTML());

@@ -239,7 +239,10 @@ final class Str
     }
 
     /**
-     * Remove HTML tags and entities from a given string
+     * Remove HTML tags and decode HTML entities from a given string
+     *
+     * The result is plain text: since entities are decoded, it can contain characters like `<` and `&`
+     * and must be escaped when printed in HTML
      */
     public static function removeHTML(string $string): string
     {
