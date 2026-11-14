@@ -33,18 +33,34 @@ final class IpAnonymizer
 
     /**
      * Anonymize an IPv4 address
+     *
+     * @throws InvalidArgumentException If the address is not an IPv4 address
      */
     public static function anonymizeIPv4(string $ip): string
     {
-        return self::unpackIPAddress(self::packIPAddress($ip) & self::packIPAddress(self::IPV4_MASK));
+        $packedIp = self::packIPAddress($ip);
+
+        if (strlen($packedIp) !== 4) {
+            throw new InvalidArgumentException(sprintf('Invalid IPv4 address %s', $ip));
+        }
+
+        return self::unpackIPAddress($packedIp & self::packIPAddress(self::IPV4_MASK));
     }
 
     /**
      * Anonymize an IPv6 address
+     *
+     * @throws InvalidArgumentException If the address is not an IPv6 address
      */
     public static function anonymizeIPv6(string $ip): string
     {
-        return self::unpackIPAddress(self::packIPAddress($ip) & self::packIPAddress(self::IPV6_MASK));
+        $packedIp = self::packIPAddress($ip);
+
+        if (strlen($packedIp) !== 16) {
+            throw new InvalidArgumentException(sprintf('Invalid IPv6 address %s', $ip));
+        }
+
+        return self::unpackIPAddress($packedIp & self::packIPAddress(self::IPV6_MASK));
     }
 
     private static function packIPAddress(string $ip): string

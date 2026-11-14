@@ -52,6 +52,20 @@ final class IpAnonymizerTest extends TestCase
         yield 'IPv6 link local' => ['fe80::1ff:fe23:4567:890a', 'fe80::'];
     }
 
+    public function testIPv6AddressesAreRejectedAsIPv4(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid IPv4 address 2001:db8::1234');
+        IpAnonymizer::anonymizeIPv4('2001:db8::1234');
+    }
+
+    public function testIPv4AddressesAreRejectedAsIPv6(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid IPv6 address 203.0.113.7');
+        IpAnonymizer::anonymizeIPv6('203.0.113.7');
+    }
+
     public function testAnonymizationIsIdempotent(): void
     {
         foreach (['192.0.2.123', '2001:db8:abcd:12:1234:5678:9abc:def0'] as $address) {
