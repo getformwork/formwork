@@ -536,6 +536,7 @@ abstract class AbstractCollection implements Arrayable, Countable, Iterator
     {
         $collection = $this->clone();
         $collection->data = array_combine($this->extract($key, $default), $collection->data);
+        $collection->associative = true;
         return $collection;
     }
 

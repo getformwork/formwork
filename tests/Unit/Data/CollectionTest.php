@@ -757,6 +757,18 @@ final class CollectionTest extends TestCase
         ], $keyedCollection->toArray());
     }
 
+    public function testKeyedListsBecomeAssociative(): void
+    {
+        $keyedCollection = Collection::from([
+            ['id' => 'a1', 'name' => 'Alice'],
+            ['id' => 'b2', 'name' => 'Bob'],
+        ])->keyBy('id');
+
+        $this->assertTrue($keyedCollection->isAssociative());
+        $this->assertSame(['a1', 'b2'], $keyedCollection->keys());
+        $this->assertSame(['id' => 'b2', 'name' => 'Bob'], $keyedCollection->get('b2'));
+    }
+
     public function testWith(): void
     {
         $data = ['item1', 'item2'];
