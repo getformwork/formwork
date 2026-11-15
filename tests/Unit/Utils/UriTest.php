@@ -6,6 +6,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Utils\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Uri::class)]
 final class UriTest extends TestCase
@@ -194,6 +195,28 @@ final class UriTest extends TestCase
     {
         $this->assertSame('http://example.com/path/to/resource.jpg#section1', Uri::resolveRelative('#section1', 'http://example.com/path/to/resource.jpg'));
         $this->assertSame('https://example.com/another/path/index.html#top', Uri::resolveRelative('#top', 'https://example.com/another/path/index.html'));
+    }
+
+    #[DataProvider('relativeReferenceProvider')]
+    public function testRelativeReferencesAreResolvedAgainstTheBaseUri(string $uri, string $base, string $expected): void
+    {
+        $this->assertSame($expected, Uri::resolveRelative($uri, $base));
+    }
+
+    /**
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function relativeReferenceProvider(): iterable
+    {
+        yield 'query only' => ['?q=2', 'https://example.test/a/b?q=1', 'https://example.test/a/b/?q=2'];
+        yield 'empty reference' => ['', 'https://example.test/a/b?q=1', 'https://example.test/a/b/?q=1'];
+        yield 'network path' => ['//other.test/x', 'https://example.test/a/b', 'https://other.test/x'];
+        yield 'network path with a base without scheme' => ['//other.test/x', '/blog/', '//other.test/x'];
+        yield 'absolute URI' => ['https://other.test/y', 'https://example.test/a/b', 'https://other.test/y'];
+        yield 'URI with another scheme' => ['mailto:user@example.test', 'https://example.test/a/b', 'mailto:user@example.test'];
+        yield 'relative path' => ['photo.jpg', '/blog/post/', '/blog/post/photo.jpg'];
+        yield 'absolute path' => ['/about/photo.jpg', 'http://localhost/blog/', 'http://localhost/about/photo.jpg'];
+        yield 'query on a route' => ['?page=2', '/blog/', '/blog/?page=2'];
     }
 
     public function testEncode(): void

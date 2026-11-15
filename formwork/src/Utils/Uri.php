@@ -234,10 +234,23 @@ final class Uri
      */
     public static function resolveRelative(string $uri, string $base): string
     {
+        // Absolute URIs are not relative to the base URI
+        if (self::scheme($uri) !== null) {
+            return $uri;
+        }
+        // Network-path references, like `//example.com/path`, take only the scheme of the base URI
+        if (str_starts_with($uri, '//')) {
+            $scheme = self::scheme($base);
+            return $scheme !== null ? "{$scheme}:{$uri}" : $uri;
+        }
         if (str_starts_with($uri, '#')) {
             return self::make(['fragment' => $uri], $base);
         }
         $parts = self::parse($uri);
+        // References without a path, like `?query`, keep the path of the base URI and, without a query, also its query
+        if ($parts['path'] === null || $parts['path'] === '') {
+            return self::make(['query' => $parts['query'] ?? self::query($base), 'fragment' => $parts['fragment']], $base);
+        }
         $basePath = (string) self::path($base);
         if (!str_ends_with($basePath, '/')) {
             $basePath = dirname($basePath);
