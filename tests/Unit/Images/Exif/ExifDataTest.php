@@ -179,6 +179,13 @@ final class ExifDataTest extends TestCase
         yield 'portrait mode' => [7, 'AUTO'];
     }
 
+    public function testMissingExposureProgramIsNotFormatted(): void
+    {
+        $exifData = $this->exifData([0x010F => [TiffFixture::ASCII, 'Canon']]);
+
+        $this->assertNull($exifData->exposureProgram());
+    }
+
     #[DataProvider('meteringModeProvider')]
     public function testMeteringModesAreGrouped(int $meteringMode, string $expected): void
     {
