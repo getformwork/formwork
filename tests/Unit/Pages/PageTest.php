@@ -902,6 +902,16 @@ final class PageTest extends TestCase
         $this->assertNull($page->language());
     }
 
+    public function testRemovedResponseStatusIsTheDefaultOne(): void
+    {
+        $page = $this->temporaryPage('about');
+        $page->set('responseStatus', 503);
+
+        $page->set('responseStatus', null);
+
+        $this->assertSame(ResponseStatus::OK, $page->responseStatus());
+    }
+
     public function testSiteOfAPageCannotBeChanged(): void
     {
         $page = $this->temporaryPage('about');
