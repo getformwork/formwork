@@ -123,6 +123,13 @@ final class ExifDataTest extends TestCase
         $this->assertSame('2024:05:06 07:08:09.000000+00:00', (string) $exifData->dateTimeOriginal());
     }
 
+    public function testInvalidOriginalDateAndTimeIsMissing(): void
+    {
+        $exifData = $this->exifData([], [0x9003 => [TiffFixture::ASCII, 'not a date']]);
+
+        $this->assertNull($exifData->dateTimeOriginal());
+    }
+
     #[DataProvider('makeAndModelProvider')]
     public function testMakeIsNotRepeatedInTheModel(?string $make, ?string $model, ?string $expected): void
     {
