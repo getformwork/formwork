@@ -10,6 +10,7 @@ use Formwork\Files\File;
 use Formwork\Files\FileUriGenerator;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Scheme;
+use Formwork\Schemes\Schemes;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
@@ -216,6 +217,9 @@ final class FileTest extends TestCase
         $path = TESTS_TMP_PATH . '/sample.txt';
         $meta = $path . '.meta.yaml';
         FileSystem::write($path, 'hello');
+
+        // `FieldFactory` is registered lazily by the schemes service loader
+        $this->app()->getService(Schemes::class);
 
         $fieldCollection = new FieldCollection([
             'caption' => $this->app()->getService(FieldFactory::class)->make('caption', ['type' => 'text', 'default' => 'untitled']),

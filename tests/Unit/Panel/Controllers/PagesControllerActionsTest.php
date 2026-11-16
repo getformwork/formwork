@@ -425,7 +425,7 @@ final class PagesControllerActionsTest extends TestCase
     {
         $directories = [];
 
-        foreach (FileSystem::listRecursive(App::instance()->config()->getString('system.pages.path'), FileSystem::LIST_DIRECTORIES) as $directory) {
+        foreach (FileSystem::listRecursive($this->pagesPath, FileSystem::LIST_DIRECTORIES) as $directory) {
             $directories[] = $directory;
         }
 

@@ -110,6 +110,11 @@ final class ConfigServiceLoaderTest extends TestCase
 
     public function testCacheDirectoryIsCreatedWhenMissing(): void
     {
+        // The directory may have been created by other tests
+        if (FileSystem::isDirectory($this->cachePath(), assertExists: false)) {
+            FileSystem::delete($this->cachePath(), recursive: true);
+        }
+
         $this->cacheFile('example.test');
 
         $this->assertDirectoryExists($this->cachePath());
