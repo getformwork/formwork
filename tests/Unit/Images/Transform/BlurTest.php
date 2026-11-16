@@ -6,12 +6,30 @@ use Formwork\Images\ImageInfo;
 use Formwork\Images\Transform\Blur;
 use Formwork\Images\Transform\BlurMode;
 use Formwork\Tests\TestCase;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Blur::class)]
 final class BlurTest extends TestCase
 {
+    #[DataProvider('invalidAmountProvider')]
+    public function testAmountMustBeInRange(int $amount): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("\$amount value must be in range 0-100, {$amount} given");
+        new Blur($amount, BlurMode::Mean);
+    }
+
+    /**
+     * @return iterable<string, array{int}>
+     */
+    public static function invalidAmountProvider(): iterable
+    {
+        yield 'negative' => [-1];
+        yield 'too high' => [101];
+    }
+
     #[DataProvider('blurModeProvider')]
     public function testEachBlurModeSpreadsPixelsWithItsOwnWeights(BlurMode $blurMode, int $center, int $side, int $corner): void
     {
