@@ -64,8 +64,8 @@ class FileHandler extends AbstractHandler
             FileSystem::createDirectory($directory, recursive: true);
         }
 
-        if (($handle = fopen($this->path, 'a')) === false) {
-            throw new RuntimeException(sprintf('Unable to open the stream "%s" for writing in append mode', $this->path));
+        if (($handle = @fopen($this->path, 'a')) === false) {
+            throw new RuntimeException(sprintf('Unable to open the stream "%s" for writing in append mode: %s', $this->path, Str::after(error_get_last()['message'] ?? '', ': ')));
         }
 
         $this->handle = $handle;
