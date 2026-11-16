@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Data\Traits;
 
 use Formwork\Data\Traits\DataGetter;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Data\Fixtures\DataAccessorsFixture;
 use Formwork\Tests\Unit\Data\Fixtures\DataGetterFixture;
 use PHPUnit\Framework\Attributes\CoversTrait;
 
@@ -31,5 +32,13 @@ final class DataGetterTest extends TestCase
         $dataGetterFixture = new DataGetterFixture($data);
         $this->assertTrue($dataGetterFixture->has('key1'));
         $this->assertFalse($dataGetterFixture->has('key2'));
+    }
+
+    public function testValuesOfGetterPropertiesDefaultWhenMissing(): void
+    {
+        $dataAccessorsFixture = new DataAccessorsFixture(['title' => 'Ignored']);
+
+        // The property takes precedence over the data
+        $this->assertSame('default', $dataAccessorsFixture->get('title', 'default'));
     }
 }

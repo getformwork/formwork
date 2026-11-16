@@ -4,7 +4,9 @@ namespace Formwork\Tests\Unit\Data\Traits;
 
 use Formwork\Data\Traits\DataSetter;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Data\Fixtures\DataAccessorsFixture;
 use Formwork\Tests\Unit\Data\Fixtures\DataSetterFixture;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversTrait;
 
 #[CoversTrait(DataSetter::class)]
@@ -36,5 +38,38 @@ final class DataSetterTest extends TestCase
 
         $dataSetterFixture->remove('key2');
         $this->assertSame([], $dataSetterFixture->data());
+    }
+
+    public function testSetterPropertiesAreSetInsteadOfTheData(): void
+    {
+        $dataAccessorsFixture = new DataAccessorsFixture();
+
+        $dataAccessorsFixture->set('title', 'Title');
+
+        $this->assertSame('Title', $dataAccessorsFixture->get('title'));
+        $this->assertSame([], $dataAccessorsFixture->data());
+    }
+
+    public function testSetterMethodsAreCalledWithTheValue(): void
+    {
+        $dataAccessorsFixture = new DataAccessorsFixture();
+
+        $dataAccessorsFixture->set('color', 'red');
+
+        $this->assertSame(['color' => 'RED'], $dataAccessorsFixture->data());
+    }
+
+    public function testGetterOnlyKeysCannotBeSet(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Cannot set getter-only key slug');
+        (new DataAccessorsFixture())->set('slug', 'other');
+    }
+
+    public function testAccessorKeysCannotBeRemoved(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Cannot remove getter- or setter-backed key title');
+        (new DataAccessorsFixture())->remove('title');
     }
 }
