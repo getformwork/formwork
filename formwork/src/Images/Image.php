@@ -6,7 +6,6 @@ use Formwork\Data\Attributes\Getter;
 use Formwork\Data\Attributes\Setter;
 use Formwork\Files\File;
 use Formwork\Images\ColorProfile\ColorProfile;
-use Formwork\Images\Exception\ImageException;
 use Formwork\Images\Exception\UnsupportedConversionException;
 use Formwork\Images\Exception\UnsupportedTransformsException;
 use Formwork\Images\Exception\UnsupportedTypeException;
@@ -71,33 +70,6 @@ class Image extends File
     public function path(): string
     {
         return $this->process()->path;
-    }
-
-    /**
-     * Get image MIME type
-     *
-     * @throws ImageException If image info cannot be determined
-     */
-    #[Getter]
-    public function mimeType(): string
-    {
-        if (!isset($this->mimeType)) {
-            $info = getimagesize($this->path);
-
-            if ($info !== false) {
-                return $this->mimeType = $info['mime'];
-            }
-
-            $mimeTypeFromFile = MimeType::fromFile($this->path);
-
-            if ($mimeTypeFromFile === 'image/svg+xml') {
-                return $this->mimeType = $mimeTypeFromFile;
-            }
-
-            throw new ImageException('Failed to get image info');
-        }
-
-        return $this->mimeType;
     }
 
     /**

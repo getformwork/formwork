@@ -40,6 +40,7 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 #[CoversClass(Image::class)]
 #[UsesApplication]
@@ -147,6 +148,23 @@ final class ImageTest extends TestCase
 
         $this->assertSame(50, $image->info()->width());
         $this->assertSame(25, $image->info()->height());
+    }
+
+    public function testUnreadableImagesCannotBeRead(): void
+    {
+        $path = TESTS_TMP_PATH . '/image.jpg';
+        imagejpeg(imagecreatetruecolor(20, 10), $path);
+        chmod($path, 0o000);
+
+        if (is_readable($path)) {
+            $this->markTestSkipped('Files without permissions are still readable by the current user.');
+        }
+
+        $image = new Image($path, []);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("The file \"{$path}\" does not exist or is not readable");
+        $image->info();
     }
 
     /**
@@ -297,6 +315,19 @@ final class ImageTest extends TestCase
         $image = App::instance()->getService(ImageFactory::class)->make($path);
 
         $this->assertSame('image/bmp', $image->mimeType());
+
+        $this->expectException(UnsupportedTypeException::class);
+        $this->expectExceptionMessage('Unsupported image type');
+        $image->info();
+    }
+
+    public function testFilesThatAreNotImagesCannotBeRead(): void
+    {
+        $path = TESTS_TMP_PATH . '/image.jpg';
+        FileSystem::write($path, 'Not an image');
+        $image = App::instance()->getService(ImageFactory::class)->make($path);
+
+        $this->assertSame('text/plain', $image->mimeType());
 
         $this->expectException(UnsupportedTypeException::class);
         $this->expectExceptionMessage('Unsupported image type');
