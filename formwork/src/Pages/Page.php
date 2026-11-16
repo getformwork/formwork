@@ -1184,7 +1184,9 @@ class Page extends Model implements Stringable
     protected function setResponseStatus(ResponseStatus|int|null $responseStatus): void
     {
         if ($responseStatus === null) {
-            unset($this->responseStatus, $this->data['responseStatus']);
+            // The default response status is restored, so that it is resolved again (e.g. as Not Found for the error page)
+            unset($this->responseStatus);
+            $this->data['responseStatus'] = $this->defaults()['responseStatus'];
             return;
         }
 
