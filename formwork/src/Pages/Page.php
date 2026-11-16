@@ -957,7 +957,8 @@ class Page extends Model implements Stringable
         $differ = $contentPath !== $this->contentPath()
             || $contentTemplate !== $this->template->name()
             || $frontmatter !== $this->contentFile()?->frontmatter()
-            || $content !== $this->contentFile()->content();
+            || $content !== $this->contentFile()->content()
+            || (string) $language !== (string) $this->language();
 
         if ($differ) {
             $filename = $this->template->name();

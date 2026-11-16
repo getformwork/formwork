@@ -6,6 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Http\ResponseStatus;
+use Formwork\Languages\Languages;
 use Formwork\Metadata\Metadata;
 use Formwork\Metadata\MetadataCollection;
 use Formwork\Pages\Events\PageAfterDeleteEvent;
@@ -1000,6 +1001,19 @@ final class PageTest extends TestCase
         $page->save('en');
 
         $this->assertFileExists($page->contentPath() . 'page.en.md');
+    }
+
+    public function testUnchangedPagesAreSavedInAnotherLanguage(): void
+    {
+        $site = $this->siteFromFixture();
+        (new ReflectionProperty(Site::class, 'languages'))->setValue($site, new Languages(['available' => ['en', 'it'], 'default' => 'en']));
+        $path = FileSystem::joinPaths((string) $site->contentPath(), 'localized') . '/';
+        FileSystem::delete($path . 'page.it.md');
+
+        $page = new Page(['site' => $site, 'path' => $path, 'language' => 'en'], $this->app);
+        $page->save('it');
+
+        $this->assertFileExists($path . 'page.it.md');
     }
 
     public function testChangingTheTemplateReplacesTheContentFile(): void
