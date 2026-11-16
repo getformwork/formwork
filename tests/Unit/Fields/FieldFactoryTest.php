@@ -93,6 +93,18 @@ final class FieldFactoryTest extends TestCase
         $this->assertSame('Untitled', $this->fieldFactory->make('t', ['type' => 'headline'])->value());
     }
 
+    public function testTranslatableKeysComeFromTheTypeConfigurationUnlessGiven(): void
+    {
+        FileSystem::write($this->fieldsPath . '/translated.php', "<?php\nreturn function () {\n    return ['translate' => ['label']];\n};\n");
+        $data = ['type' => 'translated', 'label' => '{{greeting}}', 'placeholder' => '{{greeting}}'];
+
+        $field = $this->fieldFactory->make('t', $data);
+        $given = $this->fieldFactory->make('t', [...$data, 'translate' => ['placeholder']]);
+
+        $this->assertSame(['Hello', '{{greeting}}'], [$field->label(), $field->placeholder()]);
+        $this->assertSame(['{{greeting}}', 'Hello'], [$given->label(), $given->placeholder()]);
+    }
+
     public function testTypeWithoutConfigurationFileProducesAPlainField(): void
     {
         $field = $this->fieldFactory->make('t', ['type' => 'no-such-type', 'value' => 'x']);

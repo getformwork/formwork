@@ -3,12 +3,14 @@
 namespace Formwork\Tests\Unit\Fields;
 
 use Formwork\Exceptions\RecursionException;
+use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Fields\Exceptions\ValidationException;
 use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
 use Formwork\Tests\TestCase;
 use Formwork\Translations\Translation;
 use PHPUnit\Framework\Attributes\CoversClass;
+use ReflectionProperty;
 use UnexpectedValueException;
 
 #[CoversClass(Field::class)]
@@ -200,5 +202,53 @@ final class FieldTest extends TestCase
         $limited->setTranslation($translation);
         $this->assertSame('{{field.name}}', $limited->label());
         $this->assertSame('Name', $limited->placeholder());
+    }
+
+    public function testStringConversionUsesTheToStringMethodOfTheType(): void
+    {
+        $field = new Field('tags', ['type' => 'tags', 'value' => ['a', 'b']]);
+        $field->setMethods(['toString' => static fn(Field $field): string => implode(', ', $field->value())]);
+
+        $this->assertSame('a, b', (string) $field);
+    }
+
+    public function testSetValueMethodNormalizesTheValueWhenItIsSet(): void
+    {
+        $field = new Field('name', ['type' => 'text']);
+        $field->setMethods(['setValue' => static fn(Field $field, string $value): string => strtolower($value)]);
+
+        $field->set('value', 'ALICE');
+
+        $this->assertSame('alice', $field->value());
+    }
+
+    public function testKeysEndingWithAtAreComputedFromTheirExpression(): void
+    {
+        $loader = (new ReflectionProperty(DynamicFieldValue::class, 'varsLoader'))->isInitialized() ? DynamicFieldValue::$varsLoader : null;
+        DynamicFieldValue::$varsLoader = static fn(): array => ['site' => ['title' => 'Formwork']];
+
+        try {
+            $field = new Field('name', ['type' => 'text']);
+            $field->set('placeholder@', 'site.title');
+            $field->set('value@', 'site.title');
+
+            $this->assertSame('Formwork', $field->placeholder());
+            // Validation computes the value before checking it
+            $field->validate();
+            $this->assertTrue($field->isValidated());
+            $this->assertSame('Formwork', $field->value());
+        } finally {
+            if ($loader !== null) {
+                DynamicFieldValue::$varsLoader = $loader;
+            }
+        }
+    }
+
+    public function testValuesThatAreNotStringsAreNotTranslated(): void
+    {
+        $field = new Field('name', ['type' => 'text', 'limit' => 10]);
+        $field->setTranslation(new Translation('en', ['field.name' => 'Name']));
+
+        $this->assertSame(10, $field->get('limit'));
     }
 }

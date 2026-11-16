@@ -266,6 +266,21 @@ final class DebugTest extends TestCase
         $this->assertStringContainsString('): <span class="__type-keyword">bool</span>', $output);
     }
 
+    public function testUntypedParametersOfClosuresAreShownWithoutType(): void
+    {
+        $output = $this->body(static function ($value, &$reference): void {});
+
+        $this->assertStringContainsString('Closure</span>(<span class="__type-property">$value</span>, &<span class="__type-property">$reference</span>)', $output);
+    }
+
+    public function testClosuresOfInternalFunctionsHaveNoDefinitionSite(): void
+    {
+        $output = $this->body(strlen(...));
+
+        $this->assertMatchesRegularExpression('/\(<span class="__ref" id="__formwork-dump-ref-\d+">#\d+<\/span>\) \{\n\}$/', $output);
+        $this->assertStringNotContainsString('<span class="__type-property">file</span>', $output);
+    }
+
     public function testClosuresShowTheirDefinitionSite(): void
     {
         $output = $this->body(static fn() => null);

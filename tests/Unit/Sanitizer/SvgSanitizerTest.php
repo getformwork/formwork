@@ -237,6 +237,26 @@ final class SvgSanitizerTest extends TestCase
         $this->assertStringNotContainsString('<img', $svg);
     }
 
+    #[DataProvider('styleSerializedAsHtmlProvider')]
+    public function testStylesSerializedAsHtmlAreCheckedInsideCdataSections(string $style, bool $kept): void
+    {
+        $svg = (new SvgSanitizer(new Html5Parser()))->sanitize("<svg><style>{$style}</style></svg>");
+
+        $this->assertSame($kept, str_contains($svg, '<style>'));
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function styleSerializedAsHtmlProvider(): iterable
+    {
+        yield 'complete section' => ['<![CDATA[circle{fill:red}]]>', true];
+        yield 'text around sections' => ['a{}<![CDATA[b{}]]>c{}<![CDATA[d{}]]>', true];
+        yield 'section with markup' => ['<![CDATA[<img src=x onerror=alert(1)>]]>', false];
+        // Browsers would end the section at a later `]]>`, so its content cannot be checked
+        yield 'unterminated section' => ['<![CDATA[circle{fill:red}', false];
+    }
+
     #[DataProvider('hiddenMarkupProvider')]
     public function testCommentsAndProcessingInstructionsAreRemoved(string $content): void
     {
