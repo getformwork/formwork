@@ -65,6 +65,7 @@ final class VisitorTest extends TestCase
     {
         yield 'direct visit' => [null, ''];
         yield 'empty referer' => ['', ''];
+        yield 'referer that is not an URI' => ['http:///path', null];
         yield 'external site' => ['https://search.example/path?q=1', 'search.example'];
         yield 'external site with a port' => ['https://search.example:8443/path', 'search.example'];
         yield 'external subdomain' => ['https://blog.search.example/path', 'blog.search.example'];

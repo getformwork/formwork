@@ -319,6 +319,36 @@ final class ClientTest extends TestCase
         (new TestClient())->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/missing-ca.pem'));
     }
 
+    public function testUnreadableCaBundleIsRejected(): void
+    {
+        $bundle = TESTS_TMP_PATH . '/ca.pem';
+        FileSystem::write($bundle, '');
+        chmod($bundle, 0o000);
+
+        if (is_readable($bundle)) {
+            $this->markTestSkipped('Files without permissions are still readable by the current user.');
+        }
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The given CA bundle is not readable');
+        (new TestClient())->contextOptions($this->requestOptions($bundle));
+    }
+
+    public function testDownloadsAreNotMovedOverDirectories(): void
+    {
+        $destination = TESTS_TMP_PATH . '/directory';
+        FileSystem::createDirectory($destination);
+        FileSystem::write("{$destination}/file.txt", 'kept');
+        $this->transport->respond($this->ok(['Content-Length: 4']), 'body');
+
+        $runtimeException = $this->captureException(RuntimeException::class, fn() => $this->client()->download('http://example.test/file', $destination));
+
+        $this->assertStringContainsString('Cannot move temporary file', $runtimeException->getMessage());
+        $this->assertSame('kept', FileSystem::read("{$destination}/file.txt"));
+        // The temporary file is removed
+        $this->assertSame(['directory'], iterator_to_array(FileSystem::listContents(TESTS_TMP_PATH, FileSystem::LIST_ALL), false));
+    }
+
     public function testErrorResponsesAreReturnedInsteadOfThrown(): void
     {
         $this->transport->respond(['HTTP/1.1 404 Not Found', 'Content-Type: text/plain', 'Content-Length: 4'], 'nope');

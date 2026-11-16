@@ -268,6 +268,11 @@ final class RequestTest extends TestCase
         yield 'punycode' => ['xn--e1afmkfd.xn--p1ai', 'xn--e1afmkfd.xn--p1ai'];
     }
 
+    public function testHostIsMissingWithoutHeaderAndServerData(): void
+    {
+        $this->assertNull((new Request(server: ['REQUEST_METHOD' => 'GET']))->host());
+    }
+
     public function testHostHeaderTakesPrecedenceOverServerName(): void
     {
         $request = $this->request(['HTTP_HOST' => 'header.test', 'SERVER_NAME' => 'server.test']);

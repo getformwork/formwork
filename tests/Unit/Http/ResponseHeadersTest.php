@@ -18,4 +18,18 @@ final class ResponseHeadersTest extends TestCase
         $this->assertSame(['A-Header' => 'first', 'Cache-Control' => 'no-cache'], $responseHeaders->toArray());
         $this->assertTrue($responseHeaders->has('cache-control'));
     }
+
+    public function testHeadersAreReadWithAnyNameCase(): void
+    {
+        $responseHeaders = new ResponseHeaders(['Content-Type' => 'text/plain']);
+
+        $this->assertSame('text/plain', $responseHeaders->get('content-type'));
+        $this->assertSame('default', $responseHeaders->get('x-missing', 'default'));
+    }
+
+    public function testHeadersAreEmptyOnlyWithoutValues(): void
+    {
+        $this->assertTrue((new ResponseHeaders([]))->isEmpty());
+        $this->assertFalse((new ResponseHeaders(['Content-Type' => 'text/plain']))->isEmpty());
+    }
 }

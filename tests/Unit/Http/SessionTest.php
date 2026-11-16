@@ -226,6 +226,27 @@ final class SessionTest extends TestCase
         $this->assertFalse($session->isStarted());
     }
 
+    public function testCheckingASessionStartsIt(): void
+    {
+        $session = $this->session();
+        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
+
+        // The new session has another id, so it is destroyed
+        $this->assertFalse($session->exists('another-session-id-0123456789'));
+        $this->assertFalse($session->isStarted());
+    }
+
+    public function testMessagesStartTheSession(): void
+    {
+        $session = $this->session();
+        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
+
+        $session->messages();
+
+        $this->assertTrue($session->isStarted());
+        $session->save();
+    }
+
     public function testNewVisitorsGetANewSessionStoredOnDisk(): void
     {
         $id = $this->sessionId($this->sessionRequest('write'));

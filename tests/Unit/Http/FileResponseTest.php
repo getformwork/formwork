@@ -51,6 +51,7 @@ final class FileResponseTest extends TestCase
         yield 'quotes and backslashes' => ['say "hi"\.txt', 'attachment; filename="say \"hi\"\\\.txt"'];
         yield 'non-ASCII characters' => ['Città.pdf', "attachment; filename=\"Citt_.pdf\"; filename*=UTF-8''Citt%C3%A0.pdf"];
         yield 'line breaks' => ["a\r\nb.txt", "attachment; filename=\"a__b.txt\"; filename*=UTF-8''a%0D%0Ab.txt"];
+        yield 'invalid UTF-8' => ["a\xFF.txt", "attachment; filename=\"a_.txt\"; filename*=UTF-8''a%FF.txt"];
     }
 
     public function testFileResponseAddsAcceptRangesForHeadAndSkipsRangesForEmptyResponses(): void
