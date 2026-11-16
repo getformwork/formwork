@@ -32,7 +32,11 @@ final class SvgDecoderTest extends TestCase
         yield 'unitless' => ['width="100" height="50"', ['width' => 100, 'height' => 50]];
         yield 'pixels' => ['width="100px" height="50.4px"', ['width' => 100, 'height' => 50]];
         yield 'points' => ['width="72pt" height="36pt"', ['width' => 96, 'height' => 48]];
+        yield 'picas' => ['width="6pc" height="3pc"', ['width' => 96, 'height' => 48]];
+        yield 'millimeters' => ['width="25.4mm" height="12.7mm"', ['width' => 96, 'height' => 48]];
+        yield 'centimeters' => ['width="2.54cm" height="1.27cm"', ['width' => 96, 'height' => 48]];
         yield 'inches' => ['width="2in" height="1in"', ['width' => 192, 'height' => 96]];
+        yield 'uppercase units' => ['width="1IN" height="0.5IN"', ['width' => 96, 'height' => 48]];
         yield 'view box' => ['viewBox="0 0 640 480"', ['width' => 640, 'height' => 480]];
         yield 'view box with commas' => ['viewBox="0,0,64,48"', ['width' => 64, 'height' => 48]];
         yield 'percentages' => ['width="100%" height="100%" viewBox="0 0 20 10"', ['width' => 20, 'height' => 10]];

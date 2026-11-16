@@ -10,6 +10,7 @@ use Formwork\Images\Handler\PngHandler;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Images\Fixtures\GdImagesFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 #[CoversClass(PngHandler::class)]
@@ -47,6 +48,34 @@ final class PngHandlerTest extends TestCase
 
         $this->assertSame(ColorSpace::Palette, $info->colorSpace());
         $this->assertSame(3, $info->colorNumber());
+    }
+
+    #[DataProvider('colorTypeProvider')]
+    public function testColorTypesDetermineTheColorSpaceAndTheAlphaChannel(int $colorType, ColorSpace $colorSpace, bool $hasAlphaChannel): void
+    {
+        $header = pack('NN', 8, 8) . chr(8) . chr($colorType) . "\x00\x00\x00";
+        $info = (new PngHandler(self::HEADER . GdImagesFixture::pngChunk('IHDR', $header) . GdImagesFixture::pngChunk('IEND', '')))->getInfo();
+
+        $this->assertSame($colorSpace, $info->colorSpace());
+        $this->assertSame($hasAlphaChannel, $info->hasAlphaChannel());
+    }
+
+    /**
+     * @return iterable<string, array{int, ColorSpace, bool}>
+     */
+    public static function colorTypeProvider(): iterable
+    {
+        yield 'grayscale' => [0, ColorSpace::Grayscale, false];
+        yield 'RGB' => [2, ColorSpace::RGB, false];
+        yield 'grayscale with alpha' => [4, ColorSpace::Grayscale, true];
+        yield 'RGB with alpha' => [6, ColorSpace::RGB, true];
+    }
+
+    public function testTransformsAndMetadataAreSupported(): void
+    {
+        $this->assertTrue((new PngHandler(GdImagesFixture::png()))->supportsTransforms());
+        $this->assertTrue(PngHandler::supportsColorProfile());
+        $this->assertTrue(PngHandler::supportsExifData());
     }
 
     public function testAnimationsAreRecognized(): void

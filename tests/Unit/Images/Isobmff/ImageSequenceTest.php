@@ -60,6 +60,21 @@ final class ImageSequenceTest extends TestCase
         $this->assertSame(1, $sequence->playCount);
     }
 
+    public function testTracksWithoutHeaderHaveAnUnknownPlayCount(): void
+    {
+        $track = AvifFileFixture::box('trak', AvifFileFixture::box('edts', AvifFileFixture::fullBox('elst', 0, pack('N', 1), 1)));
+
+        $this->assertNull(ImageSequence::fromBox(new Box('moov', $track))->playCount);
+    }
+
+    public function testRepeatedEditListsWithoutEntriesHaveAnUnknownPlayCount(): void
+    {
+        $header = AvifFileFixture::fullBox('tkhd', 0, str_repeat("\x00", 80));
+        $edits = AvifFileFixture::box('edts', AvifFileFixture::fullBox('elst', 0, pack('N', 0), 1));
+
+        $this->assertNull(ImageSequence::fromBox(new Box('moov', AvifFileFixture::box('trak', $header . $edits)))->playCount);
+    }
+
     public function testShortDurationFieldsAreRead(): void
     {
         $header = AvifFileFixture::fullBox('tkhd', 0, pack('NNNNN', 0, 0, 1, 0, 12) . str_repeat("\x00", 60));

@@ -236,6 +236,24 @@ final class WebpHandlerTest extends TestCase
         $this->assertWellFormed($handler);
     }
 
+    public function testTransformsAndMetadataAreSupported(): void
+    {
+        $this->assertTrue((new WebpHandler(GdImagesFixture::webp()))->supportsTransforms());
+        $this->assertTrue(WebpHandler::supportsColorProfile());
+        $this->assertTrue(WebpHandler::supportsExifData());
+    }
+
+    public function testPaletteImagesAreEncoded(): void
+    {
+        $image = imagecreate(8, 6);
+        imagecolorallocate($image, 255, 0, 0);
+
+        $handler = WebpHandler::fromGdImage($image);
+
+        $this->assertSame(8, $handler->getInfo()->width());
+        $this->assertSame(6, $handler->getInfo()->height());
+    }
+
     private function colorProfile(): ColorProfile
     {
         return new ColorProfile((string) file_get_contents(self::FIXTURES . '/srgb.icc'));

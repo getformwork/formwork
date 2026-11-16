@@ -127,6 +127,47 @@ final class ColorProfileTest extends TestCase
         yield 'tag outside the profile' => [self::header() . pack('N', 1) . 'desc' . pack('NN', 1000, 20)];
     }
 
+    #[DataProvider('headerValueProvider')]
+    public function testHeaderValuesAreRecognized(int $offset, string $value, string $method, DeviceClass|ColorSpace|RenderingIntent $expected): void
+    {
+        $profile = new ColorProfile(substr_replace($this->profile([]), $value, $offset, strlen($value)));
+
+        $this->assertSame($expected, $profile->{$method}());
+    }
+
+    /**
+     * @return iterable<string, array{int, string, string, ColorSpace|DeviceClass|RenderingIntent}>
+     */
+    public static function headerValueProvider(): iterable
+    {
+        yield 'input device' => [12, 'scnr', 'deviceClass', DeviceClass::Input];
+        yield 'display device' => [12, 'mntr', 'deviceClass', DeviceClass::Display];
+        yield 'output device' => [12, 'prtr', 'deviceClass', DeviceClass::Output];
+        yield 'device link' => [12, 'link', 'deviceClass', DeviceClass::Link];
+        yield 'color space conversion' => [12, 'spac', 'deviceClass', DeviceClass::ColorSpace];
+        yield 'abstract profile' => [12, 'abst', 'deviceClass', DeviceClass::AbstractProfile];
+        yield 'named color' => [12, 'nmcl', 'deviceClass', DeviceClass::NamedColor];
+        yield 'XYZ' => [16, 'XYZ ', 'colorSpace', ColorSpace::XYZ];
+        yield 'Lab' => [16, 'Lab ', 'colorSpace', ColorSpace::LAB];
+        yield 'Luv' => [16, 'Luv ', 'colorSpace', ColorSpace::LUV];
+        yield 'Yxy' => [16, 'Yxy ', 'colorSpace', ColorSpace::XYY];
+        yield 'RGB' => [16, 'RGB ', 'colorSpace', ColorSpace::RGB];
+        yield 'gray' => [16, 'GRAY', 'colorSpace', ColorSpace::Grayscale];
+        yield 'HSV' => [16, 'HSV ', 'colorSpace', ColorSpace::HSV];
+        yield 'HLS' => [16, 'HLS ', 'colorSpace', ColorSpace::HLS];
+        yield 'CMYK' => [16, 'CMYK', 'colorSpace', ColorSpace::CMYK];
+        yield 'CMY' => [16, 'CMY ', 'colorSpace', ColorSpace::CMY];
+
+        foreach (range(2, 15) as $colors) {
+            yield "{$colors} colors" => [16, strtoupper(dechex($colors)) . 'CLR', 'colorSpace', ColorSpace::Palette];
+        }
+
+        yield 'perceptual' => [64, pack('N', 0), 'renderingIntent', RenderingIntent::Perceptual];
+        yield 'media-relative colorimetric' => [64, pack('N', 1), 'renderingIntent', RenderingIntent::MediaRelative];
+        yield 'saturation' => [64, pack('N', 3), 'renderingIntent', RenderingIntent::Saturation];
+        yield 'ICC-absolute colorimetric' => [64, pack('N', 4), 'renderingIntent', RenderingIntent::IccAbsolute];
+    }
+
     #[DataProvider('unexpectedValueProvider')]
     public function testUnexpectedHeaderValuesAreNotAccepted(int $offset, string $value, string $method, string $message): void
     {

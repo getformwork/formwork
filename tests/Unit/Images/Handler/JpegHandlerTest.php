@@ -234,6 +234,36 @@ final class JpegHandlerTest extends TestCase
         $this->assertSame(12, $handler->getInfo()->height());
     }
 
+    public function testTransformsAndMetadataAreSupported(): void
+    {
+        $this->assertTrue((new JpegHandler(GdImagesFixture::jpeg()))->supportsTransforms());
+        $this->assertTrue(JpegHandler::supportsColorProfile());
+        $this->assertTrue(JpegHandler::supportsExifData());
+    }
+
+    public function testApplicationSegmentsWithOtherDataAreNotMetadata(): void
+    {
+        $jpeg = "\xff\xd8" . GdImagesFixture::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImagesFixture::jpegSegment(0xe2, 'other') . "\xff\xd9";
+        $handler = new JpegHandler($jpeg);
+
+        $this->assertFalse($handler->hasColorProfile());
+        $this->assertFalse($handler->hasExifData());
+        $this->assertNull($handler->getExifData());
+    }
+
+    public function testColorProfilesNotFittingInTheSegmentsAreNotAccepted(): void
+    {
+        $handler = new JpegHandler(GdImagesFixture::jpeg());
+
+        // A profile can be split into at most 255 segments of 65517 bytes
+        $data = str_pad(str_repeat("\x00", 36) . 'acsp', 255 * 65517 + 1, "\x00");
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Color profile is too large to be embedded in a JPEG image');
+
+        $handler->setColorProfile(new ColorProfile($data));
+    }
+
     private function colorProfile(): ColorProfile
     {
         return new ColorProfile((string) file_get_contents(self::FIXTURES . '/srgb.icc'));

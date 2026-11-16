@@ -47,6 +47,13 @@ final class JpegDecoderTest extends TestCase
         $this->assertSame('ab', $segments[1]['value']);
     }
 
+    public function testStuffedZeroBytesBetweenSegmentsAreSkipped(): void
+    {
+        $data = "\xff\xd8\xff\x00" . GdImagesFixture::jpegSegment(0xfe, 'comment') . "\xff\xd9";
+
+        $this->assertSame([0xd8, 0xfe, 0xd9], array_column(iterator_to_array((new JpegDecoder())->decode($data), false), 'type'));
+    }
+
     public function testDataAfterTheEndOfImageMarkerIsIgnored(): void
     {
         $data = "\xff\xd8\xff\xd9" . 'trailing garbage';
@@ -106,6 +113,16 @@ final class JpegDecoderTest extends TestCase
         $data = "\xff\xd8" . GdImagesFixture::jpegSegment(0xda, "\x01\x01") . "\x12\x34";
 
         $this->expectException(UnexpectedValueException::class);
+
+        iterator_to_array((new JpegDecoder())->decode($data));
+    }
+
+    public function testScansEndingWithAMarkerPrefixAreNotDecoded(): void
+    {
+        $data = "\xff\xd8" . GdImagesFixture::jpegSegment(0xda, "\x01\x01") . "\x12\xff";
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Segment end not found');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }
