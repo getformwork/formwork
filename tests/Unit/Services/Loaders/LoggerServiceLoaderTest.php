@@ -3,6 +3,10 @@
 namespace Formwork\Tests\Unit\Services\Loaders;
 
 use Formwork\Config\Config;
+use Formwork\Log\Formatter\JsonFormatter;
+use Formwork\Log\Formatter\TextFormatter;
+use Formwork\Log\Handler\FileHandler;
+use Formwork\Log\Handler\StderrHandler;
 use Formwork\Log\Logger;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\LoggerServiceLoader;
@@ -11,6 +15,8 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionProperty;
 
 #[CoversClass(LoggerServiceLoader::class)]
 #[UsesTempDirectory]
@@ -82,6 +88,32 @@ final class LoggerServiceLoaderTest extends TestCase
 
         $this->assertStringContainsString('shared', FileSystem::read(TESTS_TMP_PATH . '/first.log'));
         $this->assertStringContainsString('shared', FileSystem::read(TESTS_TMP_PATH . '/second.log'));
+    }
+
+    /**
+     * @param array<string, string> $config
+     * @param class-string          $handler
+     * @param class-string          $formatter
+     */
+    #[DataProvider('handlerProvider')]
+    public function testHandlersAreBuiltFromTheirType(array $config, string $handler, string $formatter): void
+    {
+        $logger = $this->load([$config]);
+
+        $handlers = (new ReflectionProperty(Logger::class, 'handlers'))->getValue($logger);
+
+        $this->assertCount(1, $handlers);
+        $this->assertInstanceOf($handler, $handlers[0]);
+        $this->assertInstanceOf($formatter, (new ReflectionProperty($handlers[0], 'formatter'))->getValue($handlers[0]));
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>, class-string, class-string}>
+     */
+    public static function handlerProvider(): iterable
+    {
+        yield 'standard error with the JSON format' => [['type' => 'stderr', 'formatter' => 'json'], StderrHandler::class, JsonFormatter::class];
+        yield 'file with the text format' => [['type' => 'file', 'path' => TESTS_TMP_PATH . '/app.log', 'formatter' => 'text'], FileHandler::class, TextFormatter::class];
     }
 
     public function testUnknownHandlerTypesAreRejected(): void

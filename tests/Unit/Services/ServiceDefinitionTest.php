@@ -14,6 +14,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ServiceDefinition::class)]
 final class ServiceDefinitionTest extends TestCase
 {
+    public function testNameIsTheOneOfTheDefinedService(): void
+    {
+        $this->assertSame('service', (new Container())->define('service')->getName());
+    }
+
     public function testParametersCanBeAddedAndRead(): void
     {
         $serviceDefinition = (new Container())->define('service')

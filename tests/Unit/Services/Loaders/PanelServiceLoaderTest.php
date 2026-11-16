@@ -3,26 +3,39 @@
 namespace Formwork\Tests\Unit\Services\Loaders;
 
 use Formwork\Assets\Assets;
+use Formwork\Authentication\RateLimiter;
 use Formwork\Cms\App;
+use Formwork\Cms\Site;
 use Formwork\Config\Config;
+use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Events\EventDispatcher;
+use Formwork\Fields\FieldFactory;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
+use Formwork\Http\Session\Session;
 use Formwork\Log\Logger;
+use Formwork\Panel\Controllers\ErrorsController;
+use Formwork\Panel\Events\PanelLoggedInEvent;
+use Formwork\Panel\Panel;
 use Formwork\Parsers\Php;
 use Formwork\Router\Events\RouteActionResolvedEvent;
 use Formwork\Router\Route;
+use Formwork\Services\Container;
 use Formwork\Services\Loaders\PanelServiceLoader;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\Unit\Panel\Fixtures\PanelRequestFixture;
 use Formwork\Tests\UsesApplication;
+use Formwork\Translations\Translations;
 use Formwork\Users\Attributes\Permission;
 use Formwork\Users\User;
+use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use Formwork\View\ViewFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
+use ReflectionProperty;
 use UnexpectedValueException;
 
 /**
@@ -155,6 +168,65 @@ final class PanelServiceLoaderTest extends TestCase
         $this->assertNull($this->gate('panel.login', '/login/', users: ['alice'], localhost: false, root: 'panel'));
     }
 
+    public function testDeprecatedPanelOptionsAreStillApplied(): void
+    {
+        $request = new Request(server: ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
+        $container = $this->panelContainer($request, $this->createStub(Users::class));
+        $config = $this->panelConfig(['loginAttempts' => 3, 'loginResetTime' => 60, 'sessionTimeout' => 30]);
+
+        $messages = $this->captureDeprecations(fn() => $this->panelLoader($config, $request, $this->createStub(Users::class))->load($container));
+
+        $this->assertCount(3, $messages);
+
+        $rateLimiter = $container->get(RateLimiter::class);
+        $this->assertInstanceOf(RateLimiter::class, $rateLimiter);
+        $this->assertSame(3, (new ReflectionProperty($rateLimiter, 'limit'))->getValue($rateLimiter));
+        $this->assertSame(60, (new ReflectionProperty($rateLimiter, 'resetTime'))->getValue($rateLimiter));
+        // The session timeout was given in minutes
+        $this->assertSame(1800, (new ReflectionProperty(Session::class, 'duration'))->getValue($request->session()));
+    }
+
+    public function testPanelOfLoggedInUsersUsesTheirLanguageAndErrorPages(): void
+    {
+        $user = $this->user('it');
+        $users = $this->createStub(Users::class);
+        $users->method('loggedIn')->willReturn($user);
+
+        // Users are logged in only with a previous session
+        $request = new PanelRequestFixture(server: ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
+        $request->previousSession = true;
+        $container = $this->panelContainer($request, $users);
+        $loader = $this->panelLoader($this->panelConfig(), $request, $users);
+        $translations = App::instance()->translations();
+        $current = $translations->getCurrent()->code();
+
+        try {
+            $panel = $loader->load($container);
+            $container->define(Panel::class, $panel);
+            $loader->onResolved($panel, $container);
+
+            $this->assertSame('it', $translations->getCurrent()->code());
+            // The errors of the panel are shown by its own controller
+            $this->assertSame(ErrorsController::class, (new ReflectionMethod($container, 'resolveAlias'))->invoke($container, ErrorsControllerInterface::class));
+        } finally {
+            $translations->setCurrent($current);
+        }
+    }
+
+    public function testLoginsAreLogged(): void
+    {
+        $user = $this->user('en');
+        $request = new Request(server: ['REMOTE_ADDR' => '203.0.113.7', 'REQUEST_METHOD' => 'GET']);
+        $eventDispatcher = new EventDispatcher();
+
+        $logger = $this->createMock(Logger::class);
+        $logger->expects($this->once())->method('info')->with('Panel user {username} logged in', ['username' => 'alice']);
+
+        $this->panelLoader($this->panelConfig(), $request, $this->createStub(Users::class), $logger, $eventDispatcher)->load($this->panelContainer($request, $this->createStub(Users::class)));
+
+        $eventDispatcher->dispatch(new PanelLoggedInEvent($user, $request));
+    }
+
     /**
      * Run the route action resolution listener of the panel
      *
@@ -208,6 +280,69 @@ final class PanelServiceLoaderTest extends TestCase
             $users,
             $app->getService(Assets::class),
         );
+    }
+
+    /**
+     * @param array<string, mixed> $panel Overrides of the panel configuration
+     */
+    private function panelConfig(array $panel = []): Config
+    {
+        return new Config(['system' => array_replace_recursive(App::instance()->config()->getArray('system'), ['panel' => $panel])], resolved: true);
+    }
+
+    private function panelLoader(Config $config, Request $request, Users $users, ?Logger $logger = null, ?EventDispatcher $eventDispatcher = null): PanelServiceLoader
+    {
+        $app = App::instance();
+
+        return new PanelServiceLoader(
+            $app,
+            $logger ?? $this->createStub(Logger::class),
+            $eventDispatcher ?? new EventDispatcher(),
+            $request,
+            $config,
+            $app->getService(ViewFactory::class),
+            $app->translations(),
+            $app->schemes(),
+            $users,
+            $app->getService(Assets::class),
+        );
+    }
+
+    private function user(string $language): User
+    {
+        return App::instance()->getService(UserFactory::class)->make([
+            'username' => 'alice',
+            'fullname' => 'Alice',
+            'email'    => 'alice@example.test',
+            'role'     => 'admin',
+            'language' => $language,
+        ]);
+    }
+
+    /**
+     * Create a container with the services needed to build the panel
+     */
+    private function panelContainer(Request $request, Users $users): Container
+    {
+        $app = App::instance();
+        $container = new Container();
+
+        foreach ([
+            Container::class       => $container,
+            App::class             => $app,
+            Config::class          => $app->config(),
+            Request::class         => $request,
+            Users::class           => $users,
+            Translations::class    => $app->translations(),
+            Assets::class          => $app->getService(Assets::class),
+            EventDispatcher::class => new EventDispatcher(),
+            FieldFactory::class    => $app->getService(FieldFactory::class),
+            Site::class            => $app->site(),
+        ] as $name => $service) {
+            $container->define($name, $service);
+        }
+
+        return $container;
     }
 
     private function location(RedirectResponse $redirectResponse): ?string

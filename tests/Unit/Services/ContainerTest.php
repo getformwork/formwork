@@ -25,6 +25,7 @@ use Formwork\Tests\Unit\Services\Fixtures\FactoryProductFixture;
 use Formwork\Tests\Unit\Services\Fixtures\FailingResolutionAwareLoaderFixture;
 use Formwork\Tests\Unit\Services\Fixtures\InvalidReturnLoaderFixture;
 use Formwork\Tests\Unit\Services\Fixtures\LoadedServiceFixture;
+use Formwork\Tests\Unit\Services\Fixtures\MultipleAttributesDependentServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\NestedDependentServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalAttributeDependentServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\OptionalDependencyServiceFixture;
@@ -128,6 +129,16 @@ final class ContainerTest extends TestCase
         $attributeDependentService = $container->get(AttributeDependentServiceFixture::class);
 
         $this->assertSame($simpleService, $attributeDependentService->service);
+    }
+
+    public function testOnlyOneServiceAttributeIsAllowedForAnArgument(): void
+    {
+        $container = new Container();
+        $container->define(MultipleAttributesDependentServiceFixture::class);
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Multiple #[Service] attributes found for argument $service');
+        $container->get(MultipleAttributesDependentServiceFixture::class);
     }
 
     public function testServiceAttributeFallsBackToTheDefaultWhenTheIdentifierIsNotDefined(): void
