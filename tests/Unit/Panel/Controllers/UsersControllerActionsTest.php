@@ -112,6 +112,7 @@ final class UsersControllerActionsTest extends TestCase
         yield 'users that cannot be deleted are kept' => ['delete', ['user' => 'bob'], ['canDeleteUser' => false], ['notices' => ['error']], ['bob' => true]];
         yield 'users can be deleted' => ['delete', ['user' => 'bob'], ['canDeleteUser' => true], ['to' => 'panel.users', 'notices' => ['success']], ['bob' => false, 'alice' => true]];
         yield 'images of unknown users cannot be deleted' => ['deleteImage', ['user' => 'missing'], [], ['notices' => ['error']]];
+        yield 'default images cannot be deleted' => ['deleteImage', ['user' => 'bob'], ['canChangeOptionsOf' => true], ['to' => 'panel.users.profile', 'notices' => ['error']]];
         yield 'images of users that cannot be changed are kept' => ['deleteImage', ['user' => 'bob'], ['canChangeOptionsOf' => false], ['to' => 'panel.users.profile', 'notices' => ['error']]];
         yield 'unknown profiles redirect to the users' => ['profile', ['user' => 'missing'], [], ['to' => 'panel.users', 'notices' => ['error']]];
         yield 'profiles that cannot be changed are not saved' => ['profile', ['user' => 'bob'], ['canChangeOptionsOf' => false], ['notices' => ['error']]];
@@ -191,10 +192,20 @@ final class UsersControllerActionsTest extends TestCase
         yield 'with an image' => [$changed, 'png', ['success', 'success'], true];
         yield 'without an image' => [$changed, null, ['success'], true];
         yield 'with an image of a disallowed type' => [$changed, 'text', ['error'], false];
+        yield 'with invalid fields' => [[...$changed, 'email' => 'not an email'], null, ['error'], false];
+        // Users can change only their own password
+        yield 'with the password of another user' => [[...$changed, 'password' => 'another-password'], null, ['error'], false];
 
         foreach (self::uploadErrorProvider() as $name => [$error]) {
             yield "with an image failing with a PHP error ($name)" => [$changed, (string) $error, ['error'], false];
         }
+    }
+
+    public function testUsersCannotChangeTheirOwnRole(): void
+    {
+        $this->assertOutcome(['notices' => ['error']], $this->saveProfile(['fullname' => 'Alice Changed', 'role' => 'editor'], null, editor: 'alice'));
+
+        $this->assertArrayNotHasKey('fullname', Yaml::parseFile($this->accountFile('alice')));
     }
 
     public function testUploadedImagesAreSquared(): void
@@ -211,7 +222,7 @@ final class UsersControllerActionsTest extends TestCase
     /**
      * @param array<string, string> $overrides
      */
-    private function saveProfile(array $overrides, ?UploadedFile $image): Response
+    private function saveProfile(array $overrides, ?UploadedFile $image, string $editor = 'bob'): Response
     {
         $uploader = $this->uploader([$this->userImagesPath()]);
         $site = $this->createStub(Site::class);
@@ -222,7 +233,7 @@ final class UsersControllerActionsTest extends TestCase
             system: ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->userImagesPath()]]],
             input: ['fullname' => 'Alice', 'email' => 'alice@example.test', 'language' => 'en', 'role' => 'admin', 'colorScheme' => 'light', ...$overrides],
             services: [Site::class => $site, FileUploader::class => $uploader],
-            user: $this->users()->get('bob'),
+            user: $this->users()->get($editor),
             server: ['REQUEST_METHOD' => 'POST'],
             files: $image === null ? [] : ['image' => $image],
         );

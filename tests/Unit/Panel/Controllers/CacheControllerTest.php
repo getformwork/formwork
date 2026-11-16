@@ -81,6 +81,18 @@ final class CacheControllerTest extends TestCase
         $this->assertFileExists($this->imagesPath . '/processed.jpg');
     }
 
+    public function testOtherCachesCanBeClearedByName(): void
+    {
+        $other = new ArrayCache();
+        $other->set('item', 'cached');
+
+        $response = $this->controller(services: [CacheManager::class => new CacheManager(['pages' => $this->pagesCache, 'other' => $other])])->clear(new RouteParams(['type' => 'other']));
+
+        $this->assertSuccess($response, 'other');
+        $this->assertFalse($other->has('item'));
+        $this->assertTrue($this->pagesCache->has('page'));
+    }
+
     public function testImagesCacheCanBeCleared(): void
     {
         $response = $this->controller()->clear(new RouteParams(['type' => 'images']));

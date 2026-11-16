@@ -8,6 +8,7 @@ use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Files\Services\FileUploader;
+use Formwork\Languages\Languages;
 use Formwork\Pages\Page;
 use Formwork\Panel\ContentHistory\ContentHistory;
 use Formwork\Panel\ContentHistory\ContentHistoryEvent;
@@ -29,6 +30,7 @@ use Formwork\Users\UserFactory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionProperty;
 
 #[CoversClass(PagesController::class)]
 #[UsesApplication]
@@ -113,14 +115,22 @@ final class PagesControllerActionsTest extends TestCase
         yield 'tree of an unknown page' => ['tree', ['page' => 'missing'], [], ['status' => 404]];
         yield 'tree of a page without children' => ['tree', ['page' => 'about'], [], ['status' => 404]];
         yield 'creation of an invalid page' => ['create', [], ['input' => ['newPageModal' => ['title' => '']], 'server' => $post], $error];
+        yield 'creation of an existing page' => ['create', [], ['input' => ['newPageModal' => ['title' => 'About', 'slug' => 'about', 'parent' => '.', 'template' => 'default']], 'server' => $post], $error];
+        yield 'creation with an invalid slug' => ['create', [], ['input' => ['newPageModal' => ['title' => 'New', 'slug' => 'Not valid!', 'parent' => '.', 'template' => 'default']], 'server' => $post], $error];
         yield 'duplication of an unknown page' => ['duplicate', ['page' => 'missing'], [], $error];
+        yield 'duplication of a page with children' => ['duplicate', ['page' => 'blog'], ['server' => $post], $error];
+        yield 'duplication with an existing slug' => ['duplicate', ['page' => 'about'], ['input' => ['duplicatePageModal' => ['title' => 'Blog', 'slug' => 'blog']], 'server' => $post], $error];
         yield 'duplication with an invalid title' => ['duplicate', ['page' => 'about'], ['input' => ['duplicatePageModal' => ['title' => '']], 'server' => $post], $error];
         yield 'edit of an unknown page' => ['edit', ['page' => 'missing'], [], $error];
+        yield 'edit of a page whose siblings are reversed' => ['edit', ['page' => 'blog/second'], ['server' => ['REQUEST_METHOD' => 'GET']], ['status' => 200]];
+        yield 'edit in a language of a site with only one language' => ['edit', ['page' => 'about', 'language' => 'it'], [], ['to' => 'panel.pages.edit', 'notices' => []]];
         yield 'preview of an unknown page' => ['preview', ['page' => 'missing'], [], $error];
         yield 'delete' => ['delete', ['page' => 'about'], [], ['notices' => ['success']], ['about' => false, 'blog' => true]];
         yield 'delete with a script request' => ['delete', ['page' => 'about'], ['server' => $ajax], ['status' => 200], ['about' => false]];
         yield 'delete of a page that cannot be deleted' => ['delete', ['page' => 'error'], ['server' => $ajax], ['status' => 500], ['error' => true]];
+        yield 'delete of a page that cannot be deleted without a script request' => ['delete', ['page' => 'blog'], [], $error, ['blog' => true]];
         yield 'delete of an unknown page' => ['delete', ['page' => 'missing'], [], $error];
+        yield 'delete in an unavailable language without a script request' => ['delete', ['page' => 'about', 'language' => 'xx'], [], $error, ['about' => true]];
         yield 'delete of an unknown page with a script request' => ['delete', ['page' => 'missing'], ['server' => $ajax], ['status' => 500]];
         yield 'delete in an unavailable language' => ['delete', ['page' => 'about', 'language' => 'xx'], ['server' => $ajax], ['status' => 500], ['about' => true]];
         yield 'reorder without parameters' => ['reorder', [], $reorder([]), ['status' => 400]];
@@ -235,6 +245,117 @@ final class PagesControllerActionsTest extends TestCase
         $this->call($this->controller(input: $this->pageInput('about', ['published' => '0']), server: ['REQUEST_METHOD' => 'POST'], query: ['publish' => '1'], user: $this->administrator()), 'edit', ['page' => 'about']);
 
         $this->assertTrue($page?->get('published'));
+    }
+
+    /**
+     * @param array<string, string> $values
+     */
+    #[DataProvider('invalidEditProvider')]
+    public function testPagesWithInvalidValuesAreNotChanged(array $values): void
+    {
+        $response = $this->call($this->controller(input: $this->pageInput('about', $values), server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator()), 'edit', ['page' => 'about']);
+
+        $this->assertOutcome(['to' => 'panel.pages.edit', 'notices' => ['error']], $response);
+        $this->assertDirectoryExists($this->pagesPath . '/about');
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>}>
+     */
+    public static function invalidEditProvider(): iterable
+    {
+        yield 'route of another page' => [['parent' => '/blog/', 'slug' => 'first']];
+        yield 'invalid slug' => [['slug' => 'Not valid!']];
+    }
+
+    public function testEditedPagesKeepTheNewPageModalOpen(): void
+    {
+        $response = $this->call($this->controller(input: $this->pageInput('about'), server: ['REQUEST_METHOD' => 'POST'], query: ['createNew' => ''], user: $this->administrator()), 'edit', ['page' => 'about']);
+
+        $this->assertStringEndsWith('?createNew', $response->headers()->get('Location'));
+    }
+
+    public function testPagesCanBePreviewedWithAnotherTemplate(): void
+    {
+        $response = $this->call($this->controller(input: $this->pageInput('about', ['template' => 'blog']), server: ['REQUEST_METHOD' => 'POST']), 'preview', ['page' => 'about']);
+
+        $this->assertOutcome(['status' => 200], $response);
+        // The page is changed only for the preview
+        $this->assertFileExists($this->pagesPath . '/about/page.md');
+    }
+
+    public function testPagesCannotBePreviewedUnderAnotherParent(): void
+    {
+        $response = $this->call($this->controller(input: $this->pageInput('about', ['parent' => '/blog/']), server: ['REQUEST_METHOD' => 'POST']), 'preview', ['page' => 'about']);
+
+        $this->assertOutcome(['notices' => ['error']], $response);
+    }
+
+    public function testDeletedPagesRedirectToTheReferer(): void
+    {
+        $referer = 'http://localhost/panel/pages/blog/tree/';
+
+        $response = $this->call($this->controller(server: ['HTTP_REFERER' => $referer]), 'delete', ['page' => 'about']);
+
+        $this->assertSame($referer, $response->headers()->get('Location'));
+    }
+
+    public function testDeletedPagesDoNotRedirectToTheirEditor(): void
+    {
+        $response = $this->call($this->controller(server: ['HTTP_REFERER' => 'http://localhost/panel/pages/about/edit/']), 'delete', ['page' => 'about']);
+
+        $this->assertOutcome(['to' => 'panel.pages'], $response);
+    }
+
+    public function testEditorOfMultilingualSitesRedirectsToTheLanguageOfThePage(): void
+    {
+        $this->makeMultilingual();
+
+        $this->assertOutcome(['to' => 'panel.pages.edit.lang'], $this->call($this->controller(), 'edit', ['page' => 'about']));
+    }
+
+    public function testEditorOfMultilingualSitesRedirectsFromUnavailableLanguages(): void
+    {
+        $this->makeMultilingual();
+
+        $this->assertOutcome(['to' => 'panel.pages.edit.lang', 'notices' => ['error']], $this->call($this->controller(), 'edit', ['page' => 'about', 'language' => 'xx']));
+    }
+
+    public function testEditorOfMultilingualSitesShowsTheGivenLanguage(): void
+    {
+        $this->makeMultilingual();
+
+        $this->assertOutcome(['status' => 200], $this->call($this->controller(server: ['REQUEST_METHOD' => 'GET']), 'edit', ['page' => 'about', 'language' => 'it']));
+        $this->assertSame('it', (string) $this->site->findPage('about')?->language());
+    }
+
+    public function testPagesEditedInALanguageRedirectToTheirLanguage(): void
+    {
+        $this->makeMultilingual();
+
+        $response = $this->call($this->controller(input: [...$this->pageInput('about'), 'language' => 'it'], server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator()), 'edit', ['page' => 'about', 'language' => 'it']);
+
+        $this->assertOutcome(['to' => 'panel.pages.edit.lang', 'notices' => ['success']], $response);
+    }
+
+    public function testNewPagesOfMultilingualSitesAreCreatedInTheDefaultLanguage(): void
+    {
+        $this->makeMultilingual();
+
+        $this->call($this->controller(input: ['newPageModal' => ['title' => 'Fresh', 'slug' => 'fresh', 'parent' => '.', 'template' => 'default']], server: ['REQUEST_METHOD' => 'POST'], user: $this->administrator()), 'create');
+
+        // The content file is named after the template and the language
+        $this->assertFileExists((glob($this->pagesPath . '/*fresh', GLOB_ONLYDIR)[0] ?? '') . '/default.en.md');
+    }
+
+    public function testPagesAreDeletedOnlyInTheGivenLanguage(): void
+    {
+        $this->makeMultilingual();
+
+        $this->call($this->controller(), 'delete', ['page' => 'about', 'language' => 'it']);
+
+        $this->assertFileDoesNotExist($this->pagesPath . '/about/page.it.md');
+        $this->assertFileExists($this->pagesPath . '/about/page.en.md');
     }
 
     public function testNewPagesAreCreatedUnpublishedAndRecordedInTheHistory(): void
@@ -446,6 +567,22 @@ final class PagesControllerActionsTest extends TestCase
             ...App::instance()->config()->getArray('site'),
             'contentPath' => $this->pagesPath,
         ]]);
+        $this->site->load();
+    }
+
+    /**
+     * Make the site available in English (the default) and Italian, with the `about` page in both languages
+     */
+    private function makeMultilingual(): void
+    {
+        rename($this->pagesPath . '/about/page.md', $this->pagesPath . '/about/page.en.md');
+        FileSystem::write($this->pagesPath . '/about/page.it.md', "---\ntitle: Chi siamo\n---\n");
+
+        $this->site = App::instance()->getService(Container::class)->build(Site::class, ['data' => [
+            ...App::instance()->config()->getArray('site'),
+            'contentPath' => $this->pagesPath,
+        ]]);
+        (new ReflectionProperty(Site::class, 'languages'))->setValue($this->site, new Languages(['available' => ['en', 'it'], 'default' => 'en']));
         $this->site->load();
     }
 

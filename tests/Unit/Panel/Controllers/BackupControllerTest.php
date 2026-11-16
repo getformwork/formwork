@@ -2,11 +2,15 @@
 
 namespace Formwork\Tests\Unit\Panel\Controllers;
 
+use Formwork\Backup\Backupper;
+use Formwork\Cms\App;
 use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\BackupController;
+use Formwork\Parsers\Json;
 use Formwork\Router\RouteParams;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Panel\BuildsPanelControllers;
@@ -49,6 +53,25 @@ final class BackupControllerTest extends TestCase
     {
         $this->closePanelSession();
         parent::tearDown();
+    }
+
+    public function testBackupsAreMadeAndDescribed(): void
+    {
+        $response = $this->call($this->makeController(BackupController::class, services: [Backupper::class => $this->backupper($this->backupPath)]), 'make');
+
+        $this->assertOutcome(['status' => 200, 'json' => ['status' => 'success', 'data' => ['maxFiles' => 10]]], $response);
+
+        $filename = Json::parse($response->content())['data']['filename'];
+        $this->assertMatchesRegularExpression('/^test-\d{8}-\d{6}\.zip$/', $filename);
+        $this->assertFileExists(FileSystem::joinPaths($this->backupPath, $filename));
+    }
+
+    public function testBackupFailuresAreReported(): void
+    {
+        // The backup path is a file, so the archive cannot be created
+        $response = $this->call($this->makeController(BackupController::class, services: [Backupper::class => $this->backupper($this->secretFile)]), 'make');
+
+        $this->assertOutcome(['status' => 500, 'json' => ['status' => 'error']], $response);
     }
 
     public function testBackupsCanBeDownloadedWithTheDownloadPermission(): void
@@ -164,6 +187,20 @@ final class BackupControllerTest extends TestCase
             '{deep}'         => $deep,
             '{deep-windows}' => str_replace('/', '\\', $deep),
         ]);
+    }
+
+    /**
+     * Create a backupper of a small installation, saving the backups to the given path
+     */
+    private function backupper(string $path): Backupper
+    {
+        $root = FileSystem::joinPaths(TESTS_TMP_PATH, 'installation');
+        FileSystem::createDirectory($root);
+        FileSystem::write(FileSystem::joinPaths($root, 'index.php'), '<?php');
+
+        $app = App::instance();
+
+        return new Backupper($app->getService(Request::class), [...$app->config()->getArray('system.backup'), 'path' => $path, 'name' => 'test'], $root, $app);
     }
 
     private function download(string $name): Response

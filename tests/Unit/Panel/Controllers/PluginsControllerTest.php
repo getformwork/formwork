@@ -23,6 +23,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
 use ReflectionProperty;
+use RuntimeException;
 
 #[CoversClass(PluginsController::class)]
 #[UsesApplication]
@@ -173,6 +174,34 @@ final class PluginsControllerTest extends TestCase
         $this->assertTrue(Yaml::parseFile($this->configFile('beta'))['enabled']);
     }
 
+    public function testPluginsFailingToInitializeAreDisabledAgain(): void
+    {
+        $this->loadPlugins();
+
+        $response = $this->controller()->enable(new RouteParams(['id' => 'delta']), App::instance()->plugins());
+
+        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
+        $this->assertFalse(Yaml::parseFile($this->configFile('delta'))['enabled']);
+    }
+
+    public function testConfigDirectoryIsCreatedWhenMissing(): void
+    {
+        $this->loadPlugins();
+
+        $configPath = App::instance()->rootPath() . '/site/config/plugins';
+        $movedPath = TESTS_TMP_PATH . '/config-plugins';
+        rename($configPath, $movedPath);
+
+        try {
+            $this->controller()->enable(new RouteParams(['id' => 'beta']), App::instance()->plugins());
+
+            $this->assertFileExists($this->configFile('beta'));
+        } finally {
+            FileSystem::delete($configPath, recursive: true);
+            rename($movedPath, $configPath);
+        }
+    }
+
     public function testUnknownPluginsCannotBeDisabled(): void
     {
         $response = $this->controller()->disable(new RouteParams(['id' => 'missing']), App::instance()->plugins());
@@ -188,6 +217,11 @@ final class PluginsControllerTest extends TestCase
 
         $this->assertSame(ResponseStatus::OK, $response->status());
         $this->assertFalse(Yaml::parseFile($this->configFile('beta'))['enabled']);
+    }
+
+    public function testPluginsPageIsNotFoundWithoutPlugins(): void
+    {
+        $this->assertOutcome(['status' => 404], $this->controller()->index());
     }
 
     public function testPagesAreDisplayed(): void
@@ -208,7 +242,7 @@ final class PluginsControllerTest extends TestCase
         $this->originalPlugins = $data->getValue($plugins);
         $loaded = $this->originalPlugins;
 
-        foreach (['alpha' => 'Alpha plugin', 'beta' => 'Beta plugin', 'gamma' => 'Gamma plugin'] as $id => $title) {
+        foreach (['alpha' => 'Alpha plugin', 'beta' => 'Beta plugin', 'gamma' => 'Gamma plugin', 'delta' => 'Delta plugin'] as $id => $title) {
             $path = TESTS_TMP_PATH . "/plugins/{$id}";
 
             FileSystem::createDirectory($path, recursive: true);
@@ -219,7 +253,15 @@ final class PluginsControllerTest extends TestCase
                 Yaml::encodeToFile(['title' => $title, 'extend' => 'plugins.plugin', 'fields' => ['message' => ['type' => 'text', 'label' => 'Message', 'required' => true]]], $path . '/schemes/plugins/alpha.yaml');
             }
 
-            $loaded[$id] = new Plugin($path, App::instance()->getService(Container::class), App::instance());
+            // The delta plugin fails to initialize
+            $loaded[$id] = $id === 'delta'
+                ? new class ($path, App::instance()->getService(Container::class), App::instance()) extends Plugin {
+                    protected function loadServices(Container $container): void
+                    {
+                        throw new RuntimeException('Cannot load the services');
+                    }
+                }
+            : new Plugin($path, App::instance()->getService(Container::class), App::instance());
             $this->loadedPlugins[] = $id;
         }
 

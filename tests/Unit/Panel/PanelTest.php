@@ -50,6 +50,11 @@ final class PanelTest extends TestCase
         $this->assertSame('panel', $this->panel()->getCsrfTokenName());
     }
 
+    public function testPathIsTheConfiguredOne(): void
+    {
+        $this->assertSame('/custom/panel', $this->panel(system: ['panel' => ['path' => '/custom/panel']])->path());
+    }
+
     #[DataProvider('panelRootProvider')]
     public function testPanelRootIsNormalizedWithSlashes(string $root, string $expected): void
     {

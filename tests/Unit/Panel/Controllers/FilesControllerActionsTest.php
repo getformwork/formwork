@@ -173,6 +173,8 @@ final class FilesControllerActionsTest extends TestCase
         yield 'to an existing name' => ['b.txt', 'c', [], ['notices' => ['error']], ['b.txt' => true, 'c.txt' => true]];
         yield 'with a script request' => ['b.txt', 'New name', $ajax, ['json' => ['data' => ['filename' => 'new-name.txt', 'size' => '3 B']]], ['new-name.txt' => true]];
         yield 'of an unknown file with a script request' => ['missing.txt', 'New name', $ajax, ['status' => 500], []];
+        yield 'of an unknown file' => ['missing.txt', 'New name', [], ['notices' => ['error']], []];
+        yield 'to an existing name with a script request' => ['b.txt', 'c', $ajax, ['status' => 500], ['b.txt' => true, 'c.txt' => true]];
         yield 'with an invalid form' => ['b.txt', '', [], ['notices' => ['error']], ['b.txt' => true]];
         yield 'with an invalid form and a script request' => ['b.txt', '', $ajax, ['status' => 400], ['b.txt' => true]];
     }

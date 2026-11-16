@@ -14,6 +14,7 @@ use Formwork\Tests\Unit\Panel\BuildsPanelControllers;
 use Formwork\Tests\Unit\Panel\ProvidesFormSaveCases;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
+use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -165,6 +166,54 @@ final class OptionsControllerTest extends TestCase
         }
     }
 
+    public function testInvalidSystemOptionsAreNotSaved(): void
+    {
+        $path = App::instance()->rootPath() . '/site/config/system.yaml';
+        $original = Yaml::parseFile($path);
+
+        try {
+            $controller = $this->makeController(OptionsController::class, input: $this->systemInput(['pages.index' => '']), server: ['REQUEST_METHOD' => 'POST']);
+
+            $response = $controller->systemOptions($this->schemes());
+
+            $this->assertSame(ResponseStatus::UnprocessableEntity, $response->status());
+            $this->assertSame($original, Yaml::parseFile($path));
+            $this->assertSame('error', $this->lastNotificationType());
+        } finally {
+            Yaml::encodeToFile($original, $path);
+            $this->closePanelSession();
+        }
+    }
+
+    public function testValidSystemOptionsAreSavedAndInvalidateTheCache(): void
+    {
+        $path = App::instance()->rootPath() . '/site/config/system.yaml';
+        $original = Yaml::parseFile($path);
+
+        // The real site is used, as its content path is touched
+        $content = (string) App::instance()->site()->contentPath();
+        $modified = (int) filemtime($content);
+        touch($content, 1000);
+
+        try {
+            $controller = $this->makeController(OptionsController::class, input: $this->systemInput(['backup.maxFiles' => 15]), services: [Site::class => App::instance()->site()], server: ['REQUEST_METHOD' => 'POST']);
+
+            $response = $controller->systemOptions($this->schemes());
+
+            $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
+            $this->assertStringEndsWith('/route/panel.options.system', $response->headers()->get('Location'));
+            $this->assertSame(15, Yaml::parseFile($path)['backup']['maxFiles']);
+            $this->assertSame('success', $this->lastNotificationType());
+
+            clearstatcache();
+            $this->assertGreaterThan(1000, filemtime($content));
+        } finally {
+            Yaml::encodeToFile($original, $path);
+            touch($content, $modified);
+            $this->closePanelSession();
+        }
+    }
+
     public function testFormsAreDisplayed(): void
     {
         $site = $this->createStub(Site::class);
@@ -177,6 +226,33 @@ final class OptionsControllerTest extends TestCase
         $systemOptions = $this->makeController(OptionsController::class, server: ['REQUEST_METHOD' => 'GET'])->systemOptions($this->schemes());
 
         $this->assertOutcome(['status' => 200], $systemOptions);
+    }
+
+    /**
+     * Get the input of the system options form, with the current values of its fields
+     *
+     * @param array<string, mixed> $overrides Values by field name
+     *
+     * @return array<string, mixed>
+     */
+    private function systemInput(array $overrides): array
+    {
+        $fields = $this->schemes()->get('config.system')->fields();
+        $fields->setValues(App::instance()->config()->getArray('system'));
+
+        $input = [];
+
+        foreach ($fields as $field) {
+            if (!$field->isVisible()) {
+                continue;
+            }
+
+            $value = $overrides[$field->name()] ?? $field->value();
+
+            Arr::set($input, $field->name(), is_bool($value) ? ($value ? '1' : '0') : $value);
+        }
+
+        return $input;
     }
 
     private function schemes(): Schemes
