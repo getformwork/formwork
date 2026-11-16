@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Log\LogLevel;
 use ReflectionProperty;
+use RuntimeException;
 use Throwable;
 
 #[CoversClass(FileHandler::class)]
@@ -154,6 +155,17 @@ final class FileHandlerTest extends TestCase
         $fileHandler = new FileHandler(TESTS_TMP_PATH . '/blocked/file/app.log');
 
         $this->expectException(Throwable::class);
+        $fileHandler->handle(new DateTimeImmutable(), 'info', 'message', []);
+    }
+
+    public function testStreamsThatCannotBeOpenedAreReportedWithoutWarnings(): void
+    {
+        // The log file is a directory, so it cannot be opened
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/app.log');
+        $fileHandler = new FileHandler(TESTS_TMP_PATH . '/app.log');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageMatches('/^Unable to open the stream ".+app\.log" for writing in append mode: .+/');
         $fileHandler->handle(new DateTimeImmutable(), 'info', 'message', []);
     }
 
