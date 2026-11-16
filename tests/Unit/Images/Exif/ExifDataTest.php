@@ -154,6 +154,7 @@ final class ExifDataTest extends TestCase
         yield 'model with the make' => ['Canon', 'Canon EOS 5D', 'Canon EOS 5D'];
         yield 'model without the make' => ['NIKON', 'D850', 'NIKON D850'];
         yield 'only the make' => ['NIKON', null, 'NIKON'];
+        yield 'only the model' => [null, 'EOS 5D', 'EOS 5D'];
         yield 'neither' => [null, null, null];
     }
 

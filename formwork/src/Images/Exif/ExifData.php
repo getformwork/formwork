@@ -128,6 +128,10 @@ class ExifData implements Arrayable
             return $make ?: null;
         }
 
+        if ($make === '') {
+            return $model;
+        }
+
         return $make . ' ' . Str::after($model, $make . ' ');
     }
 
