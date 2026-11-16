@@ -171,11 +171,13 @@ final class ExifReaderTest extends TestCase
         yield 'major version' => ['0100', '1.0'];
     }
 
-    public function testBinaryValuesMustBeDigits(): void
+    public function testBinaryValuesThatAreNotDigitsAreSkipped(): void
     {
-        $this->expectException(UnexpectedValueException::class);
-        $this->expectExceptionMessage('Character \x41 cannot be represented by a single decimal digit');
-        $this->read([], [0xA301 => [TiffFixture::UNDEFINED, 'A']]);
+        $tags = $this->read([0x010F => [TiffFixture::ASCII, 'Canon']], [0xA301 => [TiffFixture::UNDEFINED, 'A'], 0xA300 => [TiffFixture::UNDEFINED, "\x03"]]);
+
+        $this->assertArrayNotHasKey('SceneType', $tags);
+        $this->assertSame(['Canon'], $tags['Make']);
+        $this->assertSame(["\x03", 'DSC'], $tags['FileSource']);
     }
 
     public function testUndefinedTagsAreNamedAfterTheirStandardTags(): void
