@@ -190,10 +190,10 @@ class ExifData implements Arrayable
      */
     public function exposureProgram(): ?string
     {
-        /** @var int */
-        $exposureProgram = $this->getRaw('ExposureProgram', 0);
+        /** @var int|null */
+        $exposureProgram = $this->getRaw('ExposureProgram');
 
-        if ($exposureProgram < 0) {
+        if ($exposureProgram === null) {
             return null;
         }
 
