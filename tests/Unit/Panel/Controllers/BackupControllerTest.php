@@ -74,6 +74,27 @@ final class BackupControllerTest extends TestCase
         $this->assertOutcome(['status' => 500, 'json' => ['status' => 'error']], $response);
     }
 
+    /**
+     * @param array<string, string> $options
+     */
+    #[DataProvider('untranslatedFailureProvider')]
+    public function testBackupFailuresWithoutTranslationAreReportedWithTheirMessage(array $options, string $message): void
+    {
+        $response = $this->call($this->makeController(BackupController::class, services: [Backupper::class => $this->backupper($this->backupPath, $options)]), 'make');
+
+        $this->assertOutcome(['status' => 500, 'json' => ['status' => 'error']], $response);
+        $this->assertStringContainsString($message, (string) Json::parse($response->content())['message']);
+    }
+
+    /**
+     * @return iterable<string, array{array<string, string>, string}>
+     */
+    public static function untranslatedFailureProvider(): iterable
+    {
+        yield 'invalid name' => [['name' => 'invalid name!'], 'contains invalid characters'];
+        yield 'directory that cannot be created' => [['path' => '{secret}/backups'], 'Cannot create directory'];
+    }
+
     public function testBackupsCanBeDownloadedWithTheDownloadPermission(): void
     {
         $response = $this->download('backup.zip');
@@ -192,7 +213,10 @@ final class BackupControllerTest extends TestCase
     /**
      * Create a backupper of a small installation, saving the backups to the given path
      */
-    private function backupper(string $path): Backupper
+    /**
+     * @param array<string, string> $options
+     */
+    private function backupper(string $path, array $options = []): Backupper
     {
         $root = FileSystem::joinPaths(TESTS_TMP_PATH, 'installation');
         FileSystem::createDirectory($root);
@@ -200,7 +224,10 @@ final class BackupControllerTest extends TestCase
 
         $app = App::instance();
 
-        return new Backupper($app->getService(Request::class), [...$app->config()->getArray('system.backup'), 'path' => $path, 'name' => 'test'], $root, $app);
+        // The secret file is used as a directory, so that directories inside it cannot be created
+        $options = str_replace('{secret}', $this->secretFile, $options);
+
+        return new Backupper($app->getService(Request::class), [...$app->config()->getArray('system.backup'), 'path' => $path, 'name' => 'test', ...$options], $root, $app);
     }
 
     private function download(string $name): Response

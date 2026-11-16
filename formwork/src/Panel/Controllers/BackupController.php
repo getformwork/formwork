@@ -14,6 +14,7 @@ use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Date;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Path;
+use RuntimeException;
 
 final class BackupController extends AbstractController
 {
@@ -27,6 +28,9 @@ final class BackupController extends AbstractController
             $file = $backupper->backup();
         } catch (TranslatedException $e) {
             return JsonResponse::error($this->translate('panel.backup.error.cannotMake', $this->translate($e->getLanguageString())), ResponseStatus::InternalServerError);
+        } catch (RuntimeException $e) {
+            // Errors without a translation (e.g. an invalid backup name or path) are reported with their message
+            return JsonResponse::error($this->translate('panel.backup.error.cannotMake', rtrim($e->getMessage(), '.')), ResponseStatus::InternalServerError);
         }
         $filename = Path::basename($file);
         $uriName = rawurlencode(base64_encode($filename));
