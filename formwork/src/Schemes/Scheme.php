@@ -266,9 +266,9 @@ class Scheme implements Arrayable
         if (is_array($value)) {
             if (isset($value[$language])) {
                 $value = $value[$language];
-            } elseif (count($value) === 1) {
-                // Return the only value available as fallback
-                $value = reset($value);
+            } elseif ($value !== []) {
+                // Fall back to the value of the fallback language, or to the first value available
+                $value = $value[$this->translations->getFallback()->code()] ?? reset($value);
             }
         } elseif (!is_string($value)) {
             return $value;

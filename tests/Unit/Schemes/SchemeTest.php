@@ -85,6 +85,22 @@ final class SchemeTest extends TestCase
         $this->assertIsString($scheme->title());
     }
 
+    public function testPerLanguageTitleWithoutTheCurrentLanguageUsesTheFallbackLanguage(): void
+    {
+        $this->setUpSchemes('it');
+
+        $scheme = $this->makeScheme('post', ['title' => ['de' => 'Artikel', 'en' => 'Post']]);
+
+        $this->assertSame('Post', $scheme->title());
+    }
+
+    public function testPerLanguageTitleWithoutTheCurrentAndTheFallbackLanguagesUsesTheFirstOne(): void
+    {
+        $scheme = $this->makeScheme('post', ['title' => ['it' => 'Articolo', 'de' => 'Artikel']]);
+
+        $this->assertSame('Articolo', $scheme->title());
+    }
+
     public function testTitlesThatAreNotStringsAreNotTranslated(): void
     {
         // Titles read from YAML files can be numbers
