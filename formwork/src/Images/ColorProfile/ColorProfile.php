@@ -101,7 +101,7 @@ class ColorProfile
             'XYZ'   => ColorSpace::XYZ,
             'Lab'   => ColorSpace::LAB,
             'Luv'   => ColorSpace::LUV,
-            'YCbCr' => ColorSpace::YCbCr,
+            'YCbr'  => ColorSpace::YCbCr,
             'Yxy'   => ColorSpace::XYY,
             'RGB'   => ColorSpace::RGB,
             'GRAY'  => ColorSpace::Grayscale,

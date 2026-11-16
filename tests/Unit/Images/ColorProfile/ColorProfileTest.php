@@ -150,6 +150,7 @@ final class ColorProfileTest extends TestCase
         yield 'XYZ' => [16, 'XYZ ', 'colorSpace', ColorSpace::XYZ];
         yield 'Lab' => [16, 'Lab ', 'colorSpace', ColorSpace::LAB];
         yield 'Luv' => [16, 'Luv ', 'colorSpace', ColorSpace::LUV];
+        yield 'YCbCr' => [16, 'YCbr', 'colorSpace', ColorSpace::YCbCr];
         yield 'Yxy' => [16, 'Yxy ', 'colorSpace', ColorSpace::XYY];
         yield 'RGB' => [16, 'RGB ', 'colorSpace', ColorSpace::RGB];
         yield 'gray' => [16, 'GRAY', 'colorSpace', ColorSpace::Grayscale];
