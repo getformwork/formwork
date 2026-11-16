@@ -54,6 +54,14 @@ final class ServeCommandTest extends TestCase
         }
     }
 
+    public function testServerFailuresAreReported(): void
+    {
+        // The PHP Development Server cannot listen on an address of another network, so it stops at once
+        $this->assertSame(1, ($this->command)(['bin/serve', '--host=192.0.2.1', '--port=8123']));
+
+        $this->assertStringContainsString('Server failed to listen on 192.0.2.1:8123', $this->buffer->get());
+    }
+
     /**
      * @param list<mixed> $arguments
      */

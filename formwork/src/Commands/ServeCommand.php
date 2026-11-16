@@ -54,6 +54,11 @@ final class ServeCommand implements CommandInterface
      */
     private float $startTime;
 
+    /**
+     * Exit code of the command, set when the server fails
+     */
+    private int $exitCode = 0;
+
     public function __construct(private CLImate $climate = new CLImate())
     {
         // Fix clear command for terminals that don't clear the scrollback buffer with the default clear command
@@ -122,7 +127,7 @@ final class ServeCommand implements CommandInterface
 
         $this->start();
 
-        return 0;
+        return $this->exitCode;
     }
 
     /**
@@ -237,7 +242,8 @@ final class ServeCommand implements CommandInterface
 
                     if (!str_contains($message, 'Address already in use')) {
                         $this->climate->to('error')->out(sprintf('<bold>Formwork <cyan>%s</cyan></bold> Server <red>%s</red>', App::VERSION, lcfirst($message)));
-                        exit(1);
+                        $this->exitCode = 1;
+                        return;
                     }
 
                     if ($this->retryAttempts-- > 0) {
@@ -262,7 +268,7 @@ final class ServeCommand implements CommandInterface
 
                     $this->start();
 
-                    exit(1);
+                    return;
 
                 default:
                     if (($data = $this->splitMessage($message)) !== []) {
