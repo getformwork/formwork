@@ -6,6 +6,8 @@ use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Data\Exceptions\InvalidValueException;
 use Formwork\Http\ResponseStatus;
+use Formwork\Metadata\Metadata;
+use Formwork\Metadata\MetadataCollection;
 use Formwork\Pages\Events\PageAfterDeleteEvent;
 use Formwork\Pages\Events\PageAfterDuplicateEvent;
 use Formwork\Pages\Events\PageAfterSaveEvent;
@@ -886,6 +888,204 @@ final class PageTest extends TestCase
 
         $this->assertSame('en', $page->language()?->code());
         $this->assertSame('English', $page->title());
+    }
+
+    public function testCallingSetterMethodsDirectlyIsDeprecated(): void
+    {
+        $page = $this->temporaryPage('about');
+
+        // @phpstan-ignore method.protected
+        $messages = $this->captureDeprecations(static fn() => $page->setLanguage(null));
+
+        $this->assertCount(1, $messages);
+        $this->assertStringContainsString("Use \$page->set('language', \$value)", $messages[0]);
+        $this->assertNull($page->language());
+    }
+
+    public function testSiteOfAPageCannotBeChanged(): void
+    {
+        $page = $this->temporaryPage('about');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Site already set for the page');
+        $page->setSite($this->fixtureSite);
+    }
+
+    public function testPagesWithChildrenAreNotDuplicated(): void
+    {
+        $site = $this->siteFromFixture();
+        $page = $this->temporaryPage('parent', site: $site);
+        $this->temporaryPage('parent/child', site: $site);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot duplicate a non-duplicable page');
+        $page->duplicate();
+    }
+
+    public function testModificationTimeComesFromTheContentFileOrTheDirectory(): void
+    {
+        $page = $this->temporaryPage('directory-only');
+
+        $this->assertNull((new Page(['site' => $this->fixtureSite], $this->app))->lastModifiedTime());
+        $this->assertSame(FileSystem::lastModifiedTime((string) $page->path()), $page->lastModifiedTime());
+    }
+
+    public function testResponseStatusIsReadFromItsCode(): void
+    {
+        $page = $this->pageAt($this->siteFromFiles([
+            'index/page.md' => "---\ntitle: Home\n---\n",
+            'error/page.md' => "---\ntitle: Error\n---\n",
+            'about/page.md' => "---\ntitle: About\nresponseStatus: 503\n---\n",
+        ]), '/about/');
+
+        $this->assertSame(ResponseStatus::ServiceUnavailable, $page->responseStatus());
+    }
+
+    public function testErrorPagesWithoutContentAreNotFound(): void
+    {
+        $page = $this->pageAt($this->siteFromFiles(['index/page.md' => "---\ntitle: Home\n---\n", 'error/.keep' => '']), '/error/');
+
+        $this->assertSame(ResponseStatus::NotFound, $page->responseStatus());
+    }
+
+    public function testInvalidContentFilesAreIgnored(): void
+    {
+        $page = $this->pageAt($this->siteFromFiles(['about/page.md' => 'No front matter']), '/about/');
+
+        $this->assertNull($page->contentFile());
+    }
+
+    public function testMetadataFilesAreNotFilesOfThePage(): void
+    {
+        $page = $this->temporaryPage('about');
+        FileSystem::write($page->path() . 'image.svg.meta.yaml', "alt: Image\n");
+        $config = $this->app->config();
+        $pagesPath = $config->getString('system.pages.path');
+        $config->set('system.pages.path', TESTS_TMP_PATH);
+
+        try {
+            $page->reload();
+
+            $this->assertCount(3, $page->files());
+            $this->assertSame('Image', $page->files()->get('image.svg')?->get('alt'));
+        } finally {
+            $config->set('system.pages.path', $pagesPath);
+        }
+    }
+
+    public function testPagesCannotBeSavedInAnUnavailableLanguage(): void
+    {
+        $page = $this->temporaryPage('about');
+
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid page language');
+        $page->save('xx');
+    }
+
+    public function testPagesAreSavedInTheGivenLanguage(): void
+    {
+        $page = $this->temporaryPage('about');
+
+        $page->set('title', 'About us');
+        $page->save('en');
+
+        $this->assertFileExists($page->contentPath() . 'page.en.md');
+    }
+
+    public function testChangingTheTemplateReplacesTheContentFile(): void
+    {
+        $page = $this->temporaryPage('about');
+        $path = (string) $page->contentPath();
+
+        $page->set('template', 'default');
+        $page->save();
+
+        $this->assertFileExists($path . 'default.md');
+        $this->assertFileDoesNotExist($path . 'page.md');
+    }
+
+    public function testSettingTheSameSlugDoesNotChangeThePage(): void
+    {
+        $page = $this->fixturePage('/about');
+
+        $page->set('slug', 'about');
+
+        $this->assertSame('/about/', $page->route());
+    }
+
+    #[DataProvider('protectedPageChangeProvider')]
+    public function testIndexAndErrorPagesCannotBeRenamedOrMoved(string $route, string $key, string $value, string $message): void
+    {
+        $page = $this->fixturePage($route);
+
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage($message);
+        $page->set($key, $value);
+    }
+
+    /**
+     * @return iterable<string, array{string, string, string, string}>
+     */
+    public static function protectedPageChangeProvider(): iterable
+    {
+        yield 'renamed index page' => ['/', 'slug', 'home', 'Cannot change slug of index or error pages'];
+        yield 'renamed error page' => ['/error', 'slug', 'missing', 'Cannot change slug of index or error pages'];
+        yield 'moved index page' => ['/', 'parent', '/about/', 'Cannot change parent of index or error pages'];
+    }
+
+    public function testPostsAreNumberedByTheirPublishDateAndCannotHaveChildren(): void
+    {
+        $site = $this->siteFromFiles([
+            'blog/blog.md'       => "---\ntitle: Blog\n---\n",
+            'blog/dated/post.md' => "---\ntitle: Dated\npublishDate: '2024-05-06'\n---\n",
+            'blog/plain/post.md' => "---\ntitle: Plain\n---\n",
+        ]);
+        touch($site->contentPath() . '/blog/plain/post.md', (int) mktime(12, 0, 0, 3, 4, 2023));
+
+        $dated = $this->pageAt($site, '/blog/dated/');
+        $plain = $this->pageAt($site, '/blog/plain/');
+        $dated->save();
+        $plain->save();
+
+        $this->assertDirectoryExists($site->contentPath() . '/blog/20240506-dated');
+        // Posts without a publish date are numbered by the modification time of their content file
+        $this->assertDirectoryExists($site->contentPath() . '/blog/20230304-plain');
+        $this->assertFalse($dated->get('allowChildren'));
+    }
+
+    public function testMetadataCanBeSetAsACollection(): void
+    {
+        $page = $this->temporaryPage('about');
+        $metadataCollection = new MetadataCollection(['description' => new Metadata('description', 'About us')]);
+
+        $page->set('metadata', $metadataCollection);
+
+        $this->assertSame($metadataCollection, $page->metadata());
+    }
+
+    public function testUnpublishDatesMustBeStrings(): void
+    {
+        $page = $this->pageAt($this->siteFromFiles(['about/page.md' => "---\ntitle: About\nunpublishDate: 20240101\n---\n"]), '/about/');
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid unpublish date');
+        $page->status();
+    }
+
+    public function testPagesWithoutAPathHaveNoRelatives(): void
+    {
+        $page = new Page(['site' => $this->fixtureSite], $this->app);
+
+        $this->assertCount(0, $page->children());
+        $this->assertCount(0, $page->descendants());
+        $this->assertSame([$page], $page->inclusiveSiblings()->values());
+    }
+
+    public function testUrisCanIncludeALanguage(): void
+    {
+        $page = $this->fixturePage('/about');
+
+        $this->assertStringEndsWith('/it/about/', $page->uri(includeLanguage: 'it'));
     }
 
     private function fixturePage(string $route): Page

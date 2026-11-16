@@ -191,6 +191,19 @@ final class PageCollectionTest extends TestCase
         $this->assertSame([$child, $about], $collection->withoutParent($child)->values());
         $this->assertSame([$about], $collection->withoutPageAndParent($child)->values());
         $this->assertSame([$child, $about], $collection->withoutSiblings($about)->values());
+        $this->assertSame([$page, $about], $collection->withoutPageAndSiblings($child)->values());
+        $this->assertSame([$child, $about], $collection->withoutAncestors($child)->values());
+        $this->assertSame([$about], $collection->withoutPageAndAncestors($child)->values());
+    }
+
+    public function testExcludingTheParentOfAPageWithoutParentExcludesNothingElse(): void
+    {
+        $page = new Page(['site' => $this->fixtureSite], $this->app);
+        $about = $this->page('/about');
+        $collection = $this->collection($about);
+
+        $this->assertSame([$about], $collection->withoutParent($page)->values());
+        $this->assertSame([$about], $collection->withoutPageAndParent($page)->values());
     }
 
     public function testPagesWithTheSameTitleOfARelatedPageAreNotRemoved(): void

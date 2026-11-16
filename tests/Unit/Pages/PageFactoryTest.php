@@ -8,6 +8,8 @@ use Formwork\Pages\Page;
 use Formwork\Pages\PageCollection;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
+use Formwork\Pages\PaginationFactory;
+use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
@@ -40,8 +42,8 @@ final class PageFactoryTest extends TestCase
 
     public function testFactoriesBuildTheExpectedPageObjects(): void
     {
-        $pageFactory = $this->app->getService(PageFactory::class);
-        $pageCollectionFactory = $this->app->getService(PageCollectionFactory::class);
+        $pageFactory = new PageFactory($this->app->getService(Container::class));
+        $pageCollectionFactory = new PageCollectionFactory($this->app->getService(PaginationFactory::class));
 
         $page = $pageFactory->make(['site' => $this->fixtureSite]);
         $pageCollection = $pageCollectionFactory->make([]);
