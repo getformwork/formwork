@@ -111,8 +111,9 @@ class ExifData implements Arrayable
      */
     public function dateTimeOriginal(): ?ExifDateTime
     {
-        /** @var ExifDateTime|null */
-        return $this->get('DateTimeOriginal');
+        // The raw string is returned for dates that cannot be parsed
+        $dateTime = $this->get('DateTimeOriginal');
+        return $dateTime instanceof ExifDateTime ? $dateTime : null;
     }
 
     /**
