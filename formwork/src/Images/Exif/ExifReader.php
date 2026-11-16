@@ -152,7 +152,12 @@ class ExifReader
 
             switch (static::$ExifTable[$key]['type'] ?? null) {
                 case 'binary':
-                    $parsedValue = $this->parseBinary($value);
+                    try {
+                        $parsedValue = $this->parseBinary($value);
+                    } catch (UnexpectedValueException) {
+                        // Invalid binary values are skipped, so that the other tags can still be read
+                        continue 2;
+                    }
                     break;
 
                 case 'coords':
