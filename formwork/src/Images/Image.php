@@ -603,20 +603,4 @@ class Image extends File
             default         => throw new UnsupportedTypeException('Unsupported image type'),
         };
     }
-
-    /**
-     * Initialize image
-     *
-     * @throws ImageException If `gd` extension is not loaded or image is not readable
-     */
-    protected function initialize(): void
-    {
-        if (!extension_loaded('gd')) {
-            throw new ImageException(sprintf('Class %s requires the extension "gd" to be enabled', static::class));
-        }
-
-        if (!FileSystem::isReadable($this->path)) {
-            throw new ImageException(sprintf('Image %s must be readable to be processed', $this->path));
-        }
-    }
 }

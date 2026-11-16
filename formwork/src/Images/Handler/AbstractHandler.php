@@ -79,6 +79,11 @@ abstract class AbstractHandler implements HandlerInterface
             throw new RuntimeException(sprintf('Image handler of type %s does not support transforms for the current image', static::class));
         }
 
+        // Only processing needs GD, since the decoders read the image info and metadata by themselves
+        if (!extension_loaded('gd')) {
+            throw new RuntimeException(sprintf('%s() requires the extension "gd" to be enabled', __METHOD__));
+        }
+
         $handler ??= static::class;
 
         if (!is_subclass_of($handler, self::class)) {
