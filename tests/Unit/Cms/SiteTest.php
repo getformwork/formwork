@@ -8,10 +8,13 @@ use Formwork\Languages\Languages;
 use Formwork\Metadata\Metadata;
 use Formwork\Pages\Exceptions\PageNotFoundException;
 use Formwork\Pages\Page;
+use Formwork\Pages\PageCollectionFactory;
+use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Pages\BuildsPageSites;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
+use Formwork\Users\Users;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -269,6 +272,56 @@ final class SiteTest extends TestCase
         $this->assertSame(App::instance()->schemes(), $this->site->schemes());
         $this->assertSame('config.site', $this->site->scheme()->id());
         $this->assertSame(App::instance()->getService(Languages::class), $this->site->languages());
+    }
+
+    public function testSiteIsTheOnlyOneOfItsSiblings(): void
+    {
+        $this->assertCount(0, $this->site->siblings());
+        $this->assertSame([$this->site], $this->site->inclusiveSiblings()->values());
+    }
+
+    public function testSiteHasAPathButNoContentFile(): void
+    {
+        $this->assertSame(TESTS_TMP_PATH, $this->site->path());
+        $this->assertNull($this->site->contentFile());
+        $this->assertSame('/', $this->site->contentRelativePath());
+    }
+
+    public function testSitesWithoutContentHaveNoPages(): void
+    {
+        $app = App::instance();
+        $site = new Site(['path' => TESTS_TMP_PATH, 'metadata' => []], $app->config(), $app->getService(PageFactory::class), $app->getService(PageCollectionFactory::class));
+
+        $this->assertNull($site->lastModifiedTime());
+        $this->assertFalse($site->modifiedSince(0));
+        $this->assertNull($site->findPage('/first'));
+    }
+
+    public function testFilesOfTheSiteHaveAnAllowedExtension(): void
+    {
+        $config = App::instance()->config();
+        $filesPath = $config->getString('system.files.paths.site');
+        $path = TESTS_TMP_PATH . '/site-files';
+        FileSystem::createDirectory($path);
+        FileSystem::write($path . '/image.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>');
+        FileSystem::write($path . '/image.svg.meta.yaml', "alt: Image\n");
+        FileSystem::write($path . '/script.php', '<?php');
+        $config->set('system.files.paths.site', $path);
+
+        try {
+            $files = $this->site->files();
+
+            $this->assertSame(['image.svg'], $files->keys());
+            $this->assertSame('Image', $files->get('image.svg')?->get('alt'));
+            $this->assertSame($files, $this->site->files());
+        } finally {
+            $config->set('system.files.paths.site', $filesPath);
+        }
+    }
+
+    public function testUsersComeFromTheApplication(): void
+    {
+        $this->assertSame(App::instance()->getService(Users::class), $this->site->users());
     }
 
     public function testFindPageReturnsPageInstances(): void

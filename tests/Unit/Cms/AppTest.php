@@ -196,6 +196,56 @@ final class AppTest extends TestCase
         }
     }
 
+    public function testExceptionsWhileHandlingRequestsGetAnErrorResponse(): void
+    {
+        $app = App::instance();
+        $template = $app->config()->getString('system.templates.path') . '/broken.php';
+        $page = $app->config()->getString('system.pages.path') . '/broken';
+        FileSystem::write($template, '<?php throw new RuntimeException("Broken template");');
+        FileSystem::createDirectory($page);
+        FileSystem::write($page . '/broken.md', "---\ntitle: Broken\n---\n");
+
+        try {
+            $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/broken/', 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+
+            $outputBufferLevel = ob_get_level();
+            $this->expectErrorLog();
+
+            $response = $app->handle($request);
+
+            // Error responses clean all the output buffers, including the ones of PHPUnit
+            while (ob_get_level() < $outputBufferLevel) {
+                ob_start();
+            }
+
+            $this->assertSame(ResponseStatus::InternalServerError, $response->status());
+        } finally {
+            FileSystem::delete($template);
+            FileSystem::delete($page, recursive: true);
+            $this->reload();
+        }
+    }
+
+    #[BackupGlobals(true)]
+    public function testRunningSendsTheResponseToTheRequestOfTheGlobals(): void
+    {
+        $this->setRequestGlobals('/about/');
+
+        ob_start();
+
+        try {
+            $response = App::instance()->run();
+        } finally {
+            $output = (string) ob_get_clean();
+            // The error handler is installed when the application runs
+            restore_error_handler();
+            $this->reload();
+        }
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertStringContainsString('About content', $output);
+    }
+
     public function testLoadingDoesNotInstallTheErrorHandler(): void
     {
         $before = set_error_handler(static fn(): bool => false);
