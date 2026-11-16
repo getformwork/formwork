@@ -296,6 +296,22 @@ final class PanelTest extends TestCase
         $this->assertSame($sorted, $translations);
     }
 
+    public function testAvailableTranslationsAreReadFromThePathOfEachPanel(): void
+    {
+        foreach (['first' => ['it.yaml', 'readme.txt'], 'second' => ['de.yaml']] as $directory => $files) {
+            FileSystem::createDirectory(TESTS_TMP_PATH . "/{$directory}", recursive: true);
+            foreach ($files as $file) {
+                FileSystem::write(TESTS_TMP_PATH . "/{$directory}/{$file}", '');
+            }
+        }
+
+        $first = $this->panel(system: ['translations' => ['paths' => ['panel' => TESTS_TMP_PATH . '/first']]]);
+        $second = $this->panel(system: ['translations' => ['paths' => ['panel' => TESTS_TMP_PATH . '/second']]]);
+
+        $this->assertSame(['it'], array_keys($first->availableTranslations()));
+        $this->assertSame(['de'], array_keys($second->availableTranslations()));
+    }
+
     public function testNavigationIsBuiltFromTheConfigurationAndDispatchedToListeners(): void
     {
         $events = new EventDispatcher();

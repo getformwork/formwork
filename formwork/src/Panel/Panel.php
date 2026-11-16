@@ -31,6 +31,13 @@ final class Panel
      */
     private NavigationItemCollection $navigation;
 
+    /**
+     * Available panel translations
+     *
+     * @var array<string, string>
+     */
+    private array $availableTranslations;
+
     public function __construct(
         private readonly Container $container,
         private Config $config,
@@ -224,14 +231,11 @@ final class Panel
      */
     public function availableTranslations(): array
     {
-        /**
-         * @var array<string, string> $translations
-         */
-        static $translations = [];
-
-        if (!empty($translations)) {
-            return $translations;
+        if (isset($this->availableTranslations)) {
+            return $this->availableTranslations;
         }
+
+        $translations = [];
 
         $path = $this->config->getString('system.translations.paths.panel');
 
@@ -244,7 +248,7 @@ final class Panel
 
         ksort($translations);
 
-        return $translations;
+        return $this->availableTranslations = $translations;
     }
 
     /**
