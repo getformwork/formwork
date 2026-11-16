@@ -6,6 +6,7 @@ use Formwork\Cms\App;
 use Formwork\Commands\CommandInterface;
 use Formwork\Services\Container;
 use Formwork\Tests\Unit\Commands\Fixtures\OfflineClientFixture;
+use Formwork\Tests\Unit\Commands\Fixtures\StandardStreamsFixture;
 use Formwork\Updater\Updater;
 use Formwork\Utils\FileSystem;
 use League\CLImate\CLImate;
@@ -25,6 +26,8 @@ trait ProvidesCommandAssertions
 {
     /**
      * Run a command and check its exit code and what it prints (standard output and error together)
+     *
+     * What is written to the standard streams is captured too, as the commands run by the runner get their own default console.
      *
      * Each expectation is a string that must be printed, a `/regular expression/` that must match, or a string
      * prefixed with `!` that must not be printed.
@@ -46,9 +49,9 @@ trait ProvidesCommandAssertions
 
         $instance = new $command($this->bufferedConsole($buffer));
 
-        $code = $instance(['bin/formwork test', ...$arguments]);
+        [$code, $captured] = StandardStreamsFixture::capture(static fn(): int => $instance(['bin/formwork test', ...$arguments]));
 
-        $this->assertOutput($buffer->get(), $code, $exitCode, $expectations);
+        $this->assertOutput($buffer->get() . $captured, $code, $exitCode, $expectations);
     }
 
     /**
@@ -76,9 +79,7 @@ trait ProvidesCommandAssertions
         $process->setTimeout(60);
         $process->run();
 
-        $output = (string) preg_replace('/\e\[[\d;]*m/', '', $process->getOutput() . $process->getErrorOutput());
-
-        $this->assertOutput($output, $process->getExitCode(), $exitCode, $expectations);
+        $this->assertOutput($process->getOutput() . $process->getErrorOutput(), $process->getExitCode(), $exitCode, $expectations);
     }
 
     #[After]
@@ -139,6 +140,9 @@ trait ProvidesCommandAssertions
      */
     private function assertOutput(string $output, ?int $code, int $exitCode, array $expectations): void
     {
+        // Consoles add colors when they write to a terminal
+        $output = (string) preg_replace('/\e\[[\d;]*m/', '', $output);
+
         $this->assertSame($exitCode, $code, $output);
 
         foreach ($expectations as $expectation) {

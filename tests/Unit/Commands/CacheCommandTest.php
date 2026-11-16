@@ -32,6 +32,7 @@ final class CacheCommandTest extends TestCase
         yield 'help without arguments' => [[], 0, ['clear', 'invalidate', 'stats']];
         yield 'help option' => [['--help'], 0, ['Available Actions:']];
         yield 'unknown action' => [['bogus', 'all'], 1, ['Invalid action: bogus.']];
+        yield 'missing action' => [['--'], 1, ['The following arguments are required: [action].']];
         yield 'clear of an unknown type' => [['clear', 'bogus'], 1, ['Invalid cache type for clearing.']];
         yield 'invalidate of an unknown type' => [['invalidate', 'bogus'], 1, ['Invalid cache type for invalidation.']];
         yield 'stats of an unknown type' => [['stats', 'bogus'], 1, ['Invalid cache type for stats.']];

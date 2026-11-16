@@ -5,10 +5,12 @@ namespace Formwork\Tests\Unit\Commands;
 use Formwork\Cms\App;
 use Formwork\Commands\FormworkCommandRunner;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesApplication;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(FormworkCommandRunner::class)]
+#[UsesApplication]
 final class FormworkCommandRunnerTest extends TestCase
 {
     use ProvidesCommandAssertions;
@@ -20,7 +22,7 @@ final class FormworkCommandRunnerTest extends TestCase
     #[DataProvider('commandResultProvider')]
     public function testCommandExitsWithTheExpectedResult(array $arguments, int $exitCode, array $expectations): void
     {
-        $this->assertBinary($arguments, $exitCode, $expectations);
+        $this->assertCommand(FormworkCommandRunner::class, $arguments, $exitCode, $expectations);
     }
 
     /**
@@ -36,9 +38,16 @@ final class FormworkCommandRunnerTest extends TestCase
         yield 'version option' => [['--version'], 0, [App::VERSION, '!Available Commands:']];
         yield 'short version option' => [['-v'], 0, [App::VERSION, '!Available Commands:']];
         yield 'unknown command' => [['unknown'], 1, ['Invalid command: unknown.']];
+        yield 'missing command' => [['--'], 1, ['The following arguments are required: [command].']];
         yield 'command arguments are passed to the command' => [['cache', 'bogus'], 1, ['Invalid action: bogus.']];
-        yield 'command options are not rejected' => [['backup', 'list', '--hostname=example.test'], 0, []];
-        yield 'help of a command' => [['backup', '--help'], 0, ['Available Actions:', 'make']];
-        yield 'usage of a command shows its name' => [['cache', '--help'], 0, ['cache', 'Available Actions:']];
+        yield 'command options are not rejected' => [['backup', 'list', '--hostname=example.test'], 0, ['No backups found.']];
+        yield 'help of a command' => [['backup', '--help'], 0, ['Available Actions:', 'make', '!Available Commands:']];
+        yield 'usage of a command shows its name' => [['cache', '--help'], 0, ['bin/formwork test cache', 'Available Actions:']];
+        yield 'missing arguments of a command' => [['backup', '--'], 1, ['The following arguments are required: [action].']];
+    }
+
+    public function testBinaryRunsTheCommands(): void
+    {
+        $this->assertBinary(['cache', 'bogus'], 1, ['Invalid action: bogus.']);
     }
 }

@@ -47,6 +47,7 @@ final class ServeCommandTest extends TestCase
     public static function commandResultProvider(): iterable
     {
         yield 'help' => [['--help'], 0, ['--host', '--port', '--retry']];
+        yield 'help with the host without a value' => [['--host', '--help'], 0, ['--host', '--port', '--retry']];
 
         foreach (['with a space' => 'not a host', 'with a scheme' => 'http://localhost', 'with a port' => 'localhost:8000', 'with a path' => 'localhost/path'] as $name => $host) {
             yield "invalid host $name" => [['--host=' . $host], 1, ['failed to listen on invalid host']];
@@ -130,8 +131,30 @@ final class ServeCommandTest extends TestCase
 
         yield 'empty lines are skipped' => ['out', ['', ''], ''];
         yield 'lines without a timestamp are printed raw' => ['out', ['plain output'], 'plain output'];
+        yield 'error lines without a timestamp are printed raw' => ['err', ['plain error'], 'plain error'];
+        yield 'messages of unknown format are printed raw' => ['err', ["{$time}Something unexpected"], "{$time}Something unexpected"];
+        yield 'closed requests without a status are logged' => ['err', ["{$time}127.0.0.1:50000 Accepted", "{$time}127.0.0.1:50000 Invalid request", "{$time}127.0.0.1:50000 Closing"], 'Invalid request'];
         yield 'closed requests are logged' => ['err', ["{$time}127.0.0.1:50000 Accepted", "{$time}127.0.0.1:50000 [200]: GET /page", "{$time}127.0.0.1:50000 Closing"], 'GET /page'];
         yield 'startup message shows the address' => ['err', ["{$time}PHP 8.3.0 Development Server (http://[::1]:8123) started"], 'PHP runtime 8.3.0'];
+    }
+
+    public function testServersListeningOnAllInterfacesShowTheirRemoteAddresses(): void
+    {
+        (new ReflectionProperty($this->command, 'host'))->setValue($this->command, '0.0.0.0');
+        (new ReflectionProperty($this->command, 'startTime'))->setValue($this->command, microtime(true));
+
+        (new ReflectionMethod($this->command, 'handleOutput'))->invoke($this->command, 'err', ['[Thu Jan  1 00:00:00 2026] PHP 8.3.0 Development Server (http://0.0.0.0:8000) started']);
+
+        $this->assertStringContainsString('Listening on http://0.0.0.0:8000/', $this->buffer->get());
+        $this->assertStringContainsString('Press CTRL+C to stop', $this->buffer->get());
+
+        $remoteAddresses = (new ReflectionMethod($this->command, 'getLocalNetworkIps'))->invoke($this->command);
+        $this->assertIsArray($remoteAddresses);
+
+        foreach ($remoteAddresses as $remoteAddress) {
+            $this->assertStringContainsString("Remote address: http://{$remoteAddress}:8000/", $this->buffer->get());
+            $this->assertNotContains($remoteAddress, ['localhost', '127.0.0.1', '::1']);
+        }
     }
 
     public function testServerErrorStatusesAreColorized(): void

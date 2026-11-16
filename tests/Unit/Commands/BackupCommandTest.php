@@ -33,6 +33,7 @@ final class BackupCommandTest extends TestCase
         yield 'help without arguments' => [[], 0, ['Available Actions:', 'make', 'list']];
         yield 'help option' => [['make', '--help'], 0, ['Available Actions:']];
         yield 'unknown action' => [['bogus'], 1, ['Invalid action: bogus.']];
+        yield 'missing action' => [['--name=custom'], 1, ['The following arguments are required: [action].']];
         yield 'list without backups' => [['list'], 0, ['No backups found.']];
         yield 'list shows the sizes' => [['list'], 0, ['Available backups:', '/seeded-1\.zip.*1(\.0+)? ?KB/', '/seeded-2\.zip.*2(\.0+)? ?KB/'], ['backups' => 2]];
         yield 'make with a name' => [['make', '--name=custom', '--hostname=example.test'], 0, ['Backup created:', '/custom-\d{8}-\d{6}\.zip/']];

@@ -38,6 +38,7 @@ final class UpdatesCommandTest extends TestCase
         yield 'help without arguments' => [[], 'none', 0, ['Available Actions:', 'check', 'update']];
         yield 'help option' => [['--help'], 'none', 0, ['Available Actions:']];
         yield 'unknown action' => [['bogus'], 'none', 1, ['Invalid action: bogus.']];
+        yield 'missing action' => [['--force'], 'none', 1, ['The following arguments are required: [action].']];
         yield 'check when up to date' => [['check'], 'uptodate', 0, ['is already up to date.', $current]];
         yield 'check with an available update' => [['check'], 'outdated', 0, ["$current is out of date.", 'Latest available version:', $next]];
         yield 'check failing' => [['check'], 'unreachable', 1, ['Cannot check for updates:']];
