@@ -85,6 +85,15 @@ final class SchemeTest extends TestCase
         $this->assertIsString($scheme->title());
     }
 
+    public function testTitlesThatAreNotStringsAreNotTranslated(): void
+    {
+        // Titles read from YAML files can be numbers
+        // @phpstan-ignore argument.type
+        $scheme = $this->makeScheme('post', ['title' => 2024]);
+
+        $this->assertSame('2024', $scheme->title());
+    }
+
     public function testTitleIsComputedOnce(): void
     {
         $scheme = $this->makeScheme('post', ['title' => '{{greeting}}']);

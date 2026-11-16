@@ -209,6 +209,36 @@ final class PageControllerTest extends TestCase
         $this->assertStringNotContainsString('About content', $response->content());
     }
 
+    public function testMaintenanceModeServesTheConfiguredPageWithoutCachingIt(): void
+    {
+        $this->siteSettings['maintenance.enabled'] = true;
+        $this->siteSettings['maintenance.page'] = '/about/';
+
+        $response = $this->load('/blog/', system: ['cache' => ['stores' => ['pages' => ['enabled' => true]]]]);
+
+        $this->assertSame(ResponseStatus::OK, $response->status());
+        $this->assertStringContainsString('About content', $response->content());
+        $this->assertCount(0, $this->cache);
+    }
+
+    // Routes
+
+    public function testRouteAliasesAreResolved(): void
+    {
+        $this->siteSettings['routeAliases'] = ['old-about' => 'about'];
+
+        $this->assertStringContainsString('About content', $this->load('old-about')->content());
+    }
+
+    public function testFilesOfTheIndexPageAreServedByTheirName(): void
+    {
+        FileSystem::write($this->site->contentPath() . '/index/logo.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>');
+
+        $response = $this->load('logo.svg');
+
+        $this->assertInstanceOf(FileResponse::class, $response);
+    }
+
     // Statistics
 
     public function testVisitsToPublishedPagesAreTracked(): void
@@ -251,6 +281,26 @@ final class PageControllerTest extends TestCase
 
         $this->assertSame($response->content(), $second->content());
         $this->assertSame(1, $this->renderedPages);
+    }
+
+    public function testCacheIsClearedWhenAScheduledPageIsPublished(): void
+    {
+        $contentPath = (string) $this->site->contentPath();
+        FileSystem::createDirectory($contentPath . '/scheduled');
+        FileSystem::write($contentPath . '/scheduled/page.md', "---\ntitle: Scheduled\npublishDate: '" . date('Y-m-d H:i', time() - 3600) . "'\n---\nScheduled content\n");
+        // The content was last changed before the page was published
+        foreach (FileSystem::listRecursive($contentPath, FileSystem::LIST_ALL) as $item) {
+            touch($contentPath . '/' . $item, time() - 7200);
+        }
+        touch($contentPath, time() - 7200);
+        $this->cache->set('other', 'stale');
+
+        $response = $this->load('/scheduled/', system: ['cache' => ['stores' => ['pages' => ['enabled' => true]]]]);
+
+        $this->assertStringContainsString('Scheduled content', $response->content());
+        $this->assertFalse($this->cache->has('other'));
+        clearstatcache();
+        $this->assertGreaterThan(time() - 60, filemtime($contentPath));
     }
 
     public function testCachingIsOffByDefault(): void

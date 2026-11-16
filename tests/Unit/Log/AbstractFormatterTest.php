@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Log;
 
 use ArrayObject;
 use DateTimeImmutable;
+use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Http\RequestMethod;
 use Formwork\Log\Formatter\AbstractFormatter;
 use Formwork\Tests\TestCase;
@@ -145,6 +146,23 @@ final class AbstractFormatterTest extends TestCase
         $this->assertIsArray($result);
         $this->assertCount(1, $result);
         $this->assertSame($object, array_values($result)[0]);
+    }
+
+    public function testArraySerializableObjectsAreConvertedToArrays(): void
+    {
+        $object = new class implements ArraySerializable {
+            public function toArray(): array
+            {
+                return ['name' => 'value'];
+            }
+
+            public static function fromArray(array $data): static
+            {
+                return new self();
+            }
+        };
+
+        $this->assertSame([['name' => 'value']], array_values((array) (new ExposedFormatterFixture())->normalizeData($object)));
     }
 
     public function testStringableObjectsAreConvertedToStrings(): void

@@ -51,6 +51,20 @@ final class ImageAltProcessorTest extends TestCase
         $this->assertStringContainsString('alt="written alt"', $html);
     }
 
+    public function testImagesWithoutUriAreLeftAsTheyAre(): void
+    {
+        $html = Markdown::parse('![written alt]()', ['site' => $this->site('/', ['' => 'Metadata alt'])]);
+
+        $this->assertStringContainsString('alt="written alt"', $html);
+    }
+
+    public function testNoAltTextIsAddedWithoutASite(): void
+    {
+        $html = Markdown::parse('![](photo.jpg)');
+
+        $this->assertStringContainsString('<img src="photo.jpg">', $html);
+    }
+
     public function testPageIsLookedUpThroughTheBaseRoute(): void
     {
         $html = Markdown::parse('![](photo.jpg)', ['site' => $this->site('/blog/', ['photo.jpg' => 'From blog']), 'baseRoute' => '/blog/']);

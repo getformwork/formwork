@@ -480,6 +480,26 @@ final class RouterTest extends TestCase
         $this->assertSame([], $router->params()->toArray());
     }
 
+    public function testClosureConstraintsDecideWhetherTheRouteMatches(): void
+    {
+        $router = $this->router('/users/41/');
+        $router->addRoute('even', '/users/{id}')
+            ->action(static fn(): Response => new Response('even'))
+            ->where('id', static fn(string $value): bool => (int) $value % 2 === 0);
+        $router->addRoute('odd', '/users/{id}')
+            ->action(static fn(): Response => new Response('odd'))
+            ->where('id', static fn(string $value): bool => (int) $value % 2 === 1);
+
+        $this->assertSame('odd', $router->dispatch()->content());
+    }
+
+    public function testRoutesCannotBeGeneratedWithParametersOfUnknownRoutes(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Route "missing" does not exist');
+        $this->router('/')->generateWith('missing', []);
+    }
+
     public function testLoadedRoutesAreDispatchedHonouringTheirConstraintsAndPrefixes(): void
     {
         $router = $this->router('/api/loaded/42/', 'POST');

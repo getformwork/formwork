@@ -189,6 +189,39 @@ final class UserTest extends TestCase
         yield 'with separators' => ['alice.smith_jones-1'];
     }
 
+    #[DataProvider('usernameLengthProvider')]
+    public function testUsernamesMustHaveAnAllowedLength(string $username): void
+    {
+        $testableUser = $this->makeUser([]);
+
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessageMatches('/^Username must be between \d+ and \d+ characters long$/');
+        $testableUser->set('username', $username);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function usernameLengthProvider(): iterable
+    {
+        yield 'too short' => ['ab'];
+        yield 'too long' => [str_repeat('a', 100)];
+    }
+
+    public function testUsersAreAuthenticatedByTheAuthenticatorOfTheApplication(): void
+    {
+        try {
+            $this->assertFalse($this->makeUser(['username' => 'alice'])->isLoggedIn());
+        } finally {
+            // The authenticator reads the logged in user from the session, which must not stay active for the next tests
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+            }
+            session_id('');
+            $_SESSION = [];
+        }
+    }
+
     public function testUsernamesCannotBeChanged(): void
     {
         $testableUser = $this->makeUser(['username' => 'alice']);

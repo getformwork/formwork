@@ -54,6 +54,15 @@ final class UpdaterInstallationTest extends TestCase
         $this->assertSame('added file', FileSystem::read($this->root . '/formwork/src/Added.php'));
     }
 
+    public function testDirectoriesAddedByTheReleaseAreCreated(): void
+    {
+        $this->buildArchive(['formwork/added/New.php' => 'new directory']);
+
+        $this->updater()->update(force: true);
+
+        $this->assertSame('new directory', FileSystem::read($this->root . '/formwork/added/New.php'));
+    }
+
     public function testIgnoredPathsAreNotTouched(): void
     {
         $this->updater()->update(force: true);

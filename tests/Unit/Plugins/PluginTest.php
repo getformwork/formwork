@@ -9,6 +9,7 @@ use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
+use Formwork\View\ViewFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -250,6 +251,43 @@ final class PluginTest extends TestCase
         $asset = App::instance()->assets()->get('@plugin:assets-demo/css/style.css');
         $this->assertStringEndsWith('/plugins/assets-demo/assets/css/style.css', $asset->uri());
         $this->assertSame('body {}', $asset->content());
+    }
+
+    public function testSchemesTranslationsAndViewsOfThePluginAreLoaded(): void
+    {
+        $plugin = $this->makePlugin('resources-demo', '', [
+            'schemes/plugins/resources-demo.yaml' => "title: Resources\nfields:\n  greeting:\n    type: text\n",
+            'translations/en.yaml'                => "resources-demo.greeting: Hello from the plugin\n",
+            'views/view.php'                      => 'View',
+        ]);
+
+        $viewFactory = $this->createMock(ViewFactory::class);
+        $viewFactory->expects($this->once())->method('setResolutionPaths')->with(['plugin:resources-demo' => $plugin->path() . '/views']);
+        $container = (new ReflectionProperty(Plugin::class, 'container'))->getValue($plugin);
+        $container->define(ViewFactory::class, $viewFactory);
+
+        // The plugin loads its resources into the services of the application, which are restored afterwards
+        $services = [App::instance()->schemes(), App::instance()->translations()];
+        $state = [];
+
+        foreach ($services as $service) {
+            foreach (['storage', 'data'] as $property) {
+                $state[] = [$service, $property, (new ReflectionProperty($service, $property))->getValue($service)];
+            }
+        }
+
+        try {
+            $plugin->initialize();
+
+            $this->assertTrue(App::instance()->schemes()->has('plugins.resources-demo'));
+            $this->assertTrue(App::instance()->translations()->get('en')->has('resources-demo.greeting'));
+            // The scheme loaded with the plugin is used
+            $this->assertSame(App::instance()->schemes()->get('plugins.resources-demo'), $plugin->scheme());
+        } finally {
+            foreach ($state as [$service, $property, $value]) {
+                (new ReflectionProperty($service, $property))->setValue($service, $value);
+            }
+        }
     }
 
     // Scheme

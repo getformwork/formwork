@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Backup;
 
 use Formwork\Backup\Backupper;
 use Formwork\Cms\App;
+use Formwork\Exceptions\TranslatedException;
 use Formwork\Http\Request;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
@@ -190,6 +191,15 @@ final class BackupperTest extends TestCase
         $this->captureException(UnexpectedValueException::class, fn() => $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.com'));
 
         $this->assertSame($before, ini_get('max_execution_time'));
+    }
+
+    public function testArchivesThatCannotBeCreatedAreReported(): void
+    {
+        // The backup path is a file, so the archive cannot be created in it
+        FileSystem::write(TESTS_TMP_PATH . '/not-a-directory', '');
+
+        $this->expectException(TranslatedException::class);
+        $this->backupper(['path' => TESTS_TMP_PATH . '/not-a-directory'])->backup(hostname: 'example.test');
     }
 
     public function testOldBackupsAreDeletedKeepingTheNewestOnes(): void

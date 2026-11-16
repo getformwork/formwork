@@ -116,6 +116,10 @@ final class FileTest extends TestCase
         yield 'rar archive' => ['application/x-rar-compressed', 'archive'];
         yield 'plain text' => ['text/plain', 'text'];
         yield 'unmapped image' => ['image/x-unmapped', null];
+        yield 'supported audio' => ['audio/mpeg', 'audio'];
+        yield 'unsupported audio' => ['audio/x-unmapped', null];
+        yield 'supported video' => ['video/mp4', 'video'];
+        yield 'unsupported video' => ['video/x-unmapped', null];
         yield 'unmapped application' => ['application/x-unmapped', null];
     }
 
@@ -138,6 +142,15 @@ final class FileTest extends TestCase
         $this->expectException(FileUriGenerationException::class);
         $this->expectExceptionMessage('generator not set');
         $file->uri();
+    }
+
+    public function testAbsoluteUriRequiresGenerator(): void
+    {
+        $file = new File(TESTS_TMP_PATH . '/sample.txt');
+
+        $this->expectException(FileUriGenerationException::class);
+        $this->expectExceptionMessage('Cannot generate file absolute uri: generator not set');
+        $file->absoluteUri();
     }
 
     public function testUriMethodsUseTheConfiguredGenerator(): void

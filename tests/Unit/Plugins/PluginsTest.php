@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Plugins;
 
+use Composer\Autoload\ClassLoader;
 use Formwork\Cms\App;
 use Formwork\Config\Config;
 use Formwork\Events\Event;
@@ -146,6 +147,36 @@ final class PluginsTest extends TestCase
         $pluginInitializationException = $this->captureException(PluginInitializationException::class, fn() => $this->plugins->initialize('badAutoload'));
         $this->assertStringContainsString('Failed autoload for plugin "badAutoload"', $pluginInitializationException->getMessage());
         $this->assertSame('cannot autoload', $pluginInitializationException->getPrevious()?->getMessage());
+    }
+
+    public function testAutoloadersOfPluginsAreRegisteredAfterTheOtherOnes(): void
+    {
+        // Requiring the `vendor/autoload.php` file of a plugin prepends its autoloader
+        $this->plugins->load('appendedAutoload', $this->makePluginDirectory('appended-autoload', <<<'PHP'
+                public static ?\Composer\Autoload\ClassLoader $classLoader = null;
+
+                public function autoload(): ?\Composer\Autoload\ClassLoader
+                {
+                    self::$classLoader ??= new \Composer\Autoload\ClassLoader();
+                    self::$classLoader->register(prepend: true);
+
+                    return self::$classLoader;
+                }
+            PHP));
+
+        $this->plugins->initialize('appendedAutoload');
+
+        // The class of the plugin is declared only when the plugin is loaded
+        $className = 'Formwork\Plugins\AppendedAutoloadPlugin';
+        /** @var ClassLoader */
+        $classLoader = $className::$classLoader;
+
+        try {
+            $autoloaders = spl_autoload_functions();
+            $this->assertSame([$classLoader, 'loadClass'], end($autoloaders));
+        } finally {
+            $classLoader->unregister();
+        }
     }
 
     public function testOnlyEnabledPluginsAreInitialized(): void
