@@ -22,11 +22,18 @@ final class Password
         string $password
     ): string {
         // The `PASSWORD_BCRYPT` algorithm has a maximum password length of 72 characters
+        // and does not accept null bytes
         // @see https://www.php.net/manual/en/function.password-hash.php
 
         // @phpstan-ignore identical.alwaysTrue
-        if (PASSWORD_DEFAULT === PASSWORD_BCRYPT && strlen($password) > self::BCRYPT_MAX_LENGTH) {
-            throw new InvalidArgumentException('Password exceeds the maximum supported length');
+        if (PASSWORD_DEFAULT === PASSWORD_BCRYPT) {
+            if (strlen($password) > self::BCRYPT_MAX_LENGTH) {
+                throw new InvalidArgumentException('Password exceeds the maximum supported length');
+            }
+
+            if (str_contains($password, "\0")) {
+                throw new InvalidArgumentException('Password cannot contain null bytes');
+            }
         }
 
         return password_hash($password, PASSWORD_DEFAULT);
