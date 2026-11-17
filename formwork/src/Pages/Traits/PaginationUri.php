@@ -47,7 +47,7 @@ trait PaginationUri
     public function route(int $pageNumber): string
     {
         if (!$this->has($pageNumber)) {
-            throw new UnexpectedValueException(sprintf('Cannot get the route for page %d, the pagination has only %d pages', $pageNumber, $this->length));
+            throw new UnexpectedValueException(sprintf('Cannot get the route for page %d, the pagination has only %d pages', $pageNumber, $this->pages()));
         }
 
         if ($pageNumber === 1) {
