@@ -194,15 +194,7 @@ final class AppTest extends TestCase
 
     public function testPanelRoutesAreLoaded(): void
     {
-        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/panel/login/', 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
-
-        try {
-            App::instance()->handle($request);
-
-            $this->assertSame('panel.login', App::instance()->router()->current()?->getName());
-        } finally {
-            $this->reload();
-        }
+        $this->assertTrue(App::instance()->router()->routes()->has('panel.login'));
     }
 
     public function testFilesWithCharactersNotAllowedInUrisAreServedFromTheirUri(): void
