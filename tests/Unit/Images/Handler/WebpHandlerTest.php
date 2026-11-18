@@ -20,7 +20,7 @@ final class WebpHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new WebpHandler(GdImagesFixture::webp(40, 30)))->getInfo();
+        $info = (new WebpHandler(GdImagesFixture::webp()))->getInfo();
 
         $this->assertSame('image/webp', $info->mimeType());
         $this->assertSame(40, $info->width());
@@ -32,11 +32,11 @@ final class WebpHandlerTest extends TestCase
 
     public function testInfoIsReadFromLossyImages(): void
     {
-        $frame = "\x10\x00\x00\x9d\x01\x2a" . pack('vv', 0xc000 | 123, 0x4000 | 45);
+        $frame = "\x10\x00\x00\x9d\x01\x2a" . pack('vv', 0xc000 | 300, 0x4000 | 260);
         $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8 ', $frame)));
 
-        $this->assertSame(123, $handler->getInfo()->width());
-        $this->assertSame(45, $handler->getInfo()->height());
+        $this->assertSame(300, $handler->getInfo()->width());
+        $this->assertSame(260, $handler->getInfo()->height());
         $this->assertFalse($handler->getInfo()->hasAlphaChannel());
     }
 
@@ -52,10 +52,10 @@ final class WebpHandlerTest extends TestCase
 
     public function testInfoIsReadFromExtendedImages(): void
     {
-        $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8X', "\x10\x00\x00\x00" . substr(pack('V', 999), 0, 3) . substr(pack('V', 499), 0, 3))));
+        $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8X', "\x10\x00\x00\x00" . substr(pack('V', 69999), 0, 3) . substr(pack('V', 79999), 0, 3))));
 
-        $this->assertSame(1000, $handler->getInfo()->width());
-        $this->assertSame(500, $handler->getInfo()->height());
+        $this->assertSame(70000, $handler->getInfo()->width());
+        $this->assertSame(80000, $handler->getInfo()->height());
         $this->assertTrue($handler->getInfo()->hasAlphaChannel());
     }
 
@@ -71,7 +71,7 @@ final class WebpHandlerTest extends TestCase
     {
         $handler = new WebpHandler(GdImagesFixture::webpFile(
             GdImagesFixture::webpChunk('VP8X', "\x02\x00\x00\x00\x09\x00\x00\x09\x00\x00"),
-            GdImagesFixture::webpChunk('ANIM', "\x00\x00\x00\x00" . pack('v', 3)),
+            GdImagesFixture::webpChunk('ANIM', "\x00\x00\x00\x00" . pack('v', 300)),
             GdImagesFixture::webpChunk('ANMF', str_repeat("\x00", 16)),
             GdImagesFixture::webpChunk('ANMF', str_repeat("\x00", 16)),
         ));
@@ -80,20 +80,21 @@ final class WebpHandlerTest extends TestCase
 
         $this->assertTrue($info->isAnimation());
         $this->assertSame(2, $info->animationFrames());
-        $this->assertSame(3, $info->animationRepeatCount());
+        $this->assertSame(300, $info->animationRepeatCount());
         $this->assertFalse($handler->supportsTransforms());
     }
 
-    public function testTruncatedChunksAreNotAccepted(): void
+    public function testTruncatedChunksAreRejected(): void
     {
         $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8L', "\x2f\x00")));
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         $handler->getInfo();
     }
 
-    public function testInvalidExtendedHeadersAreNotAccepted(): void
+    public function testInvalidExtendedHeadersAreRejected(): void
     {
         $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8X', "\x00\x00")));
 
@@ -137,6 +138,31 @@ final class WebpHandlerTest extends TestCase
         $handler->setColorProfile($this->colorProfile());
 
         $this->assertSame(1, $this->countChunks($handler, 'ICCP'));
+    }
+
+    public function testSimpleImagesGetAnExtendedHeaderDescribingThem(): void
+    {
+        $frame = "\x10\x00\x00\x9d\x01\x2a" . pack('vv', 123, 45);
+        $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8 ', $frame)));
+
+        $handler->setExifData($this->exifData());
+
+        $this->assertSame(['VP8X', 'VP8 ', 'EXIF'], $this->chunkTypes($handler));
+        // EXIF flag, reserved bytes, then width and height minus one on three bytes
+        $this->assertSame("\x08\x00\x00\x00\x7a\x00\x00\x2c\x00\x00", substr($handler->getData(), 20, 10));
+        $this->assertFalse($handler->getInfo()->hasAlphaChannel());
+    }
+
+    public function testAddingAColorProfilePreservesTheImageDataAndTheAlphaFlag(): void
+    {
+        $bits = (320 - 1) | ((200 - 1) << 14) | (1 << 28);
+        $handler = new WebpHandler(GdImagesFixture::webpFile(GdImagesFixture::webpChunk('VP8L', "\x2f" . pack('V', $bits))));
+
+        $handler->setColorProfile($this->colorProfile());
+
+        $this->assertSame(['VP8X', 'ICCP', 'VP8L'], $this->chunkTypes($handler));
+        // Alpha and ICC flags
+        $this->assertSame(0x30, $this->flags($handler));
     }
 
     public function testColorProfilesFollowTheExtendedHeader(): void

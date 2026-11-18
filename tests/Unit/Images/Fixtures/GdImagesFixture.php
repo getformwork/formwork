@@ -3,10 +3,11 @@
 namespace Formwork\Tests\Unit\Images\Fixtures;
 
 use GdImage;
-use RuntimeException;
 
 /**
- * Encodes small images with GD, so that the handlers are tested against real data
+ * Provides small images encoded with GD, so that the handlers are tested against real data
+ *
+ * The encoded images are stored as files, since the output of the encoders changes with the versions of their libraries
  */
 final class GdImagesFixture
 {
@@ -24,24 +25,24 @@ final class GdImagesFixture
         return $image;
     }
 
-    public static function png(int $width = 40, int $height = 30): string
+    public static function png(): string
     {
-        return self::encode(static fn (GdImage $image): bool => imagepng($image), $width, $height);
+        return self::read('image.png');
     }
 
-    public static function jpeg(int $width = 40, int $height = 30): string
+    public static function jpeg(): string
     {
-        return self::encode(static fn (GdImage $image): bool => imagejpeg($image), $width, $height);
+        return self::read('image.jpg');
     }
 
-    public static function gif(int $width = 40, int $height = 30): string
+    public static function gif(): string
     {
-        return self::encode(static fn (GdImage $image): bool => imagegif($image), $width, $height);
+        return self::read('image.gif');
     }
 
-    public static function webp(int $width = 40, int $height = 30): string
+    public static function webp(): string
     {
-        return self::encode(static fn (GdImage $image): bool => imagewebp($image), $width, $height);
+        return self::read('image.webp');
     }
 
     /**
@@ -78,18 +79,8 @@ final class GdImagesFixture
         return "\xff" . chr($type) . pack('n', strlen($data) + 2) . $data;
     }
 
-    /**
-     * @param callable(GdImage): bool $encoder
-     */
-    private static function encode(callable $encoder, int $width, int $height): string
+    private static function read(string $name): string
     {
-        ob_start();
-
-        if (!$encoder(self::image($width, $height))) {
-            ob_end_clean();
-            throw new RuntimeException('Cannot encode image');
-        }
-
-        return (string) ob_get_clean();
+        return (string) file_get_contents(__DIR__ . '/' . $name);
     }
 }

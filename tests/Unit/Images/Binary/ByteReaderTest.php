@@ -147,6 +147,7 @@ final class ByteReaderTest extends TestCase
     public function testPositionOutsideTheDataIsNotAllowed(int $position): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         (new ByteReader('abc'))->seek($position);
     }
@@ -173,6 +174,7 @@ final class ByteReaderTest extends TestCase
     public function testPeekingBeyondTheDataIsNotAllowed(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         (new ByteReader('abc'))->peek(4);
     }
@@ -189,6 +191,7 @@ final class ByteReaderTest extends TestCase
     public function testUnterminatedStringsAreNotRead(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         (new ByteReader('name'))->cString();
     }

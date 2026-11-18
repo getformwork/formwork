@@ -60,7 +60,7 @@ final class AvifHandlerTest extends TestCase
         $this->assertSame(24, $info->height());
     }
 
-    public function testInfoKeepsTheDefaultSizeWithoutSpatialExtents(): void
+    public function testInfoPreservesTheDefaultSizeWithoutSpatialExtents(): void
     {
         $info = $this->handler(AvifFileFixture::create()->withoutDimensions()->withDepth(10))->getInfo();
 
@@ -192,7 +192,7 @@ final class AvifHandlerTest extends TestCase
         $this->assertSame(1, substr_count($handler->getData(), 'colr'));
     }
 
-    public function testColorProfileKeepsTheAssociationsOfTheOtherProperties(): void
+    public function testColorProfilePreservesTheAssociationsOfTheOtherProperties(): void
     {
         $handler = $this->handler(AvifFileFixture::create()->withAlpha()->withColorProfile($this->colorProfileData()));
         $handler->setColorProfile(new ColorProfile($this->colorProfileData('lab')));

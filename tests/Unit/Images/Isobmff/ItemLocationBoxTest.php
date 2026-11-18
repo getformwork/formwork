@@ -147,7 +147,7 @@ final class ItemLocationBoxTest extends TestCase
     }
 
     #[DataProvider('roundTripProvider')]
-    public function testEncodingKeepsTheItemsUnchanged(ItemLocationBox $box): void
+    public function testEncodingPreservesTheItems(ItemLocationBox $box): void
     {
         $encoded = ItemLocationBox::fromBox($box->toBox());
 

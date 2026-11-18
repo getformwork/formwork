@@ -59,6 +59,7 @@ final class AvifDecoderTest extends TestCase
         $data = 'short';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid AVIF data');
 
         iterator_to_array((new AvifDecoder())->decode($data));
     }
@@ -88,6 +89,7 @@ final class AvifDecoderTest extends TestCase
         $data = $this->box('ftyp', 'avif') . pack('N', 100) . 'meta' . 'short';
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new AvifDecoder())->decode($data));
     }
@@ -107,6 +109,7 @@ final class AvifDecoderTest extends TestCase
         $data = $this->box('ftyp', 'avif') . "\x00\x00";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new AvifDecoder())->decode($data));
     }

@@ -106,7 +106,7 @@ final class ItemInfoBoxTest extends TestCase
         $this->assertSame(70000, ItemInfoEntry::fromBox(ItemInfoEntry::create(70000, 'av01')->toBox())->id);
     }
 
-    public function testEncodingKeepsTheEntriesUnchanged(): void
+    public function testEncodingPreservesTheEntries(): void
     {
         $box = ItemInfoBox::fromBox($this->box(0, [$this->entry(1, 'av01'), $this->entry(2, 'Exif')]));
         $encoded = ItemInfoBox::fromBox($box->toBox());

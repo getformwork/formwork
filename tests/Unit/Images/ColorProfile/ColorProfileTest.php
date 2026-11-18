@@ -7,12 +7,14 @@ use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\ColorProfile\DeviceClass;
 use Formwork\Images\ColorProfile\RenderingIntent;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\UsesTempDirectory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 #[CoversClass(ColorProfile::class)]
+#[UsesTempDirectory]
 final class ColorProfileTest extends TestCase
 {
     private const string FIXTURES = __DIR__ . '/../Fixtures';
@@ -45,15 +47,11 @@ final class ColorProfileTest extends TestCase
 
     public function testProfilesAreExported(): void
     {
-        $path = sys_get_temp_dir() . '/formwork-profile-' . bin2hex(random_bytes(4)) . '.icc';
         $profile = ColorProfile::fromFile(self::FIXTURES . '/srgb.icc');
 
-        try {
-            $profile->export($path);
-            $this->assertSame($profile->getData(), file_get_contents($path));
-        } finally {
-            @unlink($path);
-        }
+        $profile->export(TESTS_TMP_PATH . '/profile.icc');
+
+        $this->assertSame($profile->getData(), file_get_contents(TESTS_TMP_PATH . '/profile.icc'));
     }
 
     public function testLegacyDescriptionsAndTextTagsAreRead(): void
@@ -104,7 +102,7 @@ final class ColorProfileTest extends TestCase
     }
 
     #[DataProvider('invalidProfileProvider')]
-    public function testInvalidProfilesAreNotAccepted(string $data): void
+    public function testInvalidProfilesAreRejected(string $data): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid ICC profile data');
@@ -170,7 +168,7 @@ final class ColorProfileTest extends TestCase
     }
 
     #[DataProvider('unexpectedValueProvider')]
-    public function testUnexpectedHeaderValuesAreNotAccepted(int $offset, string $value, string $method, string $message): void
+    public function testUnexpectedHeaderValuesAreRejected(int $offset, string $value, string $method, string $message): void
     {
         $profile = new ColorProfile(substr_replace($this->profile([]), $value, $offset, strlen($value)));
 

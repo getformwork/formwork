@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 #[UsesClass(ExifDateTime::class)]
 final class ExifDataTest extends TestCase
 {
-    public function testDataIsKeptAsGiven(): void
+    public function testDataIsPreservedAsGiven(): void
     {
         $data = TiffFixture::tiff([0x010F => [TiffFixture::ASCII, 'Canon']]);
 

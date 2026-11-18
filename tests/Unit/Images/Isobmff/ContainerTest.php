@@ -101,14 +101,27 @@ final class ContainerTest extends TestCase
         $container->itemData(AvifFileFixture::EXIF_ID);
     }
 
-    public function testExtentsBeyondTheAvailableDataAreRejected(): void
+    /**
+     * @param array{offset?: int, length?: int} $override
+     */
+    #[DataProvider('exceedingExtentProvider')]
+    public function testExtentsBeyondTheAvailableDataAreRejected(array $override): void
     {
-        $container = $this->parse(AvifFileFixture::create()->withRawExif('data')->withExtentOverride(AvifFileFixture::EXIF_ID, offset: 100000));
+        $container = $this->parse(AvifFileFixture::create()->withRawExif('data')->withExtentOverride(AvifFileFixture::EXIF_ID, ...$override));
 
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Item extent exceeds the available data');
 
         $container->itemData(AvifFileFixture::EXIF_ID);
+    }
+
+    /**
+     * @return iterable<string, array{array{offset?: int, length?: int}}>
+     */
+    public static function exceedingExtentProvider(): iterable
+    {
+        yield 'offset' => [['offset' => 100000]];
+        yield 'length' => [['length' => 100000]];
     }
 
     public function testItemsAreAdded(): void
@@ -176,7 +189,7 @@ final class ContainerTest extends TestCase
         $this->assertStringNotContainsString(ItemReferenceBox::CONTENT_DESCRIBES, $rewritten->toString());
     }
 
-    public function testRemovedItemsDoNotKeepTheirAddedData(): void
+    public function testRemovedItemsLoseTheirAddedData(): void
     {
         $container = $this->parse(AvifFileFixture::create());
         $id = $container->addItem(ItemInfoEntry::EXIF_TYPE, 'added');
@@ -211,7 +224,7 @@ final class ContainerTest extends TestCase
         yield 'wide item location' => [$file()->withLocationVersion(2)];
     }
 
-    public function testTheRewrittenFileKeepsTheOtherBoxes(): void
+    public function testTheRewrittenFilePreservesTheOtherBoxes(): void
     {
         $rewritten = $this->parse(AvifFileFixture::create()->withFreeSpace())->toString();
 

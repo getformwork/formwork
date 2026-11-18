@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(Crop::class)]
 final class CropTest extends TestCase
 {
-    public function testAreaStartingFromTheOriginIsKept(): void
+    public function testAreaStartingFromTheOriginIsPreserved(): void
     {
         $gdImage = imagecreatetruecolor(4, 4);
         imagesetpixel($gdImage, 2, 1, 0xFF0000);
@@ -24,7 +24,7 @@ final class CropTest extends TestCase
         $this->assertSame(0xFF0000, imagecolorat($gdImage, 0, 0));
     }
 
-    public function testTransparencyIsKept(): void
+    public function testTransparencyIsPreserved(): void
     {
         // The fixture has a transparent 10x10 corner
         $gdImage = (new Crop(0, 0, 20, 20))->apply(GdImagesFixture::image(), new ImageInfo(['hasAlphaChannel' => true]));

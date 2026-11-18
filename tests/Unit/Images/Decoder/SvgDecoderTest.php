@@ -42,7 +42,12 @@ final class SvgDecoderTest extends TestCase
         yield 'percentages' => ['width="100%" height="100%" viewBox="0 0 20 10"', ['width' => 20, 'height' => 10]];
         yield 'width only' => ['width="200" viewBox="0 0 20 10"', ['width' => 200, 'height' => 100]];
         yield 'height only' => ['height="100" viewBox="0 0 20 10"', ['width' => 200, 'height' => 100]];
+        yield 'rounded dimensions' => ['width="100.4" height="50.6"', ['width' => 100, 'height' => 51]];
+        yield 'height only with an empty view box height' => ['height="100" viewBox="0 0 20 0"', ['width' => 20, 'height' => 100]];
+        yield 'width only with an empty view box width' => ['width="100" viewBox="0 0 0 10"', ['width' => 100, 'height' => 10]];
         yield 'no dimensions' => ['', null];
+        yield 'invalid view box width' => ['viewBox="0 0 a 10"', null];
+        yield 'text before the length' => ['width="a100" height="50"', null];
         yield 'invalid view box' => ['viewBox="0 0 a b"', null];
         yield 'relative units' => ['width="10em" height="5em"', null];
     }
@@ -59,6 +64,7 @@ final class SvgDecoderTest extends TestCase
         $data = '<svg width="10"';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid SVG data');
 
         iterator_to_array((new SvgDecoder())->decode($data));
     }
@@ -67,6 +73,7 @@ final class SvgDecoderTest extends TestCase
     public function testInvalidDataIsNotDecoded(string $data): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid SVG data');
 
         iterator_to_array((new SvgDecoder())->decode($data));
     }

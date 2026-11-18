@@ -63,7 +63,6 @@ final class SvgHandlerTest extends TestCase
     public function testUnsupportedOperationsAreRejected(callable $operation): void
     {
         $this->expectException(UnsupportedFeatureException::class);
-
         $operation($this->handler('<svg xmlns="http://www.w3.org/2000/svg"/>'));
     }
 

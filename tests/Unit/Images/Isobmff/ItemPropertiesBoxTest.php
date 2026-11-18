@@ -41,7 +41,7 @@ final class ItemPropertiesBoxTest extends TestCase
         $this->assertSame(['ispe'], array_column($box->forItem(1), 'type'));
     }
 
-    public function testUnknownChildrenAreKept(): void
+    public function testUnknownChildrenArePreserved(): void
     {
         $container = new Box('ipco', Box::encodeAll([new Box('ispe', 'size')]));
         $other = new Box('free', 'kept');
@@ -96,7 +96,7 @@ final class ItemPropertiesBoxTest extends TestCase
         $this->assertSame(['ispe'], array_column($this->reread($box)->forItem(1), 'type'));
     }
 
-    public function testEssentialAssociationsAreKept(): void
+    public function testEssentialAssociationsArePreserved(): void
     {
         $associations = new PropertyAssociationBox();
         $associations->associate(1, 1, essential: true);
@@ -147,7 +147,7 @@ final class ItemPropertiesBoxTest extends TestCase
         yield 'the lowest wide index' => [128, true];
     }
 
-    public function testTheWideIndexFlagIsKeptOnceSet(): void
+    public function testTheWideIndexFlagIsPreservedOnceSet(): void
     {
         $payload = Box::fullBoxHeader(0, 1) . Bytes::pack(1, 4) . Bytes::pack(1, 2) . Bytes::pack(1, 1) . Bytes::pack(2, 2);
         $box = PropertyAssociationBox::fromBox(new Box(PropertyAssociationBox::TYPE, $payload));
@@ -165,7 +165,7 @@ final class ItemPropertiesBoxTest extends TestCase
         $this->assertSame(PropertyAssociationBox::TYPE, $box->toBox()->type);
     }
 
-    public function testEncodingKeepsThePropertiesUnchanged(): void
+    public function testEncodingPreservesTheProperties(): void
     {
         $box = $this->properties([new Box('ispe', 'size'), new Box('colr', 'profile')], [1 => [1, 2]]);
         $reread = $this->reread($box);
