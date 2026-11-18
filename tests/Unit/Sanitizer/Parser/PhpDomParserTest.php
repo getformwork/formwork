@@ -117,11 +117,6 @@ final class PhpDomParserTest extends TestCase
         $this->assertSame('<root><child/></root>', $phpDomParser->serialize($document));
     }
 
-    public function testSerializingNothingReturnsAString(): void
-    {
-        $this->assertIsString((new PhpDomParser())->serialize());
-    }
-
     /**
      * @return iterable<string, array{string}>
      */

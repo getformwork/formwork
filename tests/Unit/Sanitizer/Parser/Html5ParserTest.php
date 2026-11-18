@@ -20,7 +20,7 @@ final class Html5ParserTest extends TestCase
         $this->assertSame('Hello world', $fragment->textContent);
     }
 
-    public function testUnclosedScriptContentIsKeptAsText(): void
+    public function testUnclosedScriptContentIsPreservedAsText(): void
     {
         $html5Parser = new Html5Parser();
 
@@ -39,7 +39,7 @@ final class Html5ParserTest extends TestCase
         $this->assertFalse($fragment->hasChildNodes());
     }
 
-    public function testSerializationRoundTrip(): void
+    public function testParsedHtmlIsSerializedBackUnchanged(): void
     {
         $html5Parser = new Html5Parser();
         $html = '<div class="a b" data-x="1"><img src="x.png" alt="x"><br>text &amp; more</div>';
@@ -78,10 +78,10 @@ final class Html5ParserTest extends TestCase
         $this->assertSame('deep', $fragment->textContent);
     }
 
-    public function testNonUtf8InputDoesNotCrash(): void
+    public function testInvalidUtf8BytesAreReplaced(): void
     {
         $fragment = (new Html5Parser())->parse("<p>caf\xE9</p>");
 
-        $this->assertInstanceOf(\DOMDocumentFragment::class, $fragment);
+        $this->assertSame("caf\u{FFFD}", $fragment?->textContent);
     }
 }

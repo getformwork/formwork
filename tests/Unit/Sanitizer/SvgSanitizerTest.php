@@ -39,7 +39,7 @@ final class SvgSanitizerTest extends TestCase
         $this->assertSame(1, substr_count($svg, 'xmlns='));
     }
 
-    public function testAttributesAreKeptWhenTheNamespaceIsAdded(): void
+    public function testAttributesArePreservedWhenTheNamespaceIsAdded(): void
     {
         $svg = (new SvgSanitizer())->sanitize('<svg width="10" height="20" viewBox="0 0 10 20"><circle r="5"/></svg>');
 
@@ -55,7 +55,7 @@ final class SvgSanitizerTest extends TestCase
         $this->assertSame($svg, (new SvgSanitizer())->sanitize($svg));
     }
 
-    public function testEntitiesInTextAreKept(): void
+    public function testEntitiesInTextArePreserved(): void
     {
         $svg = '<svg xmlns="http://www.w3.org/2000/svg"><text>a &amp; b &lt;c&gt;</text></svg>';
 
@@ -87,11 +87,11 @@ final class SvgSanitizerTest extends TestCase
         yield 'data URI image' => ['<svg><image href="data:text/html,alert(1)"/></svg>', '<image/>'];
     }
 
-    public function testSafeLinksAreKept(): void
+    public function testSafeLinksArePreserved(): void
     {
-        $svg = (new SvgSanitizer())->sanitize('<svg><a href="https://example.com/page"><text>x</text></a></svg>');
+        $svg = (new SvgSanitizer())->sanitize('<svg><a href="https://example.test/page"><text>x</text></a></svg>');
 
-        $this->assertStringContainsString('<a href="https://example.com/page">', $svg);
+        $this->assertStringContainsString('<a href="https://example.test/page">', $svg);
     }
 
     #[DataProvider('unsafeSmilAttributeNameProvider')]
@@ -126,7 +126,7 @@ final class SvgSanitizerTest extends TestCase
     }
 
     #[DataProvider('safeSmilAttributeNameProvider')]
-    public function testSmilAnimationsOfSafeAttributesAreKept(string $element, string $attributeName): void
+    public function testSmilAnimationsOfSafeAttributesArePreserved(string $element, string $attributeName): void
     {
         $svg = (new SvgSanitizer())->sanitize(
             '<svg><circle><' . $element . ' attributeName="' . $attributeName . '" from="1" to="5" dur="1s"/></circle></svg>'

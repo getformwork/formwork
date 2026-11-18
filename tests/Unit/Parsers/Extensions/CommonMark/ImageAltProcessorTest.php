@@ -30,21 +30,21 @@ final class ImageAltProcessorTest extends TestCase
         $this->assertStringNotContainsString('Metadata alt', $html);
     }
 
-    public function testMarkdownAltIsKeptWhenTheFileHasNoMetadata(): void
+    public function testMarkdownAltIsPreservedWhenTheFileHasNoMetadata(): void
     {
         $html = Markdown::parse('![written alt](photo.jpg)', ['site' => $this->site('/', ['photo.jpg' => null])]);
 
         $this->assertStringContainsString('alt="written alt"', $html);
     }
 
-    public function testMarkdownAltIsKeptWhenTheFileIsUnknown(): void
+    public function testMarkdownAltIsPreservedWhenTheFileIsUnknown(): void
     {
         $html = Markdown::parse('![written alt](other.jpg)', ['site' => $this->site('/', ['photo.jpg' => 'Metadata alt'])]);
 
         $this->assertStringContainsString('alt="written alt"', $html);
     }
 
-    public function testMarkdownAltIsKeptWhenThePageIsUnknown(): void
+    public function testMarkdownAltIsPreservedWhenThePageIsUnknown(): void
     {
         $html = Markdown::parse('![written alt](photo.jpg)', ['site' => $this->site('/', ['photo.jpg' => 'Metadata alt']), 'baseRoute' => '/elsewhere/']);
 
@@ -86,7 +86,7 @@ final class ImageAltProcessorTest extends TestCase
 
     public function testExternalImagesDoNotConsultTheFiles(): void
     {
-        $html = Markdown::parse('![remote](https://example.com/photo.jpg)', ['site' => $this->site('/', ['https://example.com/photo.jpg' => 'Should not be used'])]);
+        $html = Markdown::parse('![remote](https://example.test/photo.jpg)', ['site' => $this->site('/', ['https://example.test/photo.jpg' => 'Should not be used'])]);
 
         $this->assertStringContainsString('alt="remote"', $html);
     }

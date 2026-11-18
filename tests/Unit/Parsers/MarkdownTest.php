@@ -15,7 +15,7 @@ use UnexpectedValueException;
 #[CoversClass(Markdown::class)]
 final class MarkdownTest extends TestCase
 {
-    public function testParse(): void
+    public function testMarkdownIsRenderedAsHtml(): void
     {
         $markdown = "# Hello, World!\n\nThis is a **bold** statement.";
         $expectedHtml = "<h1>Hello, World!</h1>\n<p>This is a <strong>bold</strong> statement.</p>\n";
@@ -30,8 +30,8 @@ final class MarkdownTest extends TestCase
         $site->method('uri')
             ->willReturnArgument(0);
 
-        $markdown = "![Alt text](image.jpg)\n\n[Link text](https://example.com)";
-        $expectedHtml = "<p><img src=\"/image.jpg\" alt=\"Alt text\"></p>\n<p><a href=\"https://example.com\">Link text</a></p>\n";
+        $markdown = "![Alt text](image.jpg)\n\n[Link text](https://example.test)";
+        $expectedHtml = "<p><img src=\"/image.jpg\" alt=\"Alt text\"></p>\n<p><a href=\"https://example.test\">Link text</a></p>\n";
 
         $this->assertSame($expectedHtml, Markdown::parse($markdown, ['site' => $site]));
     }
@@ -66,12 +66,12 @@ final class MarkdownTest extends TestCase
                 ],
             ],
         ];
-        $markdown = "# Title\n\nA *simple* [link](https://example.com).";
+        $markdown = "# Title\n\nA *simple* [link](https://example.test).";
 
         $this->assertSame(Markdown::parse($markdown), Markdown::parse($markdown, $options));
     }
 
-    public function testParseThrowsUnexpectedValueExceptionOnInvalidCommonMarkExtension(): void
+    public function testParseRejectsInvalidCommonMarkExtensions(): void
     {
         $options = [
             'commonmarkExtensions' => [
@@ -149,11 +149,10 @@ final class MarkdownTest extends TestCase
 
     public function testTablesAreSupported(): void
     {
-        $html = Markdown::parse("| a | b |\n|---|---|\n| 1 | 2 |");
-
-        $this->assertStringContainsString('<table>', $html);
-        $this->assertStringContainsString('<th>a</th>', $html);
-        $this->assertStringContainsString('<td>2</td>', $html);
+        $this->assertSame(
+            "<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n",
+            Markdown::parse("| a | b |\n|---|---|\n| 1 | 2 |"),
+        );
     }
 
     public function testHeadingsHaveNoIdByDefault(): void
@@ -163,17 +162,7 @@ final class MarkdownTest extends TestCase
 
     public function testHeadingsWithoutSlugCharactersDoNotGetAnEmptyId(): void
     {
-        $this->assertStringNotContainsString('id=""', Markdown::parse('## !!!', ['addHeadingIds' => true]));
-    }
-
-    public function testHeadingIdsAreUniqueWhenTitlesRepeat(): void
-    {
-        $html = Markdown::parse("## Same\n\n## Same", ['addHeadingIds' => true]);
-
-        preg_match_all('/id="([^"]*)"/', $html, $matches);
-
-        $this->assertCount(2, $matches[1]);
-        $this->assertCount(2, array_unique($matches[1]));
+        $this->assertSame("<h2>!!!</h2>\n", Markdown::parse('## !!!', ['addHeadingIds' => true]));
     }
 
     public function testHeadingIdsCounterResetsForDifferentParsings(): void
@@ -184,6 +173,7 @@ final class MarkdownTest extends TestCase
         preg_match_all('/id="([^"]*)"/', $html1, $matches1);
         preg_match_all('/id="([^"]*)"/', $html2, $matches2);
 
-        $this->assertEquals($matches1[1], $matches2[1]);
+        $this->assertSame(['same', 'same-2'], $matches1[1]);
+        $this->assertSame($matches1[1], $matches2[1]);
     }
 }
