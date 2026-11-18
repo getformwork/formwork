@@ -121,6 +121,14 @@ final class RateLimiterTest extends TestCase
         $this->assertTrue($this->limiter(1, ip: '203.0.113.1')->hasReachedLimit());
     }
 
+    public function testInstallationsSharingTheRegistryHaveIndependentCounters(): void
+    {
+        $this->limiter(0, rootPath: '/sites/first')->registerAttempt();
+
+        $this->assertTrue($this->limiter(0, rootPath: '/sites/first')->hasReachedLimit());
+        $this->assertFalse($this->limiter(0, rootPath: '/sites/second')->hasReachedLimit());
+    }
+
     #[DataProvider('hostProvider')]
     public function testHostHeaderDoesNotAffectTheCounter(string $host): void
     {
@@ -280,6 +288,7 @@ final class RateLimiterTest extends TestCase
         string $host = 'example.test',
         array $server = [],
         array $trustedProxies = [],
+        string $rootPath = TESTS_TMP_PATH,
     ): RateLimiter {
         $request = new Request(server: $server + [
             'REQUEST_METHOD' => 'GET',
@@ -294,7 +303,7 @@ final class RateLimiterTest extends TestCase
         $this->endRequests();
         $this->registries[] = $registry = new Registry($this->registryFile);
 
-        return new RateLimiter($registry, $limit, $resetTime, TESTS_TMP_PATH, $request);
+        return new RateLimiter($registry, $limit, $resetTime, $rootPath, $request);
     }
 
     /**

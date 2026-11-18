@@ -10,7 +10,7 @@ use RuntimeException;
 #[CoversClass(RateLimitExceededException::class)]
 final class RateLimitExceededExceptionTest extends TestCase
 {
-    public function testResetTimeIsKeptWithTheMessageAndThePreviousException(): void
+    public function testResetTimeIsPreservedWithTheMessageAndThePreviousException(): void
     {
         $previous = new RuntimeException('Previous');
 

@@ -11,8 +11,8 @@ use Formwork\Users\RoleCollection;
 use Formwork\Users\User;
 use Formwork\Users\UserCollection;
 use Formwork\Users\Users;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Throwable;
 
 #[CoversClass(UserCollection::class)]
 #[CoversClass(Users::class)]
@@ -49,27 +49,28 @@ final class UserCollectionTest extends TestCase
     public function testUsersAreKeyedByUsername(): void
     {
         $users = $this->users();
-        $testableUser = $this->makeUser(['username' => 'alice'], $users);
-        $bob = $this->makeUser(['username' => 'bob'], $users);
+        $testableUser = $this->makeUser(['username' => 'user'], $users);
+        $anotherUser = $this->makeUser(['username' => 'another-user'], $users);
 
         $this->assertCount(2, $users);
-        $this->assertSame($testableUser, $users->get('alice'));
-        $this->assertSame($bob, $users->get('bob'));
-        $this->assertNull($users->get('carol'));
+        $this->assertSame($testableUser, $users->get('user'));
+        $this->assertSame($anotherUser, $users->get('another-user'));
+        $this->assertNull($users->get('third-user'));
     }
 
     public function testOnlyUsersCanBeAdded(): void
     {
         $users = $this->users();
 
-        $this->expectException(Throwable::class);
-        $users->set('alice', $this->unchecked('not a user'));
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Value must be of type Formwork\Users\User, string given');
+        $users->set('user', $this->unchecked('not a user'));
     }
 
     public function testLoggedInUserIsNullWhenNobodyIsLoggedIn(): void
     {
         $users = $this->users();
-        $this->makeUser(['username' => 'alice'], $users);
+        $this->makeUser(['username' => 'user'], $users);
 
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('getUser')->willReturn(null);
@@ -84,24 +85,24 @@ final class UserCollectionTest extends TestCase
     public function testLoggedInUserIsTheOneKnownToTheAuthenticator(): void
     {
         $users = $this->users();
-        $testableUser = $this->makeUser(['username' => 'alice'], $users);
-        $bob = $this->makeUser(['username' => 'bob'], $users);
+        $testableUser = $this->makeUser(['username' => 'user'], $users);
+        $anotherUser = $this->makeUser(['username' => 'another-user'], $users);
 
         $authenticator = $this->createStub(Authenticator::class);
-        $authenticator->method('getUser')->willReturn($bob);
+        $authenticator->method('getUser')->willReturn($anotherUser);
         $testableUser->authenticator = $authenticator;
-        $bob->authenticator = $authenticator;
+        $anotherUser->authenticator = $authenticator;
 
-        $this->assertSame($bob, $users->loggedIn());
+        $this->assertSame($anotherUser, $users->loggedIn());
     }
 
     public function testUsersCanBeFoundByEmail(): void
     {
         $users = $this->users();
-        $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test'], $users);
-        $testableUser = $this->makeUser(['username' => 'bob', 'email' => 'bob@example.test'], $users);
+        $this->makeUser(['username' => 'user', 'email' => 'user@example.test'], $users);
+        $testableUser = $this->makeUser(['username' => 'another-user', 'email' => 'another-user@example.test'], $users);
 
-        $this->assertSame($testableUser, $users->find(fn(User $user): bool => $user->email() === 'bob@example.test'));
-        $this->assertNull($users->find(fn(User $user): bool => $user->email() === 'carol@example.test'));
+        $this->assertSame($testableUser, $users->find(fn(User $user): bool => $user->email() === 'another-user@example.test'));
+        $this->assertNull($users->find(fn(User $user): bool => $user->email() === 'third-user@example.test'));
     }
 }

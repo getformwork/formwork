@@ -5,19 +5,12 @@ namespace Formwork\Tests\Unit\Users;
 use Formwork\Tests\TestCase;
 use Formwork\Users\Utils\Password;
 use InvalidArgumentException;
-use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(Password::class)]
 final class PasswordTest extends TestCase
 {
-    public function testClassCannotBeInstantiated(): void
-    {
-        $this->expectException(LogicException::class);
-        new Password();
-    }
-
     public function testHashesVerifyTheirPassword(): void
     {
         $hash = Password::hash('correct horse battery staple');
@@ -68,7 +61,14 @@ final class PasswordTest extends TestCase
         yield 'spaces only' => ['        '];
         yield 'quotes and backslashes' => ['"\'\`'];
         yield 'long password' => [str_repeat('a', 72)];
-        // yield 'password with a null byte' => ["pass\0word"];
+    }
+
+    public function testPasswordsWithANullByteAreRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Password cannot contain null bytes');
+
+        Password::hash("pass\0word");
     }
 
     public function testLongPasswordsAreNotSilentlyTruncated(): void

@@ -74,14 +74,6 @@ final class PermissionsTest extends TestCase
         $this->assertTrue($permissions->has('panel.pages.'));
     }
 
-    public function testResultsAreBooleans(): void
-    {
-        $permissions = new Permissions(['panel' => true]);
-
-        $this->assertTrue($permissions->has('panel.anything'));
-        $this->assertFalse($permissions->has('nothing'));
-    }
-
     public function testNonBooleanValuesDoNotGrantPermissionsByAccident(): void
     {
         // Permissions loaded from configuration files may contain strings

@@ -9,6 +9,7 @@ use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Authentication\RateLimiter;
 use Formwork\Http\Request;
 use Formwork\Log\Registry;
+use Formwork\Parsers\Yaml;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Authentication\Fixtures\InMemorySessionFixture;
 use Formwork\Tests\Unit\Authentication\Fixtures\NativeFunctionsFixture;
@@ -58,8 +59,8 @@ final class AuthenticatorTest extends TestCase
         $this->session = new InMemorySessionFixture();
         $this->users = $this->users();
         $this->testUsers = array_map(fn(array $data): TestableUserFixture => $this->makeUser($data, $this->users), [
-            'alice' => ['username' => 'alice', 'email' => 'alice@example.test', 'role' => 'admin', 'hash' => self::hashPassword('correct-password')],
-            'bob'   => ['username' => 'bob', 'email' => 'bob@example.test', 'role' => 'editor', 'hash' => self::hashPassword('bobs-password')],
+            'user'         => ['username' => 'user', 'email' => 'user@example.test', 'role' => 'admin', 'hash' => self::hashPassword('correct-password')],
+            'another-user' => ['username' => 'another-user', 'email' => 'another-user@example.test', 'role' => 'editor', 'hash' => self::hashPassword('another-users-password')],
         ]);
     }
 
@@ -71,28 +72,28 @@ final class AuthenticatorTest extends TestCase
 
     public function testUsersCanLogInWithTheirUsername(): void
     {
-        $user = $this->authenticator()->login('alice', 'correct-password');
+        $user = $this->authenticator()->login('user', 'correct-password');
 
-        $this->assertSame($this->testUsers['alice'], $user);
+        $this->assertSame($this->testUsers['user'], $user);
     }
 
     public function testUsersCanLogInWithTheirEmail(): void
     {
-        $user = $this->authenticator()->login('alice@example.test', 'correct-password');
+        $user = $this->authenticator()->login('user@example.test', 'correct-password');
 
-        $this->assertSame($this->testUsers['alice'], $user);
+        $this->assertSame($this->testUsers['user'], $user);
     }
 
     public function testLoginStoresTheUsernameInTheSession(): void
     {
-        $this->authenticator()->login('alice@example.test', 'correct-password');
+        $this->authenticator()->login('user@example.test', 'correct-password');
 
-        $this->assertSame('alice', $this->session->get(Authenticator::SESSION_LOGGED_USER_KEY));
+        $this->assertSame('user', $this->session->get(Authenticator::SESSION_LOGGED_USER_KEY));
     }
 
     public function testLoginRegeneratesTheSessionToPreventFixation(): void
     {
-        $this->authenticator()->login('alice', 'correct-password');
+        $this->authenticator()->login('user', 'correct-password');
 
         $this->assertSame(1, $this->session->regenerations);
     }
@@ -101,21 +102,21 @@ final class AuthenticatorTest extends TestCase
     {
         $before = time();
 
-        $this->authenticator()->login('alice', 'correct-password');
+        $this->authenticator()->login('user', 'correct-password');
 
-        $this->assertGreaterThanOrEqual($before, $this->testUsers['alice']->data()['lastAccess']);
-        $this->assertFileExists($this->accountsPath . '/alice.yaml');
+        $this->assertGreaterThanOrEqual($before, $this->testUsers['user']->data()['lastAccess']);
+        $this->assertGreaterThanOrEqual($before, Yaml::parseFile($this->accountsPath . '/user.yaml')['lastAccess'] ?? 0);
     }
 
     public function testLoginResetsTheFailedAttempts(): void
     {
         $authenticator = $this->authenticator();
 
-        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('alice', 'wrong'));
+        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('user', 'wrong'));
 
         $this->assertSame(1, $this->attempts());
 
-        $authenticator->login('alice', 'correct-password');
+        $authenticator->login('user', 'correct-password');
 
         $this->assertSame(0, $this->attempts());
     }
@@ -123,13 +124,13 @@ final class AuthenticatorTest extends TestCase
     public function testWrongPasswordsAreRejected(): void
     {
         $this->expectException(AuthenticationFailedException::class);
-        $this->expectExceptionMessage('Authentication failed for "alice"');
-        $this->authenticator()->login('alice', 'wrong-password');
+        $this->expectExceptionMessage('Authentication failed for "user"');
+        $this->authenticator()->login('user', 'wrong-password');
     }
 
     public function testFailedLoginsDoNotStartASession(): void
     {
-        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
+        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('user', 'wrong-password'));
 
         $this->assertFalse($this->session->has(Authenticator::SESSION_LOGGED_USER_KEY));
         $this->assertSame(0, $this->session->regenerations);
@@ -145,7 +146,7 @@ final class AuthenticatorTest extends TestCase
     public function testPasswordsOfOtherUsersAreRejected(): void
     {
         $this->expectException(AuthenticationFailedException::class);
-        $this->authenticator()->login('alice', 'bobs-password');
+        $this->authenticator()->login('user', 'another-users-password');
     }
 
     #[RunInSeparateProcess]
@@ -155,27 +156,27 @@ final class AuthenticatorTest extends TestCase
 
         $start = microtime(true);
 
-        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('alice', 'wrong-password'));
+        $this->captureException(AuthenticationFailedException::class, fn() => $this->authenticator()->login('user', 'wrong-password'));
 
         $this->assertGreaterThanOrEqual(0.45, microtime(true) - $start);
     }
 
     public function testUsersWithoutAPasswordCannotLogIn(): void
     {
-        $this->makeUser(['username' => 'carol', 'email' => 'carol@example.test', 'role' => 'editor'], $this->users);
+        $this->makeUser(['username' => 'editor', 'email' => 'editor@example.test', 'role' => 'editor'], $this->users);
 
         $this->expectException(AuthenticationFailedException::class);
-        $this->authenticator()->login('carol', 'anything');
+        $this->authenticator()->login('editor', 'anything');
     }
 
     public function testLoginAttemptsBeyondTheLimitAreRejectedEvenWithTheRightPassword(): void
     {
         $authenticator = $this->authenticator(limit: 1);
 
-        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('alice', 'wrong'));
+        $this->captureException(AuthenticationFailedException::class, static fn() => $authenticator->login('user', 'wrong'));
 
         $this->expectException(RateLimitExceededException::class);
-        $authenticator->login('alice', 'correct-password');
+        $authenticator->login('user', 'correct-password');
     }
 
     public function testNobodyIsLoggedInInitially(): void
@@ -189,20 +190,20 @@ final class AuthenticatorTest extends TestCase
     public function testLoggedInUsersAreRecognized(): void
     {
         $authenticator = $this->authenticator();
-        $authenticator->login('alice', 'correct-password');
+        $authenticator->login('user', 'correct-password');
 
         $this->assertTrue($authenticator->isLoggedIn());
-        $this->assertSame($this->testUsers['alice'], $authenticator->getUser());
+        $this->assertSame($this->testUsers['user'], $authenticator->getUser());
     }
 
     public function testLoggedInStateComesFromTheSession(): void
     {
-        $this->session->set(Authenticator::SESSION_LOGGED_USER_KEY, 'bob');
+        $this->session->set(Authenticator::SESSION_LOGGED_USER_KEY, 'another-user');
 
         $authenticator = $this->authenticator();
 
         $this->assertTrue($authenticator->isLoggedIn());
-        $this->assertSame('bob', $authenticator->getUser()?->username());
+        $this->assertSame('another-user', $authenticator->getUser()?->username());
     }
 
     public function testSessionsOfDeletedUsersAreNotLoggedIn(): void
@@ -218,7 +219,7 @@ final class AuthenticatorTest extends TestCase
     public function testLogoutRemovesTheUserFromTheSession(): void
     {
         $authenticator = $this->authenticator();
-        $authenticator->login('alice', 'correct-password');
+        $authenticator->login('user', 'correct-password');
 
         $authenticator->logout();
 
@@ -230,7 +231,7 @@ final class AuthenticatorTest extends TestCase
     public function testLogoutRegeneratesTheSession(): void
     {
         $authenticator = $this->authenticator();
-        $authenticator->login('alice', 'correct-password');
+        $authenticator->login('user', 'correct-password');
 
         $authenticator->logout();
 
@@ -246,7 +247,7 @@ final class AuthenticatorTest extends TestCase
     public function testLoggingOutTwiceIsReported(): void
     {
         $authenticator = $this->authenticator();
-        $authenticator->login('alice', 'correct-password');
+        $authenticator->login('user', 'correct-password');
         $authenticator->logout();
 
         $this->expectException(UserNotLoggedException::class);

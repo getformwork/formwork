@@ -10,7 +10,6 @@ use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
-use Formwork\Users\User;
 use Formwork\Users\UserFactory;
 use Formwork\Users\Users;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -30,11 +29,10 @@ final class UserFactoryTest extends TestCase
 
     public function testFactoryBuildsUsersWithTheGivenData(): void
     {
-        $user = $this->factory()->make(['username' => 'alice', 'fullname' => 'Alice Smith']);
+        $user = $this->factory()->make(['username' => 'user', 'fullname' => 'Test User']);
 
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame('alice', $user->username());
-        $this->assertSame('Alice Smith', $user->fullname());
+        $this->assertSame('user', $user->username());
+        $this->assertSame('Test User', $user->fullname());
     }
 
     public function testFactoryBuildsEmptyUsers(): void
@@ -49,13 +47,13 @@ final class UserFactoryTest extends TestCase
     {
         $factory = $this->factory();
 
-        $this->assertNotSame($factory->make(['username' => 'alice']), $factory->make(['username' => 'alice']));
+        $this->assertNotSame($factory->make(['username' => 'user']), $factory->make(['username' => 'user']));
     }
 
     public function testUsersShareTheCollectionOfTheContainer(): void
     {
         $users = $this->users();
-        $user = $this->factory($users)->make(['username' => 'alice', 'role' => 'admin']);
+        $user = $this->factory($users)->make(['username' => 'user', 'role' => 'admin']);
 
         $this->assertSame('admin', $user->role()->id());
         $this->assertTrue($user->isAdmin());

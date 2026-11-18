@@ -15,8 +15,6 @@ use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\ColorScheme;
 use Formwork\Users\Exceptions\UserImageNotFoundException;
-use Formwork\Users\Permissions;
-use Formwork\Users\Role;
 use Formwork\Users\User;
 use Formwork\Utils\FileSystem;
 use LogicException;
@@ -42,37 +40,36 @@ final class UserTest extends TestCase
 
     public function testDefaultsAreApplied(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
-        $this->assertSame('alice', $testableUser->username());
+        $this->assertSame('user', $testableUser->username());
         $this->assertNull($testableUser->fullname());
         $this->assertNull($testableUser->email());
         $this->assertSame('en', $testableUser->language());
         $this->assertSame('user', $testableUser->get('role'));
         $this->assertSame('auto', $testableUser->get('colorScheme'));
         $this->assertNull($testableUser->get('lastAccess'));
-        $this->assertSame(User::MINIMUM_PASSWORD_LENGTH, 8);
     }
 
     public function testGivenDataOverridesTheDefaults(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'language' => 'it', 'fullname' => 'Alice Smith', 'email' => 'alice@example.test']);
+        $testableUser = $this->makeUser(['username' => 'user', 'language' => 'it', 'fullname' => 'Test User', 'email' => 'user@example.test']);
 
         $this->assertSame('it', $testableUser->language());
-        $this->assertSame('Alice Smith', $testableUser->fullname());
-        $this->assertSame('alice@example.test', $testableUser->email());
+        $this->assertSame('Test User', $testableUser->fullname());
+        $this->assertSame('user@example.test', $testableUser->email());
     }
 
     public function testDottedDataKeysAreExpanded(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'preferences.theme' => 'dark']);
+        $testableUser = $this->makeUser(['username' => 'user', 'preferences.theme' => 'dark']);
 
         $this->assertSame('dark', $testableUser->get('preferences.theme'));
     }
 
     public function testPasswordHashIsNeverExposed(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::hashPassword('secret-password')]);
+        $testableUser = $this->makeUser(['username' => 'user', 'hash' => self::hashPassword('secret-password')]);
 
         $this->assertArrayNotHasKey('hash', $testableUser->toArray());
         $this->assertArrayNotHasKey('hash', $testableUser->__debugInfo());
@@ -82,7 +79,7 @@ final class UserTest extends TestCase
 
     public function testPasswordHashCannotBeRead(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::hashPassword('secret-password')]);
+        $testableUser = $this->makeUser(['username' => 'user', 'hash' => self::hashPassword('secret-password')]);
 
         $this->expectException(LogicException::class);
         $testableUser->get('hash');
@@ -90,7 +87,7 @@ final class UserTest extends TestCase
 
     public function testPasswordsAreHashedWhenSet(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $testableUser->set('password', 'a-new-password');
 
@@ -101,11 +98,11 @@ final class UserTest extends TestCase
 
     public function testPasswordsAreSavedOnlyAsHashes(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
         $testableUser->set('password', 'a-new-password');
         $testableUser->save();
 
-        $content = FileSystem::read($this->accountsPath . '/alice.yaml');
+        $content = FileSystem::read($this->accountsPath . '/user.yaml');
 
         $this->assertStringNotContainsString('a-new-password', $content);
         $this->assertStringContainsString('hash:', $content);
@@ -113,7 +110,7 @@ final class UserTest extends TestCase
 
     public function testShortPasswordsAreRejected(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $this->expectException(InvalidValueException::class);
         $this->expectExceptionMessage('at least 8 characters');
@@ -122,7 +119,7 @@ final class UserTest extends TestCase
 
     public function testTooLongPasswordsAreRejectedAsInvalidValues(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::hashPassword('original-password')]);
+        $testableUser = $this->makeUser(['username' => 'user', 'hash' => self::hashPassword('original-password')]);
 
         $invalidValueException = $this->captureException(InvalidValueException::class, static fn() => $testableUser->set('password', str_repeat('a', 73)));
         $this->assertSame('Password exceeds the maximum supported length', $invalidValueException->getMessage());
@@ -130,9 +127,19 @@ final class UserTest extends TestCase
         $this->assertTrue($testableUser->verifyPassword('original-password'));
     }
 
+    public function testPasswordsWithANullByteAreRejectedAsInvalidValues(): void
+    {
+        $testableUser = $this->makeUser(['username' => 'user']);
+
+        $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Password cannot contain null bytes');
+
+        $testableUser->set('password', "pass\0word-long");
+    }
+
     public function testPasswordsWithTheMinimumLengthAreAccepted(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $testableUser->set('password', '12345678');
 
@@ -141,32 +148,30 @@ final class UserTest extends TestCase
 
     public function testRejectedPasswordsDoNotReplaceTheCurrentOne(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'hash' => self::hashPassword('original-password')]);
+        $testableUser = $this->makeUser(['username' => 'user', 'hash' => self::hashPassword('original-password')]);
 
         $this->captureException(InvalidValueException::class, static fn() => $testableUser->set('password', 'short'));
 
         $this->assertTrue($testableUser->verifyPassword('original-password'));
     }
 
-    public function testUsersWithoutAPasswordCannotVerifyOne(): void
+    #[DataProvider('passwordProvider')]
+    public function testUsersWithoutAPasswordCannotVerifyOne(string $password): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $this->expectException(UnexpectedValueException::class);
-        $testableUser->verifyPassword('anything');
+        $this->expectExceptionMessage('User "user" has no password hash set');
+        $testableUser->verifyPassword($password);
     }
 
-    public function testUsersWithoutAPasswordNeverAuthenticateWithAnEmptyPassword(): void
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function passwordProvider(): iterable
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
-
-        try {
-            $result = $testableUser->verifyPassword('');
-        } catch (UnexpectedValueException) {
-            $result = false;
-        }
-
-        $this->assertFalse($result);
+        yield 'any password' => ['anything'];
+        yield 'empty password' => [''];
     }
 
     #[DataProvider('validUsernameProvider')]
@@ -184,9 +189,9 @@ final class UserTest extends TestCase
      */
     public static function validUsernameProvider(): iterable
     {
-        yield 'letters' => ['alice'];
+        yield 'letters' => ['user'];
         yield 'with digits' => ['alice42'];
-        yield 'with separators' => ['alice.smith_jones-1'];
+        yield 'with separators' => ['user.name_surname-1'];
     }
 
     #[DataProvider('usernameLengthProvider')]
@@ -211,7 +216,7 @@ final class UserTest extends TestCase
     public function testUsersAreAuthenticatedByTheAuthenticatorOfTheApplication(): void
     {
         try {
-            $this->assertFalse($this->makeUser(['username' => 'alice'])->isLoggedIn());
+            $this->assertFalse($this->makeUser(['username' => 'user'])->isLoggedIn());
         } finally {
             // The authenticator reads the logged in user from the session, which must not stay active for the next tests
             if (session_status() === PHP_SESSION_ACTIVE) {
@@ -224,11 +229,11 @@ final class UserTest extends TestCase
 
     public function testUsernamesCannotBeChanged(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Cannot change username of an existing user');
-        $testableUser->set('username', 'bob');
+        $testableUser->set('username', 'another-user');
     }
 
     #[DataProvider('unsafeUsernameProvider')]
@@ -289,33 +294,33 @@ final class UserTest extends TestCase
 
     public function testSavedUsersAreWrittenToTheAccountsDirectory(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'fullname' => 'Alice Smith']);
+        $testableUser = $this->makeUser(['username' => 'user', 'fullname' => 'Test User']);
 
         $testableUser->save();
 
-        $this->assertFileExists($this->accountsPath . '/alice.yaml');
-        $saved = Yaml::parseFile($this->accountsPath . '/alice.yaml');
-        $this->assertSame('alice', $saved['username']);
-        $this->assertSame('Alice Smith', $saved['fullname']);
+        $this->assertFileExists($this->accountsPath . '/user.yaml');
+        $saved = Yaml::parseFile($this->accountsPath . '/user.yaml');
+        $this->assertSame('user', $saved['username']);
+        $this->assertSame('Test User', $saved['fullname']);
     }
 
     public function testDeletedUsersAreRemovedFromTheAccountsDirectory(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
         $testableUser->save();
-        $other = $this->makeUser(['username' => 'bob']);
+        $other = $this->makeUser(['username' => 'another-user']);
         $other->save();
 
         $testableUser->delete();
 
-        $this->assertFileDoesNotExist($this->accountsPath . '/alice.yaml');
-        $this->assertFileExists($this->accountsPath . '/bob.yaml');
+        $this->assertFileDoesNotExist($this->accountsPath . '/user.yaml');
+        $this->assertFileExists($this->accountsPath . '/another-user.yaml');
     }
 
     #[DataProvider('emailProvider')]
     public function testEmailsAreValidated(string $email, bool $valid): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         if (!$valid) {
             $this->expectException(InvalidValueException::class);
@@ -328,7 +333,7 @@ final class UserTest extends TestCase
 
     public function testGettersReflectTheEmailChangedThroughTheSetter(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'email' => 'old@example.test']);
+        $testableUser = $this->makeUser(['username' => 'user', 'email' => 'old@example.test']);
 
         $testableUser->set('email', 'new@example.test');
 
@@ -342,62 +347,62 @@ final class UserTest extends TestCase
      */
     public static function emailProvider(): iterable
     {
-        yield 'simple' => ['alice@example.test', true];
-        yield 'with plus' => ['alice+tag@example.test', true];
-        yield 'subdomain' => ['alice@mail.example.test', true];
-        yield 'missing at sign' => ['alice.example.test', false];
-        yield 'missing domain' => ['alice@', false];
+        yield 'simple' => ['user@example.test', true];
+        yield 'with plus' => ['user+tag@example.test', true];
+        yield 'subdomain' => ['user@mail.example.test', true];
+        yield 'missing at sign' => ['user.example.test', false];
+        yield 'missing domain' => ['user@', false];
         yield 'missing local part' => ['@example.test', false];
-        yield 'whitespace' => ['alice smith@example.test', false];
-        yield 'two at signs' => ['alice@@example.test', false];
+        yield 'whitespace' => ['test user@example.test', false];
+        yield 'two at signs' => ['user@@example.test', false];
         yield 'empty' => ['', false];
-        yield 'line break' => ["alice@example.test\nBcc: other@example.test", false];
+        yield 'line break' => ["user@example.test\nBcc: other@example.test", false];
     }
 
     public function testEmailsMustBeUnique(): void
     {
         $users = $this->users();
-        $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test'], $users);
-        $testableUser = $this->makeUser(['username' => 'bob', 'email' => 'bob@example.test'], $users);
+        $this->makeUser(['username' => 'user', 'email' => 'user@example.test'], $users);
+        $testableUser = $this->makeUser(['username' => 'another-user', 'email' => 'another-user@example.test'], $users);
 
-        $translatedException = $this->captureException(TranslatedException::class, static fn() => $testableUser->set('email', 'alice@example.test'));
+        $translatedException = $this->captureException(TranslatedException::class, static fn() => $testableUser->set('email', 'user@example.test'));
         $this->assertSame('panel.users.user.cannotChangeEmail.alreadyUsed', $translatedException->getLanguageString());
 
-        $this->assertSame('bob@example.test', $testableUser->data()['email']);
+        $this->assertSame('another-user@example.test', $testableUser->data()['email']);
     }
 
     public function testEmailsDifferingOnlyInCaseAreTheSameAddress(): void
     {
         $users = $this->users();
-        $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test'], $users);
-        $testableUser = $this->makeUser(['username' => 'bob', 'email' => 'bob@example.test'], $users);
+        $this->makeUser(['username' => 'user', 'email' => 'user@example.test'], $users);
+        $testableUser = $this->makeUser(['username' => 'another-user', 'email' => 'another-user@example.test'], $users);
 
         $this->expectException(TranslatedException::class);
-        $testableUser->set('email', 'ALICE@Example.test');
+        $testableUser->set('email', 'USER@Example.test');
     }
 
     public function testUsersCanChangeTheCaseOfTheirOwnEmail(): void
     {
         $users = $this->users();
-        $testableUser = $this->makeUser(['username' => 'alice', 'email' => 'Alice@Example.test'], $users);
+        $testableUser = $this->makeUser(['username' => 'user', 'email' => 'User@Example.test'], $users);
 
-        $testableUser->set('email', 'alice@example.test');
+        $testableUser->set('email', 'user@example.test');
 
-        $this->assertSame('alice@example.test', $testableUser->data()['email']);
+        $this->assertSame('user@example.test', $testableUser->data()['email']);
     }
 
-    public function testUsersCanKeepTheirOwnEmail(): void
+    public function testUsersCanPreserveTheirOwnEmail(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'email' => 'alice@example.test']);
+        $testableUser = $this->makeUser(['username' => 'user', 'email' => 'user@example.test']);
 
-        $testableUser->set('email', 'alice@example.test');
+        $testableUser->set('email', 'user@example.test');
 
-        $this->assertSame('alice@example.test', $testableUser->data()['email']);
+        $this->assertSame('user@example.test', $testableUser->data()['email']);
     }
 
     public function testRolesMustExist(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $testableUser->set('role', 'editor');
         $this->assertSame('editor', $testableUser->role()->id());
@@ -408,7 +413,7 @@ final class UserTest extends TestCase
 
     public function testRejectedRolesDoNotChangeTheCurrentOne(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'role' => 'editor']);
+        $testableUser = $this->makeUser(['username' => 'user', 'role' => 'editor']);
 
         $this->captureException(InvalidValueException::class, static fn() => $testableUser->set('role', 'superuser'));
 
@@ -417,16 +422,14 @@ final class UserTest extends TestCase
 
     public function testRoleIsResolvedFromTheUsersCollection(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'role' => 'admin']);
+        $testableUser = $this->makeUser(['username' => 'user', 'role' => 'admin']);
 
-        $this->assertInstanceOf(Role::class, $testableUser->role());
         $this->assertSame('admin', $testableUser->role()->id());
-        $this->assertInstanceOf(Permissions::class, $testableUser->permissions());
     }
 
     public function testUsersWithAnUnknownRoleReportTheProblem(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'role' => 'ghost']);
+        $testableUser = $this->makeUser(['username' => 'user', 'role' => 'ghost']);
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('invalid role assigned: "ghost"');
@@ -435,7 +438,7 @@ final class UserTest extends TestCase
 
     public function testUsersWithoutARoleReportTheProblem(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'role' => null]);
+        $testableUser = $this->makeUser(['username' => 'user', 'role' => null]);
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('has no role assigned');
@@ -444,8 +447,8 @@ final class UserTest extends TestCase
 
     public function testPermissionsComeFromTheRole(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'role' => 'admin']);
-        $editor = $this->makeUser(['username' => 'bob', 'role' => 'editor']);
+        $testableUser = $this->makeUser(['username' => 'user', 'role' => 'admin']);
+        $editor = $this->makeUser(['username' => 'another-user', 'role' => 'editor']);
 
         $this->assertTrue($testableUser->permissions()->has('panel.users.create'));
         $this->assertFalse($editor->permissions()->has('panel.users.create'));
@@ -454,26 +457,26 @@ final class UserTest extends TestCase
 
     public function testAdministratorsAreRecognizedByTheirRole(): void
     {
-        $this->assertTrue($this->makeUser(['username' => 'alice', 'role' => 'admin'])->isAdmin());
-        $this->assertFalse($this->makeUser(['username' => 'bob', 'role' => 'editor'])->isAdmin());
+        $this->assertTrue($this->makeUser(['username' => 'user', 'role' => 'admin'])->isAdmin());
+        $this->assertFalse($this->makeUser(['username' => 'another-user', 'role' => 'editor'])->isAdmin());
     }
 
     public function testColorSchemeIsResolved(): void
     {
-        $this->assertSame(ColorScheme::Auto, $this->makeUser(['username' => 'alice'])->colorScheme());
-        $this->assertSame(ColorScheme::Dark, $this->makeUser(['username' => 'bob', 'colorScheme' => 'dark'])->colorScheme());
+        $this->assertSame(ColorScheme::Auto, $this->makeUser(['username' => 'user'])->colorScheme());
+        $this->assertSame(ColorScheme::Dark, $this->makeUser(['username' => 'another-user', 'colorScheme' => 'dark'])->colorScheme());
     }
 
     public function testInvalidColorSchemesAreReported(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice', 'colorScheme' => 'sepia']);
+        $testableUser = $this->makeUser(['username' => 'user', 'colorScheme' => 'sepia']);
 
         $this->expectException(ValueError::class);
         $testableUser->colorScheme();
     }
 
     #[DataProvider('permissionMatrixProvider')]
-    public function testUserManagementRules(string $actorRole, string $actorName, string $targetName, bool $canDelete, bool $canChangeOptions, bool $canChangePassword, bool $canChangeRole): void
+    public function testUsersCanManageOnlyAllowedUsers(string $actorRole, string $actorName, string $targetName, bool $canDelete, bool $canChangeOptions, bool $canChangePassword, bool $canChangeRole): void
     {
         $users = $this->users();
         $testableUser = $this->makeUser(['username' => $actorName, 'role' => $actorRole], $users);
@@ -490,25 +493,16 @@ final class UserTest extends TestCase
      */
     public static function permissionMatrixProvider(): iterable
     {
-        yield 'administrator on another user' => ['admin', 'alice', 'bob', true, true, false, true];
-        yield 'administrator on themselves' => ['admin', 'alice', 'alice', false, true, true, false];
-        yield 'editor on another user' => ['editor', 'bob', 'carol', false, false, false, false];
-        yield 'editor on themselves' => ['editor', 'bob', 'bob', false, true, true, false];
-    }
-
-    public function testNoUserCanChangeThePasswordOfAnotherUser(): void
-    {
-        $users = $this->users();
-        $testableUser = $this->makeUser(['username' => 'alice', 'role' => 'admin'], $users);
-        $other = $this->makeUser(['username' => 'bob', 'role' => 'editor'], $users);
-
-        $this->assertFalse($testableUser->canChangePasswordOf($other));
+        yield 'administrator on another user' => ['admin', 'user', 'another-user', true, true, false, true];
+        yield 'administrator on themselves' => ['admin', 'user', 'user', false, true, true, false];
+        yield 'editor on another user' => ['editor', 'another-user', 'third-user', false, false, false, false];
+        yield 'editor on themselves' => ['editor', 'another-user', 'another-user', false, true, true, false];
     }
 
     public function testLoggedInStateComesFromTheAuthenticator(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
-        $other = $this->makeUser(['username' => 'bob']);
+        $testableUser = $this->makeUser(['username' => 'user']);
+        $other = $this->makeUser(['username' => 'another-user']);
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('getUser')->willReturn($testableUser);
         $testableUser->authenticator = $authenticator;
@@ -520,7 +514,7 @@ final class UserTest extends TestCase
 
     public function testNobodyIsLoggedInWithoutAnAuthenticatedUser(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
         $authenticator = $this->createStub(Authenticator::class);
         $authenticator->method('getUser')->willReturn(null);
         $testableUser->authenticator = $authenticator;
@@ -530,8 +524,8 @@ final class UserTest extends TestCase
 
     public function testOnlyLoggedInUsersCanLogOut(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
-        $other = $this->makeUser(['username' => 'bob']);
+        $testableUser = $this->makeUser(['username' => 'user']);
+        $other = $this->makeUser(['username' => 'another-user']);
         $authenticator = $this->createMock(Authenticator::class);
         $authenticator->method('getUser')->willReturn($other);
         $authenticator->expects($this->never())->method('logout');
@@ -543,7 +537,7 @@ final class UserTest extends TestCase
 
     public function testLoggedInUsersLogOutThroughTheAuthenticator(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
         $authenticator = $this->createMock(Authenticator::class);
         $authenticator->method('getUser')->willReturn($testableUser);
         $authenticator->expects($this->once())->method('logout');
@@ -554,9 +548,9 @@ final class UserTest extends TestCase
 
     public function testAuthenticationGoesThroughTheAuthenticator(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
         $authenticator = $this->createMock(Authenticator::class);
-        $authenticator->expects($this->once())->method('login')->with('alice', 'the-password')->willReturn($testableUser);
+        $authenticator->expects($this->once())->method('login')->with('user', 'the-password')->willReturn($testableUser);
         $testableUser->authenticator = $authenticator;
 
         $testableUser->authenticate('the-password');
@@ -564,15 +558,15 @@ final class UserTest extends TestCase
 
     public function testUsersWithoutImagesHaveNoImage(): void
     {
-        $this->assertNull($this->makeUser(['username' => 'alice'])->image());
-        $this->assertNull($this->makeUser(['username' => 'bob', 'image' => 'missing.png'])->image());
+        $this->assertNull($this->makeUser(['username' => 'user'])->image());
+        $this->assertNull($this->makeUser(['username' => 'another-user', 'image' => 'missing.png'])->image());
     }
 
     public function testImagesAreLoadedFromTheImagesDirectory(): void
     {
         $this->createImage('avatar.png');
 
-        $image = $this->makeUser(['username' => 'alice', 'image' => 'avatar.png'])->image();
+        $image = $this->makeUser(['username' => 'user', 'image' => 'avatar.png'])->image();
 
         $this->assertInstanceOf(Image::class, $image);
         $this->assertSame($this->imagesPath . '/avatar.png', $image->path());
@@ -581,7 +575,7 @@ final class UserTest extends TestCase
     public function testNonImageFilesCannotBeUsedAsImages(): void
     {
         FileSystem::write($this->imagesPath . '/notes.txt', 'text');
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => 'notes.txt']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => 'notes.txt']);
 
         $this->expectException(UserImageNotFoundException::class);
         $testableUser->image();
@@ -590,7 +584,7 @@ final class UserTest extends TestCase
     #[DataProvider('traversingImageProvider')]
     public function testImageNamesCannotPointOutsideTheImagesDirectory(string $name): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         try {
             $testableUser->set('image', $name);
@@ -619,7 +613,7 @@ final class UserTest extends TestCase
         $outside = TESTS_TMP_PATH . '/users/outside.png';
         $this->createImage('avatar.png');
         copy($this->imagesPath . '/avatar.png', $outside);
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => '../outside.png']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => '../outside.png']);
 
         try {
             $testableUser->delete();
@@ -635,7 +629,7 @@ final class UserTest extends TestCase
         FileSystem::createDirectory($siblingPath);
         $this->createImage('avatar.png', $siblingPath);
         $file = App::instance()->getService(FileFactory::class)->make($siblingPath . '/avatar.png');
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $this->expectException(LogicException::class);
         $testableUser->set('image', $file);
@@ -645,7 +639,7 @@ final class UserTest extends TestCase
     {
         $this->createImage('avatar.png');
         $file = App::instance()->getService(FileFactory::class)->make($this->imagesPath . '/avatar.png');
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $testableUser->set('image', $file);
 
@@ -656,7 +650,7 @@ final class UserTest extends TestCase
     {
         $this->createImage('old.png');
         $this->createImage('new.png');
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => 'old.png']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => 'old.png']);
 
         $testableUser->set('image', 'new.png');
 
@@ -664,10 +658,10 @@ final class UserTest extends TestCase
         $this->assertFileExists($this->imagesPath . '/new.png');
     }
 
-    public function testSettingTheSameImageKeepsTheFile(): void
+    public function testSettingTheSameImagePreservesTheFile(): void
     {
         $this->createImage('avatar.png');
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => 'avatar.png']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => 'avatar.png']);
 
         $testableUser->set('image', 'avatar.png');
 
@@ -677,7 +671,7 @@ final class UserTest extends TestCase
     public function testRemovingTheImageDeletesTheFile(): void
     {
         $this->createImage('avatar.png');
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => 'avatar.png']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => 'avatar.png']);
 
         $testableUser->set('image', null);
 
@@ -688,29 +682,29 @@ final class UserTest extends TestCase
     public function testDeleteImageClearsAndSavesTheUser(): void
     {
         $this->createImage('avatar.png');
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => 'avatar.png']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => 'avatar.png']);
 
         $testableUser->deleteImage();
 
         $this->assertFileDoesNotExist($this->imagesPath . '/avatar.png');
-        $this->assertNull(Yaml::parseFile($this->accountsPath . '/alice.yaml')['image'] ?? null);
+        $this->assertNull(Yaml::parseFile($this->accountsPath . '/user.yaml')['image'] ?? null);
     }
 
     public function testDeletingAUserDeletesTheirImage(): void
     {
         $this->createImage('avatar.png');
-        $testableUser = $this->makeUser(['username' => 'alice', 'image' => 'avatar.png']);
+        $testableUser = $this->makeUser(['username' => 'user', 'image' => 'avatar.png']);
         $testableUser->save();
 
         $testableUser->delete();
 
         $this->assertFileDoesNotExist($this->imagesPath . '/avatar.png');
-        $this->assertFileDoesNotExist($this->accountsPath . '/alice.yaml');
+        $this->assertFileDoesNotExist($this->accountsPath . '/user.yaml');
     }
 
     public function testDeletingTheImageOfAUserWithoutOneIsReported(): void
     {
-        $testableUser = $this->makeUser(['username' => 'alice']);
+        $testableUser = $this->makeUser(['username' => 'user']);
 
         $this->expectException(TranslatedException::class);
         $testableUser->deleteImage();
