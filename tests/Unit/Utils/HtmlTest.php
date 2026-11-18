@@ -11,14 +11,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(Html::class)]
 final class HtmlTest extends TestCase
 {
-    public function testClasses(): void
+    public function testClassesIncludeOnlyTheEnabledOnes(): void
     {
         $this->assertSame('class1 class2', Html::classes(['class1', 'class2']));
         $this->assertSame('class1 class3', Html::classes(['class1' => true, 'class2' => false, 'class3' => true]));
         $this->assertSame('', Html::classes([]));
     }
 
-    public function testAttribute(): void
+    public function testAttributeFormatsTheValueByType(): void
     {
         $this->assertSame('disabled', Html::attribute('disabled', true));
         $this->assertSame('data-value="123"', Html::attribute('data-value', 123));
@@ -26,7 +26,7 @@ final class HtmlTest extends TestCase
         $this->assertSame('', Html::attribute('hidden', false));
     }
 
-    public function testAttributes(): void
+    public function testAttributesSkipFalseValues(): void
     {
         $attributes = [
             'disabled'   => true,
@@ -37,13 +37,13 @@ final class HtmlTest extends TestCase
         $this->assertSame('disabled data-value="123" data-list="item1 item2 item3"', Html::attributes($this->unchecked($attributes)));
     }
 
-    public function testTag(): void
+    public function testTagRendersElementsAndVoidElements(): void
     {
         $this->assertSame('<div class="container">Content</div>', Html::tag('div', ['class' => 'container'], 'Content'));
         $this->assertSame('<input type="text" disabled>', Html::tag('input', ['type' => 'text', 'disabled' => true]));
     }
 
-    public function testTagThrowsOnVoidWithContent(): void
+    public function testTagRejectsVoidElementsWithContent(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot set tag content, <img> is a void element');
@@ -64,7 +64,7 @@ final class HtmlTest extends TestCase
     }
 
     #[DataProvider('voidElementProvider')]
-    public function testIsVoid(string $tag, bool $expected): void
+    public function testIsVoidRecognizesVoidElements(string $tag, bool $expected): void
     {
         $this->assertSame($expected, Html::isVoid($tag));
     }

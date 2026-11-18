@@ -11,40 +11,40 @@ use UnexpectedValueException;
 #[CoversClass(Str::class)]
 final class StrTest extends TestCase
 {
-    public function testBefore(): void
+    public function testBeforeReturnsTheTextBeforeTheFirstOccurrence(): void
     {
         $this->assertSame('Hello', Str::before('Hello, world!', ','));
         $this->assertSame('Hello, world!', Str::before('Hello, world!', 'planet'));
         $this->assertSame('Hello, world!', Str::before('Hello, world!', ''));
     }
 
-    public function testBeforeLast(): void
+    public function testBeforeLastReturnsTheTextBeforeTheLastOccurrence(): void
     {
         $this->assertSame('Hello, world', Str::beforeLast('Hello, world, again!', ','));
         $this->assertSame('Hello, world, again!', Str::beforeLast('Hello, world, again!', 'planet'));
         $this->assertSame('Hello, world, again!', Str::beforeLast('Hello, world, again!', ''));
     }
 
-    public function testAfter(): void
+    public function testAfterReturnsTheTextAfterTheFirstOccurrence(): void
     {
         $this->assertSame(' world!', Str::after('Hello, world!', ','));
         $this->assertSame('Hello, world!', Str::after('Hello, world!', 'planet'));
         $this->assertSame('Hello, world!', Str::after('Hello, world!', ''));
     }
 
-    public function testAfterLast(): void
+    public function testAfterLastReturnsTheTextAfterTheLastOccurrence(): void
     {
         $this->assertSame(' again!', Str::afterLast('Hello, world, again!', ','));
         $this->assertSame('Hello, world, again!', Str::afterLast('Hello, world, again!', 'planet'));
         $this->assertSame('Hello, world, again!', Str::afterLast('Hello, world, again!', ''));
     }
 
-    public function testEscape(): void
+    public function testEscapeEncodesHtmlSpecialCharacters(): void
     {
         $this->assertSame('Hello &amp; welcome to &lt;Formwork&gt;!', Str::escape('Hello & welcome to <Formwork>!'));
     }
 
-    public function testEscapeAttr(): void
+    public function testEscapeAttrEncodesAmpersandsAndQuotes(): void
     {
         $this->assertSame('Hello &amp; welcome to <Formwork> &quot;Framework&quot;!', Str::escapeAttr('Hello & welcome to <Formwork> "Framework"!'));
     }
@@ -54,12 +54,12 @@ final class StrTest extends TestCase
         $this->assertSame('a &amp; b &lt;i&gt; &quot;q&quot; &#039;s&#039;', Str::escape('a &amp; b <i> "q" \'s\''));
     }
 
-    public function testRemoveTags(): void
+    public function testRemoveHtmlStripsTheTags(): void
     {
         $this->assertSame('Hello, welcome to Formwork!', Str::removeHtml('Hello, <b>welcome</b> to Formwork!'));
     }
 
-    public function testSlug(): void
+    public function testSlugsAreLowercaseAndTransliterated(): void
     {
         $this->assertSame('hello-world', Str::slug('Hello World!'));
         $this->assertSame('hello-world', Str::slug(' Hello  ~  World !'));
@@ -118,92 +118,102 @@ final class StrTest extends TestCase
         yield 'empty' => ['', ''];
     }
 
-    public function testAppend(): void
+    public function testAppendAddsASuffix(): void
     {
         $this->assertSame('Hello, world!!!', Str::append('Hello, world', '!!!'));
     }
 
-    public function testPrepend(): void
+    public function testPrependAddsAPrefix(): void
     {
         $this->assertSame('!!!Hello, world', Str::prepend('Hello, world', '!!!'));
     }
 
-    public function testWrap(): void
+    public function testWrapAddsTheSameTextOnBothSides(): void
     {
         $this->assertSame('**Hello, world**', Str::wrap('Hello, world', '**'));
     }
 
-    public function testRemoveStart(): void
+    public function testRemoveStartRemovesOnlyAMatchingPrefix(): void
     {
         $this->assertSame('world!', Str::removeStart('Hello, world!', 'Hello, '));
         $this->assertSame('Hello, world!', Str::removeStart('Hello, world!', 'world'));
     }
 
-    public function testRemoveEnd(): void
+    public function testRemoveEndRemovesOnlyAMatchingSuffix(): void
     {
         $this->assertSame('Hello, world', Str::removeEnd('Hello, world!', '!'));
         $this->assertSame('Hello, world!', Str::removeEnd('Hello, world!', 'Hello'));
     }
 
-    public function testDotToBrackets(): void
+    public function testDotNotationIsConvertedToBrackets(): void
     {
         $this->assertSame('array[key1][key2]', Str::dotNotationToBrackets('array.key1.key2'));
         $this->assertSame('array', Str::dotNotationToBrackets('array'));
     }
 
-    public function testInterpolate(): void
+    public function testInterpolateReplacesThePlaceholders(): void
     {
-        $this->assertSame('Hello, John Doe! Welcome to Formwork.', Str::interpolate('Hello, {{name}}! Welcome to {{platform}}.', ['name' => 'John Doe', 'platform' => 'Formwork']));
-        $this->assertSame('Hello, {{name}}! Welcome to {{platform}}.', Str::interpolate('Hello, \{{name}}! Welcome to \{{platform}}.', []));
+        $this->assertSame('Hello, Test User! Welcome to Formwork.', Str::interpolate('Hello, {{name}}! Welcome to {{platform}}.', ['name' => 'Test User', 'platform' => 'Formwork']));
     }
 
-    public function testInterpolateWithClosure(): void
+    public function testInterpolatePreservesEscapedSequencesEvenIfTheKeyIsDefined(): void
     {
-        $this->assertSame('Hello, John Doe! Welcome to platform.', Str::interpolate('Hello, {{name}}! Welcome to {{platform}}.', function ($key) {
+        $this->assertSame('Hello, {{name}}!', Str::interpolate('Hello, \{{name}}!', ['name' => 'Test User']));
+    }
+
+    public function testInterpolateLeavesUndefinedKeysUntouched(): void
+    {
+        $this->assertSame('Hello, Test User! Welcome to {{platform}}.', Str::interpolate('Hello, {{name}}! Welcome to {{platform}}.', ['name' => 'Test User']));
+    }
+
+    public function testInterpolateCanResolveThePlaceholdersWithACallback(): void
+    {
+        $this->assertSame('Hello, Test User! Welcome to platform.', Str::interpolate('Hello, {{name}}! Welcome to {{platform}}.', function ($key) {
             return match ($key) {
-                'name'  => 'John Doe',
+                'name'  => 'Test User',
                 default => $key,
             };
         }));
     }
 
-    public function testChunk(): void
+    public function testChunkSplitsTheTextEveryGivenLength(): void
     {
         $this->assertSame('Hel lo,  wo rld !', Str::chunk('Hello, world!', 3, ' '));
         $this->assertSame('Hello, world!', Str::chunk('Hello, world!', 20, ' '));
+        $this->assertSame('a-b-c', Str::chunk('abc', 1, '-'));
     }
 
-    public function testChunkThrowsOnNonPositiveLength(): void
+    #[DataProvider('nonPositiveLengthProvider')]
+    public function testChunkRejectsNonPositiveLengths(int $length): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('$length must be greater than 0');
-        Str::chunk('Hello, world!', -1, ' ');
+
+        Str::chunk('Hello, world!', $length, ' ');
     }
 
-    public function testChunkWithZeroLengthIsRejected(): void
+    /**
+     * @return iterable<string, array{int}>
+     */
+    public static function nonPositiveLengthProvider(): iterable
     {
-        $this->expectException(UnexpectedValueException::class);
-        Str::chunk('Hello', 0, ' ');
+        yield 'zero' => [0];
+        yield 'negative' => [-1];
     }
 
-    public function testDashCase(): void
+    public function testRemoveHTMLStripsTagsAndDecodesEntities(): void
     {
-        $this->assertSame('hello-world-string', Str::toDashCase('HelloWorldString'));
+        $this->assertSame('"User\'s" <b> & co', Str::removeHTML('<p>&quot;User&apos;s&quot; &lt;b&gt; <em>&amp;</em> co</p>'));
     }
 
-    public function testSnakeCase(): void
-    {
-        $this->assertSame('hello_world_string', Str::toSnakeCase('HelloWorldString'));
-    }
-
-    public function testCamelCase(): void
+    public function testCamelCaseJoinsSnakeAndDashCaseWords(): void
     {
         $this->assertSame('helloWorldString', Str::toCamelCase('hello_world_string'));
         $this->assertSame('helloWorldString', Str::toCamelCase('hello-world-string'));
     }
 
     #[DataProvider('caseConversionProvider')]
-    public function testCaseConversions(string $input, string $dash, string $snake, string $camel): void
+    public function testCaseConversionsAreConsistent(string $input, string $dash, string $snake, string $camel): void
     {
         $this->assertSame($dash, Str::toDashCase($input));
         $this->assertSame($snake, Str::toSnakeCase($input));

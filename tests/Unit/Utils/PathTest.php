@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(Path::class)]
 final class PathTest extends TestCase
 {
-    public function testIsAbsolute(): void
+    public function testIsAbsoluteRecognizesAbsolutePaths(): void
     {
         // POSIX-style
         $this->assertTrue(Path::isAbsolute('/foo/bar'));
@@ -24,14 +24,14 @@ final class PathTest extends TestCase
         $this->assertFalse(Path::isAbsolute('..\foo\bar'));
     }
 
-    public function testHasSeparators(): void
+    public function testIsSeparatorRecognizesBothSlashes(): void
     {
         $this->assertTrue(Path::isSeparator('/'));
         $this->assertTrue(Path::isSeparator('\\'));
         $this->assertFalse(Path::isSeparator('invalid_separator'));
     }
 
-    public function testIsRelative(): void
+    public function testIsRelativeToChecksThatThePathIsInsideTheBase(): void
     {
         // POSIX-style
         $this->assertTrue(Path::isRelativeTo('/foo/bar/baz', '/foo/bar'));
@@ -74,14 +74,14 @@ final class PathTest extends TestCase
         yield 'different case' => ['/BASE/file', '/base', false];
     }
 
-    public function testIsRelativeToThrowsOnNonAbsolutePath(): void
+    public function testIsRelativeToRejectsRelativePaths(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$path must be an absolute path');
         Path::isRelativeTo('../foo/bar/baz', '/foo/bar');
     }
 
-    public function testIsRelativeToThrowsOnNonAbsoluteBase(): void
+    public function testIsRelativeToRejectsRelativeBases(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$base must be an absolute path');
@@ -89,7 +89,7 @@ final class PathTest extends TestCase
     }
 
     #[DataProvider('basenameProvider')]
-    public function testBasename(string $path, string $suffix, string $expected): void
+    public function testBasenameCanRemoveASuffix(string $path, string $suffix, string $expected): void
     {
         $this->assertSame($expected, Path::basename($path, $suffix));
     }
@@ -116,7 +116,7 @@ final class PathTest extends TestCase
         yield 'suffix equal to the whole name is kept' => ['/a/.php', '.php', '.php'];
     }
 
-    public function testNormalize(): void
+    public function testNormalizeResolvesDotSegmentsAndSlashes(): void
     {
         // POSIX-style
         $this->assertSame('fixtures/b/c.js', Path::normalize('./fixtures///b/../b/c.js'));
@@ -165,14 +165,14 @@ final class PathTest extends TestCase
         $this->assertSame('foo\bar\baz', Path::normalize('foo/bar\baz', '\\'));
     }
 
-    public function testNormalizeThrowsOnInvalidSeparator(): void
+    public function testNormalizeRejectsInvalidSeparators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$separator must be a valid directory separator');
         Path::normalize('some/path', 'invalid_separator');
     }
 
-    public function testSegments(): void
+    public function testSplitReturnsTheSegments(): void
     {
         // POSIX-style
         $this->assertSame(['', 'var', 'www', 'html', 'index.php'], Path::split('/var/www/html/index.php'));
@@ -183,7 +183,7 @@ final class PathTest extends TestCase
         $this->assertSame(['D:', 'Data', 'Projects', 'project.docx'], Path::split('D:\Data\Projects\project.docx'));
     }
 
-    public function testJoin(): void
+    public function testJoinBuildsAPathFromSegments(): void
     {
         // POSIX-style
         $this->assertSame('/var/www/html/index.php', Path::join(['/var', 'www', 'html', 'index.php']));
@@ -194,14 +194,14 @@ final class PathTest extends TestCase
         $this->assertSame('D:\Data\Projects\project.docx', Path::join(['D:', 'Data', 'Projects', 'project.docx'], '\\'));
     }
 
-    public function testJoinThrowsOnInvalidSeparator(): void
+    public function testJoinRejectsInvalidSeparators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$separator must be a valid directory separator');
         Path::join(['some', 'path'], 'invalid_separator');
     }
 
-    public function testResolve(): void
+    public function testResolveCombinesARelativePathWithTheBase(): void
     {
         // POSIX-style
         $this->assertSame('/var/file/', Path::resolve('../file/', '/var/lib'));
@@ -221,14 +221,14 @@ final class PathTest extends TestCase
         $this->assertSame('C:\foo\tmp.3\cycles\root.js', Path::resolve('..\tmp.3\cycles\root.js', 'C:\foo\tmp.3\\', '\\'));
     }
 
-    public function testResolveThrowsOnInvalidSeparator(): void
+    public function testResolveRejectsInvalidSeparators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$separator must be a valid directory separator');
         Path::resolve('some/path', 'some/base', 'invalid_separator');
     }
 
-    public function testRelativeTo(): void
+    public function testMakeRelativeReturnsThePathFromTheBase(): void
     {
         // POSIX-style
         $this->assertSame('html/index.php', Path::makeRelative('/var/www/html/index.php', '/var/www'));
@@ -240,28 +240,28 @@ final class PathTest extends TestCase
         $this->assertSame('..\Projects\project.docx', Path::makeRelative('D:\Data\Projects\project.docx', 'D:\Data\Downloads', '\\'));
     }
 
-    public function testMakeRelativeThrowsOnNonAbsolutePath(): void
+    public function testMakeRelativeRejectsRelativePaths(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$path must be an absolute path');
         Path::makeRelative('relative/path', '/absolute/base');
     }
 
-    public function testMakeRelativeThrowsOnNonAbsoluteBase(): void
+    public function testMakeRelativeRejectsRelativeBases(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$base must be an absolute path');
         Path::makeRelative('/absolute/path', 'relative/base');
     }
 
-    public function testMakeRelativeThrowsOnInvalidSeparator(): void
+    public function testMakeRelativeRejectsInvalidSeparators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$separator must be a valid directory separator');
         Path::makeRelative('/some/path', '/some/base', 'invalid_separator');
     }
 
-    public function testMakeRelativeThrowsOnIncompatibleDrives(): void
+    public function testMakeRelativeRejectsIncompatibleDrives(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$path and $base must have a compatible drive letter');
@@ -291,7 +291,7 @@ final class PathTest extends TestCase
         yield 'drive letter' => ['C:\a\b.txt', '\\', 'C:\a'];
     }
 
-    public function testDirnameThrowsOnInvalidSeparator(): void
+    public function testDirnameRejectsInvalidSeparators(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('$separator must be a valid directory separator');
