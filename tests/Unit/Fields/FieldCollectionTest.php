@@ -48,18 +48,18 @@ final class FieldCollectionTest extends TestCase
         $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
-                'value' => 'Sempronius',
+                'value' => 'Test User',
             ]),
             'email' => $this->createField('email', [
                 'type'  => 'email',
-                'value' => 'sempronius@example.com',
+                'value' => 'user@example.test',
             ]),
         ]);
 
         $this->assertSame(
             [
-                'name'  => 'Sempronius',
-                'email' => 'sempronius@example.com',
+                'name'  => 'Test User',
+                'email' => 'user@example.test',
             ],
             $this->values($fieldCollection),
         );
@@ -87,7 +87,7 @@ final class FieldCollectionTest extends TestCase
             'name' => $this->createField('name', ['type' => 'text']),
         ]);
 
-        $this->assertSame($fieldCollection, $fieldCollection->setValues(['name' => 'Sempronius']));
+        $this->assertSame($fieldCollection, $fieldCollection->setValues(['name' => 'Test User']));
     }
 
     public function testSetValuesSetsValuesForFieldsPresentInData(): void
@@ -98,14 +98,14 @@ final class FieldCollectionTest extends TestCase
         ]);
 
         $fieldCollection->setValues([
-            'name'  => 'Sempronius',
-            'email' => 'sempronius@example.com',
+            'name'  => 'Test User',
+            'email' => 'user@example.test',
         ]);
 
         $this->assertSame(
             [
-                'name'  => 'Sempronius',
-                'email' => 'sempronius@example.com',
+                'name'  => 'Test User',
+                'email' => 'user@example.test',
             ],
             $this->values($fieldCollection),
         );
@@ -120,16 +120,16 @@ final class FieldCollectionTest extends TestCase
             ]),
             'email' => $this->createField('email', [
                 'type'  => 'email',
-                'value' => 'existing@example.com',
+                'value' => 'existing@example.test',
             ]),
         ]);
 
-        $fieldCollection->setValues(['name' => 'Sempronius']);
+        $fieldCollection->setValues(['name' => 'Test User']);
 
         $this->assertSame(
             [
-                'name'  => 'Sempronius',
-                'email' => 'existing@example.com',
+                'name'  => 'Test User',
+                'email' => 'existing@example.test',
             ],
             $this->values($fieldCollection),
         );
@@ -144,15 +144,15 @@ final class FieldCollectionTest extends TestCase
             ]),
             'email' => $this->createField('email', [
                 'type'  => 'email',
-                'value' => 'existing@example.com',
+                'value' => 'existing@example.test',
             ]),
         ]);
 
-        $fieldCollection->setValues(['name' => 'Sempronius'], null);
+        $fieldCollection->setValues(['name' => 'Test User'], null);
 
         $this->assertSame(
             [
-                'name'  => 'Sempronius',
+                'name'  => 'Test User',
                 'email' => null,
             ],
             $this->values($fieldCollection),
@@ -184,16 +184,16 @@ final class FieldCollectionTest extends TestCase
         ]);
 
         $request = $this->createRequest(RequestMethod::POST, input: [
-            'name'  => 'Sempronius',
-            'email' => 'sempronius@example.com',
+            'name'  => 'Test User',
+            'email' => 'user@example.test',
         ]);
 
         $this->assertSame($fieldCollection, $fieldCollection->setValuesFromRequest($request));
 
         $this->assertSame(
             [
-                'name'  => 'Sempronius',
-                'email' => 'sempronius@example.com',
+                'name'  => 'Test User',
+                'email' => 'user@example.test',
             ],
             $this->values($fieldCollection),
         );
@@ -213,7 +213,7 @@ final class FieldCollectionTest extends TestCase
             ],
             query: [
                 'name'  => 'query',
-                'email' => 'query@example.com',
+                'email' => 'query@example.test',
             ]
         );
 
@@ -222,7 +222,7 @@ final class FieldCollectionTest extends TestCase
         $this->assertSame(
             [
                 'name'  => 'input',
-                'email' => 'query@example.com',
+                'email' => 'query@example.test',
             ],
             $this->values($fieldCollection),
         );
@@ -233,7 +233,7 @@ final class FieldCollectionTest extends TestCase
         $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
-                'value' => 'Sempronius',
+                'value' => 'Test User',
             ]),
         ]);
 
@@ -287,11 +287,11 @@ final class FieldCollectionTest extends TestCase
         $fieldCollection = new FieldCollection([
             'name' => $this->createField('name', [
                 'type'  => 'text',
-                'value' => 'Sempronius',
+                'value' => 'Test User',
             ]),
             'email' => $this->createField('email', [
                 'type'  => 'text',
-                'value' => 'sempronius@example.com',
+                'value' => 'user@example.test',
             ]),
         ]);
 

@@ -3,7 +3,6 @@
 namespace Formwork\Tests\Unit\Fields;
 
 use Formwork\Exceptions\RecursionException;
-use Formwork\Fields\Field;
 use Formwork\Fields\FieldCollection;
 use Formwork\Fields\FieldFactory;
 use Formwork\Tests\TestCase;
@@ -30,7 +29,6 @@ final class FieldFactoryTest extends TestCase
     {
         $field = $this->fieldFactory->make('title', ['type' => 'text', 'label' => 'Title', 'required' => true]);
 
-        $this->assertInstanceOf(Field::class, $field);
         $this->assertSame('title', $field->name());
         $this->assertSame('text', $field->type());
         $this->assertSame('Title', $field->label());
@@ -54,24 +52,24 @@ final class FieldFactoryTest extends TestCase
         $this->assertSame('Ciao', $field->label());
     }
 
-    public function testDefaultValueComesFromTheTypeConfiguration(): void
+    public function testDefaultValueComesFromTheTypeConfig(): void
     {
         $this->assertSame('Untitled', $this->fieldFactory->make('title', ['type' => 'title'])->value());
     }
 
-    public function testExplicitDefaultWinsOverTheTypeConfiguration(): void
+    public function testExplicitDefaultWinsOverTheTypeConfig(): void
     {
         $this->assertSame('Mine', $this->fieldFactory->make('title', ['type' => 'title', 'default' => 'Mine'])->value());
     }
 
-    public function testExplicitNullDefaultIsKept(): void
+    public function testExplicitNullDefaultIsPreserved(): void
     {
         $field = $this->fieldFactory->make('title', ['type' => 'title', 'default' => null]);
 
         $this->assertNull($field->value());
     }
 
-    public function testMethodsComeFromTheTypeConfiguration(): void
+    public function testMethodsComeFromTheTypeConfig(): void
     {
         $field = $this->fieldFactory->make('t', ['type' => 'text', 'value' => 'abc']);
 
@@ -79,7 +77,7 @@ final class FieldFactoryTest extends TestCase
         $this->assertSame('ABC', $field->upper());
     }
 
-    public function testMethodsAndDefaultsAreInheritedThroughTheExtensionChain(): void
+    public function testMethodsAreInheritedThroughTheExtensionChain(): void
     {
         $field = $this->fieldFactory->make('t', ['type' => 'headline', 'value' => 'abc']);
 
@@ -93,7 +91,7 @@ final class FieldFactoryTest extends TestCase
         $this->assertSame('Untitled', $this->fieldFactory->make('t', ['type' => 'headline'])->value());
     }
 
-    public function testTranslatableKeysComeFromTheTypeConfigurationUnlessGiven(): void
+    public function testTranslatableKeysComeFromTheTypeConfigUnlessGiven(): void
     {
         FileSystem::write($this->fieldsPath . '/translated.php', "<?php\nreturn function () {\n    return ['translate' => ['label']];\n};\n");
         $data = ['type' => 'translated', 'label' => '{{greeting}}', 'placeholder' => '{{greeting}}'];
@@ -105,7 +103,7 @@ final class FieldFactoryTest extends TestCase
         $this->assertSame(['{{greeting}}', 'Hello'], [$given->label(), $given->placeholder()]);
     }
 
-    public function testTypeWithoutConfigurationFileProducesAPlainField(): void
+    public function testTypeWithoutConfigFileProducesAPlainField(): void
     {
         $field = $this->fieldFactory->make('t', ['type' => 'no-such-type', 'value' => 'x']);
 
@@ -123,7 +121,7 @@ final class FieldFactoryTest extends TestCase
         $this->fieldFactory->make('t', ['type' => 'orphan']);
     }
 
-    public function testConfigurationCallbacksReceiveContainerServices(): void
+    public function testConfigCallbacksReceiveContainerServices(): void
     {
         FileSystem::write($this->fieldsPath . '/injected.php', "<?php\nreturn fn(\\Formwork\\Translations\\Translations \$translations) => ['default' => \$translations->getCurrent()->code()];\n");
 

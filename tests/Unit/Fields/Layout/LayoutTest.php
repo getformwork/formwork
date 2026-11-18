@@ -38,7 +38,7 @@ final class LayoutTest extends TestCase
         $this->assertSame(['b'], $layout->sections()->get('sidebar')?->get('fields'));
     }
 
-    public function testSectionsAreSortedByOrderAndKeepDefinitionOrderOtherwise(): void
+    public function testSectionsAreSortedByOrderAndPreserveDefinitionOrderOtherwise(): void
     {
         $layout = $this->layout(['sections' => [
             'late'      => ['order' => 10],

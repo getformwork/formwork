@@ -18,11 +18,11 @@ final class FieldTest extends TestCase
 {
     public function testSettingAValueInvalidatesPreviousValidation(): void
     {
-        $field = new Field('name', ['required' => true, 'value' => 'Alice']);
+        $field = new Field('name', ['required' => true, 'value' => 'foo']);
         $field->validate();
         $this->assertTrue($field->isValidated());
 
-        $field->set('value', 'Bob');
+        $field->set('value', 'bar');
 
         $this->assertFalse($field->isValidated());
         $this->assertTrue($field->isValid());
@@ -30,7 +30,7 @@ final class FieldTest extends TestCase
 
     public function testRemovingAValueInvalidatesPreviousValidation(): void
     {
-        $field = new Field('name', ['type' => 'text', 'required' => true, 'value' => 'Alice']);
+        $field = new Field('name', ['type' => 'text', 'required' => true, 'value' => 'foo']);
         $field->validate();
         $field->remove('value');
 
@@ -40,26 +40,26 @@ final class FieldTest extends TestCase
 
     public function testRequiredFieldCanTransitionFromValidToInvalidAndBackToValid(): void
     {
-        $field = new Field('name', ['type' => 'text', 'required' => true, 'value' => 'Alice']);
+        $field = new Field('name', ['type' => 'text', 'required' => true, 'value' => 'foo']);
 
         $this->assertTrue($field->isValid());
         $field->set('value', '');
         $this->assertFalse($field->isValid());
-        $field->set('value', 'Bob');
+        $field->set('value', 'bar');
         $this->assertTrue($field->isValid());
         $this->assertNull($field->getValidationError());
     }
 
     public function testValidationMethodCanNormalizeTheValue(): void
     {
-        $field = new Field('name', ['type' => 'text', 'value' => '  Alice  ']);
+        $field = new Field('name', ['type' => 'text', 'value' => '  foo  ']);
         $field->setMethods([
             'validate' => static fn(Field $field, string $value): string => trim($value),
         ]);
 
         $field->validate();
 
-        $this->assertSame('Alice', $field->value());
+        $this->assertSame('foo', $field->value());
         $this->assertTrue($field->isValidated());
     }
 
@@ -102,6 +102,8 @@ final class FieldTest extends TestCase
     public function testFieldsCannotContainOtherFields(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Fields may not have other fields inside');
+
         new Field('group', ['type' => 'text', 'fields' => []]);
     }
 
@@ -136,9 +138,9 @@ final class FieldTest extends TestCase
         $this->assertSame('Anonymous', $field->value());
         $this->assertSame('Anonymous', $field->defaultValue());
 
-        $field->set('value', 'Alice');
+        $field->set('value', 'foo');
 
-        $this->assertSame('Alice', $field->value());
+        $this->assertSame('foo', $field->value());
         $this->assertSame('Anonymous', $field->defaultValue());
     }
 
@@ -149,10 +151,10 @@ final class FieldTest extends TestCase
         $this->assertTrue($field->isEmpty());
         $this->assertSame('', (string) $field);
 
-        $field->set('value', 'Alice');
+        $field->set('value', 'foo');
 
         $this->assertFalse($field->isEmpty());
-        $this->assertSame('Alice', (string) $field);
+        $this->assertSame('foo', (string) $field);
     }
 
     public function testParentCollectionIsExposed(): void
@@ -217,9 +219,9 @@ final class FieldTest extends TestCase
         $field = new Field('name', ['type' => 'text']);
         $field->setMethods(['setValue' => static fn(Field $field, string $value): string => strtolower($value)]);
 
-        $field->set('value', 'ALICE');
+        $field->set('value', 'FOO');
 
-        $this->assertSame('alice', $field->value());
+        $this->assertSame('foo', $field->value());
     }
 
     public function testKeysEndingWithAtAreComputedFromTheirExpression(): void
