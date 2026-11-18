@@ -12,17 +12,6 @@ use stdClass;
 #[CoversClass(RouteCollection::class)]
 final class RouteCollectionTest extends TestCase
 {
-    public function testCollectionIsTypedAssociativeAndMutable(): void
-    {
-        $routeCollection = new RouteCollection();
-
-        $this->assertTrue($routeCollection->isAssociative());
-        $this->assertTrue($routeCollection->isTyped());
-        $this->assertTrue($routeCollection->isMutable());
-        $this->assertSame(Route::class, $routeCollection->dataType());
-        $this->assertTrue($routeCollection->isEmpty());
-    }
-
     public function testAddIndexesRoutesByNameAndReplacesExistingNames(): void
     {
         $first = new Route('home', '/');

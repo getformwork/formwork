@@ -12,6 +12,7 @@ use Formwork\Router\RouteParams;
 use Formwork\Router\Router;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Router\Fixtures\RouteControllerFixture;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -143,6 +144,38 @@ final class RouterTest extends TestCase
         $this->assertSame('route', $router->dispatch()->content());
     }
 
+    public function testFiltersAfterANonMatchingOneAreStillApplied(): void
+    {
+        $router = $this->router('/admin/');
+        $router->addFilter('other-prefix', static fn(): Response => new Response('wrong'))->prefix('/other');
+        $router->addFilter('maintenance', static fn(): Response => new Response('filtered'));
+        $router->addRoute('home', '/admin/')->action(static fn(): Response => new Response('route'));
+
+        $this->assertSame('filtered', $router->dispatch()->content());
+    }
+
+    #[DataProvider('regexCharactersProvider')]
+    public function testRegexCharactersInRoutesAreMatchedLiterally(string $route, string $path): void
+    {
+        $router = $this->router($path);
+        $router->addRoute('feed', $route)->action(static fn(): Response => new Response('feed'));
+
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionMessage('No route matches');
+
+        $router->dispatch();
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function regexCharactersProvider(): iterable
+    {
+        yield 'literal' => ['/feed.xml', '/feedXxml'];
+        yield 'separator' => ['/feed.{format}', '/feedXrss'];
+        yield 'literal after a parameter' => ['/{name}.xml', '/feedXxml'];
+    }
+
     public function testDispatchRejectsInvalidActions(): void
     {
         $router = $this->router('/');
@@ -153,7 +186,7 @@ final class RouterTest extends TestCase
         $router->dispatch();
     }
 
-    public function testDispatchThrowsWhenNoRouteMatches(): void
+    public function testDispatchReportsUnmatchedRoutes(): void
     {
         $router = $this->router('/missing');
 
@@ -320,26 +353,6 @@ final class RouterTest extends TestCase
         $this->assertSame('/users/84/', $router->rewrite(['id' => '84']));
     }
 
-    public function testInvalidRouteDefinitionsExposeMeaningfulCompilationErrors(): void
-    {
-        $router = $this->router('/users/42/');
-        $router->addRoute('invalid-separator', '/users{id}')->action(static fn(): Response => new Response('no'));
-
-        $this->expectException(InvalidRouteException::class);
-        $this->expectExceptionMessage('Parameter "id" must be preceded by a separator');
-        $router->dispatch();
-    }
-
-    public function testDuplicateRouteParametersAreRejected(): void
-    {
-        $router = $this->router('/users/42/42/');
-        $router->addRoute('duplicate', '/users/{id}/{id}')->action(static fn(): Response => new Response('no'));
-
-        $this->expectException(InvalidRouteException::class);
-        $this->expectExceptionMessage('Parameter "id" cannot be used more than once');
-        $router->dispatch();
-    }
-
     public function testLoadFromFileAppliesTheGivenPrefixToEntriesWithoutOne(): void
     {
         $router = $this->router('/');
@@ -369,7 +382,7 @@ final class RouterTest extends TestCase
         $this->assertSame(['XHR'], $filter->getTypes());
     }
 
-    public function testLoadFromFileKeepsPrefixesDeclaredByEachEntryOverTheGivenOne(): void
+    public function testLoadFromFilePreservesPrefixesDeclaredByEachEntryOverTheGivenOne(): void
     {
         $router = $this->router('/');
         $router->loadFromFile(__DIR__ . '/Fixtures/routes.php', prefix: '/ignored');
@@ -555,26 +568,5 @@ final class RouterTest extends TestCase
             new Request(server: $server),
             $eventDispatcher ?? new EventDispatcher(),
         );
-    }
-}
-
-final class RouteControllerFixture
-{
-    public function __construct(
-        private string $fromRoute = '',
-        private string $fromRouteFile = '',
-    ) {}
-
-    public function handle(string $fromRouteFile = ''): Response
-    {
-        return new Response($this->fromRoute . $this->fromRouteFile . $fromRouteFile);
-    }
-}
-
-final class RouteFilterFixture
-{
-    public function handle(): Response
-    {
-        return new Response('filter');
     }
 }

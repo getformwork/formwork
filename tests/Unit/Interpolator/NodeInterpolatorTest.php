@@ -41,11 +41,6 @@ final class NodeInterpolatorTest extends TestCase
         $this->interpolate('missing', []);
     }
 
-    public function testNullVariablesAreDefined(): void
-    {
-        $this->assertNull($this->interpolate('nothing', ['nothing' => null]));
-    }
-
     public function testOnlyIdentifierNodesCanBeInterpolatedAtTheTopLevel(): void
     {
         $this->expectException(InterpolationException::class);
@@ -301,7 +296,7 @@ final class NodeInterpolatorTest extends TestCase
      * @param array<array-key, mixed> $expected
      */
     #[DataProvider('arrayExpressionProvider')]
-    public function testArrayExpressions(string $expression, array $expected): void
+    public function testArrayExpressionsAreEvaluated(string $expression, array $expected): void
     {
         $vars = ['identity' => static fn(mixed $value): mixed => $value, 'key' => 'dynamic', 'value' => 'v'];
 

@@ -4,7 +4,7 @@ return [
     'routes' => [
         'loaded' => [
             'path'             => '/loaded/{id:digits}',
-            'action'           => 'Formwork\Tests\Unit\Router\RouteControllerFixture@handle',
+            'action'           => 'Formwork\Tests\Unit\Router\Fixtures\RouteControllerFixture@handle',
             'actionParameters' => ['fromRouteFile' => 'route', 'shared' => 'route'],
             'where'            => ['id' => ['42']],
             'methods'          => ['POST'],
@@ -12,20 +12,20 @@ return [
         ],
         'unprefixed' => [
             'path'    => '/unprefixed',
-            'action'  => 'Formwork\Tests\Unit\Router\RouteControllerFixture@handle',
+            'action'  => 'Formwork\Tests\Unit\Router\Fixtures\RouteControllerFixture@handle',
             'types'   => ['XHR'],
             'methods' => ['GET', 'POST'],
         ],
     ],
     'filters' => [
         'loaded-filter' => [
-            'action'  => 'Formwork\Tests\Unit\Router\RouteFilterFixture@handle',
+            'action'  => 'Formwork\Tests\Unit\Router\Fixtures\RouteFilterFixture@handle',
             'methods' => ['GET'],
             'types'   => ['HTTP'],
             'prefix'  => '/api',
         ],
         'unprefixed-filter' => [
-            'action'  => 'Formwork\Tests\Unit\Router\RouteFilterFixture@handle',
+            'action'  => 'Formwork\Tests\Unit\Router\Fixtures\RouteFilterFixture@handle',
             'methods' => ['POST', 'PUT'],
             'types'   => ['XHR'],
         ],
