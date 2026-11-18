@@ -66,7 +66,7 @@ final class SchemeTest extends TestCase
         $this->assertSame('Articolo', $scheme->title());
     }
 
-    public function testTitleWithUnknownTranslationKeyIsKeptVerbatim(): void
+    public function testTitleWithUnknownTranslationKeyIsPreservedVerbatim(): void
     {
         $this->assertSame('{{no.such.key}}', $this->makeScheme('post', ['title' => '{{no.such.key}}'])->title());
     }
@@ -76,13 +76,6 @@ final class SchemeTest extends TestCase
         $scheme = $this->makeScheme('post', ['title' => ['en' => '{{no.such.key}}']]);
 
         $this->assertSame('{{no.such.key}}', $scheme->title());
-    }
-
-    public function testPerLanguageTitleWithoutTheCurrentLanguageStillReturnsAString(): void
-    {
-        $scheme = $this->makeScheme('post', ['title' => ['it' => 'Articolo']]);
-
-        $this->assertIsString($scheme->title());
     }
 
     public function testPerLanguageTitleWithoutTheCurrentLanguageUsesTheFallbackLanguage(): void
@@ -168,7 +161,7 @@ final class SchemeTest extends TestCase
         $this->assertSame($fields, $fields->get('title')?->parent());
     }
 
-    public function testFieldDefaultsComeFromTheFieldTypeConfiguration(): void
+    public function testFieldDefaultsComeFromTheFieldTypeConfig(): void
     {
         $fields = $this->makeScheme('post', ['fields' => [
             'headline' => ['type' => 'headline'],
@@ -403,6 +396,7 @@ final class SchemeTest extends TestCase
         $scheme = $this->makeScheme('self', []);
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Scheme "self" cannot be extended by itself');
 
         $scheme->extend($scheme);
     }
@@ -435,7 +429,7 @@ final class SchemeTest extends TestCase
         $this->writeScheme('b', "extend: a\n");
 
         for ($i = 0; $i < 2; ++$i) {
-            $this->assertInstanceOf(RecursionException::class, $this->captureException(RecursionException::class, fn() => $this->schemes->get('a')));
+            $this->captureException(RecursionException::class, fn() => $this->schemes->get('a'));
         }
 
         $this->writeScheme('x', "title: X\n");
@@ -445,7 +439,7 @@ final class SchemeTest extends TestCase
 
     public function testFailedExtensionByUnknownIdDoesNotPoisonLaterAttempts(): void
     {
-        $this->assertInstanceOf(InvalidArgumentException::class, $this->captureException(InvalidArgumentException::class, fn() => $this->makeScheme('child', ['extend' => 'ghost'])));
+        $this->captureException(InvalidArgumentException::class, fn() => $this->makeScheme('child', ['extend' => 'ghost']));
 
         $this->writeScheme('ghost', "title: Ghost\n");
 
@@ -463,7 +457,7 @@ final class SchemeTest extends TestCase
         $this->assertTrue($child->toArray()['options']['own']);
     }
 
-    public function testExtendWithDataKeepsTheOwnDefinitions(): void
+    public function testExtendWithDataPreservesTheOwnDefinitions(): void
     {
         $scheme = $this->makeScheme('child', ['title' => 'Own', 'options' => ['a' => 'own']]);
 

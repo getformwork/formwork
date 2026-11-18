@@ -38,13 +38,13 @@ final class DebugTest extends TestCase
 
     // Scalars
 
-    public function testBooleans(): void
+    public function testBooleansAreDumpedAsKeywords(): void
     {
         $this->assertSame('<span class="__type-bool">true</span>', $this->body(true));
         $this->assertSame('<span class="__type-bool">false</span>', $this->body(false));
     }
 
-    public function testNumbers(): void
+    public function testNumbersAreDumpedAsTheyAre(): void
     {
         $this->assertSame('<span class="__type-number">42</span>', $this->body(42));
         $this->assertSame('<span class="__type-number">-7</span>', $this->body(-7));
@@ -53,12 +53,12 @@ final class DebugTest extends TestCase
         $this->assertSame('<span class="__type-number">NAN</span>', $this->body(NAN));
     }
 
-    public function testNull(): void
+    public function testNullIsDumpedAsKeyword(): void
     {
         $this->assertSame('<span class="__type-null">null</span>', $this->body(null));
     }
 
-    public function testStrings(): void
+    public function testStringsAreDumpedQuoted(): void
     {
         $this->assertSame('<span class="__type-string">"hello"</span>', $this->body('hello'));
         $this->assertSame('<span class="__type-string">""</span>', $this->body(''));
@@ -91,7 +91,7 @@ final class DebugTest extends TestCase
 
     // Arrays
 
-    public function testEmptyArray(): void
+    public function testEmptyArraysShowTheirCount(): void
     {
         $output = $this->body([]);
 
@@ -103,7 +103,7 @@ final class DebugTest extends TestCase
         $output = $this->body(['a', 'b']);
 
         $this->assertStringNotContainsString('=&gt;', $output);
-        $this->assertStringNotContainsString(' => ', strip_tags($output) === '' ? '' : $output);
+        $this->assertStringNotContainsString(' => ', $output);
         $this->assertStringContainsString('"a"', $output);
         $this->assertStringContainsString('(<span class="__note">2</span>)', $output);
     }
@@ -141,7 +141,7 @@ final class DebugTest extends TestCase
         $this->assertSame($matches[1], array_values(array_unique($matches[1])));
     }
 
-    public function testIdentifiersKeepIncreasingBetweenDumps(): void
+    public function testIdentifiersPreserveIncreasingBetweenDumps(): void
     {
         preg_match('/id="__formwork-dump-id-(\d+)"/', $this->body([1]), $first);
         preg_match('/id="__formwork-dump-id-(\d+)"/', $this->body([1]), $second);
@@ -305,7 +305,7 @@ final class DebugTest extends TestCase
         $this->assertStringContainsString(self::class, $output);
     }
 
-    public function testResources(): void
+    public function testResourcesShowTheirType(): void
     {
         $handle = fopen('php://memory', 'r');
         $this->assertNotFalse($handle);

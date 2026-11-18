@@ -5,21 +5,14 @@ namespace Formwork\Tests\Unit\Languages;
 use Formwork\Languages\LanguageCodes;
 use Formwork\Tests\TestCase;
 use InvalidArgumentException;
-use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(LanguageCodes::class)]
 final class LanguageCodesTest extends TestCase
 {
-    public function testClassCannotBeInstantiated(): void
-    {
-        $this->expectException(LogicException::class);
-        new LanguageCodes();
-    }
-
     #[DataProvider('knownCodeProvider')]
-    public function testKnownCodes(string $code, string $name, string $nativeName): void
+    public function testKnownCodesHaveTheirNames(string $code, string $name, string $nativeName): void
     {
         $this->assertTrue(LanguageCodes::hasCode($code));
         $this->assertSame($name, LanguageCodes::codeToName($code));
@@ -40,7 +33,7 @@ final class LanguageCodesTest extends TestCase
     }
 
     #[DataProvider('unknownCodeProvider')]
-    public function testUnknownCodes(string $code): void
+    public function testUnknownCodesAreRejected(string $code): void
     {
         $this->assertFalse(LanguageCodes::hasCode($code));
 

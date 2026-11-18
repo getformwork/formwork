@@ -28,8 +28,8 @@ final class PluginManifestTest extends TestCase
         $pluginManifest = new PluginManifest([
             'title'       => 'Demo',
             'description' => 'A demo plugin',
-            'author'      => 'Jane',
-            'homepage'    => 'https://example.com',
+            'author'      => 'Test User',
+            'homepage'    => 'https://example.test',
             'license'     => 'MIT',
             'version'     => '1.2.3',
             'config'      => ['greeting' => 'hi', 'nested' => ['a' => 1]],
@@ -37,8 +37,8 @@ final class PluginManifestTest extends TestCase
 
         $this->assertSame('Demo', $pluginManifest->title());
         $this->assertSame('A demo plugin', $pluginManifest->description());
-        $this->assertSame('Jane', $pluginManifest->author());
-        $this->assertSame('https://example.com', $pluginManifest->homepage());
+        $this->assertSame('Test User', $pluginManifest->author());
+        $this->assertSame('https://example.test', $pluginManifest->homepage());
         $this->assertSame('MIT', $pluginManifest->license());
         $this->assertSame('1.2.3', $pluginManifest->version());
         $this->assertSame(['greeting' => 'hi', 'nested' => ['a' => 1]], $pluginManifest->config());
@@ -68,6 +68,7 @@ final class PluginManifestTest extends TestCase
     public function testInvalidTypesAreReportedAsInvalidValues(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid value for property "config"');
 
         new PluginManifest(['config' => 'not-an-array']);
     }

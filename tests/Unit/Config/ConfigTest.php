@@ -17,8 +17,6 @@ use UnexpectedValueException;
 #[UsesTempDirectory]
 final class ConfigTest extends TestCase
 {
-    protected function setUp(): void {}
-
     public function testHasAndHasMultipleDistinguishPresentNullFromMissingKeys(): void
     {
         $config = new Config(['present' => null, 'nested' => ['value' => false]], resolved: true);
@@ -140,7 +138,7 @@ final class ConfigTest extends TestCase
         ], $config->toArray());
     }
 
-    public function testToArrayReturnsTheResolvedNestedConfiguration(): void
+    public function testToArrayReturnsTheResolvedNestedConfig(): void
     {
         $data = ['system' => ['paths' => ['site' => '/site']], 'enabled' => true];
         $config = new Config($data, resolved: true);
@@ -148,7 +146,7 @@ final class ConfigTest extends TestCase
         $this->assertSame($data, $config->toArray());
     }
 
-    public function testGetAndToArrayRejectReadsBeforeResolution(): void
+    public function testValuesCannotBeReadBeforeResolution(): void
     {
         $config = new Config(['name' => 'Formwork']);
 
@@ -201,6 +199,7 @@ final class ConfigTest extends TestCase
         $config = new Config(['first' => '${second}', 'second' => '${first}']);
 
         $this->expectException(ConfigResolutionException::class);
+        $this->expectExceptionMessage('Cannot resolve a config value with circular reference');
         $config->resolve();
     }
 
@@ -257,7 +256,7 @@ final class ConfigTest extends TestCase
 
         $config->resolve();
 
-        $this->assertStringNotContainsString('Formwork', $config->getString('literal'));
+        $this->assertSame('${name}', $config->getString('literal'));
     }
 
     public function testLoadFileLoadsYamlIntoACamelCaseKey(): void
@@ -272,7 +271,7 @@ final class ConfigTest extends TestCase
         $this->assertTrue($config->getBool('siteName.options.enabled'));
     }
 
-    public function testLoadFileLoadsPhpAndMergesWithExistingConfiguration(): void
+    public function testLoadFileLoadsPhpAndMergesWithExistingConfig(): void
     {
         $path = TESTS_TMP_PATH . '/settings.php';
         FileSystem::write($path, "<?php return ['enabled' => true, 'nested' => ['loaded' => 'yes']];\n");
@@ -291,7 +290,7 @@ final class ConfigTest extends TestCase
         $this->assertSame('yes', $config->getString('settings.nested.loaded'));
     }
 
-    public function testLoadFileSupportsAPrefixForPluginConfiguration(): void
+    public function testLoadFileSupportsAPrefixForPluginConfig(): void
     {
         $path = TESTS_TMP_PATH . '/example.yaml';
         FileSystem::write($path, "enabled: true\n");
@@ -302,7 +301,7 @@ final class ConfigTest extends TestCase
         $this->assertTrue($config->getBool('plugins.example.enabled'));
     }
 
-    public function testLoadFromPathLoadsEachSupportedConfigurationFile(): void
+    public function testLoadFromPathLoadsEachSupportedConfigFile(): void
     {
         FileSystem::write(TESTS_TMP_PATH . '/first.yaml', "name: First\n");
         FileSystem::write(TESTS_TMP_PATH . '/second.php', "<?php return ['enabled' => false];\n");

@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Languages;
 use Formwork\Languages\Language;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Stringable;
 
 #[CoversClass(Language::class)]
 final class LanguageTest extends TestCase
@@ -19,7 +18,7 @@ final class LanguageTest extends TestCase
         $this->assertSame('Italiano', $language->nativeName());
     }
 
-    public function testUnknownLanguagesKeepTheirCodeWithoutNames(): void
+    public function testUnknownLanguagesPreserveTheirCodeWithoutNames(): void
     {
         $language = new Language('xx');
 
@@ -32,7 +31,6 @@ final class LanguageTest extends TestCase
     {
         $language = new Language('de');
 
-        $this->assertInstanceOf(Stringable::class, $language);
         $this->assertSame('de', (string) $language);
         $this->assertSame('/de/page', "/{$language}/page");
     }

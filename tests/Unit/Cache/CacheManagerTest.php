@@ -86,6 +86,8 @@ final class CacheManagerTest extends TestCase
         $cacheManager = new CacheManager(['pages' => new ArrayCache()]);
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cache "missing" does not exist');
+
         $cacheManager->getMultiple(['pages', 'missing']);
     }
 

@@ -138,7 +138,7 @@ final class UpdaterTest extends TestCase
         $second = $updater->checkUpdates();
 
         $this->assertSame($first, $second);
-        $this->assertNotNull($updater->latestRelease());
+        $this->assertSame($this->tag(minor: 1), $updater->latestRelease()['tag'] ?? null);
     }
 
     public function testForceBypassesTheCache(): void
@@ -245,6 +245,7 @@ final class UpdaterTest extends TestCase
         $updater = $this->updater(client: $this->clientReturning('{"message": "API rate limit exceeded", "documentation_url": "https://docs.github.com"}'));
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot fetch latest Formwork release data');
 
         $updater->checkUpdates(force: true);
     }
@@ -346,7 +347,7 @@ final class UpdaterTest extends TestCase
         $this->assertFileDoesNotExist($this->tempFile . '.lock');
     }
 
-    public function testConcurrentUpdatesAreRefused(): void
+    public function testConcurrentUpdatesAreRejected(): void
     {
         FileSystem::write($this->tempFile . '.lock', (string) time());
         $client = $this->clientWithRelease($this->tag(minor: 1), mock: true);
@@ -389,7 +390,7 @@ final class UpdaterTest extends TestCase
     }
 
     #[DataProvider('escapingEntriesProvider')]
-    public function testArchivesEscapingTheInstallationRootAreRefused(string $entry): void
+    public function testArchivesEscapingTheInstallationRootAreRejected(string $entry): void
     {
         $archive = TESTS_TMP_PATH . '/updater/malicious.zip';
         $zipArchive = new ZipArchive();
@@ -436,6 +437,7 @@ final class UpdaterTest extends TestCase
         $updater = $this->updaterWithRelease(['checksum' => hash('sha256', 'other')]);
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Downloaded archive does not match the expected checksum');
 
         $this->call($updater, 'verifyArchiveChecksum', $this->tempFile);
     }
@@ -456,6 +458,7 @@ final class UpdaterTest extends TestCase
         $updater = $this->updaterWithRelease(['checksum' => '']);
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Downloaded archive does not match the expected checksum');
 
         $this->call($updater, 'verifyArchiveChecksum', $this->tempFile);
     }
@@ -474,7 +477,7 @@ final class UpdaterTest extends TestCase
     }
 
     #[DataProvider('digestsProvider')]
-    public function testDigestParsing(?string $digest, ?string $expected): void
+    public function testSha256DigestsAreParsed(?string $digest, ?string $expected): void
     {
         $this->assertSame($expected, $this->call($this->updater(), 'parseSha256Checksum', $digest));
     }
@@ -494,7 +497,7 @@ final class UpdaterTest extends TestCase
     }
 
     #[DataProvider('installabilityProvider')]
-    public function testInstallability(string $current, string $candidate, bool $expected): void
+    public function testOnlyCompatibleNewerReleasesAreInstallable(string $current, string $candidate, bool $expected): void
     {
         FileSystem::write($this->registryFile, Json::encode(['currentRelease' => $current]));
         $updater = $this->updater();

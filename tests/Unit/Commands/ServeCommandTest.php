@@ -88,7 +88,7 @@ final class ServeCommandTest extends TestCase
             yield "time of $seconds seconds" => ['formatTime', [$seconds], $formatted];
         }
 
-        foreach ([200 => 'blue', 299 => 'blue', 302 => 'green', 404 => 'yellow'] as $status => $color) {
+        foreach ([200 => 'blue', 299 => 'blue', 302 => 'green', 404 => 'yellow', 500 => 'red', 599 => 'red'] as $status => $color) {
             yield "color of the status $status" => ['colorStatus', [$status], "<$color>$status</$color>"];
         }
 
@@ -121,7 +121,7 @@ final class ServeCommandTest extends TestCase
      * @param list<string> $lines
      */
     #[DataProvider('serverOutputProvider')]
-    public function testServerOutput(string $stream, array $lines, string $expected): void
+    public function testServerOutputIsFormattedByType(string $stream, array $lines, string $expected): void
     {
         (new ReflectionProperty($this->command, 'startTime'))->setValue($this->command, microtime(true));
         (new ReflectionMethod($this->command, 'handleOutput'))->invoke($this->command, $stream, $lines);
@@ -163,14 +163,6 @@ final class ServeCommandTest extends TestCase
             $this->assertStringContainsString("Remote address: http://{$remoteAddress}:8000/", $this->buffer->get());
             $this->assertNotContains($remoteAddress, ['localhost', '127.0.0.1', '::1']);
         }
-    }
-
-    public function testServerErrorStatusesAreColorized(): void
-    {
-        $colorStatus = new ReflectionMethod($this->command, 'colorStatus');
-
-        $this->assertSame('<red>500</red>', $colorStatus->invoke($this->command, 500));
-        $this->assertSame('<red>599</red>', $colorStatus->invoke($this->command, 599));
     }
 
     public function testClosedConnectionsWithoutARequestAreIgnored(): void

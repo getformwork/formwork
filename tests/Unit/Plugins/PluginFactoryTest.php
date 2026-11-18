@@ -74,6 +74,7 @@ final class PluginFactoryTest extends TestCase
         FileSystem::write($path . '/factory-notplugin.php', "<?php\nnamespace Formwork\\Plugins;\nclass FactoryNotpluginPlugin {}\n");
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Plugin class "Formwork\Plugins\FactoryNotpluginPlugin" not found');
 
         $this->factory->make($path);
     }
@@ -85,6 +86,7 @@ final class PluginFactoryTest extends TestCase
         FileSystem::write($path . '/Factory_Invalid.php', "<?php\nnamespace Formwork\\Plugins;\nclass FactoryInvalidPlugin extends Plugin {}\n");
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid plugin id "Factory_Invalid"');
 
         $this->factory->make($path);
     }

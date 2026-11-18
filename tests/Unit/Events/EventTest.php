@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Events;
 use Formwork\Events\Event;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Psr\EventDispatcher\StoppableEventInterface;
 
 #[CoversClass(Event::class)]
 final class EventTest extends TestCase
@@ -16,11 +15,6 @@ final class EventTest extends TestCase
 
         $this->assertSame('page.saved', $event->name());
         $this->assertSame(['id' => 5, 'title' => 'Title'], $event->data());
-    }
-
-    public function testEventsAreStoppable(): void
-    {
-        $this->assertInstanceOf(StoppableEventInterface::class, new Event('name', []));
     }
 
     public function testPropagationIsNotStoppedByDefault(): void

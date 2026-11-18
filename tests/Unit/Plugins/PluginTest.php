@@ -68,6 +68,7 @@ final class PluginTest extends TestCase
     public function testInvalidIdsAreRejected(string $id): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid plugin id');
 
         new Plugin('/some/path/' . $id, new Container(), App::instance());
     }
@@ -103,6 +104,7 @@ final class PluginTest extends TestCase
         $plugin = $this->makePlugin('manifest-invalid', '', ['plugin.yaml' => "unknown: yes\n"]);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid property "unknown"');
 
         $plugin->manifest();
     }
@@ -142,7 +144,7 @@ final class PluginTest extends TestCase
 
     // Serialization and state
 
-    public function testToArray(): void
+    public function testToArrayDescribesThePlugin(): void
     {
         $plugin = $this->makePlugin('array-demo', '', ['plugin.yaml' => "title: Demo\n"]);
 

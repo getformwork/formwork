@@ -95,7 +95,7 @@ final class LanguagesTest extends TestCase
         $this->assertNull($languages->requested());
     }
 
-    public function testWithoutLanguagesTheCurrentLanguageIsNotTheDefaultOne(): void
+    public function testWithoutADefaultLanguageNoLanguageIsCurrent(): void
     {
         $languages = new Languages(['available' => ['en', 'it']]);
 

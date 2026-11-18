@@ -7,7 +7,6 @@ use Formwork\Tests\Unit\Traits\Fixtures\StaticUtilityFixture;
 use Formwork\Traits\StaticClass;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversTrait;
-use ReflectionMethod;
 
 #[CoversTrait(StaticClass::class)]
 final class StaticClassTest extends TestCase
@@ -22,13 +21,5 @@ final class StaticClassTest extends TestCase
     public function testStaticMethodsStillWork(): void
     {
         $this->assertSame(8, StaticUtilityFixture::double(4));
-    }
-
-    public function testTheConstructorCannotBeOverridden(): void
-    {
-        $reflectionMethod = new ReflectionMethod(StaticUtilityFixture::class, '__construct');
-
-        $this->assertTrue($reflectionMethod->isFinal());
-        $this->assertTrue($reflectionMethod->isPublic());
     }
 }

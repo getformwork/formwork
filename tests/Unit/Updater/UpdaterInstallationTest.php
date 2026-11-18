@@ -88,7 +88,7 @@ final class UpdaterInstallationTest extends TestCase
         $this->assertFileDoesNotExist(TESTS_TMP_PATH . '/update.zip.lock');
     }
 
-    public function testObsoleteFilesAreKeptUnlessCleanupIsRequested(): void
+    public function testObsoleteFilesArePreservedUnlessCleanupIsRequested(): void
     {
         $this->updater()->update(force: true, cleanupAfterInstall: false);
 
@@ -104,7 +104,7 @@ final class UpdaterInstallationTest extends TestCase
         $this->assertFileExists($this->root . '/site/pages/page.md', 'Ignored paths are never cleaned up');
     }
 
-    public function testArchivesEscapingTheRootAreRefusedAndNothingLeavesTheInstallation(): void
+    public function testArchivesEscapingTheRootAreRejectedAndNothingLeavesTheInstallation(): void
     {
         $this->buildArchive(['../outside.txt' => 'payload']);
 
