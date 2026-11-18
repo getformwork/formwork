@@ -15,6 +15,7 @@ final class IpAnonymizerTest extends TestCase
     public function testInvalidIpAddressesAreRejected(string $address): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot pack IP address');
         IpAnonymizer::anonymize($address);
     }
 

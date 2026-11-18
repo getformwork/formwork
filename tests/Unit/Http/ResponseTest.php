@@ -212,7 +212,7 @@ final class ResponseTest extends TestCase
         $this->assertSame('no-cache, private', $response->headers()->get('Cache-Control'));
     }
 
-    public function testSendKeepsTheGivenHeaders(): void
+    public function testSendPreservesTheGivenHeaders(): void
     {
         $response = new Response('{}', ResponseStatus::OK, [
             'X-Own'         => 'own',

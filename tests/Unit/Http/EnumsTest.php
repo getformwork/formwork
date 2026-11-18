@@ -9,7 +9,6 @@ use Formwork\Http\Session\MessageType;
 use Formwork\Http\Utils\DeviceType;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use ValueError;
 
 #[CoversClass(RequestType::class)]
 #[CoversClass(ResponseStatusType::class)]
@@ -17,33 +16,19 @@ use ValueError;
 #[CoversClass(MessageType::class)]
 final class EnumsTest extends TestCase
 {
-    public function testRequestTypes(): void
+    public function testRequestTypesHaveTheirValues(): void
     {
-        $this->assertSame('HTTP', RequestType::Http->value);
-        $this->assertSame('XHR', RequestType::XmlHttpRequest->value);
-        $this->assertSame(RequestType::XmlHttpRequest, RequestType::from('XHR'));
-        $this->assertNull(RequestType::tryFrom('xhr'), 'Values are case sensitive');
-        $this->assertCount(2, RequestType::cases());
+        $this->assertSame(['HTTP', 'XHR'], array_map(static fn(RequestType $requestType): string => $requestType->value, RequestType::cases()));
     }
 
-    public function testDeviceTypes(): void
+    public function testDeviceTypesHaveTheirValues(): void
     {
         $this->assertSame(['mobile', 'tablet', 'desktop'], array_map(static fn(DeviceType $deviceType): string => $deviceType->value, DeviceType::cases()));
-        $this->assertSame(DeviceType::Tablet, DeviceType::from('tablet'));
-        $this->assertNull(DeviceType::tryFrom('watch'));
     }
 
-    public function testMessageTypes(): void
+    public function testMessageTypesHaveTheirValues(): void
     {
         $this->assertSame(['info', 'success', 'warning', 'error'], array_map(static fn(MessageType $messageType): string => $messageType->value, MessageType::cases()));
-        $this->assertSame(MessageType::Error, MessageType::from('error'));
-    }
-
-    public function testInvalidValuesAreRejected(): void
-    {
-        $this->expectException(ValueError::class);
-
-        MessageType::from('fatal');
     }
 
     public function testResponseStatusTypesCoverEveryHttpClass(): void

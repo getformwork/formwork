@@ -84,7 +84,7 @@ final class UploadedFileTest extends TestCase
         $this->assertSame('upload.error.cannotMoveToDestination', $translatedException->getLanguageString());
     }
 
-    public function testMoveRefusesToReplaceAnExistingFileUnlessOverwriteIsEnabled(): void
+    public function testMoveDoesNotReplaceAnExistingFileUnlessOverwriteIsEnabled(): void
     {
         FileSystem::write(TESTS_TMP_PATH . '/existing.txt', 'existing');
         $uploadedFile = $this->uploadedFile(UPLOAD_ERR_OK);

@@ -22,6 +22,7 @@ final class HeaderTest extends TestCase
         $this->assertSame(['X-Test' => 'value'], Header::fixHeaderNames(['x_test' => 'value']));
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected token format');
         Header::combine([[]]);
     }
 

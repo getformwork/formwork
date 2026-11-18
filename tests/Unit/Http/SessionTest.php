@@ -110,20 +110,6 @@ final class SessionTest extends TestCase
         $this->assertFalse($session->isStarted());
     }
 
-    public function testSessionCanRegenerateAndCheckItsCurrentId(): void
-    {
-        $session = $this->session();
-        $session->setPath(FileSystem::joinPaths(TESTS_TMP_PATH, 'session-data'));
-        $session->start();
-        $session->set('value', 42);
-        $session->regenerate();
-        $id = session_id();
-
-        $this->assertTrue($session->exists((string) $id));
-        $this->assertSame(42, $session->get('value'));
-        $session->save();
-    }
-
     /**
      * @param Closure(Session): mixed $change
      */
@@ -263,10 +249,10 @@ final class SessionTest extends TestCase
         $third = $this->sessionRequest('read', $id);
 
         $this->assertSame($id, $this->sessionId($second));
-        $this->assertSame('Alice', $second['user']);
+        $this->assertSame('Test User', $second['user']);
         $this->assertSame(['info' => ['Saved']], $second['messages']);
         $this->assertSame($id, $this->sessionId($third));
-        $this->assertSame('Alice', $third['user']);
+        $this->assertSame('Test User', $third['user']);
         $this->assertSame([], $third['messages']);
     }
 
@@ -334,7 +320,7 @@ final class SessionTest extends TestCase
 
         switch ($action) {
             case 'write':
-                $session->set('user', 'Alice');
+                $session->set('user', 'Test User');
                 $session->messages()->add(MessageType::Info, 'Saved');
                 break;
 

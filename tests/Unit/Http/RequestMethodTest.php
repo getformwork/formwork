@@ -18,7 +18,7 @@ final class RequestMethodTest extends TestCase
         }
     }
 
-    public function testSupportedMethods(): void
+    public function testSupportedMethodsAreListedInOrder(): void
     {
         $this->assertSame(
             ['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -49,6 +49,7 @@ final class RequestMethodTest extends TestCase
         $this->assertNull(RequestMethod::tryFrom($name));
 
         $this->expectException(ValueError::class);
+
         RequestMethod::from($name);
     }
 
@@ -67,7 +68,7 @@ final class RequestMethodTest extends TestCase
     }
 
     #[DataProvider('semanticsProvider')]
-    public function testMethodSemantics(RequestMethod $requestMethod, bool $safe, bool $idempotent, bool $cacheable): void
+    public function testMethodsAreSafeAndIdempotentAccordingToTheHttpSpecification(RequestMethod $requestMethod, bool $safe, bool $idempotent, bool $cacheable): void
     {
         $this->assertSame($safe, $requestMethod->isSafe(), "{$requestMethod->value} safe");
         $this->assertSame($idempotent, $requestMethod->isIdempotent(), "{$requestMethod->value} idempotent");

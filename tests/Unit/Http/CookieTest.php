@@ -61,6 +61,7 @@ final class CookieTest extends TestCase
     public function testRemoveValidatesTheNameToo(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid cookie name "invalid name", unexpected character " " at position 7');
         Cookie::remove('invalid name');
     }
 }

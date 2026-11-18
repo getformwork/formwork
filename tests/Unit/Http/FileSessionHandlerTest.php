@@ -21,9 +21,9 @@ final class FileSessionHandlerTest extends TestCase
 
         $this->assertTrue($fileSessionHandler->open('', 'formwork'));
         $this->assertTrue($fileSessionHandler->validateId('existing'));
-        $this->assertSame("user|s:8:\"Giuseppe\";\n", $fileSessionHandler->read('existing'));
-        $this->assertTrue($fileSessionHandler->write('created', 'user|s:3:"Bob";'));
-        $this->assertSame('user|s:3:"Bob";', $fileSessionHandler->read('created'));
+        $this->assertSame("user|s:9:\"Test User\";\n", $fileSessionHandler->read('existing'));
+        $this->assertTrue($fileSessionHandler->write('created', 'user|s:3:"Another User";'));
+        $this->assertSame('user|s:3:"Another User";', $fileSessionHandler->read('created'));
         $this->assertTrue($fileSessionHandler->updateTimestamp('created', 'ignored'));
         $this->assertTrue($fileSessionHandler->destroy('created'));
         $this->assertFalse($fileSessionHandler->validateId('created'));

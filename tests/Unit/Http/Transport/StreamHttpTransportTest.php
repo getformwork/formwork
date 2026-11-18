@@ -33,7 +33,7 @@ final class StreamHttpTransportTest extends TestCase
         $process->start();
 
         try {
-            $this->waitForPort($port);
+            $this->waitForServer($process, $port);
 
             $connection = (new StreamHttpTransport())->open("http://127.0.0.1:{$port}/", ['http' => ['timeout' => 5]]);
 
@@ -59,7 +59,9 @@ final class StreamHttpTransportTest extends TestCase
         $handler = static fn(): bool => true;
         set_error_handler($handler);
 
-        $this->captureException(ConnectionException::class, static fn() => (new StreamHttpTransport())->open('http://127.0.0.1:1', ['http' => ['timeout' => 1]]));
+        $port = $this->freePort();
+
+        $this->captureException(ConnectionException::class, static fn() => (new StreamHttpTransport())->open('http://127.0.0.1:' . $port, ['http' => ['timeout' => 1]]));
 
         $current = set_error_handler(static fn(): bool => true);
         restore_error_handler();
@@ -73,8 +75,12 @@ final class StreamHttpTransportTest extends TestCase
      */
     private function freePort(): int
     {
-        $server = stream_socket_server('tcp://127.0.0.1:0');
-        $this->assertNotFalse($server);
+        $server = @stream_socket_server('tcp://127.0.0.1:0');
+
+        if ($server === false) {
+            $this->markTestSkipped('Local TCP sockets are not available');
+        }
+
         $port = (int) substr((string) strrchr((string) stream_socket_get_name($server, false), ':'), 1);
         fclose($server);
 
@@ -82,13 +88,16 @@ final class StreamHttpTransportTest extends TestCase
     }
 
     /**
-     * Wait until a server accepts connections on the given port
+     * Wait until the server accepts connections on the given port, reporting its output if it stopped
      */
-    private function waitForPort(int $port): void
+    private function waitForServer(Process $process, int $port): void
     {
         $deadline = microtime(true) + 5;
 
         while (($socket = @fsockopen('127.0.0.1', $port, timeout: 0.1)) === false) {
+            if (!$process->isRunning()) {
+                $this->fail("The server stopped before accepting connections: {$process->getErrorOutput()}");
+            }
             if (microtime(true) > $deadline) {
                 $this->fail("Nothing is listening on port {$port}");
             }
