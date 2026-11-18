@@ -133,7 +133,7 @@ final class PanelServiceLoaderTest extends TestCase
     public function testOnlyAuthenticationRoutesAreReachableWithoutLoggingIn(string $name, string $path): void
     {
         try {
-            $response = $this->gate($name, $path, users: ['alice'], localhost: false);
+            $response = $this->gate($name, $path, users: ['user'], localhost: false);
         } catch (UnexpectedValueException) {
             // Resolving the route to come back to after login needs a real panel request
             $this->assertNotContains($name, self::PUBLIC_ROUTES);
@@ -152,20 +152,20 @@ final class PanelServiceLoaderTest extends TestCase
     #[DataProvider('panelRoutesProvider')]
     public function testLoggedInUsersCanReachEveryPanelRoute(string $name, string $path): void
     {
-        $this->assertNull($this->gate($name, $path, users: ['alice'], localhost: false, loggedIn: true));
+        $this->assertNull($this->gate($name, $path, users: ['user'], localhost: false, loggedIn: true));
     }
 
     #[DataProvider('panelRoutesProvider')]
     public function testRoutesOutsideThePanelAreNeverTouched(string $name, string $path): void
     {
         $this->assertNull($this->gate($name, $path, users: [], localhost: false, prefix: '/'));
-        $this->assertNull($this->gate($name, $path, users: ['alice'], localhost: false, prefix: '/'));
-        $this->assertNull($this->gate($name, $path, users: ['alice'], localhost: false, prefix: '/panel-extra/'));
+        $this->assertNull($this->gate($name, $path, users: ['user'], localhost: false, prefix: '/'));
+        $this->assertNull($this->gate($name, $path, users: ['user'], localhost: false, prefix: '/panel-extra/'));
     }
 
     public function testLoginIsStillReachableWhenThePanelRootIsConfiguredWithoutSlashes(): void
     {
-        $this->assertNull($this->gate('panel.login', '/login/', users: ['alice'], localhost: false, root: 'panel'));
+        $this->assertNull($this->gate('panel.login', '/login/', users: ['user'], localhost: false, root: 'panel'));
     }
 
     public function testDeprecatedPanelOptionsAreStillApplied(): void
@@ -220,7 +220,7 @@ final class PanelServiceLoaderTest extends TestCase
         $eventDispatcher = new EventDispatcher();
 
         $logger = $this->createMock(Logger::class);
-        $logger->expects($this->once())->method('info')->with('Panel user {username} logged in', ['username' => 'alice']);
+        $logger->expects($this->once())->method('info')->with('Panel user {username} logged in', ['username' => 'user']);
 
         $this->panelLoader($this->panelConfig(), $request, $this->createStub(Users::class), $logger, $eventDispatcher)->load($this->panelContainer($request, $this->createStub(Users::class)));
 
@@ -311,9 +311,9 @@ final class PanelServiceLoaderTest extends TestCase
     private function user(string $language): User
     {
         return App::instance()->getService(UserFactory::class)->make([
-            'username' => 'alice',
-            'fullname' => 'Alice',
-            'email'    => 'alice@example.test',
+            'username' => 'user',
+            'fullname' => 'Test User',
+            'email'    => 'user@example.test',
             'role'     => 'admin',
             'language' => $language,
         ]);

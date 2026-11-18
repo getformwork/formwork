@@ -48,7 +48,7 @@ final class LoggerServiceLoaderTest extends TestCase
         unset($logger);
 
         $line = trim(FileSystem::read(TESTS_TMP_PATH . '/app.log'));
-        $this->assertIsArray(json_decode($line, true));
+        $this->assertSame('json message', json_decode($line, true)['message'] ?? null);
     }
 
     public function testTextFormatterCanBeChosen(): void
@@ -127,6 +127,7 @@ final class LoggerServiceLoaderTest extends TestCase
     public function testHandlersWithoutATypeAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown log handler type: ');
 
         $this->load([['path' => TESTS_TMP_PATH . '/app.log']]);
     }

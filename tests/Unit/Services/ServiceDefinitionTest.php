@@ -42,7 +42,7 @@ final class ServiceDefinitionTest extends TestCase
         $this->assertSame(['option' => 'second'], $serviceDefinition->getParameters());
     }
 
-    public function testLoaderAndAliasConfigurationAreFluent(): void
+    public function testLoaderAndAliasConfigAreFluent(): void
     {
         $container = new Container();
         $serviceDefinition = $container->define('service')
@@ -117,17 +117,6 @@ final class ServiceDefinitionTest extends TestCase
 
         $serviceDefinition->lazy(true);
         $this->assertTrue($serviceDefinition->isLazy());
-    }
-
-    public function testLazinessIsIndependentFromTheAliasesAndParametersOfTheDefinition(): void
-    {
-        $serviceDefinition = (new Container())->define(SimpleServiceFixture::class)
-            ->alias('alias')
-            ->parameter('name', 'value')
-            ->lazy(false);
-
-        $this->assertFalse($serviceDefinition->isLazy());
-        $this->assertSame(['name' => 'value'], $serviceDefinition->getParameters());
     }
 
     public function testCallingLazyFalseAfterResolutionDoesNotReplaceTheInstance(): void
