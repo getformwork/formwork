@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 #[CoversTrait(DataCountable::class)]
 final class DataCountableTest extends TestCase
 {
-    public function testCount(): void
+    public function testCountIsTheNumberOfItems(): void
     {
         $data = ['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3'];
         $dataCountableFixture = new DataCountableFixture($data);

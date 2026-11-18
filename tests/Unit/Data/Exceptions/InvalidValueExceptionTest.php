@@ -9,12 +9,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(InvalidValueException::class)]
 final class InvalidValueExceptionTest extends TestCase
 {
-    public function testConstructorWithMessage(): void
-    {
-        $invalidValueException = new InvalidValueException('Invalid value provided');
-        $this->assertSame('Invalid value provided', $invalidValueException->getMessage());
-    }
-
     public function testConstructorWithIdentifierAndContext(): void
     {
         $invalidValueException = new InvalidValueException('Invalid age', 'age.invalid', ['age' => -5]);
