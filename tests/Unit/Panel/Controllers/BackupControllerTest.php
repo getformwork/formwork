@@ -8,7 +8,6 @@ use Formwork\Http\FileResponse;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
-use Formwork\Panel\Controllers\AbstractController;
 use Formwork\Panel\Controllers\BackupController;
 use Formwork\Parsers\Json;
 use Formwork\Router\RouteParams;
@@ -111,8 +110,7 @@ final class BackupControllerTest extends TestCase
         $response = $this->download($name);
 
         $this->assertNotInstanceOf(FileResponse::class, $response);
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
     }
 
     #[DataProvider('escapingNameProvider')]
@@ -122,8 +120,7 @@ final class BackupControllerTest extends TestCase
 
         $response = $this->delete($name);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         $this->assertFileExists($this->secretFile);
         $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'backup.zip'));
     }
@@ -155,8 +152,7 @@ final class BackupControllerTest extends TestCase
     {
         $response = $this->download('missing.zip');
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
     }
 
     public function testDownloadWithAnInvalidEncodingIsReportedAsAnError(): void
@@ -172,8 +168,7 @@ final class BackupControllerTest extends TestCase
     {
         $response = $this->delete('backup.zip');
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('success', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['success']], $response);
         $this->assertFileDoesNotExist(FileSystem::joinPaths($this->backupPath, 'backup.zip'));
         $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'other.zip'));
     }
@@ -182,8 +177,7 @@ final class BackupControllerTest extends TestCase
     {
         $response = $this->delete('missing.zip');
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         $this->assertFileExists(FileSystem::joinPaths($this->backupPath, 'backup.zip'));
     }
 
@@ -245,15 +239,6 @@ final class BackupControllerTest extends TestCase
         $this->controller = $this->makeController(BackupController::class, ['backup' => ['path' => $this->backupPath]]);
 
         return $this->controller;
-    }
-
-    private function lastMessageType(): ?string
-    {
-        $reflectionProperty = new ReflectionProperty(AbstractController::class, 'panel');
-        $panel = $reflectionProperty->getValue($this->controller);
-        $notifications = $panel->notifications();
-
-        return $notifications === [] ? null : end($notifications)['type'];
     }
 
     private function responseFile(FileResponse $fileResponse): string

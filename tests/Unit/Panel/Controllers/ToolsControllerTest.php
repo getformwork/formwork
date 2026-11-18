@@ -4,7 +4,6 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Backup\Backupper;
 use Formwork\Cms\App;
-use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Panel\Controllers\ToolsController;
 use Formwork\Parsers\Json;
@@ -52,8 +51,7 @@ final class ToolsControllerTest extends TestCase
     {
         $response = $this->controller()->index();
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.tools.backups', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.tools.backups'], $response);
     }
 
     public function testRequiredDependenciesExcludePhpAndExtensions(): void

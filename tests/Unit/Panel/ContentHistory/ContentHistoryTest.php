@@ -87,7 +87,7 @@ final class ContentHistoryTest extends TestCase
         $this->assertFalse($history->isJustCreated());
     }
 
-    public function testUpdateAppendsItems(): void
+    public function testUpdateAppendsItemsInOrder(): void
     {
         $history = new ContentHistory(TESTS_TMP_PATH, 3);
 
@@ -100,7 +100,7 @@ final class ContentHistoryTest extends TestCase
         $this->assertSame(2, $history->lastItem()->time());
     }
 
-    public function testDefaultLimitKeepsOnlyTheLastItem(): void
+    public function testDefaultLimitPreservesOnlyTheLastItem(): void
     {
         $history = new ContentHistory(TESTS_TMP_PATH);
 
@@ -112,7 +112,7 @@ final class ContentHistoryTest extends TestCase
         $this->assertSame('second', $history->lastItem()?->user());
     }
 
-    public function testOldestItemsAreDroppedWhenTheLimitIsExceeded(): void
+    public function testOldestItemsAreRemovedWhenTheLimitIsExceeded(): void
     {
         $history = new ContentHistory(TESTS_TMP_PATH, 2);
 
@@ -150,7 +150,7 @@ final class ContentHistoryTest extends TestCase
         yield 'limit of one' => [1, 4, 1];
     }
 
-    public function testNonPositiveLimitNeverKeepsMoreThanTheLimit(): void
+    public function testNonPositiveLimitNeverPreservesMoreThanTheLimit(): void
     {
         $history = new ContentHistory(TESTS_TMP_PATH, 0);
 

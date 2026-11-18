@@ -31,8 +31,8 @@ final class PanelRoutesTest extends TestCase
             }
         }
 
-        $this->createAccount('alice');
-        $this->createAccount('bob', 'editor');
+        $this->createAccount('user');
+        $this->createAccount('another-user', 'editor');
     }
 
     /**
@@ -55,28 +55,28 @@ final class PanelRoutesTest extends TestCase
     {
         yield 'anonymous visitors are sent to the login' => [null, 'GET', '/panel/pages/', ['status' => 302, 'to' => '/panel/login/']];
         yield 'the login page is public' => [null, 'GET', '/panel/login/', ['status' => 200, 'title' => 'Login | Formwork']];
-        yield 'the panel index redirects to the dashboard' => ['alice', 'GET', '/panel/', ['status' => 302, 'to' => '/panel/dashboard/']];
-        yield 'the dashboard' => ['alice', 'GET', '/panel/dashboard/', ['status' => 200, 'title' => 'Dashboard | Formwork']];
-        yield 'the pages redirect to the tree' => ['alice', 'GET', '/panel/pages/', ['status' => 302, 'to' => '/panel/pages/tree/']];
-        yield 'the users' => ['alice', 'GET', '/panel/users/', ['status' => 200, 'title' => 'Users | Formwork']];
-        yield 'logged in users are sent away from the login' => ['alice', 'GET', '/panel/login/', ['status' => 302, 'to' => '/panel/']];
-        yield 'unknown pages' => ['alice', 'GET', '/panel/nope/', ['status' => 404]];
-        yield 'editors can open the dashboard' => ['bob', 'GET', '/panel/dashboard/', ['status' => 200]];
-        yield 'editors cannot open the site options' => ['bob', 'GET', '/panel/options/site/', ['status' => 403]];
-        yield 'editors cannot open the system options' => ['bob', 'GET', '/panel/options/system/', ['status' => 403]];
-        yield 'editors cannot open the backups' => ['bob', 'GET', '/panel/tools/backups/', ['status' => 403]];
-        yield 'editors cannot open the updates' => ['bob', 'GET', '/panel/tools/updates/', ['status' => 403]];
+        yield 'the panel index redirects to the dashboard' => ['user', 'GET', '/panel/', ['status' => 302, 'to' => '/panel/dashboard/']];
+        yield 'the dashboard' => ['user', 'GET', '/panel/dashboard/', ['status' => 200, 'title' => 'Dashboard | Formwork']];
+        yield 'the pages redirect to the tree' => ['user', 'GET', '/panel/pages/', ['status' => 302, 'to' => '/panel/pages/tree/']];
+        yield 'the users' => ['user', 'GET', '/panel/users/', ['status' => 200, 'title' => 'Users | Formwork']];
+        yield 'logged in users are sent away from the login' => ['user', 'GET', '/panel/login/', ['status' => 302, 'to' => '/panel/']];
+        yield 'unknown pages' => ['user', 'GET', '/panel/nope/', ['status' => 404]];
+        yield 'editors can open the dashboard' => ['another-user', 'GET', '/panel/dashboard/', ['status' => 200]];
+        yield 'editors cannot open the site options' => ['another-user', 'GET', '/panel/options/site/', ['status' => 403]];
+        yield 'editors cannot open the system options' => ['another-user', 'GET', '/panel/options/system/', ['status' => 403]];
+        yield 'editors cannot open the backups' => ['another-user', 'GET', '/panel/tools/backups/', ['status' => 403]];
+        yield 'editors cannot open the updates' => ['another-user', 'GET', '/panel/tools/updates/', ['status' => 403]];
     }
 
     public function testWrongPasswordsDoNotLogIn(): void
     {
-        $this->assertSame(200, $this->logIn('alice', 'wrong')->status()->code());
+        $this->assertSame(200, $this->logIn('user', 'wrong')->status()->code());
         $this->assertSame('/panel/login/', $this->describe($this->send('GET', '/panel/dashboard/'))['to'] ?? null);
     }
 
     public function testLoggingOutEndsTheSession(): void
     {
-        $this->assertSame('/panel/', $this->describe($this->logIn('alice'))['to'] ?? null);
+        $this->assertSame('/panel/', $this->describe($this->logIn('user'))['to'] ?? null);
         $this->assertSame(200, $this->send('GET', '/panel/dashboard/')->status()->code());
 
         $this->send('GET', '/panel/logout/');

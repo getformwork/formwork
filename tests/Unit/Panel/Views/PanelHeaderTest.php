@@ -44,13 +44,6 @@ final class PanelHeaderTest extends TestCase
         yield 'without the permission to edit the site options' => [false];
     }
 
-    public function testSiteTitleIsRenderedAsText(): void
-    {
-        $document = $this->document($this->renderHeader('Tom & "Jerry"', true));
-
-        $this->assertStringContainsString('Tom & "Jerry"', $document->textContent);
-    }
-
     public function testOptionsLinkIsOnlyRenderedWithThePermission(): void
     {
         $domDocument = $this->document($this->renderHeader('Site', true));

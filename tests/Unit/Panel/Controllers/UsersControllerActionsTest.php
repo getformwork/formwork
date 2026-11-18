@@ -53,7 +53,7 @@ final class UsersControllerActionsTest extends TestCase
 
         $this->imagesPath = TESTS_TMP_PATH . '/images';
         FileSystem::createDirectory($this->imagesPath);
-        FileSystem::write($this->imagesPath . '/alice.png', 'image');
+        FileSystem::write($this->imagesPath . '/user.png', 'image');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/images/nested');
 
         $this->existingUserImages = glob($this->userImagesPath() . '/*') ?: [];
@@ -71,7 +71,7 @@ final class UsersControllerActionsTest extends TestCase
             }
         }
 
-        foreach (['alice', 'bob', 'carol'] as $username) {
+        foreach (['user', 'another-user', 'third-user'] as $username) {
             if (FileSystem::exists($this->accountFile($username))) {
                 FileSystem::delete($this->accountFile($username));
             }
@@ -109,22 +109,22 @@ final class UsersControllerActionsTest extends TestCase
 
         yield 'index' => ['index', [], [], ['status' => 200]];
         yield 'unknown users cannot be deleted' => ['delete', ['user' => 'missing'], [], ['to' => 'panel.users', 'notices' => ['error']]];
-        yield 'users that cannot be deleted are kept' => ['delete', ['user' => 'bob'], ['canDeleteUser' => false], ['notices' => ['error']], ['bob' => true]];
-        yield 'users can be deleted' => ['delete', ['user' => 'bob'], ['canDeleteUser' => true], ['to' => 'panel.users', 'notices' => ['success']], ['bob' => false, 'alice' => true]];
+        yield 'users that cannot be deleted are kept' => ['delete', ['user' => 'another-user'], ['canDeleteUser' => false], ['notices' => ['error']], ['another-user' => true]];
+        yield 'users can be deleted' => ['delete', ['user' => 'another-user'], ['canDeleteUser' => true], ['to' => 'panel.users', 'notices' => ['success']], ['another-user' => false, 'user' => true]];
         yield 'images of unknown users cannot be deleted' => ['deleteImage', ['user' => 'missing'], [], ['notices' => ['error']]];
-        yield 'default images cannot be deleted' => ['deleteImage', ['user' => 'bob'], ['canChangeOptionsOf' => true], ['to' => 'panel.users.profile', 'notices' => ['error']]];
-        yield 'images of users that cannot be changed are kept' => ['deleteImage', ['user' => 'bob'], ['canChangeOptionsOf' => false], ['to' => 'panel.users.profile', 'notices' => ['error']]];
+        yield 'default images cannot be deleted' => ['deleteImage', ['user' => 'another-user'], ['canChangeOptionsOf' => true], ['to' => 'panel.users.profile', 'notices' => ['error']]];
+        yield 'images of users that cannot be changed are kept' => ['deleteImage', ['user' => 'another-user'], ['canChangeOptionsOf' => false], ['to' => 'panel.users.profile', 'notices' => ['error']]];
         yield 'unknown profiles redirect to the users' => ['profile', ['user' => 'missing'], [], ['to' => 'panel.users', 'notices' => ['error']]];
-        yield 'profiles that cannot be changed are not saved' => ['profile', ['user' => 'bob'], ['canChangeOptionsOf' => false], ['notices' => ['error']]];
-        yield 'profile' => ['profile', ['user' => 'bob'], [], ['status' => 200], [], $get];
+        yield 'profiles that cannot be changed are not saved' => ['profile', ['user' => 'another-user'], ['canChangeOptionsOf' => false], ['notices' => ['error']]];
+        yield 'profile' => ['profile', ['user' => 'another-user'], [], ['status' => 200], [], $get];
     }
 
     public function testImagesAreServedFromTheImagesDirectory(): void
     {
-        $response = $this->controller()->images(new RouteParams(['image' => 'alice.png']));
+        $response = $this->controller()->images(new RouteParams(['image' => 'user.png']));
 
         $this->assertInstanceOf(FileResponse::class, $response);
-        $this->assertSame($this->imagesPath . '/alice.png', $this->responseFile($response));
+        $this->assertSame($this->imagesPath . '/user.png', $this->responseFile($response));
         $this->assertSame('private, max-age=31536000, immutable', $response->headers()->get('Cache-Control'));
     }
 
@@ -141,19 +141,6 @@ final class UsersControllerActionsTest extends TestCase
     {
         yield 'missing' => ['missing.png'];
         yield 'absolute path' => ['/etc/passwd'];
-    }
-
-    #[DataProvider('escapingImageProvider')]
-    public function testImagesCannotLeaveTheImagesDirectory(string $image): void
-    {
-        $this->assertNotInstanceOf(FileResponse::class, $this->controller()->images(new RouteParams(['image' => $image])));
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public static function escapingImageProvider(): iterable
-    {
         yield 'parent directory' => ['../secret.txt'];
         yield 'parent directory with a Windows separator' => ['..\secret.txt'];
         yield 'deep traversal' => [str_repeat('../', 20) . 'etc/passwd'];
@@ -176,9 +163,9 @@ final class UsersControllerActionsTest extends TestCase
 
         $this->assertOutcome(['to' => 'panel.users.profile'] + ($notices === null ? [] : ['notices' => $notices]), $this->saveProfile($submitted, $upload));
 
-        $account = Yaml::parseFile($this->accountFile('alice'));
+        $account = Yaml::parseFile($this->accountFile('user'));
 
-        $this->assertSame($saved, ($account['fullname'] ?? null) === 'Alice Changed');
+        $this->assertSame($saved, ($account['fullname'] ?? null) === 'Changed User');
         $this->assertSame($image === 'png', isset($account['image']));
     }
 
@@ -187,7 +174,7 @@ final class UsersControllerActionsTest extends TestCase
      */
     public static function profileSaveProvider(): iterable
     {
-        $changed = ['fullname' => 'Alice Changed'];
+        $changed = ['fullname' => 'Changed User'];
 
         yield 'with an image' => [$changed, 'png', ['success', 'success'], true];
         yield 'without an image' => [$changed, null, ['success'], true];
@@ -203,16 +190,23 @@ final class UsersControllerActionsTest extends TestCase
 
     public function testUsersCannotChangeTheirOwnRole(): void
     {
-        $this->assertOutcome(['notices' => ['error']], $this->saveProfile(['fullname' => 'Alice Changed', 'role' => 'editor'], null, editor: 'alice'));
+        $this->assertOutcome(['notices' => ['error']], $this->saveProfile(['fullname' => 'Changed User', 'role' => 'editor'], null, editor: 'user'));
 
-        $this->assertArrayNotHasKey('fullname', Yaml::parseFile($this->accountFile('alice')));
+        $this->assertArrayNotHasKey('fullname', Yaml::parseFile($this->accountFile('user')));
+    }
+
+    public function testUsersCanSaveTheirOwnProfileKeepingTheirRole(): void
+    {
+        $this->assertOutcome(['notices' => ['success']], $this->saveProfile(['fullname' => 'Changed User', 'role' => 'admin'], null, editor: 'user'));
+
+        $this->assertSame('Changed User', Yaml::parseFile($this->accountFile('user'))['fullname'] ?? null);
     }
 
     public function testUploadedImagesAreSquared(): void
     {
         $this->saveProfile([], $this->uploadedImage('image', 'avatar.png'));
 
-        $account = Yaml::parseFile($this->accountFile('alice'));
+        $account = Yaml::parseFile($this->accountFile('user'));
         [$width, $height] = getimagesize($this->userImagesPath() . '/' . $account['image']) ?: [0, 0];
 
         $this->assertSame($width, $height);
@@ -222,7 +216,7 @@ final class UsersControllerActionsTest extends TestCase
     /**
      * @param array<string, string> $overrides
      */
-    private function saveProfile(array $overrides, ?UploadedFile $image, string $editor = 'bob'): Response
+    private function saveProfile(array $overrides, ?UploadedFile $image, string $editor = 'another-user'): Response
     {
         $uploader = $this->uploader([$this->userImagesPath()]);
         $site = $this->createStub(Site::class);
@@ -231,14 +225,14 @@ final class UsersControllerActionsTest extends TestCase
         $controller = $this->makeController(
             UsersController::class,
             system: ['users' => ['paths' => ['accounts' => $this->accountsPath(), 'images' => $this->userImagesPath()]]],
-            input: ['fullname' => 'Alice', 'email' => 'alice@example.test', 'language' => 'en', 'role' => 'admin', 'colorScheme' => 'light', ...$overrides],
+            input: ['fullname' => 'Test User', 'email' => 'user@example.test', 'language' => 'en', 'role' => 'admin', 'colorScheme' => 'light', ...$overrides],
             services: [Site::class => $site, FileUploader::class => $uploader],
             user: $this->users()->get($editor),
             server: ['REQUEST_METHOD' => 'POST'],
             files: $image === null ? [] : ['image' => $image],
         );
 
-        return $controller->profile(new RouteParams(['user' => 'alice']), $uploader);
+        return $controller->profile(new RouteParams(['user' => 'user']), $uploader);
     }
 
     /**
@@ -259,7 +253,7 @@ final class UsersControllerActionsTest extends TestCase
 
         $users = [];
 
-        foreach (['alice', 'bob', 'carol'] as $username) {
+        foreach (['user', 'another-user', 'third-user'] as $username) {
             $user = $factory->make([
                 'username'     => $username,
                 'fullname'     => ucfirst($username),

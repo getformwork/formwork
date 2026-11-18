@@ -23,6 +23,8 @@ use ReflectionProperty;
  */
 trait BuildsUploads
 {
+    private int $uploadCount = 0;
+
     /**
      * PHP upload errors for which a file is reported as received, with the language string of the error
      *
@@ -139,6 +141,7 @@ trait BuildsUploads
             FileSystem::createDirectory($directory);
         }
 
-        return $directory . '/' . bin2hex(random_bytes(4)) . '-' . $clientName;
+        // Numbered, so that uploads with the same client name do not overwrite each other
+        return $directory . '/' . ++$this->uploadCount . '-' . $clientName;
     }
 }

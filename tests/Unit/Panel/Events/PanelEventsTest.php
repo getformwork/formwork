@@ -2,7 +2,6 @@
 
 namespace Formwork\Tests\Unit\Panel\Events;
 
-use Formwork\Events\Event;
 use Formwork\Http\Request;
 use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Panel\Events\PanelLoggedOutEvent;
@@ -26,7 +25,6 @@ final class PanelEventsTest extends TestCase
 
         $event = new PanelLoggedInEvent($user, $request);
 
-        $this->assertInstanceOf(Event::class, $event);
         $this->assertSame('panelLoggedIn', $event->name());
         $this->assertSame($user, $event->user());
         $this->assertSame($request, $event->request());

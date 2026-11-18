@@ -4,8 +4,6 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
-use Formwork\Http\RedirectResponse;
-use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Controllers\OptionsController;
 use Formwork\Parsers\Yaml;
 use Formwork\Schemes\Schemes;
@@ -62,8 +60,7 @@ final class OptionsControllerTest extends TestCase
     {
         $response = $this->makeController(OptionsController::class)->index();
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.options.site', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.options.site'], $response);
     }
 
     public function testInvalidSiteOptionsAreNotSaved(): void
@@ -76,9 +73,8 @@ final class OptionsControllerTest extends TestCase
 
             $response = $controller->siteOptions($this->schemes());
 
-            $this->assertSame(ResponseStatus::UnprocessableEntity, $response->status());
+            $this->assertOutcome(['status' => 422, 'notices' => ['error']], $response);
             $this->assertSame($original, Yaml::parseFile($path));
-            $this->assertSame('error', $this->lastNotificationType());
         } finally {
             Yaml::encodeToFile($original, $path);
             $this->closePanelSession();
@@ -103,10 +99,8 @@ final class OptionsControllerTest extends TestCase
 
             $response = $controller->siteOptions($this->schemes());
 
-            $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
-            $this->assertStringEndsWith('/route/panel.options.site', $response->headers()->get('Location'));
+            $this->assertOutcome(['to' => 'panel.options.site', 'notices' => ['success']], $response);
             $this->assertSame('New title', Yaml::parseFile($path)['title']);
-            $this->assertSame('success', $this->lastNotificationType());
 
             clearstatcache();
             $this->assertGreaterThan(1000, filemtime($content));
@@ -176,9 +170,8 @@ final class OptionsControllerTest extends TestCase
 
             $response = $controller->systemOptions($this->schemes());
 
-            $this->assertSame(ResponseStatus::UnprocessableEntity, $response->status());
+            $this->assertOutcome(['status' => 422, 'notices' => ['error']], $response);
             $this->assertSame($original, Yaml::parseFile($path));
-            $this->assertSame('error', $this->lastNotificationType());
         } finally {
             Yaml::encodeToFile($original, $path);
             $this->closePanelSession();
@@ -200,10 +193,8 @@ final class OptionsControllerTest extends TestCase
 
             $response = $controller->systemOptions($this->schemes());
 
-            $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
-            $this->assertStringEndsWith('/route/panel.options.system', $response->headers()->get('Location'));
+            $this->assertOutcome(['to' => 'panel.options.system', 'notices' => ['success']], $response);
             $this->assertSame(15, Yaml::parseFile($path)['backup']['maxFiles']);
-            $this->assertSame('success', $this->lastNotificationType());
 
             clearstatcache();
             $this->assertGreaterThan(1000, filemtime($content));
@@ -258,12 +249,5 @@ final class OptionsControllerTest extends TestCase
     private function schemes(): Schemes
     {
         return App::instance()->getService(Schemes::class);
-    }
-
-    private function lastNotificationType(): ?string
-    {
-        $messages = $this->panelRequest?->session()->messages()->getAll() ?? [];
-
-        return array_key_last($messages);
     }
 }
