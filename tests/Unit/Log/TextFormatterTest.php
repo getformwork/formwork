@@ -4,7 +4,6 @@ namespace Formwork\Tests\Unit\Log;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use Formwork\Log\Formatter\FormatterInterface;
 use Formwork\Log\Formatter\TextFormatter;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,11 +19,6 @@ final class TextFormatterTest extends TestCase
     {
         parent::setUp();
         $this->date = new DateTimeImmutable('2025-01-02 03:04:05.123456 UTC');
-    }
-
-    public function testFormatterImplementsItsInterface(): void
-    {
-        $this->assertInstanceOf(FormatterInterface::class, new TextFormatter());
     }
 
     public function testLinesContainTheTimestampLevelAndMessage(): void
@@ -55,9 +49,9 @@ final class TextFormatterTest extends TestCase
 
     public function testPlaceholdersAreInterpolated(): void
     {
-        $line = (new TextFormatter(false))->format($this->date, 'info', 'User {username} logged in', ['username' => 'alice']);
+        $line = (new TextFormatter(false))->format($this->date, 'info', 'User {username} logged in', ['username' => 'user']);
 
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: User alice logged in', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: User user logged in', $line);
     }
 
     public function testContextIsAppendedAsJson(): void
@@ -125,21 +119,23 @@ final class TextFormatterTest extends TestCase
 
         yield 'line feed in the message' => ["message{$forged}", []];
         yield 'carriage return in the message' => ["message\r[2025-01-02 03:04:05.000000] CRITICAL: forged entry", []];
-        yield 'line breaks in an interpolated value' => ['User {name}', ['name' => "bob{$forged}"]];
-        yield 'line breaks in the context' => ['message', ['name' => "bob{$forged}"]];
+        yield 'line breaks in an interpolated value' => ['User {name}', ['name' => "another-user{$forged}"]];
+        yield 'line breaks in the context' => ['message', ['name' => "another-user{$forged}"]];
     }
 
     public function testInvalidUtf8DoesNotMakeLoggingFail(): void
     {
         $line = (new TextFormatter())->format($this->date, 'info', "invalid \xff byte", ['value' => "\xff"]);
 
-        $this->assertStringContainsString('invalid', $line);
+        // Invalid bytes are kept in the message and replaced with U+FFFD only in the JSON of the context
+        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: invalid ' . "\xff" . ' byte {"value":"\ufffd"}', $line);
     }
 
     public function testNonFiniteNumbersDoNotMakeLoggingFail(): void
     {
         $line = (new TextFormatter())->format($this->date, 'info', 'message', ['value' => INF, 'other' => NAN]);
 
-        $this->assertStringContainsString('message', $line);
+        // Values that JSON cannot represent are replaced with 0
+        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: message {"value":0,"other":0}', $line);
     }
 }

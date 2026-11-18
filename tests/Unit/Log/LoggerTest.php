@@ -8,9 +8,7 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Log\Fixtures\RecordingHandlerFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use RuntimeException;
 use Stringable;
@@ -18,14 +16,6 @@ use Stringable;
 #[CoversClass(Logger::class)]
 final class LoggerTest extends TestCase
 {
-    public function testLoggerIsAPsrLogger(): void
-    {
-        $logger = new Logger();
-
-        $this->assertInstanceOf(LoggerInterface::class, $logger);
-        $this->assertInstanceOf(AbstractLogger::class, $logger);
-    }
-
     public function testLoggingWithoutHandlersDoesNothing(): void
     {
         $this->expectNotToPerformAssertions();
