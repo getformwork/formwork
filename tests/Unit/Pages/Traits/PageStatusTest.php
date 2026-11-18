@@ -36,7 +36,7 @@ final class PageStatusTest extends TestCase
     }
 
     #[DataProvider('validDatesProvider')]
-    public function testStatusFromFrontmatter(string $frontmatter, string $expected): void
+    public function testStatusIsReadFromTheFrontmatter(string $frontmatter, string $expected): void
     {
         $this->assertSame($expected, $this->pageWith($frontmatter)->status());
     }
@@ -57,38 +57,50 @@ final class PageStatusTest extends TestCase
         $this->assertFalse($this->pageWith('published: false')->isPublished());
     }
 
-    // public function testUnquotedYamlDatesAreAccepted(): void
-    // {
-    //     // YAML turns unquoted dates into timestamps, which is how most people write them by hand
-    //     $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $this->pageWith('publishDate: 2099-01-01')->status());
-    //     $this->assertSame(Page::PAGE_STATUS_PUBLISHED, $this->pageWith('publishDate: 2000-01-01')->status());
-    //     $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $this->pageWith('unpublishDate: 2000-01-01')->status());
-    // }
+    public function testUnquotedYamlDatesAreAccepted(): void
+    {
+        /** @todo */
+        $this->markTestSkipped('Unquoted YAML dates are parsed as timestamps, which are rejected as invalid publish dates.');
 
-    // public function testNumericTimestampsAreAccepted(): void
-    // {
-    //     $this->assertSame(Page::PAGE_STATUS_PUBLISHED, $this->pageWith('publishDate: 946684800')->status());
-    // }
+        // @phpstan-ignore deadCode.unreachable
+        $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $this->pageWith('publishDate: 2099-01-01')->status());
+        $this->assertSame(Page::PAGE_STATUS_PUBLISHED, $this->pageWith('publishDate: 2000-01-01')->status());
+        $this->assertSame(Page::PAGE_STATUS_NOT_PUBLISHED, $this->pageWith('unpublishDate: 2000-01-01')->status());
+    }
 
-    // public function testUnparsableDatesDoNotBreakThePage(): void
-    // {
-    //     $page = $this->pageWith('publishDate: "next tuesday-ish maybe"');
+    public function testNumericTimestampsAreAccepted(): void
+    {
+        /** @todo */
+        $this->markTestSkipped('Numeric timestamps are rejected as invalid publish dates.');
 
-    //     try {
-    //         $status = $page->status();
-    //     } catch (UnexpectedValueException) {
-    //         $this->addToAssertionCount(1);
-    //         return;
-    //     }
+        // @phpstan-ignore deadCode.unreachable
+        $this->assertSame(Page::PAGE_STATUS_PUBLISHED, $this->pageWith('publishDate: 946684800')->status());
+    }
 
-    //     $this->assertContains($status, [Page::PAGE_STATUS_PUBLISHED, Page::PAGE_STATUS_NOT_PUBLISHED]);
-    // }
+    public function testUnparsableDatesDoNotBreakThePage(): void
+    {
+        /** @todo */
+        $this->markTestSkipped('Unparsable dates throw an InvalidArgumentException.');
+
+        // @phpstan-ignore deadCode.unreachable
+        $page = $this->pageWith('publishDate: "next tuesday-ish maybe"');
+
+        try {
+            $status = $page->status();
+        } catch (UnexpectedValueException) {
+            $this->addToAssertionCount(1);
+            return;
+        }
+
+        $this->assertContains($status, [Page::PAGE_STATUS_PUBLISHED, Page::PAGE_STATUS_NOT_PUBLISHED]);
+    }
 
     public function testDateArraysAreRejectedExplicitly(): void
     {
         $page = $this->pageWith("publishDate:\n  - 2000-01-01");
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid publish date');
 
         $page->status();
     }

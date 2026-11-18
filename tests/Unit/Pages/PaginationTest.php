@@ -103,6 +103,7 @@ final class PaginationTest extends TestCase
         $pagination = new Pagination($this->fixtureSite->pages(), 100, $this->fixtureSite, $router);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Cannot get the route for page 2, the pagination has only 1 pages');
         $pagination->route(2);
     }
 }

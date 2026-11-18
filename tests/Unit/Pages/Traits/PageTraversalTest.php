@@ -167,7 +167,7 @@ final class PageTraversalTest extends TestCase
         $this->assertSame(1, $this->page('/second/child-b')->index());
     }
 
-    public function testNeighbouringSiblings(): void
+    public function testNeighbouringSiblingsAreThePreviousAndNextOnes(): void
     {
         $page = $this->page('/second');
 
@@ -191,7 +191,7 @@ final class PageTraversalTest extends TestCase
         $this->assertNull($this->page('/second/child-b')->nextSibling());
     }
 
-    public function testSiteTraversal(): void
+    public function testSiteIsTheRootOfTheTree(): void
     {
         $this->assertSame(['/first/', '/second/', '/third/'], array_values($this->site->children()->everyItem()->route()->toArray()));
         $this->assertCount(6, $this->site->descendants());

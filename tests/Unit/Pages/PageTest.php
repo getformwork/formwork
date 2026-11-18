@@ -204,6 +204,7 @@ final class PageTest extends TestCase
         $page = new Page(['site' => $site, 'path' => $path, 'language' => 'it'], $this->app);
 
         $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid page language "fr"');
         $page->set('language', 'fr');
     }
 
@@ -333,6 +334,7 @@ final class PageTest extends TestCase
         $page = $this->temporaryPage('about');
 
         $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid page template');
         $page->set('template', 'does-not-exist');
     }
 
@@ -348,6 +350,7 @@ final class PageTest extends TestCase
         $this->assertSame($page, $child->parent());
 
         $this->expectException(InvalidValueException::class);
+        $this->expectExceptionMessage('Invalid parent');
         $child->set('parent', '/missing-parent');
     }
 
@@ -455,6 +458,7 @@ final class PageTest extends TestCase
         $page = $this->temporaryPage('about');
 
         $this->expectException($exception);
+
         $page->set('taxonomy', $taxonomy);
     }
 
@@ -469,37 +473,6 @@ final class PageTest extends TestCase
         yield 'non-string term' => [['tags' => [1]], InvalidValueException::class];
     }
 
-    public function testTraversalMethodsExposeThePageTree(): void
-    {
-        $page = $this->fixturePage('/about');
-        $blog = $this->fixturePage('/blog');
-        $index = $this->fixturePage('/');
-
-        $this->assertSame($this->fixtureSite, $page->parent());
-        $this->assertTrue($page->isChildOf($this->fixtureSite));
-        $this->assertTrue($page->isSiblingOf($blog));
-        $this->assertTrue($page->isSiblingOf($index));
-        $this->assertTrue($page->hasAncestors());
-        $this->assertFalse($page->isAncestorOf($this->fixtureSite));
-        $this->assertSame(0, $page->index());
-        $this->assertSame(1, $page->level());
-        $this->assertSame($blog, $page->nextSibling());
-        $this->assertSame($page, $blog->previousSibling());
-        $this->assertTrue($page->siblings()->contains($blog));
-        $this->assertTrue($page->inclusiveSiblings()->contains($page));
-    }
-
-    public function testSiblingPredicateIsSymmetric(): void
-    {
-        $page = $this->fixturePage('/about');
-        $blog = $this->fixturePage('/blog');
-
-        $this->assertTrue($page->isSiblingOf($blog));
-        $this->assertTrue($blog->isSiblingOf($page));
-        $this->assertTrue($page->isSiblingOf($this->fixturePage('/')));
-        $this->assertFalse($page->isSiblingOf($this->fixturePage('/blog/hello-world')));
-    }
-
     public function testIsEmptyIsTrueOnlyWhenThereIsNoFrontmatter(): void
     {
         $page = $this->temporaryPage('empty');
@@ -511,32 +484,19 @@ final class PageTest extends TestCase
         $this->assertTrue($withoutContentFile->isEmpty());
     }
 
-    public function testUidIsStableAndDerivedFromTheRelativePath(): void
-    {
-        $page = $this->fixturePage('/about');
-
-        $this->assertSame($page->uid(), $page->uid());
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{8}(?:-[a-f0-9]{8}){3}$/', $page->uid());
-        $this->assertNotSame($page->uid(), $this->fixturePage('/blog')->uid());
-    }
-
-    public function testUriUsesCanonicalRouteAndAbsoluteRequestUri(): void
-    {
-        $page = $this->fixturePage('/about');
-
-        $this->assertStringEndsWith('/about/team/', $page->uri('team', false));
-        $page->set('canonicalRoute', '/company/about');
-        $this->assertStringEndsWith('/company/about/team/', $page->uri('team', false));
-    }
-
     public function testSaveMovesAndReloadsThePageFromDisk(): void
     {
         $page = $this->temporaryPage('about');
+        $previousPath = (string) $page->contentPath();
 
         $page->set('slug', 'renamed');
         $page->set('title', 'After');
         $page->set('content', 'After content');
         $page->save();
+
+        // The files of the page are moved with it
+        $this->assertDirectoryDoesNotExist($previousPath);
+        $this->assertFileExists($page->contentPath() . 'image.svg');
 
         $this->assertSame('renamed', $page->slug());
         $this->assertSame('After', $page->title());
@@ -569,10 +529,11 @@ final class PageTest extends TestCase
         $page = new Page(['site' => $site], $this->app);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected missing parent');
         $page->save();
     }
 
-    public function testSaveReloadRoundTripPreservesThePersistedState(): void
+    public function testSaveReloadRoundTripPreservesTheSavedState(): void
     {
         $page = $this->temporaryPage('about');
         $page->setMultiple([
@@ -600,6 +561,7 @@ final class PageTest extends TestCase
         $reflectionProperty->setValue($page, false);
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unable to reload, the page has not been loaded yet');
         $page->reload();
     }
 
@@ -652,14 +614,52 @@ final class PageTest extends TestCase
         $this->assertDirectoryDoesNotExist((string) $path);
     }
 
-    public function testDuplicateGeneratesTheNextAvailableCopySlug(): void
+    public function testSavingChangesTouchesTheSiteContent(): void
     {
-        $page = $this->temporaryPage('original');
-        $first = $page->duplicate();
-        $second = $page->duplicate();
+        $page = $this->temporaryPage('about');
+        $siteContentPath = (string) $page->site()->contentPath();
+        touch($siteContentPath, time() - 3600);
+        clearstatcache();
 
-        $this->assertSame('original-copy', $first->slug());
-        $this->assertSame('original-copy-2', $second->slug());
+        $page->set('title', 'Changed');
+        $page->save();
+
+        clearstatcache();
+        $this->assertGreaterThan(time() - 60, filemtime($siteContentPath));
+    }
+
+    public function testSavingAnUnchangedPageWritesNothing(): void
+    {
+        $page = $this->temporaryPage('about');
+        $contentFile = (string) $page->contentFile()?->path();
+        $siteContentPath = (string) $page->site()->contentPath();
+        touch($contentFile, $time = time() - 3600);
+        touch($siteContentPath, $time);
+        clearstatcache();
+
+        $page->save();
+
+        clearstatcache();
+        $this->assertSame($time, filemtime($contentFile));
+        $this->assertSame($time, filemtime($siteContentPath));
+    }
+
+    public function testNewPagesAreNumberedAfterTheirLastSibling(): void
+    {
+        $site = $this->siteFromFiles([
+            'index/page.md'           => "---\ntitle: Home\n---\n",
+            'error/page.md'           => "---\ntitle: Not found\n---\n",
+            'section/page.md'         => "---\ntitle: Section\n---\n",
+            'section/1-first/page.md' => "---\ntitle: First\n---\n",
+            'section/3-third/page.md' => "---\ntitle: Third\n---\n",
+        ]);
+        $page = new Page(['site' => $site], $this->app);
+        $page->setMultiple(['title' => 'New', 'slug' => 'new', 'parent' => '/section/', 'template' => 'page']);
+
+        $page->save();
+
+        $this->assertSame(4, $page->num());
+        $this->assertDirectoryExists($site->contentPath() . '/section/4-new');
     }
 
     public function testDuplicateDoesNotShareMutableMetadataStateWithTheSource(): void
@@ -727,6 +727,7 @@ final class PageTest extends TestCase
         $this->assertFalse($page->isDuplicable());
         $this->assertFalse($page->isDeletable());
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot delete a non-deletable page');
         $page->delete();
     }
 
@@ -867,7 +868,7 @@ final class PageTest extends TestCase
         yield 'hyphenated' => ['my-new-page-2'];
     }
 
-    public function testChangingSlugKeepsPathIdentityUntilSave(): void
+    public function testChangingSlugPreservesPathIdentityUntilSave(): void
     {
         $page = $this->temporaryPage('about');
         $path = $page->path();

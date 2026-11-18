@@ -47,7 +47,8 @@ final class ViewTest extends TestCase
     {
         $view = $this->view('plain', ['name' => 'World']);
 
-        $this->assertSame($view->render(), $view->render());
+        $this->assertSame('Hello World', $view->render());
+        $this->assertSame('Hello World', $view->render());
     }
 
     public function testMissingViewsAreReported(): void
@@ -124,7 +125,7 @@ final class ViewTest extends TestCase
         yield 'invalid unicode' => ["a\xffb", "a\u{FFFD}b"];
     }
 
-    public function testViewWithoutEscapingKeepsMarkup(): void
+    public function testViewWithoutEscapingPreservesMarkup(): void
     {
         $view = new View('plain', ['name' => '<b>'], self::VIEWS, ['escape' => static fn(string $text): string => $text]);
 

@@ -60,7 +60,7 @@ final class ViewFactoryTest extends TestCase
         $this->assertSame('Hello &lt;b&gt;', $factory->make('plain', ['name' => '<b>'])->render());
     }
 
-    public function testSingleMethodsCanBeAddedLater(): void
+    public function testASingleClosureWithoutANameLeavesTheMethodsUnchanged(): void
     {
         $factory = $this->factory();
         $factory->setMethods(static fn(): string => 'ignored');

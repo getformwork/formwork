@@ -58,7 +58,7 @@ final class PageControllerTest extends TestCase
         parent::setUp();
 
         $this->site = $this->siteFromFiles([
-            'index/index.md'    => "---\ntitle: Home\n---\nHome content\n",
+            'index/page.md'     => "---\ntitle: Home\n---\nHome content\n",
             'about/page.md'     => "---\ntitle: About us\n---\nAbout content\n",
             'about/diagram.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
             'draft/page.md'     => "---\ntitle: Draft\npublished: false\n---\nDraft content\n",
@@ -67,7 +67,7 @@ final class PageControllerTest extends TestCase
             'hidden/secret.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
             'canonical/page.md' => "---\ntitle: Canonical\ncanonicalRoute: /about/\n---\nCanonical content\n",
             'blog/blog.md'      => "---\ntitle: Blog\n---\nBlog content\n",
-            'error/error.md'    => "---\ntitle: Not found\n---\nThis page does not exist\n",
+            'error/page.md'     => "---\ntitle: Not found\nroutable: false\nresponseStatus: 404\n---\nThis page does not exist\n",
         ]);
 
         $this->cache = new ArrayCache();
@@ -98,7 +98,7 @@ final class PageControllerTest extends TestCase
         $response = $this->load(null);
 
         $this->assertSame(ResponseStatus::OK, $response->status());
-        $this->assertNotSame($this->load('/about/')->content(), $response->content());
+        $this->assertStringContainsString('Home content', $response->content());
     }
 
     public function testUnpublishedPagesAreNotRevealed(): void
@@ -114,6 +114,7 @@ final class PageControllerTest extends TestCase
         $response = $this->load('/does-not-exist/');
 
         $this->assertSame(ResponseStatus::NotFound, $response->status());
+        $this->assertStringContainsString('This page does not exist', $response->content());
     }
 
     public function testErrorActionRendersTheErrorPage(): void
@@ -176,14 +177,14 @@ final class PageControllerTest extends TestCase
         $this->assertStringEndsWith('/about/', (string) $response->headers()->get('Location'));
     }
 
-    public function testPaginationIsRefusedForPagesThatDoNotAllowIt(): void
+    public function testPaginationIsRejectedForPagesThatDoNotAllowIt(): void
     {
         $response = $this->load('/about/', ['paginationPage' => '2']);
 
         $this->assertSame(ResponseStatus::NotFound, $response->status());
     }
 
-    public function testTaxonomyRoutesAreRefusedForPagesThatDoNotAllowThem(): void
+    public function testTaxonomyRoutesAreRejectedForPagesThatDoNotAllowThem(): void
     {
         $response = $this->load('/about/', ['taxonomy' => 'tags', 'taxonomyTerm' => 'php']);
 
@@ -237,6 +238,7 @@ final class PageControllerTest extends TestCase
         $response = $this->load('logo.svg');
 
         $this->assertInstanceOf(FileResponse::class, $response);
+        $this->assertSame($this->site->contentPath() . 'index/logo.svg', $this->fileOf($response));
     }
 
     // Statistics
@@ -283,12 +285,13 @@ final class PageControllerTest extends TestCase
         $this->assertSame(1, $this->renderedPages);
     }
 
-    public function testCacheIsClearedWhenAScheduledPageIsPublished(): void
+    #[DataProvider('scheduledDateProvider')]
+    public function testCacheIsClearedWhenAScheduledDateIsReached(string $dateField, bool $published): void
     {
         $contentPath = (string) $this->site->contentPath();
         FileSystem::createDirectory($contentPath . '/scheduled');
-        FileSystem::write($contentPath . '/scheduled/page.md', "---\ntitle: Scheduled\npublishDate: '" . date('Y-m-d H:i', time() - 3600) . "'\n---\nScheduled content\n");
-        // The content was last changed before the page was published
+        FileSystem::write($contentPath . '/scheduled/page.md', "---\ntitle: Scheduled\n{$dateField}: '" . date('Y-m-d H:i', time() - 3600) . "'\n---\nScheduled content\n");
+        // The content was last changed before the scheduled date
         foreach (FileSystem::listRecursive($contentPath, FileSystem::LIST_ALL) as $item) {
             touch($contentPath . '/' . $item, time() - 7200);
         }
@@ -297,13 +300,22 @@ final class PageControllerTest extends TestCase
 
         $response = $this->load('/scheduled/', system: ['cache' => ['stores' => ['pages' => ['enabled' => true]]]]);
 
-        $this->assertStringContainsString('Scheduled content', $response->content());
+        $this->assertSame($published, str_contains($response->content(), 'Scheduled content'));
         $this->assertFalse($this->cache->has('other'));
         clearstatcache();
         $this->assertGreaterThan(time() - 60, filemtime($contentPath));
     }
 
-    public function testCachingIsOffByDefault(): void
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function scheduledDateProvider(): iterable
+    {
+        yield 'publication' => ['publishDate', true];
+        yield 'unpublication' => ['unpublishDate', false];
+    }
+
+    public function testPagesAreNotCachedWhenCachingIsDisabled(): void
     {
         $this->load('/about/', system: ['cache' => ['stores' => ['pages' => ['enabled' => false]]]]);
         $this->load('/about/', system: ['cache' => ['stores' => ['pages' => ['enabled' => false]]]]);
@@ -314,10 +326,16 @@ final class PageControllerTest extends TestCase
 
     public function testCachedPagesCarryValidators(): void
     {
+        $contentPath = (string) $this->site->contentPath();
+        touch($contentPath . '/about/page.md', time() - 7200);
+        // The site changed after the page, so it determines the last modified time
+        touch($contentPath, $siteTime = time() - 3600);
+        clearstatcache();
+
         $response = $this->load('/about/', system: ['cache' => ['stores' => ['pages' => ['enabled' => true]]]]);
 
         $this->assertMatchesRegularExpression('/^"[0-9a-f]{64}"$/', (string) $response->headers()->get('ETag'));
-        $this->assertNotNull($response->headers()->get('Last-Modified'));
+        $this->assertSame(gmdate('D, d M Y H:i:s T', $siteTime), $response->headers()->get('Last-Modified'));
     }
 
     public function testRequestsWithAQueryStringAreNotCached(): void

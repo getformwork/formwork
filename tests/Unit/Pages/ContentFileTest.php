@@ -38,6 +38,7 @@ final class ContentFileTest extends TestCase
         FileSystem::write($path, 'not a page');
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid page format');
         new ContentFile($path);
     }
 }

@@ -121,7 +121,7 @@ final class AbstractControllerTest extends TestCase
         $this->assertSame(App::instance()->uri()->path('/home/'), $outside->headers()->get('Location'));
     }
 
-    public function testRedirectToRefererKeepsStatusAndHeaders(): void
+    public function testRedirectToRefererPreservesStatusAndHeaders(): void
     {
         $redirectResponse = $this->controller(server: ['REQUEST_URI' => '/current/', 'HTTP_REFERER' => 'http://localhost/previous/'])->redirectBack(ResponseStatus::SeeOther, ['X-Custom' => 'value']);
 
@@ -172,6 +172,7 @@ final class AbstractControllerTest extends TestCase
     public function testNonExistentClassesCannotBeForwardedTo(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Controllers must extend');
 
         $this->controller()->forwardTo('Nothing\Like\This', 'anything');
     }

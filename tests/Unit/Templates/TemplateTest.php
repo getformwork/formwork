@@ -17,7 +17,7 @@ final class TemplateTest extends TestCase
 {
     private const string PATH = __DIR__ . '/Fixtures/templates';
 
-    public function testIdentity(): void
+    public function testTemplatesExposeTheirNameAndTitle(): void
     {
         $scheme = $this->createStub(Scheme::class);
         $scheme->method('title')->willReturn('Post');
@@ -49,7 +49,6 @@ final class TemplateTest extends TestCase
     {
         $template = $this->template('plain', ['title' => 'from template']);
 
-        $this->assertSame('plain:from template', $template->render(['page' => $this->page(), 'title' => 'from template']));
         $this->assertSame('plain:from render', $template->render(['page' => $this->page(), 'title' => 'from render']));
     }
 

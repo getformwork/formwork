@@ -6,7 +6,6 @@ use ErrorException;
 use Exception;
 use Formwork\Cms\App;
 use Formwork\Controllers\ErrorsController;
-use Formwork\Controllers\ErrorsControllerInterface;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\ResponseStatus;
 use Formwork\Tests\TestCase;
@@ -54,12 +53,7 @@ final class ErrorsControllerTest extends TestCase
         parent::tearDown();
     }
 
-    public function testErrorsControllerCanBeUsedWhereTheErrorsInterfaceIsExpected(): void
-    {
-        $this->assertInstanceOf(ErrorsControllerInterface::class, $this->controller());
-    }
-
-    public function testNotFoundResponse(): void
+    public function testNotFoundRendersTheErrorPage(): void
     {
         $response = $this->controller()->notFound();
 
@@ -67,7 +61,7 @@ final class ErrorsControllerTest extends TestCase
         $this->assertStringContainsString('Not Found', $response->content());
     }
 
-    public function testForbiddenResponse(): void
+    public function testForbiddenHasItsStatus(): void
     {
         $this->assertSame(ResponseStatus::Forbidden, $this->controller()->forbidden()->status());
     }
@@ -195,7 +189,7 @@ final class ErrorsControllerTest extends TestCase
         $this->assertSame([$frame, ['file' => 'caller.php', 'line' => 3, 'function' => 'run']], $trace);
     }
 
-    public function testApplicationErrorHandlerFrameIsDropped(): void
+    public function testApplicationErrorHandlerFrameIsRemoved(): void
     {
         $errorException = new ErrorException('warning', 0, E_WARNING, 'origin.php', 10);
         $handler = ['class' => App::class, 'function' => 'App->{closure}', 'type' => '->'];

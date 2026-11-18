@@ -72,6 +72,7 @@ final class AppTest extends TestCase
     public function testOnlyOneApplicationCanBeCreated(): void
     {
         $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('the class is a singleton and cannot be instiantated again');
 
         new App();
     }
@@ -177,6 +178,33 @@ final class AppTest extends TestCase
         yield 'a missing page' => ['/missing/', ResponseStatus::NotFound, 'Page Not Found content'];
     }
 
+    public function testResponsesOfHeadRequestsHaveNoBody(): void
+    {
+        $request = new Request(server: ['REQUEST_METHOD' => 'HEAD', 'REQUEST_URI' => '/about/', 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+
+        try {
+            $response = App::instance()->handle($request);
+
+            $this->assertSame(ResponseStatus::OK, $response->status());
+            $this->assertSame('', $response->content());
+        } finally {
+            $this->reload();
+        }
+    }
+
+    public function testPanelRoutesAreLoaded(): void
+    {
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/panel/login/', 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'localhost', 'SERVER_PORT' => '80']);
+
+        try {
+            App::instance()->handle($request);
+
+            $this->assertSame('panel.login', App::instance()->router()->current()?->getName());
+        } finally {
+            $this->reload();
+        }
+    }
+
     public function testFilesWithCharactersNotAllowedInUrisAreServedFromTheirUri(): void
     {
         $app = App::instance();
@@ -266,28 +294,27 @@ final class AppTest extends TestCase
 
     // Service accessors
 
-    public function testTypedServiceAccessors(): void
+    public function testTypedServiceAccessorsReturnTheSharedServices(): void
     {
         $app = App::instance();
 
-        $this->assertInstanceOf(Config::class, $app->config());
-        $this->assertInstanceOf(Router::class, $app->router());
-        $this->assertInstanceOf(UriGenerator::class, $app->uri());
-        $this->assertInstanceOf(Site::class, $app->site());
-        $this->assertInstanceOf(Request::class, $app->request());
-        $this->assertInstanceOf(Schemes::class, $app->schemes());
-        $this->assertInstanceOf(Translations::class, $app->translations());
-        $this->assertInstanceOf(Assets::class, $app->assets());
-        $this->assertInstanceOf(Panel::class, $app->panel());
-        $this->assertInstanceOf(EventDispatcher::class, $app->events());
-        $this->assertInstanceOf(Plugins::class, $app->plugins());
+        $this->assertSame($app->getService(Config::class), $app->config());
+        $this->assertSame($app->getService(Router::class), $app->router());
+        $this->assertSame($app->getService(UriGenerator::class), $app->uri());
+        $this->assertSame($app->getService(Site::class), $app->site());
+        $this->assertSame($app->getService(Request::class), $app->request());
+        $this->assertSame($app->getService(Schemes::class), $app->schemes());
+        $this->assertSame($app->getService(Translations::class), $app->translations());
+        $this->assertSame($app->getService(Assets::class), $app->assets());
+        $this->assertSame($app->getService(Panel::class), $app->panel());
+        $this->assertSame($app->getService(EventDispatcher::class), $app->events());
+        $this->assertSame($app->getService(Plugins::class), $app->plugins());
     }
 
-    public function testAccessorsReturnTheSharedServices(): void
+    public function testServicesAreAlsoAvailableByTheirAlias(): void
     {
         $app = App::instance();
 
-        $this->assertSame($app->config(), $app->getService(Config::class));
         $this->assertSame($app->config(), $app->getService('config'));
         $this->assertSame($app->site(), $app->getService('site'));
         $this->assertSame($app->events(), $app->getService('events'));
@@ -317,7 +344,7 @@ final class AppTest extends TestCase
         App::instance()->container();
     }
 
-    public function testServiceAvailability(): void
+    public function testServicesCanBeCheckedByClassOrAlias(): void
     {
         $app = App::instance();
 
@@ -388,6 +415,7 @@ final class AppTest extends TestCase
             $this->fail('Warnings must be converted to exceptions.');
         } catch (ErrorException $exception) {
             $this->assertSame('Something happened', $exception->getMessage());
+            $this->assertSame(0, $exception->getCode());
             $this->assertSame(E_WARNING, $exception->getSeverity());
             $this->assertSame('/path/file.php', $exception->getFile());
             $this->assertSame(12, $exception->getLine());

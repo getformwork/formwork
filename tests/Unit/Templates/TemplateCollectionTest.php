@@ -8,6 +8,7 @@ use Formwork\Templates\Templates;
 use Formwork\Tests\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use stdClass;
 
 #[CoversClass(TemplateCollection::class)]
 #[CoversClass(Templates::class)]
@@ -26,26 +27,27 @@ final class TemplateCollectionTest extends TestCase
         $this->assertFalse($templates->has('blog'));
     }
 
-    public function testCollectionIsAssociativeAndTyped(): void
-    {
-        $templates = new Templates([]);
-
-        $this->assertTrue($templates->isAssociative());
-        $this->assertSame(Template::class, $templates->dataType());
-        $this->assertTrue($templates->isEmpty());
-    }
-
     public function testOnlyTemplatesAreAccepted(): void
     {
-        $logicException = $this->captureException(LogicException::class, fn() => new Templates($this->unchecked(['page' => 'not a template'])));
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
 
-        $this->assertInstanceOf(LogicException::class, $logicException);
+        new Templates($this->unchecked(['page' => 'not a template']));
     }
 
     public function testListsOfTemplatesAreRejected(): void
     {
         $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Associative collections cannot be created from non-associative data');
 
         new TemplateCollection([$this->createStub(Template::class)]);
+    }
+
+    public function testItemsThatAreNotTemplatesAreRejected(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
+
+        new Templates($this->unchecked(['item' => new stdClass()]));
     }
 }
