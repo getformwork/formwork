@@ -53,6 +53,7 @@ final class ModalFactoryTest extends TestCase
     public function testModalWithoutADefinitionIsRejected(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected missing title');
 
         $this->factory()->make('missing');
     }

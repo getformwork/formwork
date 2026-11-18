@@ -3,7 +3,6 @@
 namespace Formwork\Tests\Unit\Log;
 
 use Formwork\Log\Log;
-use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -32,13 +31,6 @@ final class LogTest extends TestCase
         $this->assertCount(1, $messages);
         $this->assertStringContainsString('is deprecated since Formwork 2.3.0', $messages[0]);
         $this->assertStringContainsString('Logger', $messages[0]);
-    }
-
-    public function testLogIsARegistry(): void
-    {
-        $this->captureDeprecations(static fn(): bool => class_exists(Log::class));
-
-        $this->assertInstanceOf(Registry::class, new Log($this->file));
     }
 
     public function testMessagesAreStoredByTimestamp(): void

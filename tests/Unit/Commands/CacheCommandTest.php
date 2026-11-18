@@ -2,11 +2,16 @@
 
 namespace Formwork\Tests\Unit\Commands;
 
+use Formwork\Cache\CacheManager;
+use Formwork\Cms\App;
 use Formwork\Commands\CacheCommand;
+use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesApplication;
+use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\SimpleCache\CacheInterface;
 
 #[CoversClass(CacheCommand::class)]
 #[UsesApplication]
@@ -75,5 +80,104 @@ final class CacheCommandTest extends TestCase
         yield 'clear without a type' => [['clear'], ['All caches cleared.']];
         yield 'stats' => [['stats', 'images'], ['Images Cache', 'Items number:']];
         yield 'stats of all the caches' => [['stats', 'all'], ['Config Cache', 'Images Cache', 'Pages Cache']];
+    }
+
+    /**
+     * @param list<'config'|'images'|'pages'> $cleared
+     */
+    #[DataProvider('clearedCachesProvider')]
+    public function testClearEmptiesOnlyTheGivenCaches(string $type, array $cleared): void
+    {
+        $caches = $this->fillCaches();
+
+        $this->assertCommand(CacheCommand::class, ['clear', $type], 0);
+
+        $this->assertSame(!in_array('config', $cleared, true), FileSystem::exists($caches['config']), 'config cache');
+        $this->assertSame(!in_array('images', $cleared, true), FileSystem::exists($caches['images']), 'images cache');
+        $this->assertSame(!in_array('pages', $cleared, true), $this->pagesCache()->has('page'), 'pages cache');
+    }
+
+    /**
+     * @return iterable<string, array{string, list<'config'|'images'|'pages'>}>
+     */
+    public static function clearedCachesProvider(): iterable
+    {
+        yield 'all' => ['all', ['config', 'images', 'pages']];
+        yield 'config' => ['config', ['config']];
+        yield 'images' => ['images', ['images']];
+        yield 'pages' => ['pages', ['pages']];
+    }
+
+    /**
+     * @param list<string> $arguments
+     */
+    #[DataProvider('pagesInvalidationProvider')]
+    public function testPagesCacheIsInvalidatedByTouchingTheContent(array $arguments): void
+    {
+        $app = App::instance();
+        $app->load();
+        $contentPath = (string) $app->site()->contentPath();
+        touch($contentPath, time() - 3600);
+        clearstatcache();
+
+        $this->assertCommand(CacheCommand::class, $arguments, 0);
+
+        clearstatcache();
+        $this->assertGreaterThan(time() - 60, filemtime($contentPath));
+    }
+
+    /**
+     * @return iterable<string, array{list<string>}>
+     */
+    public static function pagesInvalidationProvider(): iterable
+    {
+        yield 'invalidate all' => [['invalidate', 'all']];
+        yield 'invalidate pages' => [['invalidate', 'pages']];
+        yield 'clear pages' => [['clear', 'pages']];
+    }
+
+    public function testStatsCountTheItemsOfTheCaches(): void
+    {
+        $this->fillCaches();
+        $this->pagesCache()->set('other', 'content');
+
+        $this->assertCommand(CacheCommand::class, ['stats', 'all'], 0, [
+            '/Config Cache\s+Items number: 1\b/',
+            '/Images Cache\s+Items number: 1\b/',
+            '/Pages Cache\s+Items number: 2\b/',
+        ]);
+    }
+
+    /**
+     * Put an item in the config, images and pages caches, returning the files of the first two
+     *
+     * @return array{config: string, images: string}
+     */
+    private function fillCaches(): array
+    {
+        $app = App::instance();
+        $app->load();
+
+        ConfigServiceLoader::clearCache($app->rootPath());
+        $config = $app->rootPath() . '/cache/config/config.test.php';
+        FileSystem::write($config, '<?php return [];');
+
+        $imagesPath = $app->config()->getString('system.images.processPath');
+        if (FileSystem::exists($imagesPath)) {
+            FileSystem::delete($imagesPath, recursive: true);
+        }
+        $images = "{$imagesPath}/image.jpg";
+        FileSystem::createDirectory($imagesPath, recursive: true);
+        FileSystem::write($images, 'image');
+
+        $this->pagesCache()->clear();
+        $this->pagesCache()->set('page', 'content');
+
+        return ['config' => $config, 'images' => $images];
+    }
+
+    private function pagesCache(): CacheInterface
+    {
+        return App::instance()->getService(CacheManager::class)->get('pages');
     }
 }

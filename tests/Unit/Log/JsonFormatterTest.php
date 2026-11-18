@@ -3,7 +3,6 @@
 namespace Formwork\Tests\Unit\Log;
 
 use DateTimeImmutable;
-use Formwork\Log\Formatter\FormatterInterface;
 use Formwork\Log\Formatter\JsonFormatter;
 use Formwork\Tests\TestCase;
 use LogicException;
@@ -21,11 +20,6 @@ final class JsonFormatterTest extends TestCase
         $this->date = new DateTimeImmutable('2025-01-02 03:04:05.123456 UTC');
     }
 
-    public function testFormatterImplementsItsInterface(): void
-    {
-        $this->assertInstanceOf(FormatterInterface::class, new JsonFormatter());
-    }
-
     public function testEntriesAreJsonObjects(): void
     {
         $entry = $this->decode((new JsonFormatter())->format($this->date, 'info', 'message', ['a' => 1]));
@@ -37,19 +31,19 @@ final class JsonFormatterTest extends TestCase
         $this->assertSame(['a' => 1], $entry['context']);
     }
 
-    public function testLevelIsKeptAsGiven(): void
+    public function testLevelIsPreservedAsGiven(): void
     {
         $entry = $this->decode((new JsonFormatter())->format($this->date, 'warning', 'message', []));
 
         $this->assertSame('warning', $entry['level']);
     }
 
-    public function testPlaceholdersAreInterpolatedAndContextIsKept(): void
+    public function testPlaceholdersAreInterpolatedAndContextIsPreserved(): void
     {
-        $entry = $this->decode((new JsonFormatter())->format($this->date, 'info', 'User {username}', ['username' => 'alice']));
+        $entry = $this->decode((new JsonFormatter())->format($this->date, 'info', 'User {username}', ['username' => 'user']));
 
-        $this->assertSame('User alice', $entry['message']);
-        $this->assertSame(['username' => 'alice'], $entry['context']);
+        $this->assertSame('User user', $entry['message']);
+        $this->assertSame(['username' => 'user'], $entry['context']);
     }
 
     public function testEntriesAreSingleLines(): void
@@ -98,15 +92,18 @@ final class JsonFormatterTest extends TestCase
     {
         $line = (new JsonFormatter())->format($this->date, 'info', "invalid \xff byte", ['value' => "\xff"]);
 
-        $this->assertStringContainsString('invalid', $line);
-        $this->assertIsArray(json_decode($line, true));
+        // Invalid bytes are replaced with U+FFFD
+        $decoded = json_decode($line, true);
+        $this->assertSame("invalid \u{FFFD} byte", $decoded['message'] ?? null);
+        $this->assertSame(['value' => "\u{FFFD}"], $decoded['context'] ?? null);
     }
 
     public function testNonFiniteNumbersDoNotMakeLoggingFail(): void
     {
         $line = (new JsonFormatter())->format($this->date, 'info', 'message', ['value' => INF, 'other' => NAN]);
 
-        $this->assertIsArray(json_decode($line, true));
+        // Values that JSON cannot represent are replaced with 0
+        $this->assertSame(['value' => 0, 'other' => 0], json_decode($line, true)['context'] ?? null);
     }
 
     /**

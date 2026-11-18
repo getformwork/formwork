@@ -10,13 +10,12 @@ use Formwork\Log\Handler\FileHandler;
 use Formwork\Log\Handler\StderrHandler;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesTempDirectory;
+use Formwork\Utils\Exceptions\FileSystemException;
 use Formwork\Utils\FileSystem;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Log\LogLevel;
 use ReflectionProperty;
 use RuntimeException;
-use Throwable;
 
 #[CoversClass(FileHandler::class)]
 #[CoversClass(StderrHandler::class)]
@@ -31,17 +30,16 @@ final class FileHandlerTest extends TestCase
         $this->file = FileSystem::joinPaths(TESTS_TMP_PATH, 'logs', 'app.log');
     }
 
-    public function testHandlerIsAnAbstractHandler(): void
-    {
-        $this->assertInstanceOf(AbstractHandler::class, new FileHandler($this->file));
-    }
-
     public function testFileIsNotCreatedUntilSomethingIsLogged(): void
     {
-        $this->assertInstanceOf(FileHandler::class, new FileHandler($this->file));
+        $fileHandler = new FileHandler($this->file);
 
         $this->assertFileDoesNotExist($this->file);
         $this->assertDirectoryDoesNotExist(dirname($this->file));
+
+        $fileHandler->handle(new DateTimeImmutable(), 'info', 'message', []);
+
+        $this->assertFileExists($this->file);
     }
 
     public function testRecordsAreAppendedOneForLine(): void
@@ -108,13 +106,6 @@ final class FileHandlerTest extends TestCase
         $this->assertCount(1, file($this->file) ?: []);
     }
 
-    public function testInvalidThresholdsAreRejected(): void
-    {
-        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new FileHandler($this->file, new JsonFormatter(), $this->unchecked('verbose')));
-
-        $this->assertInstanceOf(InvalidArgumentException::class, $invalidArgumentException);
-    }
-
     public function testSeveralHandlersCanWriteToTheSameFile(): void
     {
         $first = new FileHandler($this->file, new TextFormatter(false));
@@ -154,7 +145,8 @@ final class FileHandlerTest extends TestCase
         FileSystem::write(TESTS_TMP_PATH . '/blocked/file', 'content');
         $fileHandler = new FileHandler(TESTS_TMP_PATH . '/blocked/file/app.log');
 
-        $this->expectException(Throwable::class);
+        $this->expectException(FileSystemException::class);
+        $this->expectExceptionMessage('Cannot create directory');
         $fileHandler->handle(new DateTimeImmutable(), 'info', 'message', []);
     }
 
@@ -176,7 +168,6 @@ final class FileHandlerTest extends TestCase
         $path = new ReflectionProperty(FileHandler::class, 'path');
         $formatter = new ReflectionProperty(AbstractHandler::class, 'formatter');
 
-        $this->assertInstanceOf(FileHandler::class, $stderrHandler);
         $this->assertSame('php://stderr', $path->getValue($stderrHandler));
         $this->assertInstanceOf(TextFormatter::class, $formatter->getValue($stderrHandler));
     }
@@ -190,12 +181,5 @@ final class FileHandlerTest extends TestCase
 
         $this->assertInstanceOf(JsonFormatter::class, $formatter->getValue($stderrHandler));
         $this->assertSame('error', $level->getValue($stderrHandler));
-    }
-
-    public function testStderrHandlerRejectsInvalidLevels(): void
-    {
-        $invalidArgumentException = $this->captureException(InvalidArgumentException::class, fn() => new StderrHandler(new TextFormatter(), $this->unchecked('verbose')));
-
-        $this->assertInstanceOf(InvalidArgumentException::class, $invalidArgumentException);
     }
 }

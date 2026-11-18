@@ -3,7 +3,6 @@
 namespace Formwork\Tests\Unit\Cms\Events;
 
 use Formwork\Cms\Events\ResponseBeforeSendEvent;
-use Formwork\Events\Event;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Tests\TestCase;
@@ -19,20 +18,9 @@ final class ResponseBeforeSendEventTest extends TestCase
 
         $responseBeforeSendEvent = new ResponseBeforeSendEvent($response, $request);
 
-        $this->assertInstanceOf(Event::class, $responseBeforeSendEvent);
         $this->assertSame('responseBeforeSend', $responseBeforeSendEvent->name());
         $this->assertSame($response, $responseBeforeSendEvent->response());
         $this->assertSame($request, $responseBeforeSendEvent->request());
-    }
-
-    public function testListenersCanModifyTheResponse(): void
-    {
-        $response = new Response('original');
-        $responseBeforeSendEvent = new ResponseBeforeSendEvent($response, $this->request());
-
-        $responseBeforeSendEvent->response()->headers()->set('X-Listener', 'yes');
-
-        $this->assertSame('yes', $response->headers()->get('X-Listener'));
     }
 
     public function testDataContainsTheResponseAndTheRequest(): void

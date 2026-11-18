@@ -37,7 +37,7 @@ final class BackupperTest extends TestCase
 
     public function testBackupArchiveIsCreatedInTheConfiguredPath(): void
     {
-        $destination = $this->backupper()->backup('test-backup', 'example.com');
+        $destination = $this->backupper()->backup('test-backup', 'example.test');
 
         $this->assertSame($this->backupPath, dirname($destination));
         $this->assertMatchesRegularExpression('/^test-backup-\d{8}-\d{6}\.zip$/', basename($destination));
@@ -46,7 +46,7 @@ final class BackupperTest extends TestCase
 
     public function testBackupContainsTheNonIgnoredFilesOnly(): void
     {
-        $destination = $this->backupper()->backup('contents', 'example.com');
+        $destination = $this->backupper()->backup('contents', 'example.test');
 
         $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($destination));
@@ -63,23 +63,23 @@ final class BackupperTest extends TestCase
     {
         $path = $this->backupPath . '/nested/deeper';
 
-        $this->backupper(['path' => $path])->backup('nested', 'example.com');
+        $this->backupper(['path' => $path])->backup('nested', 'example.test');
 
         $this->assertDirectoryExists($path);
     }
 
     public function testNameIsInterpolated(): void
     {
-        $destination = $this->backupper()->backup('{{hostname}}-{{context}}', 'www.example.com');
+        $destination = $this->backupper()->backup('{{hostname}}-{{context}}', 'www.example.test');
 
-        $this->assertStringStartsWith('www-example-com-cli-', basename($destination));
+        $this->assertStringStartsWith('www-example-test-cli-', basename($destination));
     }
 
     public function testDefaultNameComesFromTheOptions(): void
     {
-        $destination = $this->backupper(['name' => '{{hostname}}-formwork-backup'])->backup(null, 'example.org');
+        $destination = $this->backupper(['name' => '{{hostname}}-formwork-backup'])->backup(null, 'another.example.test');
 
-        $this->assertStringStartsWith('example-org-formwork-backup-', basename($destination));
+        $this->assertStringStartsWith('another-example-test-formwork-backup-', basename($destination));
     }
 
     public function testHostnameComesFromTheOptionsWhenNotGiven(): void
@@ -91,34 +91,35 @@ final class BackupperTest extends TestCase
 
     public function testVersionPlaceholderIsInterpolated(): void
     {
-        $destination = $this->backupper()->backup('v{{version}}', 'example.com');
+        $destination = $this->backupper()->backup('v{{version}}', 'example.test');
 
         $this->assertStringStartsWith('v' . App::VERSION . '-', basename($destination));
     }
 
     public function testRandomPlaceholdersProduceDifferentNames(): void
     {
-        $first = $this->backupper()->backup('{{random}}', 'example.com');
-        $second = $this->backupper()->backup('{{random}}', 'example.com');
+        $first = $this->backupper()->backup('{{random}}', 'example.test');
+        $second = $this->backupper()->backup('{{random}}', 'example.test');
 
         $this->assertNotSame(basename($first), basename($second));
     }
 
     public function testLongNamesAreTruncatedAndStillEndWithTheSuffix(): void
     {
-        $destination = $this->backupper()->backup(str_repeat('a', 200), 'example.com');
+        $destination = $this->backupper()->backup(str_repeat('a', 200), 'example.test');
 
-        $this->assertLessThanOrEqual(75, strlen(basename($destination)));
+        $this->assertSame(75, strlen(basename($destination)));
         $this->assertMatchesRegularExpression('/^a+-\d{8}-\d{6}\.zip$/', basename($destination));
     }
 
     public function testTrailingSeparatorsAreTrimmedBeforeTheSuffix(): void
     {
-        $name = str_repeat('a', 40) . '--__--' . str_repeat('b', 100);
+        // The name is cut after 55 characters (75 minus the suffix), in the middle of the separators
+        $name = str_repeat('a', 52) . '-_-_-_-' . str_repeat('b', 100);
 
-        $destination = $this->backupper()->backup($name, 'example.com');
+        $destination = $this->backupper()->backup($name, 'example.test');
 
-        $this->assertDoesNotMatchRegularExpression('/[-_]{2,}\d{8}-\d{6}\.zip$/', basename($destination));
+        $this->assertMatchesRegularExpression('/^a{52}-\d{8}-\d{6}\.zip$/', basename($destination));
     }
 
     /**
@@ -141,7 +142,7 @@ final class BackupperTest extends TestCase
     #[DataProvider('invalidNamesProvider')]
     public function testInvalidNamesAreRejectedBeforeAnythingIsWritten(string $name): void
     {
-        $unexpectedValueException = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.com'));
+        $unexpectedValueException = $this->captureException(UnexpectedValueException::class, fn() => $this->backupper()->backup($name, 'example.test'));
         $this->assertStringContainsString('invalid characters', $unexpectedValueException->getMessage());
 
         $this->assertSame([], $this->archives());
@@ -168,18 +169,18 @@ final class BackupperTest extends TestCase
 
     public function testNameFallsBackToTheRequestHostWhenNoHostnameIsGiven(): void
     {
-        $request = new Request(server: ['SERVER_NAME' => 'request.example.com', 'HTTP_HOST' => 'request.example.com']);
+        $request = new Request(server: ['SERVER_NAME' => 'request.example.test', 'HTTP_HOST' => 'request.example.test']);
 
         $destination = $this->backupper(['name' => '{{hostname}}'], $request)->backup();
 
-        $this->assertStringStartsWith('request-example-com-', basename($destination));
+        $this->assertStringStartsWith('request-example-test-', basename($destination));
     }
 
     public function testMaxExecutionTimeIsRestoredAfterTheBackup(): void
     {
         $before = ini_get('max_execution_time');
 
-        $this->backupper(['maxExecutionTime' => '123'])->backup('timing', 'example.com');
+        $this->backupper(['maxExecutionTime' => '123'])->backup('timing', 'example.test');
 
         $this->assertSame($before, ini_get('max_execution_time'));
     }
@@ -188,7 +189,7 @@ final class BackupperTest extends TestCase
     {
         $before = ini_get('max_execution_time');
 
-        $this->captureException(UnexpectedValueException::class, fn() => $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.com'));
+        $this->captureException(UnexpectedValueException::class, fn() => $this->backupper(['maxExecutionTime' => '123'])->backup('bad name', 'example.test'));
 
         $this->assertSame($before, ini_get('max_execution_time'));
     }
@@ -202,23 +203,36 @@ final class BackupperTest extends TestCase
         $this->backupper(['path' => TESTS_TMP_PATH . '/not-a-directory'])->backup(hostname: 'example.test');
     }
 
-    public function testOldBackupsAreDeletedKeepingTheNewestOnes(): void
+    /**
+     * @param list<string> $existing Backups older than the new one, from the oldest
+     * @param list<string> $deleted
+     */
+    #[DataProvider('exceedingBackupsProvider')]
+    public function testOldBackupsAreDeletedKeepingTheNewestOnes(array $existing, array $deleted): void
     {
         FileSystem::createDirectory($this->backupPath, recursive: true);
-        foreach (['oldest', 'older', 'old'] as $i => $name) {
+        foreach ($existing as $i => $name) {
             $file = $this->backupPath . "/{$name}.zip";
             FileSystem::write($file, 'x');
             touch($file, time() - 1000 + $i * 10);
         }
 
-        $this->backupper(['maxFiles' => 2])->backup('newest', 'example.com');
+        $this->backupper(['maxFiles' => 2])->backup('newest', 'example.test');
 
         $remaining = array_map(basename(...), $this->archives());
-        sort($remaining);
         $this->assertCount(2, $remaining);
-        $this->assertContains('old.zip', $remaining);
-        $this->assertNotContains('oldest.zip', $remaining);
-        $this->assertNotContains('older.zip', $remaining);
+        foreach ($existing as $name) {
+            $this->assertSame(!in_array($name, $deleted, true), in_array("{$name}.zip", $remaining, true), $name);
+        }
+    }
+
+    /**
+     * @return iterable<string, array{list<string>, list<string>}>
+     */
+    public static function exceedingBackupsProvider(): iterable
+    {
+        yield 'one backup in excess' => [['oldest', 'old'], ['oldest']];
+        yield 'two backups in excess' => [['oldest', 'older', 'old'], ['oldest', 'older']];
     }
 
     public function testBackupsAreListedNewestFirst(): void
@@ -255,9 +269,9 @@ final class BackupperTest extends TestCase
             touch($this->backupPath . '/' . $name, 5_000);
         }
 
-        $this->backupper(['maxFiles' => 2])->backup('pruning', 'example.com');
+        $this->backupper(['maxFiles' => 2])->backup('pruning', 'example.test');
 
-        $this->assertLessThanOrEqual(2, count($this->archives()));
+        $this->assertCount(2, $this->archives());
     }
 
     public function testListingCreatesAMissingBackupDirectory(): void

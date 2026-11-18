@@ -3,8 +3,6 @@
 namespace Formwork\Tests\Unit\Cache;
 
 use Formwork\Cache\CacheItem;
-use Formwork\Cache\CacheItemInterface;
-use Formwork\Data\Contracts\ArraySerializable;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -15,8 +13,6 @@ final class CacheItemTest extends TestCase
     {
         $cacheItem = new CacheItem(['value'], 2000000000, 1900000000);
 
-        $this->assertInstanceOf(CacheItemInterface::class, $cacheItem);
-        $this->assertInstanceOf(ArraySerializable::class, $cacheItem);
         $this->assertSame(['value'], $cacheItem->value());
         $this->assertSame(2000000000, $cacheItem->expirationTime());
         $this->assertSame(1900000000, $cacheItem->cachedTime());

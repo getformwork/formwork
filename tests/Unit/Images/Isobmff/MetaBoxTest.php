@@ -115,14 +115,14 @@ final class MetaBoxTest extends TestCase
         $this->assertSame([], $meta->require(ItemLocationBox::class)->items());
     }
 
-    public function testTheItemDataBoxIsDroppedWhenItBecomesEmpty(): void
+    public function testTheItemDataBoxIsRemovedWhenItBecomesEmpty(): void
     {
         $meta = $this->meta([(new ItemLocationBox())->toBox(), new Box('idat', 'old')]);
 
         $this->assertNull($meta->withItemData(new ItemLocationBox(), '')->idat());
     }
 
-    public function testEncodingKeepsTheHeaderAndTheChildren(): void
+    public function testEncodingPreservesTheHeaderAndTheChildren(): void
     {
         $children = [new Box('hdlr', 'handler'), new Box('free', 'kept')];
         $box = $this->meta($children)->toBox();

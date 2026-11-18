@@ -11,7 +11,7 @@ use Formwork\Utils\Exceptions\FileNotFoundException;
 use Formwork\Utils\FileSystem;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Throwable;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 #[CoversClass(Translations::class)]
 #[UsesTempDirectory]
@@ -68,9 +68,12 @@ final class TranslationsTest extends TestCase
 
         $this->assertFalse($translations->has('fr'));
         $this->assertFalse($translations->has('de'));
+    }
 
+    public function testMissingFilesAreReported(): void
+    {
         $this->expectException(FileNotFoundException::class);
-        $translations->load($this->path . '/missing.yaml');
+        (new Translations($this->config('en')))->load($this->path . '/missing.yaml');
     }
 
     public function testUnknownTranslationsAreReported(): void
@@ -111,6 +114,7 @@ final class TranslationsTest extends TestCase
         $translations = $this->translations();
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid language string "missing"');
         $translations->get('en')->translate('missing');
     }
 
@@ -120,6 +124,7 @@ final class TranslationsTest extends TestCase
         $translations->loadFromPath($this->path);
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid translation code "fr"');
         $translations->get('it');
     }
 
@@ -193,6 +198,7 @@ final class TranslationsTest extends TestCase
         $translations = $this->translations();
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid translation code "xx"');
         $translations->getMultiple(['it', 'xx']);
     }
 
@@ -246,7 +252,7 @@ final class TranslationsTest extends TestCase
         $this->write('de', "key: [unclosed\n");
         $translations = $this->translations();
 
-        $this->expectException(Throwable::class);
+        $this->expectException(ParseException::class);
         $translations->get('de');
     }
 

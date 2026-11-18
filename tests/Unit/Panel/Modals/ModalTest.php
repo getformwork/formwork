@@ -33,6 +33,7 @@ final class ModalTest extends TestCase
     public function testTitleIsRequired(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected missing title');
 
         new Modal('modal', [], $this->translation(), $this->fieldFactory());
     }
@@ -51,7 +52,7 @@ final class ModalTest extends TestCase
         $this->assertCount(0, $modal->fields());
     }
 
-    public function testDataOverridesDefaults(): void
+    public function testGivenDataOverridesTheDefaults(): void
     {
         $modal = $this->modal('modal', [
             'message' => 'Message',
@@ -84,6 +85,7 @@ final class ModalTest extends TestCase
     public function testUnknownTranslationKeysAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid language string "panel.unknown.key"');
 
         $this->modal('modal', ['title' => '{{panel.unknown.key}}']);
     }

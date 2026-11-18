@@ -83,6 +83,7 @@ final class CacheServiceLoaderTest extends TestCase
     public function testHandlerNamesAreMatchedExactly(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cache handler "ARRAY" is not supported');
 
         $this->manager(['pages' => $this->arrayOptions(['handler' => 'ARRAY'])]);
     }
@@ -169,6 +170,7 @@ final class CacheServiceLoaderTest extends TestCase
     public function testNonArrayCacheConfigIsRejected(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Config value for key "system.cache.stores.pages.handler" is not a string, got null');
 
         $this->manager(['pages' => 'files']);
     }
@@ -176,6 +178,7 @@ final class CacheServiceLoaderTest extends TestCase
     public function testInvalidCacheNamesAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cache name "Invalid" is not valid');
 
         $this->manager(['Invalid' => $this->arrayOptions()]);
     }

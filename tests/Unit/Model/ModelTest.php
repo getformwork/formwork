@@ -14,11 +14,12 @@ use Formwork\Tests\Unit\Model\Fixtures\ModelFixture;
 use Formwork\Tests\Unit\Model\Fixtures\UninitializedModelFixture;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 
 #[CoversClass(Model::class)]
 final class ModelTest extends TestCase
 {
-    public function testModelIdentifier(): void
+    public function testModelIdentifierIsTheOneOfTheClass(): void
     {
         $this->assertSame('fixture', $this->model()->getModelIdentifier());
     }
@@ -54,7 +55,7 @@ final class ModelTest extends TestCase
 
     public function testAppReturnsTheApplicationInstance(): void
     {
-        $this->assertInstanceOf(App::class, $this->model()->get('app'));
+        $this->assertSame(App::instance(), $this->model()->get('app'));
     }
 
     // has()
@@ -239,7 +240,7 @@ final class ModelTest extends TestCase
         $this->assertSame('new-slug', $model->get('slug'));
     }
 
-    public function testSetRefusesGetterOnlyKeys(): void
+    public function testSetRejectsGetterOnlyKeys(): void
     {
         $model = $this->model();
 
@@ -249,7 +250,7 @@ final class ModelTest extends TestCase
         $model->set('summary', 'overridden');
     }
 
-    public function testSetRefusesGetterOnlyPropertyKeysUnderTheirCustomName(): void
+    public function testSetRejectsGetterOnlyPropertyKeysUnderTheirCustomName(): void
     {
         $model = $this->model();
 
@@ -258,7 +259,7 @@ final class ModelTest extends TestCase
         $model->set('alias', 'overridden');
     }
 
-    public function testSetRefusesReadonlyProperties(): void
+    public function testSetRejectsReadonlyProperties(): void
     {
         $model = $this->model();
 
@@ -333,14 +334,22 @@ final class ModelTest extends TestCase
         $this->assertSame('padded', $modelFixture->data()['title']);
     }
 
-    // public function testSetNormalizesValuesEvenIfFieldsWereNeverLoaded(): void
-    // {
-    //     $model = $this->trimmingModel();
+    /**
+     * Bug: values set before the fields are loaded are not normalized by field validation, so the stored data depends on the access order
+     */
+    #[Group('bug')]
+    public function testSetNormalizesValuesEvenIfFieldsWereNeverLoaded(): void
+    {
+        /** @todo */
+        $this->markTestSkipped('Loading the fields in set() resolves services that depend on models still being constructed.');
 
-    //     $model->set('title', '  padded  ');
+        // @phpstan-ignore deadCode.unreachable
+        $model = $this->trimmingModel();
 
-    //     $this->assertSame('padded', $model->data()['title'], 'Stored data should not depend on whether fields were loaded before.');
-    // }
+        $model->set('title', '  padded  ');
+
+        $this->assertSame('padded', $model->data()['title']);
+    }
 
     public function testSetThroughAFieldKeyIsVisibleToSubsequentGets(): void
     {
@@ -410,7 +419,7 @@ final class ModelTest extends TestCase
         $this->assertArrayNotHasKey('data', $array);
     }
 
-    public function testToArrayDropsDataThatShadowsANonExportedGetter(): void
+    public function testToArrayRemovesDataThatShadowsANonExportedGetter(): void
     {
         $array = $this->exportedWithoutDeprecations($this->model(['hidden' => 'from-data']));
 

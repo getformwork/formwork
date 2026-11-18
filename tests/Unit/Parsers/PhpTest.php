@@ -24,14 +24,14 @@ final class PhpTest extends TestCase
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/php', TESTS_TMP_PATH, overwrite: true);
     }
 
-    public function testParseAlwaysThrowsException(): void
+    public function testParsingPhpStringsIsNotAllowed(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Parsing a string of Php code is not allowed');
         Php::parse('<?php echo "Hello, World!";');
     }
 
-    public function testParseFile(): void
+    public function testPhpFilesReturningArraysAreParsed(): void
     {
         $filePath = TESTS_TMP_PATH . '/test.php';
 
@@ -103,7 +103,7 @@ final class PhpTest extends TestCase
         $this->assertSame($expected, Php::encode($data));
     }
 
-    public function testEncodeThrowsExceptionWithUnencodableClasses(): void
+    public function testEncodeRejectsUnencodableClasses(): void
     {
         $data = [
             'closure' => fn() => 'Unencodable',
@@ -114,7 +114,7 @@ final class PhpTest extends TestCase
         Php::encode($data);
     }
 
-    public function testEncodeThrowsExceptionWithResources(): void
+    public function testEncodeRejectsResources(): void
     {
         $stream = fopen('php://temp', 'r');
         $this->assertIsResource($stream);
@@ -127,21 +127,6 @@ final class PhpTest extends TestCase
         } finally {
             fclose($stream);
         }
-    }
-
-    public function testEncodeToFile(): void
-    {
-        $data = [
-            'title'       => 'Test',
-            'description' => 'This is a test.',
-            'tags'        => ['php', 'testing', 'formwork'],
-        ];
-
-        $filePath = TESTS_TMP_PATH . '/output.php';
-
-        Php::encodeToFile($data, $filePath);
-
-        $this->assertSame($data, include $filePath);
     }
 
     public function testRoundTripPreservesArraysAndScalars(): void

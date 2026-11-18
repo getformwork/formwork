@@ -22,18 +22,19 @@ final class PluginCollectionTest extends TestCase
         $this->assertSame($plugin, $pluginCollection->get('demo'));
     }
 
-    public function testCollectionIsAssociativeAndTyped(): void
-    {
-        $pluginCollection = new PluginCollection([]);
-
-        $this->assertTrue($pluginCollection->isAssociative());
-        $this->assertSame(Plugin::class, $pluginCollection->dataType());
-    }
-
     public function testOnlyPluginsAreAccepted(): void
     {
-        $logicException = $this->captureException(LogicException::class, fn() => new PluginCollection($this->unchecked(['demo' => new stdClass()])));
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
 
-        $this->assertInstanceOf(LogicException::class, $logicException);
+        new PluginCollection($this->unchecked(['demo' => new stdClass()]));
+    }
+
+    public function testItemsThatAreNotPluginsAreRejected(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
+
+        new PluginCollection($this->unchecked(['item' => new stdClass()]));
     }
 }

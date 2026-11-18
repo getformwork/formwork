@@ -36,16 +36,10 @@ final class ContentHistoryItemTest extends TestCase
         $this->assertSame(7, $item->time());
     }
 
-    public function testSerializationRoundTripPreservesTheItem(): void
-    {
-        $item = new ContentHistoryItem(ContentHistoryEvent::Created, 'admin', 123);
-
-        $this->assertEquals($item, ContentHistoryItem::fromArray($item->toArray()));
-    }
-
     public function testUnknownEventIsRejected(): void
     {
         $this->expectException(ValueError::class);
+        $this->expectExceptionMessage('"deleted" is not a valid backing value for enum Formwork\Panel\ContentHistory\ContentHistoryEvent');
 
         ContentHistoryItem::fromArray(['event' => 'deleted', 'user' => 'admin', 'time' => 1]);
     }

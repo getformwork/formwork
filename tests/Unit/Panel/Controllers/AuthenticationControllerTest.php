@@ -9,12 +9,14 @@ use Formwork\Authentication\Exceptions\UserNotLoggedException;
 use Formwork\Cms\App;
 use Formwork\Events\EventDispatcher;
 use Formwork\Http\RedirectResponse;
+use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
 use Formwork\Panel\Controllers\AuthenticationController;
 use Formwork\Panel\Events\PanelLoggedInEvent;
 use Formwork\Panel\Events\PanelLoggedOutEvent;
 use Formwork\Schemes\Schemes;
+use Formwork\Security\CsrfToken;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
 use Formwork\Tests\Unit\Panel\BuildsPanelControllers;
@@ -23,6 +25,7 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Users\User;
 use Formwork\Users\Users;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(AuthenticationController::class)]
 #[UsesApplication]
@@ -41,8 +44,7 @@ final class AuthenticationControllerTest extends TestCase
     {
         $response = $this->login(method: 'GET', user: $this->createStub(User::class), previousSession: true);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.index'], $response);
     }
 
     public function testInvalidFormsAreReportedWithoutAuthenticating(): void
@@ -62,8 +64,7 @@ final class AuthenticationControllerTest extends TestCase
 
         $response = $this->login(['login' => 'admin', 'password' => 'secret'], authenticator: $authenticator);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.index'], $response);
     }
 
     public function testLoginDispatchesAnEvent(): void
@@ -111,13 +112,56 @@ final class AuthenticationControllerTest extends TestCase
     public function testRateLimitedLoginsGetAStatusAndARetryHeader(): void
     {
         $authenticator = $this->createStub(Authenticator::class);
-        $authenticator->method('login')->willThrowException(new RateLimitExceededException('Too many', 600));
+        $authenticator->method('login')->willThrowException(new RateLimitExceededException('Too many', 630));
 
         $response = $this->login(['login' => 'admin', 'password' => 'secret'], authenticator: $authenticator);
 
         $this->assertSame(ResponseStatus::TooManyRequests, $response->status());
-        $this->assertSame('600', $response->headers()->get('Retry-After'));
-        $this->assertSame('error', $this->firstNotificationType());
+        $this->assertSame('630', $response->headers()->get('Retry-After'));
+        // The reset time is shown in rounded minutes
+        $this->assertSame(['error' => ['Too many login attempts. Please try again in 11 minutes.']], $this->panelRequest?->session()->messages()->getAll());
+    }
+
+    #[DataProvider('csrfRegeneratingOutcomeProvider')]
+    public function testLoginAttemptsReachingTheAuthenticatorRegenerateTheCsrfToken(bool $rateLimited): void
+    {
+        $authenticator = $this->createStub(Authenticator::class);
+        if ($rateLimited) {
+            $authenticator->method('login')->willThrowException(new RateLimitExceededException('Too many', 600));
+        } else {
+            $authenticator->method('login')->willReturn($this->createStub(User::class));
+        }
+
+        $controller = $this->makeController(AuthenticationController::class, input: ['login' => 'admin', 'password' => 'secret']);
+        $this->assertInstanceOf(Request::class, $this->panelRequest);
+        $csrfToken = new CsrfToken($this->panelRequest);
+        $previous = $csrfToken->generate('panel');
+
+        $controller->login($this->schemes(), $authenticator);
+
+        $this->assertNotNull($csrfToken->get('panel'));
+        $this->assertNotSame($previous, $csrfToken->get('panel'));
+    }
+
+    /**
+     * @return iterable<string, array{bool}>
+     */
+    public static function csrfRegeneratingOutcomeProvider(): iterable
+    {
+        yield 'successful login' => [false];
+        yield 'rate limited login' => [true];
+    }
+
+    public function testLogoutDestroysTheCsrfToken(): void
+    {
+        $controller = $this->controller($this->createStub(User::class));
+        $this->assertInstanceOf(Request::class, $this->panelRequest);
+        $csrfToken = new CsrfToken($this->panelRequest);
+        $csrfToken->generate('panel');
+
+        $controller->logout();
+
+        $this->assertFalse($csrfToken->has('panel'));
     }
 
     public function testLogoutLogsTheUserOutAndRedirectsToThePanel(): void
@@ -173,8 +217,7 @@ final class AuthenticationControllerTest extends TestCase
 
         $response = $this->makeController(AuthenticationController::class, users: $users)->logout();
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.index'], $response);
     }
 
     public function testLogoutOfAUserThatIsNotLoggedInIsIgnored(): void
@@ -184,8 +227,7 @@ final class AuthenticationControllerTest extends TestCase
 
         $response = $this->controller($user)->logout();
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.index'], $response);
     }
 
     public function testLogoutDoesNotDispatchAnEventWhenTheUserIsNotLoggedIn(): void

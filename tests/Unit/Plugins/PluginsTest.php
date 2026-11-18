@@ -75,6 +75,7 @@ final class PluginsTest extends TestCase
     public function testInvalidPluginsAreReportedWhenLoading(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Plugin class file');
 
         $this->plugins->load('missing', $this->pluginsPath . '/missing');
     }

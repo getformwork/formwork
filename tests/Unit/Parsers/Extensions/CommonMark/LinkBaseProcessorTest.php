@@ -50,9 +50,9 @@ final class LinkBaseProcessorTest extends TestCase
     public static function untouchedLinksProvider(): iterable
     {
         yield 'anchor' => ['[a](#section)', '#section'];
-        yield 'https' => ['[a](https://example.com/x)', 'https://example.com/x'];
-        yield 'http' => ['[a](http://example.com/x)', 'http://example.com/x'];
-        yield 'mailto' => ['[a](mailto:me@example.com)', 'mailto:me@example.com'];
+        yield 'https' => ['[a](https://example.test/x)', 'https://example.test/x'];
+        yield 'http' => ['[a](http://example.test/x)', 'http://example.test/x'];
+        yield 'mailto' => ['[a](mailto:me@example.test)', 'mailto:me@example.test'];
     }
 
     #[DataProvider('untouchedLinksProvider')]
@@ -65,24 +65,21 @@ final class LinkBaseProcessorTest extends TestCase
 
     public function testProtocolRelativeLinksAreNeverTurnedIntoLocalPaths(): void
     {
-        $html = Markdown::parse('[a](//cdn.example.com/x.js)', ['site' => $this->site(), 'baseRoute' => '/blog/']);
+        $html = Markdown::parse('[a](//cdn.example.test/x.js)', ['site' => $this->site(), 'baseRoute' => '/blog/']);
 
-        $this->assertStringNotContainsString('/site//cdn.example.com', $html);
-        $this->assertStringNotContainsString('/site/blog/', $html);
+        $this->assertSame("<p><a>a</a></p>\n", $html);
     }
 
     public function testEmptyLinkDestinationsAreHandled(): void
     {
         $html = Markdown::parse('[empty]()', ['site' => $this->site(), 'baseRoute' => '/blog/']);
-
-        $this->assertStringContainsString('empty', $html);
+        $this->assertSame("<p><a href=\"\">empty</a></p>\n", $html);
     }
 
     public function testEmptyImageDestinationsAreHandled(): void
     {
         $html = Markdown::parse('![empty]()', ['site' => $this->site(), 'baseRoute' => '/blog/']);
-
-        $this->assertStringContainsString('<img', $html);
+        $this->assertSame("<p><img src=\"\" alt=\"empty\"></p>\n", $html);
     }
 
     /**
@@ -108,16 +105,12 @@ final class LinkBaseProcessorTest extends TestCase
 
     public function testRelativeLinksWithoutSiteDoNotCrash(): void
     {
-        $html = Markdown::parse('[a](page)');
-
-        $this->assertStringContainsString('page', $html);
+        $this->assertSame("<p><a href=\"page\">a</a></p>\n", Markdown::parse('[a](page)'));
     }
 
     public function testImagesWithoutSiteDoNotCrash(): void
     {
-        $html = Markdown::parse('![alt](picture.png)');
-
-        $this->assertStringContainsString('picture.png', $html);
+        $this->assertSame("<p><img src=\"picture.png\" alt=\"alt\"></p>\n", Markdown::parse('![alt](picture.png)'));
     }
 
     public function testRelativeLinkInsideNestedMarkupIsStillRewritten(): void

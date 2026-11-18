@@ -188,7 +188,7 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertPaths(['b.txt' => true, '.txt' => false]);
     }
 
-    public function testRenamingKeepsTheMetadataOfTheFile(): void
+    public function testRenamingPreservesTheMetadataOfTheFile(): void
     {
         $this->rename('a.txt', 'Letter');
 
@@ -233,7 +233,7 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertOutcome(['status' => 500, 'json' => ['message' => $this->uploadErrorText($languageString)]], $response);
     }
 
-    public function testReplacingKeepsTheNameOfTheFile(): void
+    public function testReplacingPreservesTheNameOfTheFile(): void
     {
         FileSystem::write($this->contentPath . '/Read_Me.text', 'old');
 
@@ -245,7 +245,7 @@ final class FilesControllerActionsTest extends TestCase
         $this->assertFileDoesNotExist($this->contentPath . '/read-me.text');
     }
 
-    public function testReplacingKeepsTheMetadataOfTheFile(): void
+    public function testReplacingPreservesTheMetadataOfTheFile(): void
     {
         $this->replace('a.txt', [$this->uploadedText('file', 'new.txt')]);
 

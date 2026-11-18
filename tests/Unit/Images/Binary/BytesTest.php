@@ -77,6 +77,7 @@ final class BytesTest extends TestCase
     public function testInvalidReplacementsAreNotApplied(array $replacements): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid replacement range');
 
         Bytes::replace('abcd', $replacements);
     }

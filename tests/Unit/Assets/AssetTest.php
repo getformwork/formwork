@@ -75,10 +75,9 @@ final class AssetTest extends TestCase
         $expected = 'sha256-' . base64_encode(hash('sha256', "body { color: red; }\n", true));
 
         $this->assertSame($expected, $asset->integrityHash());
-        $this->assertMatchesRegularExpression('/^sha256-[A-Za-z0-9+\/]{43}=$/', $asset->integrityHash());
     }
 
-    public function testMimeType(): void
+    public function testMimeTypeIsDetectedFromTheFile(): void
     {
         $this->assertSame('text/css', (new Asset($this->path, '/assets/style.css'))->mimeType());
     }
@@ -93,14 +92,14 @@ final class AssetTest extends TestCase
         $this->assertSame('changed', $asset->content(), 'Content is not cached');
     }
 
-    public function testBase64DataUri(): void
+    public function testAssetsCanBeEncodedAsDataUris(): void
     {
         $asset = new Asset($this->path, '/assets/style.css');
 
         $this->assertSame('data:text/css;base64,' . base64_encode("body { color: red; }\n"), $asset->toBase64());
     }
 
-    public function testMetadata(): void
+    public function testMetadataIsReadByKey(): void
     {
         $asset = new Asset($this->path, '/assets/style.css', ['async' => true, 'media' => null]);
 

@@ -6,9 +6,9 @@ use Formwork\Log\Registry;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
+use JsonException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Throwable;
 use UnexpectedValueException;
 
 #[CoversClass(Registry::class)]
@@ -245,7 +245,7 @@ final class RegistryTest extends TestCase
         FileSystem::createDirectory(dirname($this->file));
         FileSystem::write($this->file, '{not json');
 
-        $this->expectException(Throwable::class);
+        $this->expectException(JsonException::class);
         (new Registry($this->file))->toArray();
     }
 
@@ -258,7 +258,7 @@ final class RegistryTest extends TestCase
             $registry = new Registry($this->file);
             $registry->set('key', 'value');
             $this->fail('Loading an invalid file should fail.');
-        } catch (Throwable) {
+        } catch (JsonException) {
         }
         unset($registry);
 

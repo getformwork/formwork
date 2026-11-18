@@ -2,6 +2,7 @@
 
 namespace Formwork\Tests\Unit\Images\Handler;
 
+use Formwork\Images\Binary\Bytes;
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
 use Formwork\Images\Exif\ExifData;
@@ -22,7 +23,7 @@ final class PngHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new PngHandler(GdImagesFixture::png(40, 30)))->getInfo();
+        $info = (new PngHandler(GdImagesFixture::png()))->getInfo();
 
         $this->assertSame('image/png', $info->mimeType());
         $this->assertSame(40, $info->width());
@@ -67,6 +68,7 @@ final class PngHandlerTest extends TestCase
     {
         yield 'grayscale' => [0, ColorSpace::Grayscale, false];
         yield 'RGB' => [2, ColorSpace::RGB, false];
+        yield 'palette' => [3, ColorSpace::Palette, false];
         yield 'grayscale with alpha' => [4, ColorSpace::Grayscale, true];
         yield 'RGB with alpha' => [6, ColorSpace::RGB, true];
     }
@@ -90,7 +92,7 @@ final class PngHandlerTest extends TestCase
         $this->assertFalse($handler->supportsTransforms());
     }
 
-    public function testTruncatedHeaderChunksAreNotAccepted(): void
+    public function testTruncatedHeaderChunksAreRejected(): void
     {
         $handler = new PngHandler(self::HEADER . GdImagesFixture::pngChunk('IHDR', "\x00\x00\x00\x01") . GdImagesFixture::pngChunk('IEND', ''));
 
@@ -100,7 +102,7 @@ final class PngHandlerTest extends TestCase
         $handler->getInfo();
     }
 
-    public function testInvalidPalettesAreNotAccepted(): void
+    public function testInvalidPalettesAreRejected(): void
     {
         $handler = new PngHandler($this->withChunk(GdImagesFixture::png(), 'PLTE', "\x00\x00\x00\x00"));
 
@@ -155,7 +157,7 @@ final class PngHandlerTest extends TestCase
         $this->assertSame(GdImagesFixture::png(), $handler->getData());
     }
 
-    public function testInvalidColorProfilesAreNotAccepted(): void
+    public function testInvalidColorProfilesAreRejected(): void
     {
         $handler = new PngHandler($this->withChunk(GdImagesFixture::png(), 'iCCP', "name\x00\x00not compressed"));
 
@@ -167,11 +169,12 @@ final class PngHandlerTest extends TestCase
         $handler->getColorProfile();
     }
 
-    public function testUnterminatedColorProfileNamesAreNotAccepted(): void
+    public function testUnterminatedColorProfileNamesAreRejected(): void
     {
         $handler = new PngHandler($this->withChunk(GdImagesFixture::png(), 'iCCP', 'name'));
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         $handler->getColorProfile();
     }
@@ -234,13 +237,36 @@ final class PngHandlerTest extends TestCase
         $this->assertTrue($handler->getInfo()->hasAlphaChannel());
     }
 
-    public function testDataFromAnotherFormatIsNotAccepted(): void
+    public function testDataFromAnotherFormatIsRejected(): void
     {
         $handler = new PngHandler(GdImagesFixture::jpeg());
 
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid PNG data');
 
         $handler->getInfo();
+    }
+
+    public function testWrittenChunksHaveValidChecksumsAndTheProfileName(): void
+    {
+        $handler = new PngHandler(GdImagesFixture::png());
+        $handler->setColorProfile($this->colorProfile());
+        $handler->setExifData($this->exifData());
+
+        $data = $handler->getData();
+        $position = strlen(self::HEADER);
+        $chunks = [];
+
+        while ($position < strlen($data)) {
+            $length = Bytes::unpack($data, $position, 4);
+            $type = substr($data, $position + 4, 4);
+            $value = substr($data, $position + 8, $length);
+            $this->assertSame(crc32($type . $value), Bytes::unpack($data, $position + 8 + $length, 4), "Invalid checksum of the {$type} chunk");
+            $chunks[$type] = $value;
+            $position += 12 + $length;
+        }
+
+        $this->assertStringStartsWith("sRGB built-in\x00\x00", $chunks['iCCP']);
     }
 
     private function colorProfile(): ColorProfile

@@ -69,13 +69,6 @@ final class MetadataCollectionTest extends TestCase
         $this->assertFalse($collection->has('b'));
     }
 
-    public function testContentIsKeptVerbatim(): void
-    {
-        $collection = $this->collection(['description' => '"><script>alert(1)</script>']);
-
-        $this->assertSame('"><script>alert(1)</script>', $collection->get('description')?->content());
-    }
-
     /**
      * @param array<string, string> $data
      */

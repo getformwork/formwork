@@ -14,6 +14,11 @@ use UnexpectedValueException;
 #[CoversClass(Resize::class)]
 final class ResizeTest extends TestCase
 {
+    public function testSpecifierListsTheArgumentsOfTheTransform(): void
+    {
+        $this->assertSame('Resize(width: 50, height: 25, resizeMode: \Formwork\Images\Transform\ResizeMode::Cover)', (new Resize(50, 25))->getSpecifier());
+    }
+
     public function testMissingDimensionsAreComputedForEachImage(): void
     {
         $resize = new Resize(width: 50);
@@ -24,6 +29,9 @@ final class ResizeTest extends TestCase
 
         $this->assertSame([50, 100], [imagesx($portrait), imagesy($portrait)]);
         $this->assertSame([50, 25], [imagesx($landscape), imagesy($landscape)]);
+
+        $byHeight = (new Resize(height: 50))->apply(imagecreatetruecolor(200, 100), new ImageInfo(['hasAlphaChannel' => false]));
+        $this->assertSame([100, 50], [imagesx($byHeight), imagesy($byHeight)]);
 
         // The transform is not changed, so it identifies the same processed images in the cache
         $this->assertSame($specifier, $resize->getSpecifier());
@@ -59,7 +67,7 @@ final class ResizeTest extends TestCase
      * @param array{int, int} $pixel
      */
     #[DataProvider('edgeProvider')]
-    public function testOnlyFillModeKeepsTheEdgesOfTheImage(ResizeMode $resizeMode, array $pixel, int $expected): void
+    public function testOnlyFillModePreservesTheEdgesOfTheImage(ResizeMode $resizeMode, array $pixel, int $expected): void
     {
         // The left quarter of the image is red, and is cropped away when covering a square
         $gdImage = imagecreatetruecolor(200, 100);
@@ -87,8 +95,53 @@ final class ResizeTest extends TestCase
         $gdImage = (new Resize(50, 50, ResizeMode::Center))->apply($gdImage, new ImageInfo(['hasAlphaChannel' => true]));
 
         // The image is 25 pixels high, so it is moved down by 12 pixels
-        $this->assertSame(127, imagecolorat($gdImage, 25, 5) >> 24);
-        $this->assertSame(0xFF0000, imagecolorat($gdImage, 25, 25));
+        $this->assertSame(0x7F000000, imagecolorat($gdImage, 25, 11));
+        $this->assertSame(0xFF0000, imagecolorat($gdImage, 25, 12));
+        $this->assertSame(0xFF0000, imagecolorat($gdImage, 25, 36));
+        $this->assertSame(0x7F000000, imagecolorat($gdImage, 25, 38));
+    }
+
+    public function testCenteredPortraitImagesAreMovedRight(): void
+    {
+        $gdImage = imagecreatetruecolor(100, 200);
+        imagefill($gdImage, 0, 0, 0xFF0000);
+
+        $gdImage = (new Resize(50, 50, ResizeMode::Center))->apply($gdImage, new ImageInfo(['hasAlphaChannel' => true]));
+
+        $this->assertSame(0x7F000000, imagecolorat($gdImage, 11, 25));
+        $this->assertSame(0xFF0000, imagecolorat($gdImage, 12, 25));
+        $this->assertSame(0xFF0000, imagecolorat($gdImage, 36, 25));
+        $this->assertSame(0x7F000000, imagecolorat($gdImage, 38, 25));
+    }
+
+    /**
+     * @param array{int<1, max>, int<1, max>} $source
+     */
+    #[DataProvider('coverProvider')]
+    public function testCoverPreservesTheCenterOfTheImage(array $source, bool $vertical): void
+    {
+        // The image is split in three stripes, and only the middle one fits a square
+        [$width, $height] = $source;
+        $gdImage = imagecreatetruecolor($width, $height);
+        foreach ([0xFF0000, 0x00FF00, 0x0000FF] as $i => $color) {
+            $vertical
+                ? imagefilledrectangle($gdImage, 0, $i * 100, 99, $i * 100 + 99, $color)
+                : imagefilledrectangle($gdImage, $i * 100, 0, $i * 100 + 99, 99, $color);
+        }
+
+        $gdImage = (new Resize(50, 50, ResizeMode::Cover))->apply($gdImage, new ImageInfo(['hasAlphaChannel' => false]));
+
+        $this->assertSame(0x00FF00, imagecolorat($gdImage, 1, 1));
+        $this->assertSame(0x00FF00, imagecolorat($gdImage, 48, 48));
+    }
+
+    /**
+     * @return iterable<string, array{array{int<1, max>, int<1, max>}, bool}>
+     */
+    public static function coverProvider(): iterable
+    {
+        yield 'landscape' => [[300, 100], false];
+        yield 'portrait' => [[100, 300], true];
     }
 
     #[DataProvider('invalidDimensionsProvider')]

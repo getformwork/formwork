@@ -25,8 +25,6 @@ use ZipArchive;
 #[UsesTempDirectory]
 final class FileTest extends TestCase
 {
-    protected function setUp(): void {}
-
     public function testPathNameExtensionAndStringConversionUseTheGivenPath(): void
     {
         $file = new File(TESTS_TMP_PATH . '/nested/report.final.txt');
@@ -37,7 +35,7 @@ final class FileTest extends TestCase
         $this->assertSame('report.final.txt', (string) $file);
     }
 
-    public function testMissingFileMetadataDelegatesToFilesystemAndThrows(): void
+    public function testMissingFileMetadataIsReportedByTheFileSystem(): void
     {
         $file = new File(TESTS_TMP_PATH . '/missing.txt');
 
@@ -54,7 +52,7 @@ final class FileTest extends TestCase
         $this->assertSame('text/plain', $file->mimeType());
         $this->assertSame('text', $file->type());
         $this->assertSame('5 B', $file->size());
-        $this->assertIsInt($file->lastModifiedTime());
+        $this->assertSame(filemtime($path), $file->lastModifiedTime());
         $this->assertSame(hash_file('sha256', $path), $file->contentHash());
         $this->assertSame($file->contentHash(), $file->contentHash());
         $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $file->hash());
@@ -136,7 +134,7 @@ final class FileTest extends TestCase
         $this->assertSame('text', $file->type());
     }
 
-    public function testUriRequiresGeneratorAndDelegatesRelativeAndAbsoluteGeneration(): void
+    public function testUriRequiresAGenerator(): void
     {
         $file = new File(TESTS_TMP_PATH . '/sample.txt');
         $this->expectException(FileUriGenerationException::class);
@@ -211,7 +209,7 @@ final class FileTest extends TestCase
         FileSystem::write($path, 'hello');
         $file = new File($path);
         $file->set('caption', 'A saved caption');
-        $file->set('details', ['author' => 'Sempronius']);
+        $file->set('details', ['author' => 'Test User']);
 
         $file->save();
 
@@ -219,7 +217,7 @@ final class FileTest extends TestCase
         $this->assertSame(
             [
                 'caption' => 'A saved caption',
-                'details' => ['author' => 'Sempronius'],
+                'details' => ['author' => 'Test User'],
             ],
             Yaml::parseFile($meta),
         );

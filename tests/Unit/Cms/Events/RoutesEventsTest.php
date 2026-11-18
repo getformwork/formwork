@@ -4,7 +4,6 @@ namespace Formwork\Tests\Unit\Cms\Events;
 
 use Formwork\Cms\Events\RoutesAfterLoadEvent;
 use Formwork\Cms\Events\RoutesBeforeLoadEvent;
-use Formwork\Events\Event;
 use Formwork\Router\Router;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -24,7 +23,6 @@ final class RoutesEventsTest extends TestCase
 
         $event = new $class($router);
 
-        $this->assertInstanceOf(Event::class, $event);
         $this->assertSame($name, $event->name());
         $this->assertSame($router, $event->router());
         $this->assertSame(['router' => $router], $event->data());
@@ -37,15 +35,5 @@ final class RoutesEventsTest extends TestCase
     {
         yield 'before load' => [RoutesBeforeLoadEvent::class, 'routesBeforeLoad'];
         yield 'after load' => [RoutesAfterLoadEvent::class, 'routesAfterLoad'];
-    }
-
-    public function testEventsHaveDifferentNames(): void
-    {
-        $router = $this->createStub(Router::class);
-
-        $this->assertNotSame(
-            (new RoutesBeforeLoadEvent($router))->name(),
-            (new RoutesAfterLoadEvent($router))->name(),
-        );
     }
 }

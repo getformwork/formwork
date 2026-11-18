@@ -19,7 +19,7 @@ final class JsonTest extends TestCase
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/json', TESTS_TMP_PATH, overwrite: true);
     }
 
-    public function testParse(): void
+    public function testJsonStringsAreParsedIntoArrays(): void
     {
         $json = <<<JSON
             {
@@ -38,7 +38,7 @@ final class JsonTest extends TestCase
         $this->assertSame($expected, Json::parse($json));
     }
 
-    public function testParseFile(): void
+    public function testJsonFilesAreParsedIntoArrays(): void
     {
         $jsonFilePath = TESTS_TMP_PATH . '/test.json';
 
@@ -54,10 +54,12 @@ final class JsonTest extends TestCase
     public function testParseRejectsInvalidJson(): void
     {
         $this->expectException(JsonException::class);
+        $this->expectExceptionMessage('Syntax error');
+
         Json::parse('{"title": ');
     }
 
-    public function testEncode(): void
+    public function testArraysAreEncodedCompactly(): void
     {
         $data = [
             'title'       => 'Test',
@@ -67,7 +69,7 @@ final class JsonTest extends TestCase
 
         $expected = '{"title":"Test","description":"This is a test.","tags":["php","json","parser"]}';
 
-        $this->assertJsonStringEqualsJsonString($expected, Json::encode($data));
+        $this->assertSame($expected, Json::encode($data));
     }
 
     public function testEncodeWithPrettyPrint(): void
@@ -90,7 +92,7 @@ final class JsonTest extends TestCase
             }
             JSON;
 
-        $this->assertJsonStringEqualsJsonString($expected, Json::encode($data, ['prettyPrint' => true]));
+        $this->assertSame($expected, Json::encode($data, ['prettyPrint' => true]));
     }
 
     public function testEncodeEmptyArrayAlwaysProducesAnObject(): void
@@ -99,7 +101,7 @@ final class JsonTest extends TestCase
         $this->assertSame('{}', Json::encode([], ['forceObject' => true]));
     }
 
-    public function testEncodeKeepsSlashesAndUnicodeUnlessEscapingIsRequested(): void
+    public function testEncodePreservesSlashesAndUnicodeUnlessEscapingIsRequested(): void
     {
         $this->assertSame('{"path":"/a/b","name":"è"}', Json::encode(['path' => '/a/b', 'name' => 'è']));
         $this->assertSame('{"name":"\u00e8"}', Json::encode(['name' => 'è'], ['escapeUnicode' => true]));
@@ -107,7 +109,7 @@ final class JsonTest extends TestCase
 
     public function testEncodeCanEscapeHtmlToEmbedDataInScripts(): void
     {
-        $data = ['title' => '</script><script>alert(1)</script>', 'and' => 'Tom & Jerry'];
+        $data = ['title' => '</script><script>alert(1)</script>', 'and' => 'Foo & Bar'];
 
         $json = Json::encode($data, ['escapeHtml' => true]);
 

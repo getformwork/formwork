@@ -67,9 +67,9 @@ final class SiteTemplatesTest extends TestCase
 
     public function testPlainTitlesAreRenderedAsText(): void
     {
-        $html = $this->render(pageTitle: 'Tom & Jerry', siteTitle: 'My "site"');
+        $html = $this->render(pageTitle: 'Foo & Bar', siteTitle: 'My "site"');
 
-        $this->assertStringContainsString('<title>Tom &amp; Jerry | My &quot;site&quot;</title>', $html);
+        $this->assertStringContainsString('<title>Foo &amp; Bar | My &quot;site&quot;</title>', $html);
     }
 
     public function testMetadataIsEscapedInAttributes(): void

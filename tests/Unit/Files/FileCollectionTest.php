@@ -3,29 +3,18 @@
 namespace Formwork\Tests\Unit\Files;
 
 use Closure;
-use Formwork\Data\AbstractCollection;
 use Formwork\Files\File;
 use Formwork\Files\FileCollection;
 use Formwork\Tests\TestCase;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use stdClass;
 use TypeError;
 
 #[CoversClass(FileCollection::class)]
 final class FileCollectionTest extends TestCase
 {
-    public function testFileCollectionIsTypedAssociativeAndImmutable(): void
-    {
-        $fileCollection = new FileCollection([new File('/files/first.txt')]);
-
-        $this->assertInstanceOf(AbstractCollection::class, $fileCollection);
-        $this->assertTrue($fileCollection->isAssociative());
-        $this->assertTrue($fileCollection->isTyped());
-        $this->assertSame(File::class, $fileCollection->dataType());
-        $this->assertFalse($fileCollection->isMutable());
-    }
-
     public function testListInputIsKeyedByEachFileNameAndPreservesOrder(): void
     {
         $first = new File('/files/first.txt');
@@ -62,12 +51,13 @@ final class FileCollectionTest extends TestCase
 
     public function testCollectionRejectsNonFileItems(): void
     {
-        $typeError = $this->captureException(TypeError::class, fn() => new FileCollection($this->unchecked(['not a File'])));
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage('must be of type Formwork\Files\File, string given');
 
-        $this->assertInstanceOf(TypeError::class, $typeError);
+        new FileCollection($this->unchecked(['not a File']));
     }
 
-    public function testFilesWithTheSameNameInDifferentDirectoriesKeepOnlyTheLastOne(): void
+    public function testFilesWithTheSameNameInDifferentDirectoriesPreserveOnlyTheLastOne(): void
     {
         $first = new File('/files/a/report.txt');
         $second = new File('/files/b/report.txt');
@@ -115,5 +105,21 @@ final class FileCollectionTest extends TestCase
         yield 'set' => [static fn(FileCollection $fileCollection) => $fileCollection->set('two.txt', new File('/files/two.txt'))];
         yield 'remove' => [static fn(FileCollection $fileCollection) => $fileCollection->remove('one.txt')];
         yield 'merge' => [static fn(FileCollection $fileCollection) => $fileCollection->merge(new FileCollection([new File('/files/two.txt')]))];
+    }
+
+    public function testItemsThatAreNotFilesAreRejected(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
+
+        new FileCollection($this->unchecked(['item' => new stdClass()]));
+    }
+
+    public function testFileCollectionsCannotBeChanged(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Values can be set only to associative and mutable collections');
+
+        (new FileCollection([]))->set('file', new File('/files/file.txt'));
     }
 }

@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 #[CoversTrait(DataMultipleSetter::class)]
 final class DataMultipleSetterTest extends TestCase
 {
-    public function testSetMultiple(): void
+    public function testSetMultipleSetsEveryGivenKey(): void
     {
         $dataMultipleSetterFixture = new DataMultipleSetterFixture(['key1' => 'value1', 'key2' => 'value2']);
 
@@ -23,7 +23,7 @@ final class DataMultipleSetterTest extends TestCase
         $this->assertSame('value3', $data['key3']);
     }
 
-    public function testRemoveMultiple(): void
+    public function testRemoveMultipleRemovesEveryGivenKey(): void
     {
         $dataMultipleSetterFixture = new DataMultipleSetterFixture(['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3']);
 

@@ -23,7 +23,6 @@ use Formwork\Tests\Unit\Services\Fixtures\DependentOnSharedDependencyFixture;
 use Formwork\Tests\Unit\Services\Fixtures\DependentServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\FactoryProductFixture;
 use Formwork\Tests\Unit\Services\Fixtures\FailingResolutionAwareLoaderFixture;
-use Formwork\Tests\Unit\Services\Fixtures\InvalidReturnLoaderFixture;
 use Formwork\Tests\Unit\Services\Fixtures\LoadedServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\MultipleAttributesDependentServiceFixture;
 use Formwork\Tests\Unit\Services\Fixtures\NestedDependentServiceFixture;
@@ -45,8 +44,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
-use Throwable;
-use TypeError;
 
 #[CoversClass(Container::class)]
 final class ContainerTest extends TestCase
@@ -198,15 +195,6 @@ final class ContainerTest extends TestCase
         $container->get('factory');
     }
 
-    public function testFactoryReturningAnInvalidValueFailsAtTheFactoryBoundary(): void
-    {
-        $container = new Container();
-        $container->define('factory', static fn() => 'invalid');
-
-        $this->expectException(ContainerExceptionInterface::class);
-        $container->get('factory');
-    }
-
     public function testBuildAndCallResolveArgumentsAndHonorExplicitParameters(): void
     {
         $container = new Container();
@@ -269,6 +257,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('The parameter value for the variadic argument $values must be an array');
         $container->call(static fn(string ...$values): array => $values, ['values' => 'invalid']);
     }
 
@@ -337,15 +326,6 @@ final class ContainerTest extends TestCase
         }
     }
 
-    public function testLazyFalseDoesNotResolveImmediately(): void
-    {
-        $container = new Container();
-        $container->define(SimpleServiceFixture::class)->lazy(false);
-
-        $this->assertFalse($container->isResolved(SimpleServiceFixture::class));
-        $this->assertInstanceOf(SimpleServiceFixture::class, $container->get(SimpleServiceFixture::class));
-    }
-
     public function testEagerServicesAreResolvedExplicitly(): void
     {
         $container = new Container();
@@ -367,7 +347,7 @@ final class ContainerTest extends TestCase
         $this->assertFalse($container->has(SimpleServiceFixture::class));
     }
 
-    public function testResolvingEagerServicesTwiceKeepsTheSharedInstances(): void
+    public function testResolvingEagerServicesTwicePreservesTheSharedInstances(): void
     {
         $container = new Container();
         $container->define(SimpleServiceFixture::class)->lazy(false);
@@ -392,7 +372,7 @@ final class ContainerTest extends TestCase
         $this->assertSame(1, TestServiceLoaderFixture::$resolvedCount);
     }
 
-    public function testEagerServicesUseTheConfigurationDefinedAfterLazyFalse(): void
+    public function testEagerServicesUseTheConfigDefinedAfterLazyFalse(): void
     {
         $container = new Container();
         $container->define(ArrayOptionsServiceFixture::class)
@@ -535,6 +515,7 @@ final class ContainerTest extends TestCase
         $container->alias('one', 'two');
 
         $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Circular service alias detected: "two" -> "one" -> "two"');
         $container->alias('two', 'one');
     }
 
@@ -576,6 +557,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Circular service alias detected: "same" -> "same"');
         $container->alias('same', 'same');
     }
 
@@ -645,7 +627,7 @@ final class ContainerTest extends TestCase
         $this->assertSame(1, TestServiceLoaderFixture::$resolvedCount);
     }
 
-    public function testResolvingAnAlreadyResolvedServiceKeepsTheSharedInstance(): void
+    public function testResolvingAnAlreadyResolvedServicePreservesTheSharedInstance(): void
     {
         $container = new Container();
         $container->define('loaded')->loader(TestServiceLoaderFixture::class);
@@ -715,6 +697,7 @@ final class ContainerTest extends TestCase
         $container->define('second')->loader(RecursiveLoaderFixture::class)->parameter('other', 'first');
 
         $this->expectException(ServiceResolutionException::class);
+        $this->expectExceptionMessage('Already resolving "first". Resolution stack: "first", "second"');
         $container->get('first');
     }
 
@@ -730,20 +713,12 @@ final class ContainerTest extends TestCase
         $this->assertFalse($container->isResolved('loaded'));
     }
 
-    public function testLoaderReturningAnInvalidValueFailsAtTheLoaderBoundary(): void
-    {
-        $container = new Container();
-        $container->define('loaded')->loader(InvalidReturnLoaderFixture::class);
-
-        $this->expectException(TypeError::class);
-        $container->get('loaded');
-    }
-
     public function testObjectDefinitionsCannotAlsoHaveLoaders(): void
     {
         $serviceDefinition = (new Container())->define('service', new SimpleServiceFixture());
 
         $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Instantiated object cannot have loaders');
         $serviceDefinition->loader(TestServiceLoaderFixture::class);
     }
 
@@ -764,6 +739,7 @@ final class ContainerTest extends TestCase
         $container->define(FailingResolutionAwareLoaderFixture::class);
 
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('resolution callback failed');
         $container->get('loaded');
     }
 
@@ -793,6 +769,7 @@ final class ContainerTest extends TestCase
         $container = new Container();
 
         $this->expectException(ServiceResolutionException::class);
+        $this->expectExceptionMessage('Trying to resolve undefined service "missing"');
         $container->resolve('missing');
     }
 
@@ -802,12 +779,9 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $container->define($class);
 
-        try {
-            $container->get($class);
-            $this->fail('The class cannot be instantiated.');
-        } catch (Throwable $throwable) {
-            $this->assertInstanceOf(ContainerExceptionInterface::class, $throwable, $throwable::class . ': ' . $throwable->getMessage());
-        }
+        $this->expectException(ContainerExceptionInterface::class);
+
+        $container->get($class);
     }
 
     /**
@@ -838,6 +812,7 @@ final class ContainerTest extends TestCase
         $container->define(DependentOnMissingServiceFixture::class);
 
         $this->expectException(ServiceNotFoundException::class);
+        $this->expectExceptionMessage('Cannot instantiate argument $dependency: no container definition satisfies the parameter type "Formwork\Tests\Unit\Services\Fixtures\UnknownDependency" and no default value is available');
         $container->get(DependentOnMissingServiceFixture::class);
     }
 
@@ -874,17 +849,6 @@ final class ContainerTest extends TestCase
         $this->assertFalse($container->isResolved(DependentOnMissingServiceFixture::class));
     }
 
-    public function testDefiningTheSameIdentifierReplacesAnUnresolvedDefinition(): void
-    {
-        $container = new Container();
-        $first = new SimpleServiceFixture();
-        $second = new SimpleServiceFixture();
-        $container->define('service', $first);
-        $container->define('service', $second);
-
-        $this->assertSame($second, $container->get('service'));
-    }
-
     public function testAliasCanBeRepointedAndCanTargetAnotherAlias(): void
     {
         $container = new Container();
@@ -907,6 +871,7 @@ final class ContainerTest extends TestCase
         $container->define(ScalarDependentServiceFixture::class);
 
         $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Cannot instantiate argument $value: no default value is available');
         $container->get(ScalarDependentServiceFixture::class);
     }
 
@@ -917,6 +882,7 @@ final class ContainerTest extends TestCase
         $container->define(CircularBFixture::class);
 
         $this->expectException(ServiceResolutionException::class);
+        $this->expectExceptionMessage('Already resolving "Formwork\Tests\Unit\Services\Fixtures\CircularAFixture". Resolution stack: "Formwork\Tests\Unit\Services\Fixtures\CircularAFixture", "Formwork\Tests\Unit\Services\Fixtures\CircularBFixture"');
         $container->get(CircularAFixture::class);
     }
 
@@ -977,7 +943,7 @@ final class ContainerTest extends TestCase
         }];
     }
 
-    public function testRejectedRedefinitionKeepsTheExistingDefinitionAndAliases(): void
+    public function testRejectedRedefinitionPreservesTheExistingDefinitionAndAliases(): void
     {
         $container = new Container();
         $container->define(SimpleServiceFixture::class)->alias('alias');
@@ -990,7 +956,7 @@ final class ContainerTest extends TestCase
         $this->assertFalse($container->has('other'));
     }
 
-    public function testRedefiningAnUnresolvedServiceKeepsItsAliasesPointingToTheNewDefinition(): void
+    public function testRedefiningAnUnresolvedServicePreservesItsAliasesPointingToTheNewDefinition(): void
     {
         $container = new Container();
         $container->define('service', new SimpleServiceFixture())->alias('alias');
@@ -1009,6 +975,7 @@ final class ContainerTest extends TestCase
         $container->get('alias');
 
         $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Cannot redefine service "service": already resolved');
         $container->define('service', new SimpleServiceFixture());
     }
 

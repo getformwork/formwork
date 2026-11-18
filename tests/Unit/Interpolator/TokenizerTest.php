@@ -5,8 +5,6 @@ namespace Formwork\Tests\Unit\Interpolator;
 use Formwork\Interpolator\Errors\SyntaxError;
 use Formwork\Interpolator\Token;
 use Formwork\Interpolator\Tokenizer;
-use Formwork\Interpolator\TokenizerInterface;
-use Formwork\Interpolator\TokenStream;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -14,11 +12,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(Tokenizer::class)]
 final class TokenizerTest extends TestCase
 {
-    public function testTokenizerImplementsItsInterface(): void
-    {
-        $this->assertInstanceOf(TokenizerInterface::class, new Tokenizer(''));
-    }
-
     public function testEmptyInputProducesOnlyTheEndToken(): void
     {
         $this->assertSame([['end', null, 0]], $this->tokens(''));
@@ -33,7 +26,7 @@ final class TokenizerTest extends TestCase
      * @param list<array{string, ?string, int}> $expected
      */
     #[DataProvider('tokenProvider')]
-    public function testTokenization(string $input, array $expected): void
+    public function testExpressionsAreSplitIntoTokens(string $input, array $expected): void
     {
         $this->assertSame($expected, $this->tokens($input));
     }
@@ -95,7 +88,7 @@ final class TokenizerTest extends TestCase
         yield 'non ASCII identifier' => ['è', 'Unexpected character'];
     }
 
-    public function testStringTokensKeepTheirQuotesAndEscapes(): void
+    public function testStringTokensPreserveTheirQuotesAndEscapes(): void
     {
         $tokens = $this->tokens('"a\\\b\"c"');
 
@@ -128,9 +121,7 @@ final class TokenizerTest extends TestCase
 
     public function testNumbersAreNotMergedWithFollowingLetters(): void
     {
-        $tokens = $this->tokens('1x5');
-
-        $this->assertNotSame([['number', '1x5', 0], ['end', null, 3]], $tokens);
+        $this->assertSame([['number', '1', 0], ['identifier', 'x5', 1], ['end', null, 3]], $this->tokens('1x5'));
     }
 
     public function testTokenizeStringIsEquivalentToTokenize(): void
@@ -142,7 +133,6 @@ final class TokenizerTest extends TestCase
     {
         $tokenStream = Tokenizer::tokenizeString('a');
 
-        $this->assertInstanceOf(TokenStream::class, $tokenStream);
         $this->assertSame('a', $tokenStream->consume()->value());
         $this->assertTrue($tokenStream->current()->test(Token::TYPE_END));
     }

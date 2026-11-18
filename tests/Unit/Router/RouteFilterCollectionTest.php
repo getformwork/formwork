@@ -12,16 +12,6 @@ use stdClass;
 #[CoversClass(RouteFilterCollection::class)]
 final class RouteFilterCollectionTest extends TestCase
 {
-    public function testCollectionIsTypedAssociativeAndMutable(): void
-    {
-        $routeFilterCollection = new RouteFilterCollection();
-
-        $this->assertTrue($routeFilterCollection->isAssociative());
-        $this->assertTrue($routeFilterCollection->isTyped());
-        $this->assertTrue($routeFilterCollection->isMutable());
-        $this->assertSame(RouteFilter::class, $routeFilterCollection->dataType());
-    }
-
     public function testAddIndexesFiltersByName(): void
     {
         $authentication = new RouteFilter('auth', 'Auth@handle');
@@ -41,5 +31,13 @@ final class RouteFilterCollectionTest extends TestCase
         $logicException = $this->captureException(LogicException::class, fn() => new RouteFilterCollection($this->unchecked(['auth' => new stdClass()])));
 
         $this->assertSame('Typed collections cannot be created from data of different types', $logicException->getMessage());
+    }
+
+    public function testItemsThatAreNotRouteFiltersAreRejected(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Typed collections cannot be created from data of different types');
+
+        new RouteFilterCollection($this->unchecked(['item' => new stdClass()]));
     }
 }

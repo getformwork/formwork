@@ -5,8 +5,8 @@ namespace Formwork\Tests\Unit\Languages;
 use Formwork\Languages\Language;
 use Formwork\Languages\LanguageCollection;
 use Formwork\Tests\TestCase;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Throwable;
 
 #[CoversClass(LanguageCollection::class)]
 final class LanguageCollectionTest extends TestCase
@@ -29,7 +29,7 @@ final class LanguageCollectionTest extends TestCase
         $this->assertFalse($languageCollection->has('fr'));
     }
 
-    public function testEmptyCollection(): void
+    public function testEmptyCollectionsHaveNoLanguages(): void
     {
         $languageCollection = new LanguageCollection([]);
 
@@ -54,11 +54,12 @@ final class LanguageCollectionTest extends TestCase
         $this->assertSame(['en' => 'en', 'it' => 'it'], $codes);
     }
 
-    public function testOnlyLanguagesCanBeAdded(): void
+    public function testCollectionIsImmutable(): void
     {
         $languageCollection = new LanguageCollection(['en' => 'en']);
 
-        $this->expectException(Throwable::class);
-        $languageCollection->set('it', $this->unchecked('not a language'));
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Values can be set only to associative and mutable collections');
+        $languageCollection->set('it', new Language('it'));
     }
 }

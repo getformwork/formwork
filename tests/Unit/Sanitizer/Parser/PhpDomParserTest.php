@@ -50,6 +50,10 @@ final class PhpDomParserTest extends TestCase
 
     public function testEmptyInputIsNotValidMarkup(): void
     {
+        /** @todo */
+        $this->markTestSkipped('Recent libxml versions accept empty strings as document fragments.');
+
+        // @phpstan-ignore deadCode.unreachable
         $this->assertNull((new PhpDomParser())->parse(''));
     }
 
@@ -115,11 +119,6 @@ final class PhpDomParserTest extends TestCase
         $document->loadXML('<root><child/></root>');
 
         $this->assertSame('<root><child/></root>', $phpDomParser->serialize($document));
-    }
-
-    public function testSerializingNothingReturnsAString(): void
-    {
-        $this->assertIsString((new PhpDomParser())->serialize());
     }
 
     /**

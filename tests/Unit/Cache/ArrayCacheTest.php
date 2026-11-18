@@ -27,7 +27,7 @@ final class ArrayCacheTest extends TestCase
         $this->assertFalse($second->has('key'));
     }
 
-    public function testItemsAreKeptInMemoryAsTheyAre(): void
+    public function testItemsArePreservedInMemoryAsTheyAre(): void
     {
         $arrayCache = new ArrayCache();
         $object = new stdClass();
@@ -35,6 +35,28 @@ final class ArrayCacheTest extends TestCase
         $arrayCache->set('object', $object);
 
         $this->assertSame($object, $arrayCache->get('object'));
+    }
+
+    public function testMultipleOperationsReportASingleFailureButProcessTheOtherKeys(): void
+    {
+        // A cache that cannot store or delete the `failing` key
+        $arrayCache = new class extends ArrayCache {
+            public function set(string $key, mixed $value, int|DateInterval|null $ttl = null): bool
+            {
+                return $key !== 'failing' && parent::set($key, $value, $ttl);
+            }
+
+            public function delete(string $key): bool
+            {
+                return $key !== 'failing' && parent::delete($key);
+            }
+        };
+
+        $this->assertFalse($arrayCache->setMultiple(['failing' => 1, 'other' => 2]));
+        $this->assertSame(2, $arrayCache->get('other'));
+
+        $this->assertFalse($arrayCache->deleteMultiple(['failing', 'other']));
+        $this->assertFalse($arrayCache->has('other'));
     }
 
     protected function createCache(int|DateInterval|null $defaultTtl = null): ArrayCache

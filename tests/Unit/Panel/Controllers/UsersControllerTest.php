@@ -10,7 +10,6 @@ use Formwork\Fields\FieldFactory;
 use Formwork\Files\FileFactory;
 use Formwork\Files\Services\FileUploader;
 use Formwork\Forms\FormData;
-use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Model\Model;
@@ -73,8 +72,7 @@ final class UsersControllerTest extends TestCase
     {
         $response = $this->create('admin', $this->newUser(role: 'admin'));
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('success', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['success']], $response);
         $this->assertSame('admin', $this->savedUser('newuser')['role']);
     }
 
@@ -90,8 +88,7 @@ final class UsersControllerTest extends TestCase
     {
         $response = $this->create('editor', $this->newUser(role: $submittedRole));
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('success', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['success']], $response);
         $this->assertSame('editor', $this->savedUser('newuser')['role']);
     }
 
@@ -116,8 +113,7 @@ final class UsersControllerTest extends TestCase
     {
         $response = $this->create('editor', $this->newUser(role: 'superuser'));
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         $this->assertFileDoesNotExist(FileSystem::joinPaths($this->accountsPath, 'newuser.yaml'));
     }
 
@@ -125,8 +121,7 @@ final class UsersControllerTest extends TestCase
     {
         $response = $this->create('admin', $this->newUser(role: 'superuser'));
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         $this->assertFileDoesNotExist(FileSystem::joinPaths($this->accountsPath, 'newuser.yaml'));
     }
 
@@ -136,8 +131,7 @@ final class UsersControllerTest extends TestCase
 
         $response = $this->create('admin', $this->newUser(role: 'editor', username: 'existing'), existing: ['existing']);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         $this->assertSame('admin', $this->savedUser('existing')['role']);
     }
 
@@ -147,8 +141,7 @@ final class UsersControllerTest extends TestCase
 
         $response = $this->create('admin', $this->newUser(role: 'editor', username: 'Existing'), existing: ['existing']);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         // On case-insensitive file systems the account of the existing user would be overwritten
         $this->assertSame('admin', $this->savedUser('existing')['role']);
     }
@@ -161,8 +154,7 @@ final class UsersControllerTest extends TestCase
     {
         $response = $this->create('admin', [...$this->newUser(role: 'editor'), ...$overrides]);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertSame('error', $this->lastMessageType());
+        $this->assertOutcome(['notices' => ['error']], $response);
         $this->assertSame([], iterator_to_array(FileSystem::listFiles($this->accountsPath), false));
     }
 
@@ -363,13 +355,5 @@ final class UsersControllerTest extends TestCase
     private function savedUser(string $username): array
     {
         return Yaml::parseFile(FileSystem::joinPaths($this->accountsPath, $username . '.yaml'));
-    }
-
-    private function lastMessageType(): ?string
-    {
-        $reflectionProperty = new ReflectionProperty(AbstractController::class, 'panel');
-        $notifications = $reflectionProperty->getValue($this->controller)->notifications();
-
-        return $notifications === [] ? null : end($notifications)['type'];
     }
 }

@@ -19,7 +19,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new JpegHandler(GdImagesFixture::jpeg(40, 30)))->getInfo();
+        $info = (new JpegHandler(GdImagesFixture::jpeg()))->getInfo();
 
         $this->assertSame('image/jpeg', $info->mimeType());
         $this->assertSame(40, $info->width());
@@ -55,6 +55,9 @@ final class JpegHandlerTest extends TestCase
         yield 'differential sequential' => [0xc5, 3, ColorSpace::RGB];
         yield 'arithmetic' => [0xc9, 3, ColorSpace::RGB];
         yield 'differential arithmetic' => [0xcd, 3, ColorSpace::RGB];
+        yield 'differential lossless' => [0xc7, 3, ColorSpace::RGB];
+        yield 'lossless arithmetic' => [0xcb, 3, ColorSpace::RGB];
+        yield 'differential lossless arithmetic' => [0xcf, 3, ColorSpace::RGB];
     }
 
     public function testTablesAreNotMistakenForFrames(): void
@@ -64,7 +67,7 @@ final class JpegHandlerTest extends TestCase
         $this->assertSame(0, $handler->getInfo()->width());
     }
 
-    public function testTruncatedFramesAreNotAccepted(): void
+    public function testTruncatedFramesAreRejected(): void
     {
         $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xc0, "\x08\x00") . "\xff\xd9");
 
@@ -88,9 +91,27 @@ final class JpegHandlerTest extends TestCase
         $this->assertDecodable($handler);
     }
 
+    public function testOnlyTheFirstFrameDescribesTheImage(): void
+    {
+        $first = "\x08" . pack('nn', 20, 10) . "\x01\x01\x11\x00";
+        $second = "\x08" . pack('nn', 40, 30) . "\x03" . str_repeat("\x01\x11\x00", 3);
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xc0, $first) . GdImagesFixture::jpegSegment(0xc0, $second) . "\xff\xd9");
+
+        $info = $handler->getInfo();
+
+        $this->assertSame([10, 20, ColorSpace::Grayscale], [$info->width(), $info->height(), $info->colorSpace()]);
+    }
+
+    public function testOtherApplicationSegmentsAreNotColorProfiles(): void
+    {
+        $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xe2, "FPXR\x00\x00\x01\x02") . "\xff\xd9");
+
+        $this->assertFalse($handler->hasColorProfile());
+    }
+
     public function testLargeColorProfilesAreSplitAndJoined(): void
     {
-        $profile = new ColorProfile($this->colorProfile()->getData() . random_bytes(150_000));
+        $profile = $this->largeColorProfile();
         $handler = new JpegHandler(GdImagesFixture::jpeg());
 
         $handler->setColorProfile($profile);
@@ -102,7 +123,7 @@ final class JpegHandlerTest extends TestCase
 
     public function testAllTheChunksOfAColorProfileAreRemoved(): void
     {
-        $profile = new ColorProfile($this->colorProfile()->getData() . random_bytes(150_000));
+        $profile = $this->largeColorProfile();
         $handler = new JpegHandler(GdImagesFixture::jpeg());
         $handler->setColorProfile($profile);
 
@@ -122,7 +143,7 @@ final class JpegHandlerTest extends TestCase
         $this->assertSame(1, substr_count($handler->getData(), "ICC_PROFILE\x00"));
     }
 
-    public function testIncompleteColorProfilesAreNotAccepted(): void
+    public function testIncompleteColorProfilesAreRejected(): void
     {
         $segment = GdImagesFixture::jpegSegment(0xe2, "ICC_PROFILE\x00\x01\x02" . $this->colorProfile()->getData());
         $handler = new JpegHandler("\xff\xd8" . $segment . "\xff\xd9");
@@ -133,11 +154,12 @@ final class JpegHandlerTest extends TestCase
         $handler->getColorProfile();
     }
 
-    public function testTruncatedColorProfileSegmentsAreNotAccepted(): void
+    public function testTruncatedColorProfileSegmentsAreRejected(): void
     {
         $handler = new JpegHandler("\xff\xd8" . GdImagesFixture::jpegSegment(0xe2, "ICC_PROFILE\x00\x01") . "\xff\xd9");
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         $handler->getColorProfile();
     }
@@ -197,7 +219,7 @@ final class JpegHandlerTest extends TestCase
         $this->assertSame(20, $handler->getInfo()->width());
     }
 
-    public function testRemovingMetadataKeepsOtherSegments(): void
+    public function testRemovingMetadataPreservesOtherSegments(): void
     {
         $jpeg = "\xff\xd8" . GdImagesFixture::jpegSegment(0xe1, "Exif\x00\x00" . $this->exifData()->getData()) . GdImagesFixture::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImagesFixture::jpegSegment(0xe2, 'other') . "\xff\xd9";
         $handler = new JpegHandler($jpeg);
@@ -207,16 +229,17 @@ final class JpegHandlerTest extends TestCase
         $this->assertSame("\xff\xd8" . GdImagesFixture::jpegSegment(0xe1, 'http://ns.adobe.com/xap/1.0/') . GdImagesFixture::jpegSegment(0xe2, 'other') . "\xff\xd9", $handler->getData());
     }
 
-    public function testMissingStartOfImageMarkersAreNotAccepted(): void
+    public function testMissingStartOfImageMarkersAreRejected(): void
     {
         $handler = new JpegHandler('not a JPEG image');
 
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid JPEG data');
 
         $handler->setExifData($this->exifData());
     }
 
-    public function testExifDataNotFittingInASegmentIsNotAccepted(): void
+    public function testExifDataNotFittingInASegmentIsRejected(): void
     {
         $handler = new JpegHandler(GdImagesFixture::jpeg());
 
@@ -251,7 +274,7 @@ final class JpegHandlerTest extends TestCase
         $this->assertNull($handler->getExifData());
     }
 
-    public function testColorProfilesNotFittingInTheSegmentsAreNotAccepted(): void
+    public function testColorProfilesNotFittingInTheSegmentsAreRejected(): void
     {
         $handler = new JpegHandler(GdImagesFixture::jpeg());
 
@@ -262,6 +285,16 @@ final class JpegHandlerTest extends TestCase
         $this->expectExceptionMessage('Color profile is too large to be embedded in a JPEG image');
 
         $handler->setColorProfile(new ColorProfile($data));
+    }
+
+    /**
+     * A color profile larger than a JPEG segment, whose bytes change along it so that misplaced chunks are noticed
+     */
+    private function largeColorProfile(): ColorProfile
+    {
+        $bytes = implode('', array_map(chr(...), range(0, 255)));
+
+        return new ColorProfile($this->colorProfile()->getData() . substr(str_repeat($bytes, 600), 0, 150_000));
     }
 
     private function colorProfile(): ColorProfile

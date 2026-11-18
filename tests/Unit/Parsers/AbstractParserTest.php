@@ -26,6 +26,7 @@ final class AbstractParserTest extends TestCase
     public function testParseFileOfMissingFilesFails(): void
     {
         $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage('File "' . TESTS_TMP_PATH . '/missing.txt" not found');
 
         EchoParserFixture::parseFile(TESTS_TMP_PATH . '/missing.txt');
     }

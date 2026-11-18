@@ -35,16 +35,17 @@ final class DateTest extends TestCase
         'date.weekdays.short'   => ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
     ];
 
-    public function testToTimestamp(): void
+    public function testToTimestampAcceptsSeveralFormats(): void
     {
         $this->assertSame(1869436800, Date::toTimestamp('2029-03-29', 'Y-m-d'));
         $this->assertSame(1869436800, Date::toTimestamp('29/03/2029', ['Y-m-d', 'd/m/Y']));
         $this->assertSame(1869436800, Date::toTimestamp('2029-03-29', ''));
     }
 
-    public function testToTimestampThrowsOnInvalidDate(): void
+    public function testToTimestampRejectsInvalidDates(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid date "invalid-date"');
         Date::toTimestamp('invalid-date', 'Y-m-d');
     }
 
@@ -52,6 +53,7 @@ final class DateTest extends TestCase
     public function testToTimestampRejectsDatesThatDoNotExist(string $date): void
     {
         $this->expectException(InvalidArgumentException::class);
+
         Date::toTimestamp($date, 'Y-m-d');
     }
 
@@ -91,24 +93,25 @@ final class DateTest extends TestCase
         $this->assertSame(1869436800, Date::toTimestamp('29/03/2029', ['Y-m-d', 'd/m/Y', 'm.d.Y']));
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid date "29.03.2029-extra"');
         Date::toTimestamp('29.03.2029-extra', ['Y-m-d', 'd/m/Y']);
     }
 
-    public function testFormatToPattern(): void
+    public function testFormatsAreConvertedToPatterns(): void
     {
         $this->assertSame('YYYY-MM-DD', Date::formatToPattern('Y-m-d'));
         $this->assertSame('DD/MM/YYYY hh:mm:ss', Date::formatToPattern('d/m/Y H:i:s'));
         $this->assertSame('DD/MM/YYYY [at] hh:mm:ss', Date::formatToPattern('d/m/Y \a\t H:i:s'));
     }
 
-    public function testPatternToFormat(): void
+    public function testPatternsAreConvertedToFormats(): void
     {
         $this->assertSame('Y-m-d', Date::patternToFormat('YYYY-MM-DD'));
         $this->assertSame('d/m/Y H:i:s', Date::patternToFormat('DD/MM/YYYY hh:mm:ss'));
         $this->assertSame('l d F Y \a\t h:i:s A \o\' \c\l\o\c\k', Date::patternToFormat('DDDD DD MMMM YYYY [at] HH:mm:ss A [o\' clock]'));
     }
 
-    public function testFormat(): void
+    public function testMonthsAndWeekdaysAreTranslated(): void
     {
         $dateTime = new DateTime('2029-03-29 15:30:00');
 
@@ -118,7 +121,7 @@ final class DateTest extends TestCase
         $this->assertSame('Giovedì 29 Marzo 2029', Date::formatDateTime($dateTime, 'l d F Y', $translation));
     }
 
-    public function testFormatAcceptsImmutableDateTimesAndKeepsTheirTimeZone(): void
+    public function testFormatAcceptsImmutableDateTimesAndPreservesTheirTimeZone(): void
     {
         $translation = new Translation('it', $this->translation);
         $dateTime = new DateTimeImmutable('2029-03-29 15:30:00', new DateTimeZone('Europe/Rome'));
@@ -145,7 +148,7 @@ final class DateTest extends TestCase
         $this->assertSame('tra 3 ore', Date::formatDateTimeAsDistance(new DateTimeImmutable('@' . (time() + 3 * 3600)), $translation));
     }
 
-    public function testFormatWithTimestamp(): void
+    public function testTimestampsAreFormattedLikeDates(): void
     {
         $translation = new Translation('it', $this->translation);
 
@@ -167,7 +170,7 @@ final class DateTest extends TestCase
         }
     }
 
-    public function testFormatDistance(): void
+    public function testDistancesAreTranslated(): void
     {
         $translation = new Translation('it', $this->translation);
 
@@ -187,5 +190,43 @@ final class DateTest extends TestCase
         $this->assertSame('adesso', Date::formatTimestampAsDistance($now, $translation));
         $this->assertSame('2 mesi fa', Date::formatTimestampAsDistance($now - 60 * 86400, $translation));
         $this->assertSame('tra 10 minuti', Date::formatTimestampAsDistance($now + 10 * 60, $translation));
+    }
+
+    #[DataProvider('dateErrorProvider')]
+    public function testDateErrorsDescribeEachProblemWithItsPositions(string $date, string $message): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($message);
+
+        Date::toTimestamp($date, 'Y-m-d');
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function dateErrorProvider(): iterable
+    {
+        yield 'warning' => ['2024-02-30', 'Invalid date "2024-02-30": the parsed date was invalid at position 11'];
+        yield 'error' => ['2024-13-01', 'Invalid date "2024-13-01": unexpected character at position 6'];
+        yield 'repeated error' => ['!!', 'Invalid date "!!": unexpected character at position 0, 1'];
+    }
+
+    public function testShortMonthsAndWeekdaysAreTranslated(): void
+    {
+        $translation = new Translation('it', $this->translation);
+
+        $this->assertSame('Mar 01 Mag 2029', Date::formatDateTime(new DateTime('2029-05-01'), 'D d M Y', $translation));
+    }
+
+    public function testSingleUnitDistancesUseTheSingularForm(): void
+    {
+        $translation = new Translation('it', $this->translation);
+
+        $this->assertSame('1 ora fa', Date::formatTimestampAsDistance(time() - 3600, $translation));
+    }
+
+    public function testToTimestampWithoutFormatsParsesTheDateFreely(): void
+    {
+        $this->assertSame(1861920000, Date::toTimestamp('2029-01-01', []));
     }
 }

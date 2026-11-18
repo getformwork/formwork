@@ -23,8 +23,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[UsesTempDirectory]
 final class FileUploaderTest extends TestCase
 {
-    protected function setUp(): void {}
-
     public function testAllowedMimeTypesAreDerivedFromConfiguredExtensions(): void
     {
         $fileUploader = new FileUploader($this->config(['txt', 'jpg']), new FileFactory(new Container(), $this->config(['txt', 'jpg'])));
@@ -40,7 +38,6 @@ final class FileUploaderTest extends TestCase
 
         $exception = $this->captureException(TranslatedException::class, fn(): File => $fileUploader->upload($uploadedFile, TESTS_TMP_PATH));
 
-        $this->assertInstanceOf(TranslatedException::class, $exception);
         $this->assertSame($languageString, $exception->getLanguageString());
     }
 
@@ -238,7 +235,7 @@ final class FileUploaderTest extends TestCase
      * @param list<string> $extensions
      */
     #[DataProvider('replacedFileProvider')]
-    public function testReplacedFilesKeepTheirName(string $filename, string $clientName, array $extensions): void
+    public function testReplacedFilesPreserveTheirName(string $filename, string $clientName, array $extensions): void
     {
         $temp = TESTS_TMP_PATH . '/upload.tmp';
         FileSystem::write($temp, 'new content');
@@ -293,6 +290,23 @@ final class FileUploaderTest extends TestCase
         $file = $fileUploader->upload($this->movableUpload($temp, 'photo.jpg'), TESTS_TMP_PATH . '/uploads');
 
         $this->assertNotSame($hash, hash_file('sha256', $file->path()));
+    }
+
+    public function testImagesOfOtherTypesAreNotEncodedAgain(): void
+    {
+        $temp = TESTS_TMP_PATH . '/upload.gif';
+        imagegif(imagecreatetruecolor(200, 100), $temp);
+        $hash = hash_file('sha256', $temp);
+        FileSystem::createDirectory(TESTS_TMP_PATH . '/uploads');
+        $config = new Config(['system' => [
+            'files'   => ['allowedExtensions' => ['gif'], 'uploads' => ['baseDestinations' => [TESTS_TMP_PATH]]],
+            'uploads' => ['processImages' => true],
+        ]], resolved: true);
+        $fileUploader = new FileUploader($config, App::instance()->getService(FileFactory::class));
+
+        $file = $fileUploader->upload($this->movableUpload($temp, 'image.gif'), TESTS_TMP_PATH . '/uploads');
+
+        $this->assertSame($hash, hash_file('sha256', $file->path()));
     }
 
     private function movableUpload(string $temp, string $clientName): UploadedFile

@@ -71,13 +71,13 @@ final class UsersServiceLoaderTest extends TestCase
 
     public function testAccountsAreLoadedByUsername(): void
     {
-        $this->writeAccount('alice', 'alice');
-        $this->writeAccount('bob', 'bob');
+        $this->writeAccount('user', 'user');
+        $this->writeAccount('another-user', 'another-user');
 
         $users = $this->resolve();
 
-        $this->assertEqualsCanonicalizing(['alice', 'bob'], $users->keys());
-        $this->assertSame('alice@example.com', $users->get('alice')?->email());
+        $this->assertEqualsCanonicalizing(['user', 'another-user'], $users->keys());
+        $this->assertSame('user@example.test', $users->get('user')?->email());
     }
 
     public function testAccountsAreIndexedByTheUsernameStoredInsideTheFile(): void
@@ -99,11 +99,11 @@ final class UsersServiceLoaderTest extends TestCase
 
     public function testNonYamlFilesInTheAccountsDirectoryAreIgnored(): void
     {
-        $this->writeAccount('alice', 'alice');
+        $this->writeAccount('user', 'user');
         FileSystem::write($this->accountsPath . '/.gitkeep', '');
         FileSystem::write($this->accountsPath . '/notes.txt', 'not an account');
 
-        $this->assertSame(['alice'], array_keys($this->resolve()->toArray()));
+        $this->assertSame(['user'], array_keys($this->resolve()->toArray()));
     }
 
     public function testNonYamlFilesInTheRolesDirectoryAreIgnored(): void
@@ -121,7 +121,7 @@ final class UsersServiceLoaderTest extends TestCase
         $this->assertSame($container->get(Users::class), $container->get(Users::class));
     }
 
-    public function testActionsAreKeptWhenTheUserHasTheirPermission(): void
+    public function testActionsArePreservedWhenTheUserHasTheirPermission(): void
     {
         $restricted = (new PermissionActionsFixture())->restricted(...);
 
@@ -173,7 +173,7 @@ final class UsersServiceLoaderTest extends TestCase
 
     private function writeAccount(string $file, string $username): void
     {
-        FileSystem::write($this->accountsPath . "/{$file}.yaml", "username: {$username}\nfullname: " . ucfirst($username) . "\nhash: '\$2y\$10\$abcdefghijklmnopqrstuuOe0oSWJEQ0VPYrTzm/BCUzLYRlCwV7a'\nemail: {$username}@example.com\nlanguage: en\n");
+        FileSystem::write($this->accountsPath . "/{$file}.yaml", "username: {$username}\nfullname: " . ucfirst($username) . "\nhash: '\$2y\$10\$abcdefghijklmnopqrstuuOe0oSWJEQ0VPYrTzm/BCUzLYRlCwV7a'\nemail: {$username}@example.test\nlanguage: en\n");
     }
 
     /**

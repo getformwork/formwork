@@ -11,7 +11,6 @@ use Formwork\Interpolator\Nodes\ImplicitArrayKeyNode;
 use Formwork\Interpolator\Nodes\NumberNode;
 use Formwork\Interpolator\Nodes\StringNode;
 use Formwork\Interpolator\Parser;
-use Formwork\Interpolator\ParserInterface;
 use Formwork\Interpolator\Tokenizer;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,11 +19,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversClass(Parser::class)]
 final class ParserTest extends TestCase
 {
-    public function testParserImplementsItsInterface(): void
-    {
-        $this->assertInstanceOf(ParserInterface::class, new Parser(Tokenizer::tokenizeString('a')));
-    }
-
     public function testParseTokenStreamIsEquivalentToParse(): void
     {
         $this->assertEquals(
@@ -33,7 +27,7 @@ final class ParserTest extends TestCase
         );
     }
 
-    public function testSingleIdentifier(): void
+    public function testASingleIdentifierIsParsed(): void
     {
         $identifierNode = $this->parse('name');
 
@@ -71,7 +65,7 @@ final class ParserTest extends TestCase
         $this->assertSame('key', $identifierNode->traverse()->value());
     }
 
-    public function testCallWithoutArguments(): void
+    public function testCallsWithoutArgumentsHaveAnEmptyArgumentList(): void
     {
         $identifierNode = $this->parse('f()');
 
@@ -136,7 +130,7 @@ final class ParserTest extends TestCase
      * Quotes belonging to the content of a string must not be stripped together with the delimiters
      */
     #[DataProvider('quotedContentProvider')]
-    public function testQuotesInsideStringsAreKept(string $expression, string $expected): void
+    public function testQuotesInsideStringsArePreserved(string $expression, string $expected): void
     {
         $this->assertSame($expected, $this->parse($expression)->arguments()?->value()[0]->value());
     }
@@ -164,7 +158,7 @@ final class ParserTest extends TestCase
         $this->assertSame([1, 2, 3], $values);
     }
 
-    public function testEmptyArray(): void
+    public function testEmptyArraysAreParsed(): void
     {
         $node = $this->parse('f([])')->arguments()?->value()[0];
 
@@ -190,6 +184,7 @@ final class ParserTest extends TestCase
         $this->assertInstanceOf(StringNode::class, $keys[0]);
         $this->assertInstanceOf(IdentifierNode::class, $keys[1]);
         $this->assertInstanceOf(NumberNode::class, $keys[2]);
+        $this->assertSame(['a', 'b', 3], [$keys[0]->value(), $keys[1]->value(), $keys[2]->value()]);
     }
 
     public function testArrayMixingImplicitAndExplicitKeys(): void
@@ -201,7 +196,7 @@ final class ParserTest extends TestCase
         $this->assertSame(['implicit array key', 'string', 'implicit array key'], $types);
     }
 
-    public function testNestedArrays(): void
+    public function testNestedArraysAreParsed(): void
     {
         $node = $this->parse('f([[1], ["a" => [2]]])')->arguments()?->value()[0];
 

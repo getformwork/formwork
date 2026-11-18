@@ -28,7 +28,7 @@ trait BuildsStatistics
     {
         $registries += [
             'pageViews' => ['/' => 3, '/blog/' => 7],
-            'sources'   => ['example.com' => 4],
+            'sources'   => ['example.test' => 4],
             'devices'   => ['Desktop' => 2],
         ];
 

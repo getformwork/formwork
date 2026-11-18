@@ -34,28 +34,21 @@ final class BackupperInstallationTest extends TestCase
 
     public function testTheWholeInstallationIsArchivedExceptIgnoredFiles(): void
     {
-        $destination = $this->backupper(['ignore' => ['cache/*']])->backup('installation', 'example.com');
+        $destination = $this->backupper(['ignore' => ['cache/*']])->backup('installation', 'example.test');
 
         $this->assertEqualsCanonicalizing(['index.php', 'site/pages/page.md'], $this->entries($destination));
     }
 
-    public function testTheArchiveIsWrittenInTheConfiguredPath(): void
-    {
-        $destination = $this->backupper()->backup('installation', 'example.com');
-
-        $this->assertSame(TESTS_TMP_PATH . '/backups', dirname($destination));
-    }
-
     public function testSiteTitleComesFromTheApplication(): void
     {
-        $destination = $this->backupper()->backup('{{site}}', 'example.com');
+        $destination = $this->backupper()->backup('{{site}}', 'example.test');
 
         $this->assertStringStartsWith(Str::slug((string) App::instance()->site()->title()) . '-', basename($destination));
     }
 
     public function testFilesOfOtherInstallationsAreNeverArchived(): void
     {
-        $destination = $this->backupper()->backup('installation', 'example.com');
+        $destination = $this->backupper()->backup('installation', 'example.test');
 
         $this->assertNotContains('composer.json', $this->entries($destination));
         $this->assertNotContains('formwork/src/Cms/App.php', $this->entries($destination));

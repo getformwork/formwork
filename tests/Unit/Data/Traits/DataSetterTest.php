@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 #[CoversTrait(DataSetter::class)]
 final class DataSetterTest extends TestCase
 {
-    public function testSet(): void
+    public function testSetStoresTheValue(): void
     {
         $dataSetterFixture = new DataSetterFixture();
 
@@ -26,7 +26,7 @@ final class DataSetterTest extends TestCase
         $this->assertSame(['key1' => 'newValue1', 'key2' => 'value2'], $dataSetterFixture->data());
     }
 
-    public function testRemove(): void
+    public function testRemoveDeletesTheKey(): void
     {
         $dataSetterFixture = new DataSetterFixture(['key1' => 'value1', 'key2' => 'value2']);
 

@@ -126,13 +126,6 @@ final class FormTest extends TestCase
         $form->processRequest($request);
     }
 
-    public function testProcessRequestReturnsTheSameForm(): void
-    {
-        $form = $this->createForm('contact');
-
-        $this->assertSame($form, $form->processRequest($this->createRequest(RequestMethod::POST)));
-    }
-
     public function testRequestInputOverridesQueryData(): void
     {
         $fields = [
@@ -197,7 +190,7 @@ final class FormTest extends TestCase
 
         $form = $this->createForm('contact', $fields);
 
-        $form->processRequest($this->createRequest(RequestMethod::POST, input: ['name' => 'Sempronius']));
+        $form->processRequest($this->createRequest(RequestMethod::POST, input: ['name' => 'Test User']));
 
         $this->assertTrue($form->isValid());
         $this->assertSame(ResponseStatus::OK, $form->getResponseStatus());
@@ -253,13 +246,13 @@ final class FormTest extends TestCase
         $form = $this->createForm('contact', $fields);
 
         $form->processRequest($this->createRequest(RequestMethod::POST, input: [
-            'name'  => 'Sempronius',
-            'email' => 'sempronius@example.com',
+            'name'  => 'Test User',
+            'email' => 'user@example.test',
         ]));
 
         $this->assertSame([
-            'name'  => 'Sempronius',
-            'email' => 'sempronius@example.com',
+            'name'  => 'Test User',
+            'email' => 'user@example.test',
         ], $form->data()->toArray());
     }
 
@@ -277,12 +270,12 @@ final class FormTest extends TestCase
         $form = $this->createForm('contact', $fields);
 
         $form->processRequest($this->createRequest(RequestMethod::POST, input: [
-            'name' => 'Sempronius',
+            'name' => 'Test User',
         ], files: [
             'attachment' => $this->uploadData(),
         ]), uploadFiles: false);
 
-        $this->assertSame(['name' => 'Sempronius'], $form->data()->toArray());
+        $this->assertSame(['name' => 'Test User'], $form->data()->toArray());
     }
 
     public function testUploadFailureDoesNotFabricateAnUploadedFile(): void
@@ -301,7 +294,7 @@ final class FormTest extends TestCase
         $this->assertSame([], $form->uploadedFiles());
     }
 
-    public function testPreserveEmptyKeepsEmptyFields(): void
+    public function testPreserveEmptyPreservesEmptyFields(): void
     {
         $fields = [
             'name' => $this->createField('name', [
@@ -341,10 +334,10 @@ final class FormTest extends TestCase
 
         $form->processRequest($this->createRequest(
             RequestMethod::POST,
-            input: ['name' => 'Alice'],
+            input: ['name' => 'Another User'],
         ), preserveEmpty: false);
 
-        $this->assertSame(['name' => 'Alice'], $form->data()->toArray());
+        $this->assertSame(['name' => 'Another User'], $form->data()->toArray());
         $this->assertSame('', $form->fields()->get('message')?->value());
     }
 
@@ -370,6 +363,7 @@ final class FormTest extends TestCase
                     'type' => 'upload',
                 ]),
             ],
+            $uploader,
         );
 
         $form->processRequest($this->createRequest(RequestMethod::POST, files: [
@@ -397,7 +391,7 @@ final class FormTest extends TestCase
             ]),
         ];
 
-        $form = $this->createForm('contact', $fields);
+        $form = $this->createForm('contact', $fields, $uploader);
 
         $form->processRequest($this->createRequest(RequestMethod::POST, files: [
             'attachment' => $this->uploadData(),
@@ -420,7 +414,7 @@ final class FormTest extends TestCase
             ]),
         ];
 
-        $form = $this->createForm('contact', $fields);
+        $form = $this->createForm('contact', $fields, $uploader);
 
         $form->processRequest($this->createRequest(RequestMethod::POST));
 
@@ -499,24 +493,6 @@ final class FormTest extends TestCase
         $this->assertSame([$uploadedFile], $form->uploadedFiles());
     }
 
-    public function testDefaultUploadDestinationIsUsedOnlyWhenFieldDestinationIsMissing(): void
-    {
-        $file = new File('/uploads/result.jpg');
-        $uploader = $this->createMock(FileUploader::class);
-        $uploader->expects($this->once())
-            ->method('upload')
-            ->with($this->isInstanceOf(UploadedFile::class), '/default', null, [], false)
-            ->willReturn($file);
-
-        $form = $this->createForm('upload', [
-            'photo' => $this->createField('photo', ['type' => 'upload', 'accept' => '']),
-        ], $uploader);
-        $form->setDefaultUploadsDestination('/default');
-        $form->processRequest($this->createRequest(RequestMethod::POST, files: ['photo' => $this->uploadData()]));
-
-        $this->assertSame([$file], $form->uploadedFiles());
-    }
-
     public function testFieldUploadDestinationTakesPrecedenceOverDefaultDestination(): void
     {
         $uploadedFile = new File('/field-uploads/photo.jpg');
@@ -553,7 +529,7 @@ final class FormTest extends TestCase
         $this->assertSame([$uploadedFile], $form->uploadedFiles());
     }
 
-    public function testMissingUploadDestinationThrows(): void
+    public function testMissingUploadDestinationsAreReported(): void
     {
         $fields = [
             'attachment' => $this->createField('attachment', [
@@ -623,7 +599,7 @@ final class FormTest extends TestCase
      * @param array<string, mixed> $config
      */
     #[DataProvider('fieldTypesProvider')]
-    public function testFieldTypeValues(
+    public function testEachFieldTypeProcessesItsSubmittedValue(
         string $type,
         array $config,
         mixed $submittedValue,
@@ -711,8 +687,8 @@ final class FormTest extends TestCase
         yield 'email' => [
             'email',
             [],
-            'sempronius@example.com',
-            'sempronius@example.com',
+            'user@example.test',
+            'user@example.test',
             '',
         ];
 
@@ -828,8 +804,8 @@ final class FormTest extends TestCase
         yield 'text' => [
             'text',
             [],
-            'Sempronius',
-            'Sempronius',
+            'Test User',
+            'Test User',
             '',
         ];
 

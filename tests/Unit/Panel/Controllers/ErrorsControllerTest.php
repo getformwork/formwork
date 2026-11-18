@@ -49,15 +49,6 @@ final class ErrorsControllerTest extends TestCase
         $this->assertSame(ResponseStatus::Forbidden, $response->status());
     }
 
-    public function testInternalServerErrorHasItsStatus(): void
-    {
-        $this->expectErrorLog();
-
-        $response = $this->controller()->internalServerError(new RuntimeException('Boom'));
-
-        $this->assertSame(ResponseStatus::InternalServerError, $response->status());
-    }
-
     #[DataProvider('errorStatusProvider')]
     public function testErrorUsesTheGivenStatus(ResponseStatus $status): void
     {

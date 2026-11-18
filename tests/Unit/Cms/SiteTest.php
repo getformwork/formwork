@@ -5,9 +5,7 @@ namespace Formwork\Tests\Unit\Cms;
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Languages\Languages;
-use Formwork\Metadata\Metadata;
 use Formwork\Pages\Exceptions\PageNotFoundException;
-use Formwork\Pages\Page;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Tests\TestCase;
@@ -45,7 +43,7 @@ final class SiteTest extends TestCase
 
     // Identity
 
-    public function testSiteIsASite(): void
+    public function testSiteIsTheRootModelAndNotAPage(): void
     {
         $this->assertTrue($this->site->isSite());
         $this->assertFalse($this->site->isIndexPage());
@@ -84,9 +82,9 @@ final class SiteTest extends TestCase
 
     public function testNumberPrefixesAreNotPartOfTheRoute(): void
     {
-        $this->assertInstanceOf(Page::class, $this->site->findPage('/second'));
-        $this->assertNull($this->site->findPage('/2-second')?->route());
-        $this->assertNull($this->site->findPage('/1-first')?->route());
+        $this->assertSame('Second', $this->site->findPage('/second')?->title());
+        $this->assertNull($this->site->findPage('/2-second'));
+        $this->assertNull($this->site->findPage('/1-first'));
     }
 
     public function testTheRootRouteIsTheIndexPage(): void
@@ -97,17 +95,17 @@ final class SiteTest extends TestCase
 
     public function testUnknownRoutesAreNotFound(): void
     {
-        $this->assertNull($this->site->findPage('/missing')?->route());
-        $this->assertNull($this->site->findPage('/first/missing')?->route());
-        $this->assertNull($this->site->findPage('/missing/nested')?->route());
-        $this->assertNull($this->site->findPage('')?->route());
-        $this->assertNull($this->site->findPage('//')?->route());
-        $this->assertNull($this->site->findPage('/first//nested')?->route());
+        $this->assertNull($this->site->findPage('/missing'));
+        $this->assertNull($this->site->findPage('/first/missing'));
+        $this->assertNull($this->site->findPage('/missing/nested'));
+        $this->assertNull($this->site->findPage(''));
+        $this->assertNull($this->site->findPage('//'));
+        $this->assertNull($this->site->findPage('/first//nested'));
     }
 
     public function testRoutesAreCaseSensitive(): void
     {
-        $this->assertNull($this->site->findPage('/FIRST')?->route());
+        $this->assertNull($this->site->findPage('/FIRST'));
     }
 
     /**
@@ -127,7 +125,7 @@ final class SiteTest extends TestCase
     #[DataProvider('dotRoutesProvider')]
     public function testRoutesWithDotSegmentsNeverEscapeTheContentTree(string $route): void
     {
-        $this->assertNull($this->site->findPage($route)?->route());
+        $this->assertNull($this->site->findPage($route));
     }
 
     public function testDirectoriesWithoutContentAreNotListed(): void
@@ -175,7 +173,7 @@ final class SiteTest extends TestCase
 
     // Index and error pages
 
-    public function testErrorPage(): void
+    public function testErrorPageIsFoundByItsRoute(): void
     {
         $this->assertSame('/error/', $this->site->errorPage()->route());
     }
@@ -257,7 +255,7 @@ final class SiteTest extends TestCase
 
         $this->assertSame('A site', $metadata->get('description')?->content());
         $this->assertSame('noindex', $metadata->get('robots')?->content());
-        $this->assertInstanceOf(Metadata::class, $metadata->get('charset'));
+        $this->assertSame('utf-8', $metadata->get('charset')?->content());
     }
 
     public function testMetadataIsBuiltOnce(): void
@@ -322,11 +320,6 @@ final class SiteTest extends TestCase
     public function testUsersComeFromTheApplication(): void
     {
         $this->assertSame(App::instance()->getService(Users::class), $this->site->users());
-    }
-
-    public function testFindPageReturnsPageInstances(): void
-    {
-        $this->assertContainsOnlyInstancesOf(Page::class, [$this->site->findPage('/first'), $this->site->indexPage()]);
     }
 
     private function touchTree(string $path, int $time): void

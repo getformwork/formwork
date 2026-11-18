@@ -101,6 +101,7 @@ final class PanelTest extends TestCase
     public function testRouteOutsideThePanelRootIsRejected(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('The request URI is outside the panel root');
 
         $this->panel(server: ['REQUEST_URI' => '/other/pages/'])->route();
     }
@@ -108,6 +109,7 @@ final class PanelTest extends TestCase
     public function testRouteOfASiblingPathWithTheSamePrefixIsRejected(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('The request URI is outside the panel root');
 
         $this->panel(server: ['REQUEST_URI' => '/panelist/pages/'])->route();
     }
@@ -137,6 +139,7 @@ final class PanelTest extends TestCase
     public function testUserIsRequired(): void
     {
         $this->expectException(UserNotLoggedException::class);
+        $this->expectExceptionMessage('No user is logged in');
 
         $this->panel()->user();
     }
@@ -163,7 +166,7 @@ final class PanelTest extends TestCase
         $this->assertSame([], $panel->notifications());
     }
 
-    public function testNotificationsOfTheSameTypeAreKept(): void
+    public function testNotificationsOfTheSameTypeArePreserved(): void
     {
         $panel = $this->panel();
 
@@ -179,21 +182,13 @@ final class PanelTest extends TestCase
 
         $panel->notify('Hello');
 
-        $this->assertSame('info', $panel->notifications()[0]['type']);
-    }
-
-    public function testNotificationsHaveAnInterval(): void
-    {
-        $panel = $this->panel();
-
-        $panel->notify('Hello');
-
-        $this->assertGreaterThan(0, $panel->notifications()[0]['interval']);
+        $this->assertSame([['text' => 'Hello', 'type' => 'info', 'interval' => 5000]], $panel->notifications());
     }
 
     public function testInvalidNotificationTypesAreRejected(): void
     {
         $this->expectException(ValueError::class);
+        $this->expectExceptionMessage('"bogus" is not a valid backing value for enum Formwork\Http\Session\MessageType');
 
         $this->panel()->notify('Hello', 'bogus');
     }
@@ -221,7 +216,7 @@ final class PanelTest extends TestCase
     }
 
     #[DataProvider('colorSchemeProvider')]
-    public function testColorSchemeFollowsTheConfiguration(string $configured, ColorScheme $expected, string $compatible): void
+    public function testColorSchemeFollowsTheConfig(string $configured, ColorScheme $expected, string $compatible): void
     {
         $panel = $this->panel(system: ['panel' => ['colorScheme' => $configured]]);
 
@@ -312,7 +307,7 @@ final class PanelTest extends TestCase
         $this->assertSame(['de'], array_keys($second->availableTranslations()));
     }
 
-    public function testNavigationIsBuiltFromTheConfigurationAndDispatchedToListeners(): void
+    public function testNavigationIsBuiltFromTheConfigAndDispatchedToListeners(): void
     {
         $events = new EventDispatcher();
         $dispatched = null;

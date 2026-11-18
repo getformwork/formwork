@@ -4,6 +4,7 @@ namespace Formwork\Tests\Unit\Images\Handler;
 
 use Formwork\Images\ColorProfile\ColorProfile;
 use Formwork\Images\ColorProfile\ColorSpace;
+use Formwork\Images\Exif\ExifData;
 use Formwork\Images\Handler\AbstractHandler;
 use Formwork\Images\Handler\AvifHandler;
 use Formwork\Images\Handler\JpegHandler;
@@ -44,6 +45,22 @@ final class AbstractHandlerTest extends TestCase
      * @param class-string<AbstractHandler> $target
      */
     #[DataProvider('targetHandlersProvider')]
+    public function testMetadataIsNotPreservedWhenDisabled(string $target): void
+    {
+        $handler = new PngHandler(GdImagesFixture::png(), ['preserveColorProfile' => false, 'preserveExifData' => false]);
+        $handler->setColorProfile($this->colorProfile('RGB '));
+        $handler->setExifData(new ExifData((string) file_get_contents(__DIR__ . '/../Fixtures/exif.tiff')));
+
+        $processed = $handler->process(null, $target);
+
+        $this->assertFalse($processed->hasColorProfile());
+        $this->assertFalse($processed->hasExifData());
+    }
+
+    /**
+     * @param class-string<AbstractHandler> $target
+     */
+    #[DataProvider('targetHandlersProvider')]
     public function testRgbColorProfilesArePreservedWhenProcessing(string $target): void
     {
         $handler = new PngHandler(GdImagesFixture::png());
@@ -58,7 +75,7 @@ final class AbstractHandlerTest extends TestCase
      * @param class-string<AbstractHandler> $target
      */
     #[DataProvider('targetHandlersProvider')]
-    public function testColorProfilesOfOtherColorSpacesAreDroppedWhenProcessing(string $target): void
+    public function testColorProfilesOfOtherColorSpacesAreRemovedWhenProcessing(string $target): void
     {
         foreach (['CMYK', 'GRAY', 'Lab ', 'ABCD'] as $signature) {
             // A JPEG source avoids libpng warnings about profiles inconsistent with the image

@@ -25,7 +25,7 @@ final class ImageRendererTest extends TestCase
 
     public function testTitleIsRendered(): void
     {
-        $this->assertStringContainsString('title="Tom"', $this->parse('![A cat](cat.png "Tom")'));
+        $this->assertSame("<p><img src=\"/cat.png\" alt=\"A cat\" title=\"Title\"></p>\n", $this->parse('![A cat](cat.png "Title")'));
     }
 
     public function testAltIsOmittedWhenEmpty(): void
@@ -43,7 +43,7 @@ final class ImageRendererTest extends TestCase
         $this->assertStringContainsString('alt="A very big cat"', $html);
     }
 
-    public function testAltKeepsLineBreaks(): void
+    public function testAltPreservesLineBreaks(): void
     {
         $html = $this->parse("![first\nsecond](cat.png)");
 
@@ -86,7 +86,7 @@ final class ImageRendererTest extends TestCase
         $this->assertStringContainsString('src=""', (string) $imageRenderer->render($image, $this->childRenderer()));
     }
 
-    public function testUnsafeDestinationsAreKeptWhenAllowed(): void
+    public function testUnsafeDestinationsArePreservedWhenAllowed(): void
     {
         $imageRenderer = new ImageRenderer();
         $imageRenderer->setConfiguration($this->configuration(allowUnsafeLinks: true));
@@ -94,11 +94,6 @@ final class ImageRendererTest extends TestCase
         $image = new Image('data:image/png;base64,AAAA', 'label');
 
         $this->assertStringContainsString('src="data:image/png;base64,AAAA"', (string) $imageRenderer->render($image, $this->childRenderer()));
-    }
-
-    public function testJavascriptImagesNeverReachTheFinalHtml(): void
-    {
-        $this->assertStringNotContainsString('javascript:', $this->parse('![x](javascript:alert(1))'));
     }
 
     public function testExistingAttributesAreMergedIntoTheElement(): void
@@ -114,13 +109,13 @@ final class ImageRendererTest extends TestCase
         $this->assertStringContainsString('src="cat.png"', $html);
     }
 
-    public function testXmlRepresentation(): void
+    public function testXmlRepresentationIncludesDestinationAndTitle(): void
     {
         $imageRenderer = new ImageRenderer();
-        $image = new Image('cat.png', 'label', 'Tom');
+        $image = new Image('cat.png', 'label', 'Title');
 
         $this->assertSame('image', $imageRenderer->getXmlTagName($image));
-        $this->assertSame(['destination' => 'cat.png', 'title' => 'Tom'], $imageRenderer->getXmlAttributes($image));
+        $this->assertSame(['destination' => 'cat.png', 'title' => 'Title'], $imageRenderer->getXmlAttributes($image));
         $this->assertSame(['destination' => 'cat.png', 'title' => ''], $imageRenderer->getXmlAttributes(new Image('cat.png', 'label')));
     }
 

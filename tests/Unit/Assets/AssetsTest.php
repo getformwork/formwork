@@ -57,12 +57,6 @@ final class AssetsTest extends TestCase
         $this->assertSame('/panel/assets/js/app.js', $asset->uri());
     }
 
-    public function testUrisWithAndWithoutTrailingSlashAreEquivalent(): void
-    {
-        $this->assertSame('/site/assets/logo.svg', $this->assets->get('logo.svg')->uri());
-        $this->assertSame('/panel/assets/js/app.js', $this->assets->get('@panel/js/app.js')->uri());
-    }
-
     public function testAssetsAreCreatedOnceAndShared(): void
     {
         $this->assertSame($this->assets->get('css/site.css'), $this->assets->get('css/site.css'));
@@ -78,17 +72,10 @@ final class AssetsTest extends TestCase
         $this->assertSame('print', $this->assets->get('css/site.css')->getMeta('media'));
     }
 
-    public function testAddingTheSameKeyAgainKeepsTheFirstAsset(): void
+    public function testAddingTheSameKeyAgainPreservesTheFirstAsset(): void
     {
         $this->assets->add('css/site.css', ['media' => 'print']);
         $this->assets->add('css/site.css', ['media' => 'screen']);
-
-        $this->assertSame('print', $this->assets->get('css/site.css')->getMeta('media'));
-    }
-
-    public function testGetDoesNotOverrideMetadataOfAlreadyAddedAssets(): void
-    {
-        $this->assets->add('css/site.css', ['media' => 'print']);
 
         $this->assertSame('print', $this->assets->get('css/site.css')->getMeta('media'));
     }

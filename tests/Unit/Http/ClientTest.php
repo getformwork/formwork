@@ -6,9 +6,9 @@ use Formwork\Http\Client;
 use Formwork\Http\Exceptions\ConnectionException;
 use Formwork\Http\ResponseHeaders;
 use Formwork\Http\ResponseStatus;
-use Formwork\Http\Transport\HttpTransportInterface;
 use Formwork\Http\Transport\StreamHttpTransport;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Http\Fixtures\ExposedClientFixture;
 use Formwork\Tests\Unit\Http\Fixtures\FakeHttpTransportFixture;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -31,7 +31,7 @@ final class ClientTest extends TestCase
 
     public function testDefaultsCanBeOverriddenAndMergedRecursively(): void
     {
-        $testClient = new TestClient(['timeout' => 3, 'headers' => ['X-Test' => 'value'], 'redirects' => ['limit' => 2]]);
+        $testClient = new ExposedClientFixture(['timeout' => 3, 'headers' => ['X-Test' => 'value'], 'redirects' => ['limit' => 2]]);
 
         $options = $testClient->options();
 
@@ -46,11 +46,11 @@ final class ClientTest extends TestCase
 
     public function testResponseHeaderParserHandlesRedirectChains(): void
     {
-        $responses = (new TestClient())->split([
+        $responses = (new ExposedClientFixture())->split([
             'HTTP/1.1 301 Moved Permanently',
-            'location: /next',
+            'location: https://example.test/next',
             'HTTP/1.1 200 OK',
-            'Content-Length: 4',
+            'CONTENT-LENGTH : 4',
             'content-type: text/plain',
             'X-Empty:',
         ]);
@@ -58,7 +58,7 @@ final class ClientTest extends TestCase
         $this->assertCount(2, $responses);
         $this->assertSame(301, $responses[0]['statusCode']);
         $this->assertSame('Moved Permanently', $responses[0]['reasonPhrase']);
-        $this->assertSame(['Location' => '/next'], $responses[0]['headers']);
+        $this->assertSame(['Location' => 'https://example.test/next'], $responses[0]['headers']);
         $this->assertSame(200, $responses[1]['statusCode']);
         $this->assertSame('HTTP/1.1', $responses[1]['HTTPVersion']);
         $this->assertSame(['Content-Length' => '4', 'Content-Type' => 'text/plain', 'X-Empty' => ''], $responses[1]['headers']);
@@ -67,7 +67,8 @@ final class ClientTest extends TestCase
     public function testResponseHeadersWithoutAStatusLineAreRejected(): void
     {
         $this->expectException(UnexpectedValueException::class);
-        (new TestClient())->split(['Content-Type: text/plain']);
+        $this->expectExceptionMessage('Unexpected header field: headers must come after an HTTP status line');
+        (new ExposedClientFixture())->split(['Content-Type: text/plain']);
     }
 
     public function testFetchHeadersReturnsOnlyTheHeaders(): void
@@ -243,6 +244,7 @@ final class ClientTest extends TestCase
         $this->transport->respond(['Content-Type: text/plain']);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected header field: headers must come after an HTTP status line');
         $this->client()->fetch('http://example.test');
     }
 
@@ -265,7 +267,7 @@ final class ClientTest extends TestCase
 
     public function testHeaderNamesAreNormalizedAndCompactedForTheRequest(): void
     {
-        $testClient = new TestClient();
+        $testClient = new ExposedClientFixture();
 
         $this->assertSame(['X-Test' => 'value', 'Content-Type' => 'text/plain'], $testClient->normalize(['x-test' => 'value', 'CONTENT-TYPE' => 'text/plain']));
         $this->assertSame(['X-Test: one', 'X-Test: two', 'Accept: text/html'], $testClient->compact(['X-Test' => ['one', 'two'], ' Accept ' => ' text/html ']));
@@ -273,7 +275,7 @@ final class ClientTest extends TestCase
 
     public function testContextOptionsReflectTheRequestOptions(): void
     {
-        $context = (new TestClient())->contextOptions([
+        $context = (new ExposedClientFixture())->contextOptions([
             'version'   => 1.0,
             'method'    => 'POST',
             'headers'   => ['X-Test' => 'value'],
@@ -302,7 +304,7 @@ final class ClientTest extends TestCase
     {
         FileSystem::write(TESTS_TMP_PATH . '/bundle.pem', 'bundle');
         FileSystem::createDirectory(TESTS_TMP_PATH . '/certificates');
-        $testClient = new TestClient();
+        $testClient = new ExposedClientFixture();
 
         $file = $testClient->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/bundle.pem'));
         $directory = $testClient->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/certificates'));
@@ -316,7 +318,8 @@ final class ClientTest extends TestCase
     public function testMissingCaBundleIsRejected(): void
     {
         $this->expectException(RuntimeException::class);
-        (new TestClient())->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/missing-ca.pem'));
+        $this->expectExceptionMessage('File "' . TESTS_TMP_PATH . '/missing-ca.pem" not found');
+        (new ExposedClientFixture())->contextOptions($this->requestOptions(TESTS_TMP_PATH . '/missing-ca.pem'));
     }
 
     public function testUnreadableCaBundleIsRejected(): void
@@ -331,7 +334,7 @@ final class ClientTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('The given CA bundle is not readable');
-        (new TestClient())->contextOptions($this->requestOptions($bundle));
+        (new ExposedClientFixture())->contextOptions($this->requestOptions($bundle));
     }
 
     public function testDownloadsAreNotMovedOverDirectories(): void
@@ -407,7 +410,7 @@ final class ClientTest extends TestCase
 
     public function testTheDefaultTransportUsesPhpStreams(): void
     {
-        $testClient = new TestClient();
+        $testClient = new ExposedClientFixture();
 
         $this->assertInstanceOf(StreamHttpTransport::class, $testClient->transport());
     }
@@ -444,61 +447,5 @@ final class ClientTest extends TestCase
             'timeout'   => -1,
             'ssl'       => ['verify' => true, 'cabundle' => $cabundle],
         ];
-    }
-}
-
-class TestClient extends Client
-{
-    /**
-     * @param array<string, mixed> $options
-     *
-     * @return array<string, array<string, mixed>>
-     */
-    public function contextOptions(array $options): array
-    {
-        return $this->createContextOptions($options);
-    }
-
-    public function transport(): HttpTransportInterface
-    {
-        return $this->transport;
-    }
-
-    /**
-     * @param list<string> $headers
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public function split(array $headers): array
-    {
-        return $this->splitHTTPResponseHeader($headers);
-    }
-
-    /**
-     * @param array<string, mixed> $headers
-     *
-     * @return array<string, mixed>
-     */
-    public function normalize(array $headers): array
-    {
-        return $this->normalizeHeaders($headers);
-    }
-
-    /**
-     * @param array<string, mixed> $headers
-     *
-     * @return list<string>
-     */
-    public function compact(array $headers): array
-    {
-        return $this->compactHeaders($headers);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function options(): array
-    {
-        return $this->options;
     }
 }

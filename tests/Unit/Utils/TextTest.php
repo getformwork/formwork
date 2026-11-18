@@ -17,14 +17,14 @@ final class TextTest extends TestCase
         parent::tearDown();
     }
 
-    public function testNormalizeWhitespace(): void
+    public function testWhitespaceIsCollapsedAndTrimmed(): void
     {
         $this->assertSame('Hello World!', Text::normalizeWhitespace("  Hello   World!  \n"));
         $this->assertSame('Hello World!', Text::normalizeWhitespace("Hello\tWorld!"));
         $this->assertSame('', Text::normalizeWhitespace("   \n\t  "));
     }
 
-    public function testWords(): void
+    public function testSplitWordsIgnoresExtraWhitespace(): void
     {
         $this->assertSame(['Hello', 'World!'], Text::splitWords('Hello World!'));
         $this->assertSame(['Hello', 'World!'], Text::splitWords("  Hello   World!  \n"));
@@ -32,13 +32,13 @@ final class TextTest extends TestCase
         $this->assertSame([], Text::splitWords("   \n\t  "));
     }
 
-    public function testWordsWithLimit(): void
+    public function testSplitWordsPreservesTheRestInTheLastItem(): void
     {
         $this->assertSame(['Hello', 'World! This is a test.'], Text::splitWords('Hello World! This is a test.', 2));
         $this->assertSame(['Hello', 'World!', 'This is a test.'], Text::splitWords('Hello World! This is a test.', 3));
     }
 
-    public function testCountWords(): void
+    public function testCountWordsIgnoresExtraWhitespace(): void
     {
         $this->assertSame(6, Text::countWords('Hello World! This is a test.'));
         $this->assertSame(6, Text::countWords("  Hello   World!  \nThis is a test.  "));
@@ -46,14 +46,14 @@ final class TextTest extends TestCase
         $this->assertSame(0, Text::countWords("   \n\t  "));
     }
 
-    public function testTruncate(): void
+    public function testTruncateCutsAtAWordBoundary(): void
     {
         $this->assertSame('Hello…', Text::truncate('Hello World!', 5));
         $this->assertSame('Hello…', Text::truncate('Hello World!', 8));
         $this->assertSame('Hello World!', Text::truncate('Hello World!', 20));
     }
 
-    public function testTruncateThrowsOnDisabledMbstring(): void
+    public function testTruncateRequiresMbstring(): void
     {
         Environment::disableExtension('mbstring');
         $this->expectException(RuntimeException::class);
@@ -61,14 +61,14 @@ final class TextTest extends TestCase
         Text::truncate('Hello World!', 5);
     }
 
-    public function testTruncateByWords(): void
+    public function testTruncateWordsPreservesTheGivenNumberOfWords(): void
     {
         $this->assertSame('Hello…', Text::truncateWords('Hello World! This is a test.', 1));
         $this->assertSame('Hello World! This…', Text::truncateWords('Hello World! This is a test.', 3));
         $this->assertSame('Hello World! This is a test.', Text::truncateWords('Hello World! This is a test.', 10));
     }
 
-    public function testTruncateKeepsTextThatFitsExactly(): void
+    public function testTruncatePreservesTextThatFitsExactly(): void
     {
         $this->assertSame('Hello world', Text::truncate('Hello world', 11));
         $this->assertSame('Hello…', Text::truncate('Hello world', 10));
@@ -96,7 +96,7 @@ final class TextTest extends TestCase
         $this->assertSame('Hello...', Text::truncate('Hello world', 7, '...'));
     }
 
-    public function testTruncateWordsKeepsTextWithExactlyTheGivenWords(): void
+    public function testTruncateWordsPreservesTextWithExactlyTheGivenWords(): void
     {
         $this->assertSame('one two three', Text::truncateWords('one two three', 3));
         $this->assertSame('one two…', Text::truncateWords('one two three', 2));
@@ -109,7 +109,7 @@ final class TextTest extends TestCase
         $this->assertSame('', Text::truncateWords('', 2));
     }
 
-    public function testEstimateReadingTime(): void
+    public function testReadingTimeIsAtLeastOneMinute(): void
     {
         $this->assertSame(1, Text::readingTime(''));
         $this->assertSame(1, Text::readingTime('This is a short text.'));

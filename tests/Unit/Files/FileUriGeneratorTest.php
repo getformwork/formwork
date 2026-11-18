@@ -65,17 +65,26 @@ final class FileUriGeneratorTest extends TestCase
         $this->assertSame('/panel/assets/icons/menu.svg', $generator->generate(new File('/panel/assets/icons/menu.svg')));
     }
 
-    public function testFileNamesAreEncoded(): void
+    #[DataProvider('encodedFileNameProvider')]
+    public function testFileNamesAreEncoded(string $path, string $expected): void
     {
-        $config = $this->config();
-        $uri = $this->createMock(UriGenerator::class);
-        $uri->expects($this->once())->method('route')->with('files', ['name' => 'My%20photo%20%231.png'])->willReturn('/files/My%20photo%20%231.png');
-        $uri->expects($this->exactly(2))->method('path')->willReturnArgument(0);
+        $uri = $this->createStub(UriGenerator::class);
+        $uri->method('route')->willReturnCallback(static fn(string $name, array $params): string => "/{$name}/" . implode('/', $params));
+        $uri->method('path')->willReturnArgument(0);
 
-        $generator = $this->generator($config, $uri);
-        $this->assertSame('/files/My%20photo%20%231.png', $generator->generate(new File('/site/files/My photo #1.png')));
-        $this->assertSame('/about/My%20photo%20%231.png', $generator->generate(new File('/site/pages/1-about/My photo #1.png')));
-        $this->assertSame('panel/assets/my%20icons/menu%20%231.svg', $generator->generate(new File('/panel/assets/my icons/menu #1.svg')));
+        $this->assertSame($expected, $this->generator($this->config(), $uri)->generate(new File($path)));
+    }
+
+    /**
+     * @return iterable<string, array{string, string}>
+     */
+    public static function encodedFileNameProvider(): iterable
+    {
+        yield 'site files' => ['/site/files/My photo #1.png', '/files/My%20photo%20%231.png'];
+        yield 'processed images' => ['/assets/images/abc/My photo #1.png', '/assets/images/abc/My%20photo%20%231.png'];
+        yield 'pages' => ['/site/pages/1-about/My photo #1.png', '/about/My%20photo%20%231.png'];
+        yield 'user images' => ['/site/users/images/My photo #1.png', '/panel.users.images/My%20photo%20%231.png'];
+        yield 'panel assets' => ['/panel/assets/my icons/menu #1.svg', 'panel/assets/my%20icons/menu%20%231.svg'];
     }
 
     public function testUnknownPathRaisesTheDomainException(): void

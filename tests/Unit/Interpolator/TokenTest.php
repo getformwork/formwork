@@ -39,7 +39,7 @@ final class TokenTest extends TestCase
     }
 
     #[DataProvider('stringRepresentationProvider')]
-    public function testStringRepresentation(Token $token, string $expected): void
+    public function testTokensAreConvertedToReadableStrings(Token $token, string $expected): void
     {
         $this->assertSame($expected, (string) $token);
     }

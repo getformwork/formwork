@@ -104,7 +104,7 @@ final class SchemesTest extends TestCase
         $this->assertSame('Site', $this->schemes->get('page')->title());
     }
 
-    public function testGetMultipleKeepsTheRequestedKeys(): void
+    public function testGetMultiplePreservesTheRequestedKeys(): void
     {
         $this->writeScheme('a', "title: A\n");
         $this->writeScheme('b', "title: B\n");
@@ -120,6 +120,7 @@ final class SchemesTest extends TestCase
         $this->writeScheme('a', "title: A\n");
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid scheme "missing"');
 
         $this->schemes->getMultiple(['a', 'missing']);
     }
@@ -132,7 +133,7 @@ final class SchemesTest extends TestCase
         $this->assertSame(['a', 'b'], array_keys($this->schemes->getAll()));
     }
 
-    public function testSchemesWithEmptyFilesAreRejectedWithoutAFatalError(): void
+    public function testSchemesWithEmptyFilesAreLoadedWithoutAFatalError(): void
     {
         $this->writeScheme('empty', '');
 

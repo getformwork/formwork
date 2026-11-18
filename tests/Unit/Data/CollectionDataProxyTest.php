@@ -10,17 +10,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(CollectionDataProxy::class)]
 final class CollectionDataProxyTest extends TestCase
 {
-    public function testEveryItem(): void
-    {
-        $collection = Collection::from([
-            'item1' => (object) ['key' => 'value1'],
-            'item2' => (object) ['key' => 'value2'],
-        ]);
-
-        $this->assertInstanceOf(CollectionDataProxy::class, $collection->everyItem());
-    }
-
-    public function testPropertyGet(): void
+    public function testPropertiesAreReadFromEveryItem(): void
     {
         $collection = Collection::from([
             'item1' => (object) ['key' => 'value1'],
@@ -38,7 +28,7 @@ final class CollectionDataProxyTest extends TestCase
         );
     }
 
-    public function testPropertySet(): void
+    public function testPropertiesAreSetOnEveryItem(): void
     {
         $collection = Collection::from([
             'item1' => (object) ['key' => 'value1'],
@@ -59,7 +49,7 @@ final class CollectionDataProxyTest extends TestCase
         );
     }
 
-    public function testMethodCall(): void
+    public function testMethodsAreCalledOnEveryItem(): void
     {
         $collection = Collection::from([
             'item1' => new class {

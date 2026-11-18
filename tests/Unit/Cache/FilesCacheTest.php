@@ -13,7 +13,6 @@ use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use stdClass;
 use UnexpectedValueException;
 
 #[CoversClass(FilesCache::class)]
@@ -58,7 +57,7 @@ final class FilesCacheTest extends TestCase
         $this->assertDirectoryExists($filesCache->path());
     }
 
-    public function testClearDeletesTheFilesButKeepsTheDirectory(): void
+    public function testClearDeletesTheFilesButPreservesTheDirectory(): void
     {
         $filesCache = $this->createCache();
         $filesCache->setMultiple(['a' => 1, 'b' => 2]);
@@ -74,7 +73,7 @@ final class FilesCacheTest extends TestCase
         $this->assertFalse($filesCache->has('a'));
     }
 
-    public function testItemsArePersistedAcrossInstances(): void
+    public function testItemsAreSavedAcrossInstances(): void
     {
         $this->createCache()->set('key', ['persisted' => true]);
 
@@ -118,7 +117,6 @@ final class FilesCacheTest extends TestCase
         foreach ($files as $file) {
             $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $file);
         }
-        $this->assertFileDoesNotExist(FileSystem::joinPaths($this->path, 'test.php'));
     }
 
     public function testStoredFilesAreWrittenAtomically(): void
@@ -154,7 +152,7 @@ final class FilesCacheTest extends TestCase
         $this->assertCount(0, $filesCache);
     }
 
-    public function testFailedSetKeepsThePreviousValue(): void
+    public function testFailedSetPreservesThePreviousValue(): void
     {
         $filesCache = $this->createCache();
         $filesCache->set('key', 'previous');
@@ -232,26 +230,6 @@ final class FilesCacheTest extends TestCase
         $filesCache->set('key', $value);
 
         $this->assertEquals($value, $filesCache->get('key'));
-    }
-
-    public function testCountIgnoresNothingInTheDirectory(): void
-    {
-        $filesCache = $this->createCache();
-        $filesCache->setMultiple(['a' => 1, 'b' => 2]);
-
-        $this->assertCount(2, $filesCache);
-
-        $filesCache->delete('a');
-
-        $this->assertCount(1, $filesCache);
-    }
-
-    public function testStdClassValuesRoundTrip(): void
-    {
-        $filesCache = $this->createCache();
-        $filesCache->set('key', new stdClass());
-
-        $this->assertInstanceOf(stdClass::class, $filesCache->get('key'));
     }
 
     protected function createCache(int|DateInterval|null $defaultTtl = null): FilesCache

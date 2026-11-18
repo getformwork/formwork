@@ -14,20 +14,20 @@ use UnexpectedValueException;
 #[CoversClass(Arr::class)]
 final class ArrTest extends TestCase
 {
-    public function testGet(): void
+    public function testGetReadsNestedKeysFromDotNotation(): void
     {
         /** @var array<string, mixed> $data */
         $data = [
             'user' => [
-                'name'    => 'Sempronius',
-                'email'   => 'sempronius@example.com',
+                'name'    => 'Test User',
+                'email'   => 'user@example.test',
                 'country' => 'Italy',
             ],
             'date' => '2025-03-29',
         ];
 
         $this->assertSame('2025-03-29', Arr::get($data, 'date'));
-        $this->assertSame('Sempronius', Arr::get($data, 'user.name'));
+        $this->assertSame('Test User', Arr::get($data, 'user.name'));
         $this->assertNull(Arr::get($data, 'user.age'));
     }
 
@@ -40,12 +40,12 @@ final class ArrTest extends TestCase
         $this->assertSame('fallback', Arr::get($array, 'missing', 'fallback'));
     }
 
-    public function testHas(): void
+    public function testHasChecksNestedKeysFromDotNotation(): void
     {
         $data = [
             'user' => [
-                'name'    => 'Sempronius',
-                'email'   => 'sempronius@example.com',
+                'name'    => 'Test User',
+                'email'   => 'user@example.test',
                 'country' => 'Italy',
             ],
             'date' => '2025-03-29',
@@ -56,12 +56,12 @@ final class ArrTest extends TestCase
         $this->assertFalse(Arr::has($data, 'user.age'));
     }
 
-    public function testSet(): void
+    public function testSetCreatesNestedKeysFromDotNotation(): void
     {
         $data = [
             'user' => [
-                'name'    => 'Sempronius',
-                'email'   => 'sempronius@example.com',
+                'name'    => 'Test User',
+                'email'   => 'user@example.test',
                 'country' => 'Italy',
             ],
             'date' => '2025-03-29',
@@ -94,7 +94,7 @@ final class ArrTest extends TestCase
     public static function scalarSegmentProvider(): iterable
     {
         yield 'a string' => [['site' => 'Formwork'], 'site.title', 'Cannot set "site.title": "site" is not an array'];
-        yield 'a nested number' => [['a' => ['b' => 1]], 'a.b.c', 'Cannot set "a.b.c": "a.b" is not an array'];
+        yield 'a nested number' => [['a' => ['b' => 1]], 'a.b.c.d', 'Cannot set "a.b.c.d": "a.b" is not an array'];
         yield 'a boolean' => [['enabled' => true], 'enabled.value', 'Cannot set "enabled.value": "enabled" is not an array'];
     }
 
@@ -102,17 +102,17 @@ final class ArrTest extends TestCase
     {
         $data = ['user' => null];
 
-        Arr::set($data, 'user.name', 'Alice');
+        Arr::set($data, 'user.name', 'User 1');
 
-        $this->assertSame('Alice', Arr::get($data, 'user.name'));
+        $this->assertSame('User 1', Arr::get($data, 'user.name'));
     }
 
-    public function testRemove(): void
+    public function testRemoveDeletesNestedKeysFromDotNotation(): void
     {
         $data = [
             'user' => [
-                'name'    => 'Sempronius',
-                'email'   => 'sempronius@example.com',
+                'name'    => 'Test User',
+                'email'   => 'user@example.test',
                 'country' => 'Italy',
             ],
             'date' => '2025-03-29',
@@ -128,7 +128,7 @@ final class ArrTest extends TestCase
         $this->assertFalse(Arr::has($data, 'date'));
     }
 
-    public function testFlatten(): void
+    public function testDotFlattensAssociativeArraysIntoDottedKeys(): void
     {
         $data = [
             'app' => [
@@ -179,7 +179,7 @@ final class ArrTest extends TestCase
         yield 'unlimited depth by default' => [PHP_INT_MAX, [1, 2, 3, 4]];
     }
 
-    public function testExpand(): void
+    public function testUndotExpandsDottedKeysIntoNestedArrays(): void
     {
         $data = [
             'app' => [
@@ -208,71 +208,71 @@ final class ArrTest extends TestCase
         $this->assertSame($data, $actual);
     }
 
-    public function testPull(): void
+    public function testPullRemovesEveryOccurrenceOfAValue(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        Arr::pull($data, 'banana');
-        $this->assertNotContains('banana', $data);
+        Arr::pull($data, 'second');
+        $this->assertNotContains('second', $data);
     }
 
-    public function testSplice(): void
+    public function testSpliceReplacesARangeAndReturnsTheRemovedItems(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $removed = Arr::splice($data, 1, 2, ['orange', 'grapes']);
+        $removed = Arr::splice($data, 1, 2, ['fourth', 'fifth']);
 
-        $this->assertSame(['banana', 'cherry'], $removed);
-        $this->assertSame(['apple', 'orange', 'grapes', 'banana'], $data);
+        $this->assertSame(['second', 'third'], $removed);
+        $this->assertSame(['first', 'fourth', 'fifth', 'second'], $data);
     }
 
     public function testSpliceWithAssociativeArray(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $removed = Arr::splice($data, 1, 1, ['age' => 30]);
 
-        $this->assertSame(['email' => 'sempronius@example.com'], $removed);
-        $this->assertSame(['name' => 'Sempronius', 'age' => 30, 'country' => 'Italy'], $data);
+        $this->assertSame(['email' => 'user@example.test'], $removed);
+        $this->assertSame(['name' => 'Test User', 'age' => 30, 'country' => 'Italy'], $data);
     }
 
     public function testSpliceWithNegativeOffset(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $removed = Arr::splice($data, -2, 1, ['age' => 30]);
 
-        $this->assertSame(['email' => 'sempronius@example.com'], $removed);
-        $this->assertSame(['name' => 'Sempronius', 'age' => 30, 'country' => 'Italy'], $data);
+        $this->assertSame(['email' => 'user@example.test'], $removed);
+        $this->assertSame(['name' => 'Test User', 'age' => 30, 'country' => 'Italy'], $data);
     }
 
     public function testSpliceWithNegativeLength(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $removed = Arr::splice($data, 0, -1, ['age' => 30]);
 
-        $this->assertSame(['name' => 'Sempronius', 'email' => 'sempronius@example.com'], $removed);
+        $this->assertSame(['name' => 'Test User', 'email' => 'user@example.test'], $removed);
         $this->assertSame(['age' => 30, 'country' => 'Italy'], $data);
     }
 
-    public function testSpliceThrowsOnDuplicateKeys(): void
+    public function testSpliceRejectsDuplicateKeys(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
@@ -316,12 +316,12 @@ final class ArrTest extends TestCase
         $this->assertSame(['a' => 1, 'z' => 9], $data);
     }
 
-    public function testMove(): void
+    public function testMoveItemForwards(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
         Arr::moveItem($data, 0, 2);
-        $this->assertSame(['banana', 'cherry', 'apple', 'banana'], $data);
+        $this->assertSame(['second', 'third', 'first', 'second'], $data);
     }
 
     public function testMoveItemPreservesAllValuesAndKeys(): void
@@ -333,39 +333,39 @@ final class ArrTest extends TestCase
         $this->assertSame(['second' => 'B', 'third' => 'C', 'first' => 'A'], $array);
     }
 
-    public function testEntries(): void
+    public function testEntriesArePairsOfKeysAndValues(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $expected = [
-            ['name', 'Sempronius'],
-            ['email', 'sempronius@example.com'],
+            ['name', 'Test User'],
+            ['email', 'user@example.test'],
             ['country', 'Italy'],
         ];
 
         $this->assertSame($expected, Arr::entries($data));
     }
 
-    public function testNth(): void
+    public function testNthReturnsNullOutsideTheArray(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $this->assertSame('cherry', Arr::nth($data, 2));
+        $this->assertSame('third', Arr::nth($data, 2));
         $this->assertNull(Arr::nth($data, 5));
     }
 
-    public function testAt(): void
+    public function testAtCountsNegativePositionsFromTheEnd(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $this->assertSame('cherry', Arr::at($data, 2));
+        $this->assertSame('third', Arr::at($data, 2));
         $this->assertNull(Arr::at($data, 5));
 
-        $this->assertSame('banana', Arr::at($data, -1));
+        $this->assertSame('second', Arr::at($data, -1));
         $this->assertNull(Arr::at($data, -5));
     }
 
@@ -387,12 +387,12 @@ final class ArrTest extends TestCase
         $this->assertNull(Arr::at([], -1));
     }
 
-    public function testIndex(): void
+    public function testIndexOfReturnsTheFirstPosition(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $this->assertSame(1, Arr::indexOf($data, 'banana'));
-        $this->assertNull(Arr::indexOf($data, 'orange'));
+        $this->assertSame(1, Arr::indexOf($data, 'second'));
+        $this->assertNull(Arr::indexOf($data, 'fourth'));
     }
 
     public function testIndexOfAndKeyOfCompareValuesStrictly(): void
@@ -416,23 +416,23 @@ final class ArrTest extends TestCase
         $this->assertNull(Arr::keyOf($data, 'missing'));
     }
 
-    public function testKey(): void
+    public function testKeyOfReturnsTheKeyOfAValue(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
-        $this->assertSame('email', Arr::keyOf($data, 'sempronius@example.com'));
+        $this->assertSame('email', Arr::keyOf($data, 'user@example.test'));
         $this->assertNull(Arr::keyOf($data, 'Brazil'));
     }
 
-    public function testDuplicates(): void
+    public function testDuplicatesPreserveTheirKeys(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $this->assertSame([3 => 'banana'], Arr::duplicates($data));
+        $this->assertSame([3 => 'second'], Arr::duplicates($data));
     }
 
     public function testDuplicatesAreComparedStrictly(): void
@@ -445,7 +445,7 @@ final class ArrTest extends TestCase
         $this->assertSame([2 => $first], Arr::duplicates([$first, $second, $first]));
     }
 
-    public function testAppendMissing(): void
+    public function testAppendMissingAddsOnlyTheMissingKeys(): void
     {
         $data = [
             'theme'         => 'dark',
@@ -485,579 +485,7 @@ final class ArrTest extends TestCase
         ], Arr::appendMissing($first, $second));
     }
 
-    public function testExtend(): void
-    {
-        // Test basic array extension with associative arrays
-        $base = [
-            'app' => [
-                'name'  => 'Formwork',
-                'debug' => false,
-            ],
-            'cache' => [
-                'enabled' => true,
-            ],
-        ];
-
-        $extension = [
-            'app' => [
-                'version' => '2.0',
-                'debug'   => true,
-            ],
-            'database' => [
-                'host' => 'localhost',
-            ],
-        ];
-
-        $expected = [
-            'app' => [
-                'name'    => 'Formwork',
-                'debug'   => true,
-                'version' => '2.0',
-            ],
-            'cache' => [
-                'enabled' => true,
-            ],
-            'database' => [
-                'host' => 'localhost',
-            ],
-        ];
-
-        $result = Arr::extend($base, $extension);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExtendWithListConcatenation(): void
-    {
-        // Test that lists are concatenated instead of merged element-by-element
-        $base = [
-            'roles'       => ['admin', 'editor'],
-            'permissions' => ['read', 'write'],
-        ];
-
-        $extension = [
-            'roles' => ['user', 'guest'],
-        ];
-
-        $expected = [
-            'roles'       => ['admin', 'editor', 'user', 'guest'],
-            'permissions' => ['read', 'write'],
-        ];
-
-        $result = Arr::extend($base, $extension);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExtendWithDeeplyNested(): void
-    {
-        // Test deeply nested structures
-        $base = [
-            'config' => [
-                'system' => [
-                    'cache' => [
-                        'enabled'  => true,
-                        'lifetime' => 3600,
-                    ],
-                    'features' => ['search', 'backup'],
-                ],
-            ],
-        ];
-
-        $extension = [
-            'config' => [
-                'system' => [
-                    'cache' => [
-                        'lifetime' => 7200,
-                        'driver'   => 'file',
-                    ],
-                    'features' => ['images'],
-                    'logging'  => true,
-                ],
-            ],
-        ];
-
-        $expected = [
-            'config' => [
-                'system' => [
-                    'cache' => [
-                        'enabled'  => true,
-                        'lifetime' => 7200,
-                        'driver'   => 'file',
-                    ],
-                    'features' => ['search', 'backup', 'images'],
-                    'logging'  => true,
-                ],
-            ],
-        ];
-
-        $result = Arr::extend($base, $extension);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExtendWithMultipleArrays(): void
-    {
-        // Test extending with multiple arrays
-        $base = [
-            'a' => 1,
-            'b' => ['x' => 10],
-        ];
-
-        $ext1 = [
-            'b' => ['y' => 20],
-            'c' => 3,
-        ];
-
-        $ext2 = [
-            'a' => 2,
-            'd' => 4,
-        ];
-
-        $expected = [
-            'a' => 2,
-            'b' => ['x' => 10, 'y' => 20],
-            'c' => 3,
-            'd' => 4,
-        ];
-
-        $result = Arr::extend($base, $ext1, $ext2);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExtendWithEmptyArrays(): void
-    {
-        // Test extending empty arrays
-        $result = Arr::extend([], ['a' => 1]);
-        $this->assertSame(['a' => 1], $result);
-
-        $result = Arr::extend(['a' => 1], []);
-        $this->assertSame(['a' => 1], $result);
-
-        $result = Arr::extend([], []);
-        $this->assertSame([], $result);
-    }
-
-    public function testExtendWithMixedTypes(): void
-    {
-        // Test that scalar values override arrays and vice versa
-        $base = [
-            'scalar_to_array' => 'value',
-            'array_to_scalar' => ['a', 'b'],
-            'keep_scalar'     => 42,
-        ];
-
-        $extension = [
-            'scalar_to_array' => ['new' => 'array'],
-            'array_to_scalar' => 'string',
-            'keep_scalar'     => 100,
-        ];
-
-        $expected = [
-            'scalar_to_array' => ['new' => 'array'],
-            'array_to_scalar' => 'string',
-            'keep_scalar'     => 100,
-        ];
-
-        $result = Arr::extend($base, $extension);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExtendConcatenatesListsAndRecursesIntoAssociativeArrays(): void
-    {
-        $first = ['items' => [1], 'config' => ['a' => 1]];
-        $second = ['items' => [2], 'config' => ['b' => 2]];
-
-        $this->assertSame([
-            'items'  => [1, 2],
-            'config' => ['a' => 1, 'b' => 2],
-        ], Arr::extend($first, $second));
-        $this->assertSame(['items' => [1], 'config' => ['a' => 1]], $first);
-    }
-
-    public function testOverride(): void
-    {
-        // Test basic override functionality
-        $base = [
-            'app' => [
-                'name'  => 'Formwork',
-                'debug' => false,
-            ],
-            'cache' => [
-                'enabled' => true,
-            ],
-        ];
-
-        $override = [
-            'app' => [
-                'debug' => true,
-            ],
-            'database' => [
-                'host' => 'localhost',
-            ],
-        ];
-
-        $expected = [
-            'app' => [
-                'name'  => 'Formwork',
-                'debug' => true,
-            ],
-            'cache' => [
-                'enabled' => true,
-            ],
-            'database' => [
-                'host' => 'localhost',
-            ],
-        ];
-
-        $result = Arr::override($base, $override);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testOverrideReplacingLists(): void
-    {
-        // Test that lists are completely replaced, not merged
-        $base = [
-            'roles'       => ['admin', 'editor'],
-            'permissions' => ['read', 'write', 'delete'],
-        ];
-
-        $override = [
-            'roles' => ['user', 'guest'],
-        ];
-
-        $expected = [
-            'roles'       => ['user', 'guest'],
-            'permissions' => ['read', 'write', 'delete'],
-        ];
-
-        $result = Arr::override($base, $override);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testOverrideWithDeeplyNested(): void
-    {
-        // Test deeply nested structures with lists
-        $base = [
-            'config' => [
-                'system' => [
-                    'features' => ['search', 'backup'],
-                    'cache'    => [
-                        'enabled'  => true,
-                        'lifetime' => 3600,
-                        'stores'   => ['file', 'redis'],
-                    ],
-                ],
-            ],
-        ];
-
-        $override = [
-            'config' => [
-                'system' => [
-                    'features' => ['images'],
-                    'cache'    => [
-                        'lifetime' => 7200,
-                        'stores'   => ['memcached'],
-                    ],
-                ],
-            ],
-        ];
-
-        $expected = [
-            'config' => [
-                'system' => [
-                    'features' => ['images'],
-                    'cache'    => [
-                        'enabled'  => true,
-                        'lifetime' => 7200,
-                        'stores'   => ['memcached'],
-                    ],
-                ],
-            ],
-        ];
-
-        $result = Arr::override($base, $override);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testOverrideWithMultipleArrays(): void
-    {
-        // Test overriding with multiple arrays
-        $base = [
-            'a' => 1,
-            'b' => ['x' => 10, 'y' => [1, 2, 3]],
-        ];
-
-        $override1 = [
-            'b' => ['y' => [4, 5]],
-            'c' => 3,
-        ];
-
-        $override2 = [
-            'a' => 2,
-            'd' => 4,
-        ];
-
-        $expected = [
-            'a' => 2,
-            'b' => ['x' => 10, 'y' => [4, 5]],
-            'c' => 3,
-            'd' => 4,
-        ];
-
-        $result = Arr::override($base, $override1, $override2);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testOverrideWithEmptyArrays(): void
-    {
-        // Test overriding with empty arrays
-        $result = Arr::override([], ['a' => 1]);
-        $this->assertSame(['a' => 1], $result);
-
-        $result = Arr::override(['a' => 1], []);
-        $this->assertSame(['a' => 1], $result);
-
-        $result = Arr::override([], []);
-        $this->assertSame([], $result);
-    }
-
-    public function testOverrideReplacingListWithEmptyList(): void
-    {
-        // Test replacing a list with an empty list
-        $base = [
-            'items' => [1, 2, 3],
-            'other' => 'value',
-        ];
-
-        $override = [
-            'items' => [],
-        ];
-
-        $expected = [
-            'items' => [],
-            'other' => 'value',
-        ];
-
-        $result = Arr::override($base, $override);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testOverrideWithMixedTypes(): void
-    {
-        // Test that mixed types are properly replaced
-        $base = [
-            'scalar_to_array' => 'value',
-            'array_to_scalar' => ['a', 'b'],
-            'list_to_assoc'   => [1, 2, 3],
-            'assoc_to_list'   => ['x' => 1, 'y' => 2],
-        ];
-
-        $override = [
-            'scalar_to_array' => ['new' => 'array'],
-            'array_to_scalar' => 'string',
-            'list_to_assoc'   => ['a' => 1],
-            'assoc_to_list'   => [1, 2],
-        ];
-
-        $expected = [
-            'scalar_to_array' => ['new' => 'array'],
-            'array_to_scalar' => 'string',
-            'list_to_assoc'   => ['a' => 1],
-            'assoc_to_list'   => [1, 2],
-        ];
-
-        $result = Arr::override($base, $override);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testOverrideReplacesListsAtomicallyAndRecursesIntoAssociativeArrays(): void
-    {
-        $first = ['items' => [1, 2], 'config' => ['a' => 1, 'nested' => ['x' => 1]]];
-        $second = ['items' => [3], 'config' => ['nested' => ['y' => 2]]];
-
-        $this->assertSame([
-            'items'  => [3],
-            'config' => ['a' => 1, 'nested' => ['x' => 1, 'y' => 2]],
-        ], Arr::override($first, $second));
-    }
-
-    public function testExclude(): void
-    {
-        // Test basic exclusion functionality
-        $array = [
-            'name'    => 'Formwork',
-            'version' => '2.0',
-            'debug'   => true,
-            'cache'   => [
-                'enabled'  => true,
-                'lifetime' => 3600,
-            ],
-        ];
-
-        $exclusion = [
-            'debug' => true,
-            'cache' => [
-                'lifetime' => 3600,
-            ],
-        ];
-
-        $expected = [
-            'name'    => 'Formwork',
-            'version' => '2.0',
-            'cache'   => [
-                'enabled' => true,
-            ],
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeRemovingEmptyArrays(): void
-    {
-        // Test that empty arrays resulting from recursion are removed
-        $array = [
-            'settings' => [
-                'cache' => [
-                    'enabled' => true,
-                ],
-            ],
-            'other' => 'value',
-        ];
-
-        $exclusion = [
-            'settings' => [
-                'cache' => [
-                    'enabled' => true,
-                ],
-            ],
-        ];
-
-        $expected = [
-            'other' => 'value',
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeWithDeeplyNested(): void
-    {
-        // Test deeply nested exclusions
-        $array = [
-            'config' => [
-                'system' => [
-                    'cache' => [
-                        'enabled'  => true,
-                        'lifetime' => 3600,
-                        'driver'   => 'file',
-                    ],
-                    'features' => [
-                        'search' => true,
-                        'backup' => false,
-                    ],
-                ],
-                'other' => 'preserved',
-            ],
-        ];
-
-        $exclusion = [
-            'config' => [
-                'system' => [
-                    'cache' => [
-                        'lifetime' => 3600,
-                    ],
-                    'features' => [
-                        'backup' => false,
-                    ],
-                ],
-            ],
-        ];
-
-        $expected = [
-            'config' => [
-                'system' => [
-                    'cache' => [
-                        'enabled' => true,
-                        'driver'  => 'file',
-                    ],
-                    'features' => [
-                        'search' => true,
-                    ],
-                ],
-                'other' => 'preserved',
-            ],
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeWithMultipleArrays(): void
-    {
-        // Test excluding with multiple exclusion arrays
-        $array = [
-            'a' => 1,
-            'b' => 2,
-            'c' => 3,
-            'd' => 4,
-        ];
-
-        $exc1 = ['a' => 1];
-        $exc2 = ['c' => 3];
-
-        $expected = [
-            'b' => 2,
-            'd' => 4,
-        ];
-
-        $result = Arr::exclude($array, $exc1, $exc2);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludePreservingNonMatchingValues(): void
-    {
-        // Test that non-matching values are preserved
-        $array = [
-            'name'  => 'Formwork',
-            'debug' => true,
-            'cache' => [
-                'enabled'  => true,
-                'lifetime' => 3600,
-            ],
-        ];
-
-        $exclusion = [
-            'debug' => false,
-            'cache' => [
-                'lifetime' => 7200,
-            ],
-        ];
-
-        $expected = [
-            'name'  => 'Formwork',
-            'debug' => true,
-            'cache' => [
-                'enabled'  => true,
-                'lifetime' => 3600,
-            ],
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeWithEmptyArray(): void
-    {
-        // Test with empty exclusion array
-        $array = [
-            'a' => 1,
-            'b' => 2,
-        ];
-
-        $result = Arr::exclude($array, []);
-        $this->assertSame($array, $result);
-    }
-
-    public function testExcludeAllValues(): void
+    public function testExcludingEveryValueLeavesAnEmptyArray(): void
     {
         // Test when all items are excluded
         $array = [
@@ -1076,218 +504,119 @@ final class ArrTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public function testExcludeWithNonExistentKeys(): void
+    public function testRandomReturnsAnItemOrNullForEmptyArrays(): void
     {
-        // Test excluding keys that don't exist in the array
-        $array = [
-            'a' => 1,
-            'b' => 2,
-        ];
-
-        $exclusion = [
-            'c' => 3,
-            'd' => 4,
-        ];
-
-        $expected = [
-            'a' => 1,
-            'b' => 2,
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeWithMixedTypes(): void
-    {
-        // Test excluding with mixed scalar and array values
-        $array = [
-            'scalar' => 'value',
-            'number' => 42,
-            'nested' => [
-                'a' => 1,
-                'b' => 2,
-            ],
-            'preserve_me' => 'keep',
-        ];
-
-        $exclusion = [
-            'scalar' => 'value',
-            'nested' => [
-                'a' => 1,
-            ],
-        ];
-
-        $expected = [
-            'number' => 42,
-            'nested' => [
-                'b' => 2,
-            ],
-            'preserve_me' => 'keep',
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeDoesNotMatchScalarWithArray(): void
-    {
-        // Test that array exclusions don't match scalar values
-        $array = [
-            'value' => 'scalar',
-        ];
-
-        $exclusion = [
-            'value' => ['array'],
-        ];
-
-        $expected = [
-            'value' => 'scalar',
-        ];
-
-        $result = Arr::exclude($array, $exclusion);
-        $this->assertSame($expected, $result);
-    }
-
-    public function testExcludeRemovesEmptyParentsAfterRecursiveExclusion(): void
-    {
-        $array = ['config' => ['a' => 1, 'b' => 2], 'keep' => true];
-
-        $this->assertSame(['keep' => true], Arr::exclude($array, [
-            'config' => ['a' => 1, 'b' => 2],
-        ]));
-    }
-
-    public function testRandom(): void
-    {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
         $this->assertContains(Arr::random($data), $data);
         $this->assertNull(Arr::random([]));
     }
 
-    public function testShuffle(): void
+    public function testShuffledArraysPreserveTheirValues(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
         $shuffled = Arr::shuffle($data);
 
         $this->assertSameSize($data, $shuffled);
 
-        foreach ($shuffled as $fruit) {
-            $this->assertContains($fruit, $data);
+        foreach ($shuffled as $item) {
+            $this->assertContains($item, $data);
         }
 
         $this->assertSame(['test'], Arr::shuffle(['test']));
     }
 
-    public function testShufflePreservingKeys(): void
+    public function testMapTransformsTheValuesKeepingTheKeys(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
-            'country' => 'Italy',
-        ];
-
-        $shuffled = Arr::shuffle($data, preserveKeys: true);
-        $this->assertSameSize($data, $shuffled);
-
-        foreach ($shuffled as $key => $value) {
-            $this->assertArrayHasKey($key, $data);
-            $this->assertSame($data[$key], $value);
-        }
-    }
-
-    public function testMap(): void
-    {
-        $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $expected = [
-            'name'    => 'SEMPRONIUS',
-            'email'   => 'SEMPRONIUS@EXAMPLE.COM',
+            'name'    => 'TEST USER',
+            'email'   => 'USER@EXAMPLE.TEST',
             'country' => 'ITALY',
         ];
 
         $this->assertSame($expected, Arr::map($data, fn($data) => strtoupper($data)));
     }
 
-    public function testMapKeys(): void
+    public function testMapKeysTransformsTheKeys(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $expected = [
-            'USER_NAME'    => 'Sempronius',
-            'USER_EMAIL'   => 'sempronius@example.com',
+            'USER_NAME'    => 'Test User',
+            'USER_EMAIL'   => 'user@example.test',
             'USER_COUNTRY' => 'Italy',
         ];
 
         $this->assertSame($expected, Arr::mapKeys($data, fn($key) => 'USER_' . strtoupper($key)));
     }
 
-    public function testFilter(): void
+    public function testFilterPreservesTheMatchingItems(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $expected = [
-            'name'  => 'Sempronius',
-            'email' => 'sempronius@example.com',
+            'name'  => 'Test User',
+            'email' => 'user@example.test',
         ];
 
         $this->assertSame($expected, Arr::filter($data, fn($value, $key) => $value !== 'Italy'));
     }
 
-    public function testReject(): void
+    public function testRejectRemovesTheMatchingItems(): void
     {
         $data = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
         $expected = [
-            'email' => 'sempronius@example.com',
+            'email' => 'user@example.test',
         ];
 
         $this->assertSame($expected, Arr::reject($data, fn($value, $key) => !str_contains($value, '@')));
     }
 
-    public function testEvery(): void
+    public function testEveryChecksThatAllItemsMatch(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
         $this->assertTrue(Arr::every($data, fn($value) => is_string($value)));
-        $this->assertFalse(Arr::every($data, fn($value) => $value === 'banana'));
+        $this->assertFalse(Arr::every($data, fn($value) => $value === 'second'));
     }
 
-    public function testSome(): void
+    public function testSomeChecksThatAnyItemMatches(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $this->assertTrue(Arr::some($data, fn($value) => $value === 'banana'));
-        $this->assertFalse(Arr::some($data, fn($value) => $value === 'orange'));
+        $this->assertTrue(Arr::some($data, fn($value) => $value === 'second'));
+        $this->assertFalse(Arr::some($data, fn($value) => $value === 'fourth'));
     }
 
-    public function testFind(): void
+    public function testFindReturnsTheFirstMatchingItem(): void
     {
-        $data = ['apple', 'banana', 'cherry',  'banana'];
+        $data = ['first', 'second', 'third',  'second'];
 
-        $this->assertSame('banana', Arr::find($data, fn($value) => $value === 'banana'));
-        $this->assertNull(Arr::find($data, fn($value) => $value === 'orange'));
+        $this->assertSame('second', Arr::find($data, fn($value) => $value === 'second'));
+        $this->assertNull(Arr::find($data, fn($value) => $value === 'fourth'));
     }
 
-    public function testPluck(): void
+    public function testPluckTakesAValueFromEveryItem(): void
     {
         $data = [
             ['id' => 1, 'name' => 'Item 1', 'group' => 'A', 'count' => 5],
@@ -1304,7 +633,7 @@ final class ArrTest extends TestCase
         $this->assertSame($expected, Arr::extract($data, 'name'));
     }
 
-    public function testGroupBy(): void
+    public function testGroupByUsesTheValueOfTheGivenKey(): void
     {
         $data = [
             ['id' => 1, 'name' => 'Item 1', 'group' => 'A', 'count' => 5],
@@ -1329,20 +658,6 @@ final class ArrTest extends TestCase
         $this->assertSame($expected, Arr::group($data, fn($item) => new StringableFixture($item['group'])));
     }
 
-    public function testCollapse(): void
-    {
-        $nested = [
-            'a',
-            ['b', 'c'],
-            [['d', 'e'], 'f'],
-        ];
-
-        $this->assertSame($nested, Arr::flatten($nested, depth: 0));
-        $this->assertSame(['a', 'b', 'c', ['d', 'e'], 'f'], Arr::flatten($nested, depth: 1));
-
-        $this->assertSame(['a', 'b', 'c', 'd', 'e', 'f'], Arr::flatten($nested));
-    }
-
     public function testCollapseWithArrayableObjects(): void
     {
         $nested = [
@@ -1354,27 +669,27 @@ final class ArrTest extends TestCase
         $this->assertSame(['a', 'b', 'c', 'd', 'e', 'f'], Arr::flatten($nested));
     }
 
-    public function testFlattenThrowsOnNegativeDepth(): void
+    public function testFlattenRejectsNegativeDepths(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('expects a non-negative depth');
         Arr::flatten([], depth: -1);
     }
 
-    public function testSort(): void
+    public function testSortIsNaturalAndAscendingByDefault(): void
     {
-        $fruits = ['banana', 'apple', 'cherry'];
+        $items = ['second', 'first', 'third'];
 
-        $this->assertSame([1 => 'apple', 0 => 'banana', 2 => 'cherry'], Arr::sort($fruits));
+        $this->assertSame([1 => 'first', 0 => 'second', 2 => 'third'], Arr::sort($items));
 
-        $this->assertSame([2 => 'cherry', 0 => 'banana', 1 => 'apple'], Arr::sort($fruits, direction: SORT_DESC));
+        $this->assertSame([2 => 'third', 0 => 'second', 1 => 'first'], Arr::sort($items, direction: SORT_DESC));
 
-        $this->assertSame(['apple', 'banana', 'cherry'], Arr::sort($fruits, preserveKeys: false));
+        $this->assertSame(['first', 'second', 'third'], Arr::sort($items, preserveKeys: false));
 
-        $this->assertSame(['cherry', 'banana', 'apple'], Arr::sort($fruits, direction: SORT_DESC, preserveKeys: false));
+        $this->assertSame(['third', 'second', 'first'], Arr::sort($items, direction: SORT_DESC, preserveKeys: false));
     }
 
-    public function testSortWithCallable(): void
+    public function testSortCanUseAComparisonCallback(): void
     {
         $expected = [
             ['id' => 2, 'name' => 'Item 2', 'group' => 'A', 'count' => 3],
@@ -1457,21 +772,21 @@ final class ArrTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testSortThrowsOnInvalidDirection(): void
+    public function testSortRejectsInvalidDirections(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('only accepts SORT_ASC and SORT_DESC as "direction" option');
         Arr::sort([], direction: $this->unchecked(123));
     }
 
-    public function testSortThrowsOnInvalidType(): void
+    public function testSortRejectsInvalidTypes(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('only accepts SORT_REGULAR, SORT_NUMERIC, SORT_STRING and SORT_NATURAL as "type" option');
         Arr::sort([], type: $this->unchecked(123));
     }
 
-    public function testSortThrowsOnInvalidSortByCount(): void
+    public function testSortRejectsInvalidSortByCounts(): void
     {
         $data = [
             'app' => [
@@ -1491,7 +806,7 @@ final class ArrTest extends TestCase
         Arr::sort($data, sortBy: []);
     }
 
-    public function testSortThrowsOnMissingSortByKey(): void
+    public function testSortRejectsMissingSortByKeys(): void
     {
         $data = [
             'theme'         => 'dark',
@@ -1525,44 +840,44 @@ final class ArrTest extends TestCase
         $this->assertSame(['c', 'b', 'a'], Arr::sort(['b', 'a', 'c'], SORT_DESC, preserveKeys: false));
     }
 
-    public function testToArray(): void
+    public function testToArrayAcceptsArraysAndArrayableObjects(): void
     {
         $user = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
-        $fruits = [
-            'apple',
-            'banana',
-            'cherry',
-            'banana',
+        $items = [
+            'first',
+            'second',
+            'third',
+            'second',
         ];
 
         $this->assertSame($user, Arr::from($user));
-        $this->assertSame($fruits, Arr::from(new TraversableFixture($fruits)));
+        $this->assertSame($items, Arr::from(new TraversableFixture($items)));
         $this->assertSame($user, Arr::from(new ArrayableFixture($user)));
     }
 
-    public function testFromThrowsOnInvalidType(): void
+    public function testFromRejectsInvalidTypes(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Cannot convert to array an object of type string');
         Arr::from('invalid_value');
     }
 
-    public function testFromEntries(): void
+    public function testFromEntriesBuildsAnArrayFromPairs(): void
     {
         $entries = [
-            ['name', 'Sempronius'],
-            ['email', 'sempronius@example.com'],
+            ['name', 'Test User'],
+            ['email', 'user@example.test'],
             ['country', 'Italy'],
         ];
 
         $expected = [
-            'name'    => 'Sempronius',
-            'email'   => 'sempronius@example.com',
+            'name'    => 'Test User',
+            'email'   => 'user@example.test',
             'country' => 'Italy',
         ];
 
@@ -1592,7 +907,7 @@ final class ArrTest extends TestCase
     {
         $source = [
             'user' => [
-                'name'    => 'Alice',
+                'name'    => 'User 1',
                 'profile' => ['city' => 'Bologna'],
             ],
             'tags' => ['php', 'cms'],
@@ -1607,5 +922,180 @@ final class ArrTest extends TestCase
 
         $this->assertSame($source, Arr::undot(Arr::dot($source)));
         $this->assertSame(['items' => $source['items']], Arr::dot($source));
+    }
+
+    public function testHasFindsLiteralDottedKeys(): void
+    {
+        $this->assertTrue(Arr::has(['a.b' => null], 'a.b'));
+    }
+
+    public function testRemovingAMissingNestedKeyLeavesTheArrayUntouched(): void
+    {
+        $data = ['a' => 1];
+
+        Arr::remove($data, 'missing.key');
+
+        $this->assertSame(['a' => 1], $data);
+    }
+
+    /**
+     * @param array<string, int> $removed
+     * @param array<string, int> $expected
+     */
+    #[DataProvider('negativeLengthProvider')]
+    public function testSpliceWithNegativeLengthFromAPositiveOffset(int $offset, int $length, array $removed, array $expected): void
+    {
+        $data = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
+
+        $this->assertSame($removed, Arr::splice($data, $offset, $length, ['x' => 9]));
+        $this->assertSame($expected, $data);
+    }
+
+    /**
+     * @return iterable<string, array{int, int, array<string, int>, array<string, int>}>
+     */
+    public static function negativeLengthProvider(): iterable
+    {
+        yield 'some items' => [1, -1, ['b' => 2, 'c' => 3], ['a' => 1, 'x' => 9, 'd' => 4]];
+        yield 'no items' => [3, -2, [], ['a' => 1, 'b' => 2, 'c' => 3, 'x' => 9, 'd' => 4]];
+    }
+
+    public function testMoveItemBackwards(): void
+    {
+        $data = ['a', 'b', 'c'];
+
+        Arr::moveItem($data, 2, 0);
+
+        $this->assertSame(['c', 'a', 'b'], $data);
+    }
+
+    public function testNthIgnoresTheKeys(): void
+    {
+        $this->assertSame(6, Arr::nth(['x' => 5, 'y' => 6], 1));
+    }
+
+    public function testAppendMissingSkipsValuesThatCannotBeMergedBeforeRecursing(): void
+    {
+        $this->assertSame(
+            ['scalar' => 1, 'missing' => [], 'replaced' => [], 'nested' => ['a' => 1, 'b' => 2]],
+            Arr::appendMissing(
+                ['scalar' => 1, 'missing' => [], 'replaced' => [], 'nested' => ['a' => 1]],
+                ['scalar' => 2, 'replaced' => 'text', 'nested' => ['b' => 2]],
+            ),
+        );
+    }
+
+    public function testShuffleChangesTheOrderOfTheValues(): void
+    {
+        mt_srand(42);
+
+        $shuffled = Arr::shuffle(range(1, 20));
+        mt_srand();
+
+        $this->assertNotSame(range(1, 20), $shuffled);
+        $this->assertEqualsCanonicalizing(range(1, 20), $shuffled);
+    }
+
+    public function testShufflePreservingKeysChangesTheOrderOfTheKeys(): void
+    {
+        $data = array_combine(range('a', 't'), range(1, 20));
+        mt_srand(42);
+
+        $shuffled = Arr::shuffle($data, preserveKeys: true);
+        mt_srand();
+
+        $this->assertNotSame(array_keys($data), array_keys($shuffled));
+        $this->assertEqualsCanonicalizing($data, $shuffled);
+        foreach ($shuffled as $key => $value) {
+            $this->assertSame($data[$key], $value);
+        }
+    }
+
+    public function testSortByAnotherArray(): void
+    {
+        $this->assertSame([1 => 'b', 2 => 'c', 0 => 'a'], Arr::sort(['a', 'b', 'c'], sortBy: [3, 1, 2]));
+    }
+
+    /**
+     * @param array<mixed>       $array
+     * @param list<array<mixed>> $others
+     * @param array<mixed>       $expected
+     */
+    #[DataProvider('extendProvider')]
+    public function testExtendMergesTheGivenArrays(array $array, array $others, array $expected): void
+    {
+        $this->assertSame($expected, Arr::extend($array, ...$others));
+    }
+
+    /**
+     * @return iterable<string, array{array<mixed>, list<array<mixed>>, array<mixed>}>
+     */
+    public static function extendProvider(): iterable
+    {
+        yield 'merges nested associative arrays' => [['app' => ['name' => 'Formwork', 'debug' => false], 'cache' => ['enabled' => true]], [['app' => ['version' => '2.0', 'debug' => true], 'database' => ['host' => 'localhost']]], ['app' => ['name' => 'Formwork', 'debug' => true, 'version' => '2.0'], 'cache' => ['enabled' => true], 'database' => ['host' => 'localhost']]];
+        yield 'list concatenation' => [['roles' => ['admin', 'editor'], 'permissions' => ['read', 'write']], [['roles' => ['user', 'guest']]], ['roles' => ['admin', 'editor', 'user', 'guest'], 'permissions' => ['read', 'write']]];
+        yield 'deeply nested' => [['config' => ['system' => ['cache' => ['enabled' => true, 'lifetime' => 3600], 'features' => ['search', 'backup']]]], [['config' => ['system' => ['cache' => ['lifetime' => 7200, 'driver' => 'file'], 'features' => ['images'], 'logging' => true]]]], ['config' => ['system' => ['cache' => ['enabled' => true, 'lifetime' => 7200, 'driver' => 'file'], 'features' => ['search', 'backup', 'images'], 'logging' => true]]]];
+        yield 'multiple arrays' => [['a' => 1, 'b' => ['x' => 10]], [['b' => ['y' => 20], 'c' => 3], ['a' => 2, 'd' => 4]], ['a' => 2, 'b' => ['x' => 10, 'y' => 20], 'c' => 3, 'd' => 4]];
+        yield 'empty base' => [[], [['a' => 1]], ['a' => 1]];
+        yield 'empty addition' => [['a' => 1], [[]], ['a' => 1]];
+        yield 'both empty' => [[], [[]], []];
+        yield 'mixed types' => [['scalar_to_array' => 'value', 'array_to_scalar' => ['a', 'b'], 'keep_scalar' => 42], [['scalar_to_array' => ['new' => 'array'], 'array_to_scalar' => 'string', 'keep_scalar' => 100]], ['scalar_to_array' => ['new' => 'array'], 'array_to_scalar' => 'string', 'keep_scalar' => 100]];
+        yield 'does not concatenate a list with an associative array' => [['a' => [1, 2]], [['a' => [1 => 'z']]], ['a' => [1, 'z']]];
+    }
+
+    /**
+     * @param array<mixed>       $array
+     * @param list<array<mixed>> $others
+     * @param array<mixed>       $expected
+     */
+    #[DataProvider('overrideProvider')]
+    public function testOverrideReplacesWithTheGivenArrays(array $array, array $others, array $expected): void
+    {
+        $this->assertSame($expected, Arr::override($array, ...$others));
+    }
+
+    /**
+     * @return iterable<string, array{array<mixed>, list<array<mixed>>, array<mixed>}>
+     */
+    public static function overrideProvider(): iterable
+    {
+        yield 'replaces nested values' => [['app' => ['name' => 'Formwork', 'debug' => false], 'cache' => ['enabled' => true]], [['app' => ['debug' => true], 'database' => ['host' => 'localhost']]], ['app' => ['name' => 'Formwork', 'debug' => true], 'cache' => ['enabled' => true], 'database' => ['host' => 'localhost']]];
+        yield 'replaces lists instead of merging them' => [['roles' => ['admin', 'editor'], 'permissions' => ['read', 'write', 'delete']], [['roles' => ['user', 'guest']]], ['roles' => ['user', 'guest'], 'permissions' => ['read', 'write', 'delete']]];
+        yield 'deeply nested' => [['config' => ['system' => ['features' => ['search', 'backup'], 'cache' => ['enabled' => true, 'lifetime' => 3600, 'stores' => ['file', 'redis']]]]], [['config' => ['system' => ['features' => ['images'], 'cache' => ['lifetime' => 7200, 'stores' => ['memcached']]]]]], ['config' => ['system' => ['features' => ['images'], 'cache' => ['enabled' => true, 'lifetime' => 7200, 'stores' => ['memcached']]]]]];
+        yield 'multiple arrays' => [['a' => 1, 'b' => ['x' => 10, 'y' => [1, 2, 3]]], [['b' => ['y' => [4, 5]], 'c' => 3], ['a' => 2, 'd' => 4]], ['a' => 2, 'b' => ['x' => 10, 'y' => [4, 5]], 'c' => 3, 'd' => 4]];
+        yield 'empty base' => [[], [['a' => 1]], ['a' => 1]];
+        yield 'empty addition' => [['a' => 1], [[]], ['a' => 1]];
+        yield 'both empty' => [[], [[]], []];
+        yield 'replacing list with empty list' => [['items' => [1, 2, 3], 'other' => 'value'], [['items' => []]], ['items' => [], 'other' => 'value']];
+        yield 'mixed types' => [['scalar_to_array' => 'value', 'array_to_scalar' => ['a', 'b'], 'list_to_assoc' => [1, 2, 3], 'assoc_to_list' => ['x' => 1, 'y' => 2]], [['scalar_to_array' => ['new' => 'array'], 'array_to_scalar' => 'string', 'list_to_assoc' => ['a' => 1], 'assoc_to_list' => [1, 2]]], ['scalar_to_array' => ['new' => 'array'], 'array_to_scalar' => 'string', 'list_to_assoc' => ['a' => 1], 'assoc_to_list' => [1, 2]]];
+    }
+
+    /**
+     * @param array<mixed>       $array
+     * @param list<array<mixed>> $others
+     * @param array<mixed>       $expected
+     */
+    #[DataProvider('excludeProvider')]
+    public function testExcludeRemovesTheGivenArrays(array $array, array $others, array $expected): void
+    {
+        $this->assertSame($expected, Arr::exclude($array, ...$others));
+    }
+
+    /**
+     * @return iterable<string, array{array<mixed>, list<array<mixed>>, array<mixed>}>
+     */
+    public static function excludeProvider(): iterable
+    {
+        yield 'removes matching keys and values' => [['name' => 'Formwork', 'version' => '2.0', 'debug' => true, 'cache' => ['enabled' => true, 'lifetime' => 3600]], [['debug' => true, 'cache' => ['lifetime' => 3600]]], ['name' => 'Formwork', 'version' => '2.0', 'cache' => ['enabled' => true]]];
+        yield 'removing empty arrays' => [['settings' => ['cache' => ['enabled' => true]], 'other' => 'value'], [['settings' => ['cache' => ['enabled' => true]]]], ['other' => 'value']];
+        yield 'deeply nested' => [['config' => ['system' => ['cache' => ['enabled' => true, 'lifetime' => 3600, 'driver' => 'file'], 'features' => ['search' => true, 'backup' => false]], 'other' => 'preserved']], [['config' => ['system' => ['cache' => ['lifetime' => 3600], 'features' => ['backup' => false]]]]], ['config' => ['system' => ['cache' => ['enabled' => true, 'driver' => 'file'], 'features' => ['search' => true]], 'other' => 'preserved']]];
+        yield 'multiple arrays' => [['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4], [['a' => 1], ['c' => 3]], ['b' => 2, 'd' => 4]];
+        yield 'preserving non matching values' => [['name' => 'Formwork', 'debug' => true, 'cache' => ['enabled' => true, 'lifetime' => 3600]], [['debug' => false, 'cache' => ['lifetime' => 7200]]], ['name' => 'Formwork', 'debug' => true, 'cache' => ['enabled' => true, 'lifetime' => 3600]]];
+        yield 'empty array' => [['a' => 1, 'b' => 2], [[]], ['a' => 1, 'b' => 2]];
+        yield 'non existent keys' => [['a' => 1, 'b' => 2], [['c' => 3, 'd' => 4]], ['a' => 1, 'b' => 2]];
+        yield 'mixed types' => [['scalar' => 'value', 'number' => 42, 'nested' => ['a' => 1, 'b' => 2], 'preserve_me' => 'keep'], [['scalar' => 'value', 'nested' => ['a' => 1]]], ['number' => 42, 'nested' => ['b' => 2], 'preserve_me' => 'keep']];
+        yield 'does not match scalar with array' => [['value' => 'scalar'], [['value' => ['array']]], ['value' => 'scalar']];
+        yield 'removes empty parents after recursive exclusion' => [['config' => ['a' => 1, 'b' => 2], 'keep' => true], [['config' => ['a' => 1, 'b' => 2]]], ['keep' => true]];
+        yield 'continues after missing keys' => [['a' => 1, 'b' => 2], [['missing' => 1, 'b' => 2]], ['a' => 1]];
     }
 }

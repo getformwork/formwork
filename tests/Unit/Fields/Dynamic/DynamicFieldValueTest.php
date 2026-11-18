@@ -162,12 +162,7 @@ final class DynamicFieldValueTest extends TestCase
 
         $exceptions = [];
         for ($i = 0; $i < 2; ++$i) {
-            try {
-                $dynamicFieldValue->value();
-                $this->fail('Computing an invalid expression should fail.');
-            } catch (Throwable $exception) {
-                $exceptions[] = $exception::class;
-            }
+            $exceptions[] = $this->captureException(Throwable::class, static fn() => $dynamicFieldValue->value())::class;
         }
 
         $this->assertNotContains(RecursionException::class, $exceptions, 'A failed computation must not leave the value flagged as being computed.');

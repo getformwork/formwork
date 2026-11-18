@@ -20,6 +20,8 @@ final class PageCollectionTest extends TestCase
 {
     use BuildsPageSites;
 
+    private const array TITLE_ONLY_WEIGHTS = ['title' => 100, 'summary' => 0, 'content' => 0, 'author' => 0, 'uri' => 0];
+
     private App $app;
 
     private Site $fixtureSite;
@@ -56,6 +58,27 @@ final class PageCollectionTest extends TestCase
         $this->assertSame(2, $pageCollection->pagination()->currentPage());
     }
 
+    /**
+     * @param list<string> $expectedRoutes
+     */
+    #[DataProvider('outOfRangePaginationProvider')]
+    public function testPaginationClampsTheCurrentPageToTheExistingOnes(int $length, int $currentPage, int $expectedPage, array $expectedRoutes): void
+    {
+        $pageCollection = $this->collection($this->page('/about'), $this->page('/blog'))->paginate($length, $currentPage);
+
+        $this->assertSame($expectedPage, $pageCollection->pagination()->currentPage());
+        $this->assertSame($expectedRoutes, $pageCollection->keys());
+    }
+
+    /**
+     * @return iterable<string, array{int, int, int, list<string>}>
+     */
+    public static function outOfRangePaginationProvider(): iterable
+    {
+        yield 'page before the first' => [1, 0, 1, ['/about/']];
+        yield 'page after the last' => [1, 5, 2, ['/blog/']];
+    }
+
     public function testSearchReturnsAnEmptyCollectionForShortQueries(): void
     {
         $collection = $this->collection($this->page('/about'));
@@ -71,13 +94,7 @@ final class PageCollectionTest extends TestCase
         $page->set('title', 'PHP guide');
         $blog->set('title', 'A PHP handbook for teams');
 
-        $pageCollection = $this->collection($page, $blog)->search('PHP guide', minimumLength: 3, weights: [
-            'title'   => 100,
-            'summary' => 0,
-            'content' => 0,
-            'author'  => 0,
-            'uri'     => 0,
-        ]);
+        $pageCollection = $this->collection($page, $blog)->search('PHP guide', minimumLength: 3, weights: self::TITLE_ONLY_WEIGHTS);
 
         $this->assertNotEmpty($pageCollection);
         $this->assertContains($page, $pageCollection);
@@ -93,13 +110,7 @@ final class PageCollectionTest extends TestCase
         $page->set('title', 'PHP guide');
         $blog->set('title', 'Cooking recipes');
 
-        $pageCollection = $this->collection($page, $blog)->search('PHP guide', minimumLength: 3, weights: [
-            'title'   => 100,
-            'summary' => 0,
-            'content' => 0,
-            'author'  => 0,
-            'uri'     => 0,
-        ]);
+        $pageCollection = $this->collection($page, $blog)->search('PHP guide', minimumLength: 3, weights: self::TITLE_ONLY_WEIGHTS);
 
         $this->assertSame([$page], $pageCollection->values());
     }
@@ -113,19 +124,62 @@ final class PageCollectionTest extends TestCase
         $blog->set('title', 'A PHP handbook for teams');
         $other->set('title', 'Cooking recipes');
 
-        $pageCollection = $this->collection($page, $blog, $other)->search('PHP guide', minimumLength: 3, weights: [
-            'title'   => 100,
-            'summary' => 0,
-            'content' => 0,
-            'author'  => 0,
-            'uri'     => 0,
-        ], scores: $scores);
+        $pageCollection = $this->collection($page, $blog, $other)->search('PHP guide', minimumLength: 3, weights: self::TITLE_ONLY_WEIGHTS, scores: $scores);
 
         /** @var array<string, int> $scores */
         $this->assertSame($pageCollection->keys(), array_keys($scores));
         $this->assertCount(2, $scores);
         $this->assertGreaterThan($scores[$pageCollection->keys()[1]], $scores[$pageCollection->keys()[0]]);
         $this->assertContainsOnlyInt($scores);
+    }
+
+    public function testSearchScoresCountWholeQueryMatchesTwiceAndKeywordMatchesUpToTheLimit(): void
+    {
+        $page = $this->page('/about');
+        $blog = $this->page('/blog');
+        $other = $this->page('/index');
+        $page->set('title', 'PHP guide');
+        $blog->set('title', 'A PHP handbook for teams');
+        $other->set('title', 'PHP PHP PHP PHP PHP');
+
+        $results = $this->collection($page, $blog, $other)->search('php GUIDE', minimumLength: 3, weights: self::TITLE_ONLY_WEIGHTS, scores: $scores);
+
+        // The whole query counts twice, each keyword once and at most three times per field
+        $this->assertSame([$page, $other, $blog], $results->values());
+        $this->assertSame([$page->route() => 400, $blog->route() => 100, $other->route() => 300], $scores);
+    }
+
+    public function testSearchIgnoresKeywordsShorterThanTheMinimumLength(): void
+    {
+        $page = $this->page('/about');
+        $page->set('title', 'a zebra');
+
+        $this->collection($page)->search('zebra a', weights: self::TITLE_ONLY_WEIGHTS, scores: $scores);
+
+        $this->assertSame([$page->route() => 100], $scores);
+    }
+
+    #[DataProvider('defaultSearchWeightProvider')]
+    public function testSearchWeighsTheFieldsByDefault(string $field, int $weight): void
+    {
+        $page = $this->page('/about');
+        $page->set('title', 'Untitled');
+        $page->set($field, 'zebra');
+
+        $this->collection($page)->search('zebra', scores: $scores);
+
+        $this->assertSame([$page->route() => 3 * $weight], $scores);
+    }
+
+    /**
+     * @return iterable<string, array{string, int}>
+     */
+    public static function defaultSearchWeightProvider(): iterable
+    {
+        yield 'title' => ['title', 8];
+        yield 'summary' => ['summary', 4];
+        yield 'content' => ['content', 3];
+        yield 'author' => ['author', 2];
     }
 
     #[DataProvider('searchWithoutResultsProvider')]

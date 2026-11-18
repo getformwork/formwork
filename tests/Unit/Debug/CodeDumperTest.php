@@ -121,6 +121,7 @@ final class CodeDumperTest extends TestCase
     public function testFramesWithoutFileOrLineAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Backtrace frame must contain "file" and "line" keys');
 
         CodeDumper::dumpBacktraceFrame(['function' => 'foo']);
     }

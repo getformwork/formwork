@@ -8,12 +8,11 @@ use Formwork\Tests\TestCase;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Throwable;
 
 #[CoversClass(Pagination::class)]
 final class PaginationTest extends TestCase
 {
-    public function testFirstPageProperties(): void
+    public function testPaginationStartsAtTheFirstPage(): void
     {
         $pagination = new Pagination(Collection::from(range(1, 50)), 10);
 
@@ -32,7 +31,7 @@ final class PaginationTest extends TestCase
         $this->assertSame(2, $pagination->nextPage());
     }
 
-    public function testMiddlePageProperties(): void
+    public function testMiddlePagesHaveBothNeighbours(): void
     {
         $pagination = new Pagination(Collection::from(range(1, 50)), 10);
 
@@ -48,7 +47,7 @@ final class PaginationTest extends TestCase
         $this->assertSame(4, $pagination->nextPage());
     }
 
-    public function testLastPageProperties(): void
+    public function testLastPageHasNoNextPage(): void
     {
         $pagination = new Pagination(Collection::from(range(1, 50)), 10);
 
@@ -82,6 +81,7 @@ final class PaginationTest extends TestCase
         yield 'one item short' => [49, 10, 5];
         yield 'fewer items than the length' => [3, 10, 1];
         yield 'exactly one page' => [10, 10, 1];
+        yield 'exactly two pages' => [20, 10, 2];
         yield 'one item per page' => [5, 1, 5];
         yield 'empty collection' => [0, 10, 1];
     }
@@ -107,20 +107,35 @@ final class PaginationTest extends TestCase
         $this->assertSame(1, $pagination->nextPage());
     }
 
+    #[DataProvider('validCurrentPageProvider')]
+    public function testCurrentPagesInsideTheRangeAreAccepted(int $currentPage): void
+    {
+        $pagination = new Pagination(Collection::from(range(1, 50)), 10);
+        $pagination->setCurrentPage(3);
+
+        $pagination->setCurrentPage($currentPage);
+
+        $this->assertSame($currentPage, $pagination->currentPage());
+    }
+
+    /**
+     * @return iterable<string, array{int}>
+     */
+    public static function validCurrentPageProvider(): iterable
+    {
+        yield 'first page' => [1];
+        yield 'last page' => [5];
+    }
+
     #[DataProvider('invalidCurrentPageProvider')]
-    public function testOffsetIsNeverNegative(int $currentPage): void
+    public function testCurrentPagesOutsideTheRangeAreRejected(int $currentPage): void
     {
         $pagination = new Pagination(Collection::from(range(1, 50)), 10);
 
-        $rejected = false;
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Current page must be between 1 and 5');
 
-        try {
-            $pagination->setCurrentPage($currentPage);
-        } catch (InvalidArgumentException) {
-            $rejected = true;
-        }
-
-        $this->assertTrue($rejected || $pagination->offset() >= 0, 'A non-positive page must be rejected or clamped to a valid offset');
+        $pagination->setCurrentPage($currentPage);
     }
 
     /**
@@ -130,12 +145,14 @@ final class PaginationTest extends TestCase
     {
         yield 'zero' => [0];
         yield 'negative' => [-3];
+        yield 'past the last page' => [6];
     }
 
     #[DataProvider('invalidLengthProvider')]
     public function testNonPositiveLengthsAreRejected(int $length): void
     {
-        $this->expectException(Throwable::class);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Pagination length must be greater than 0');
         new Pagination(Collection::from(range(1, 5)), $length);
     }
 

@@ -19,7 +19,7 @@ final class YamlTest extends TestCase
         FileSystem::copyDirectory(__DIR__ . '/Fixtures/files/yaml', TESTS_TMP_PATH, overwrite: true);
     }
 
-    public function testParse(): void
+    public function testYamlStringsAreParsedIntoArrays(): void
     {
         $yamlString = <<<YAML
             title: Test
@@ -39,7 +39,7 @@ final class YamlTest extends TestCase
         $this->assertSame($expected, Yaml::parse($yamlString));
     }
 
-    public function testParseFile(): void
+    public function testYamlFilesAreParsedIntoArrays(): void
     {
         $yamlFilePath = TESTS_TMP_PATH . '/test.yaml';
 
@@ -58,7 +58,7 @@ final class YamlTest extends TestCase
         Yaml::parse('title: [unclosed');
     }
 
-    public function testEncode(): void
+    public function testArraysAreEncodedAsYaml(): void
     {
         $data = [
             'title'       => 'Test',
@@ -79,7 +79,7 @@ final class YamlTest extends TestCase
         $this->assertSame($expectedYamlString, Yaml::encode($data));
     }
 
-    public function testEncodeToFile(): void
+    public function testArraysAreWrittenAsYamlFiles(): void
     {
         $data = [
             'title'       => 'Test',
@@ -114,7 +114,7 @@ final class YamlTest extends TestCase
         $this->assertSame($data, Yaml::parse(Yaml::encode($data)));
     }
 
-    public function testRoundTripKeepsStringsThatLookLikeOtherTypes(): void
+    public function testRoundTripPreservesStringsThatLookLikeOtherTypes(): void
     {
         $data = [
             'number'    => '123',

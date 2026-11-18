@@ -52,7 +52,7 @@ final class LanguagesServiceLoaderTest extends TestCase
         $this->assertSame('Ciao', $this->translations->getCurrent()->translate('greeting'));
     }
 
-    public function testSiteWithoutLanguagesKeepsTheFallbackTranslation(): void
+    public function testSiteWithoutLanguagesPreservesTheFallbackTranslation(): void
     {
         $languages = $this->load(['available' => [], 'httpPreferred' => false]);
 

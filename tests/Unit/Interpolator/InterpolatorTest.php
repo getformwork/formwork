@@ -9,7 +9,6 @@ use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Interpolator\Fixtures\InterpolationTargetFixture;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use RuntimeException;
 
 #[CoversClass(Interpolator::class)]
 final class InterpolatorTest extends TestCase
@@ -55,7 +54,7 @@ final class InterpolatorTest extends TestCase
         $this->assertSame([1, 2, 3], Interpolator::interpolate('identity([1,2,3])', $vars));
     }
 
-    public function testStringsKeepTheirQuotes(): void
+    public function testStringsPreserveTheirQuotes(): void
     {
         $vars = ['identity' => static fn(string $value): string => $value];
 
@@ -84,12 +83,6 @@ final class InterpolatorTest extends TestCase
     public function testUndefinedVariablesAreInterpolationExceptions(): void
     {
         $this->expectException(InterpolationException::class);
-        Interpolator::interpolate('missing', []);
-    }
-
-    public function testInterpolationExceptionsAreRuntimeExceptions(): void
-    {
-        $this->expectException(RuntimeException::class);
         Interpolator::interpolate('missing', []);
     }
 

@@ -23,12 +23,13 @@ final class GifHandlerTest extends TestCase
 
     public function testInfoIsReadFromAnEncodedImage(): void
     {
-        $info = (new GifHandler(GdImagesFixture::gif(40, 30)))->getInfo();
+        $info = (new GifHandler(GdImagesFixture::gif()))->getInfo();
 
         $this->assertSame('image/gif', $info->mimeType());
         $this->assertSame(40, $info->width());
         $this->assertSame(30, $info->height());
         $this->assertSame(ColorSpace::Palette, $info->colorSpace());
+        $this->assertSame(8, $info->colorDepth());
         $this->assertFalse($info->isAnimation());
         $this->assertNull($info->animationFrames());
     }
@@ -62,7 +63,7 @@ final class GifHandlerTest extends TestCase
 
     public function testAnimationsAreRecognized(): void
     {
-        $loop = "!\xff\x0bNETSCAPE2.0\x03\x01\x04\x00\x00";
+        $loop = "!\xff\x0bNETSCAPE2.0\x03\x01\x2c\x01\x00";
 
         $handler = $this->handler("\x03\x00\x02\x00\x00\x00\x00" . $loop . self::FRAME . self::FRAME . self::FRAME);
 
@@ -70,8 +71,15 @@ final class GifHandlerTest extends TestCase
 
         $this->assertTrue($info->isAnimation());
         $this->assertSame(3, $info->animationFrames());
-        $this->assertSame(5, $info->animationRepeatCount());
+        $this->assertSame(301, $info->animationRepeatCount());
         $this->assertFalse($handler->supportsTransforms());
+    }
+
+    public function testAnimationsLoopingForeverHaveARepeatCountOfZero(): void
+    {
+        $loop = "!\xff\x0bNETSCAPE2.0\x03\x01\x00\x00\x00";
+
+        $this->assertSame(0, $this->handler("\x03\x00\x02\x00\x00\x00\x00" . $loop . self::FRAME . self::FRAME)->getInfo()->animationRepeatCount());
     }
 
     public function testTransparencyIsReadFromTheGraphicControlExtension(): void
@@ -83,11 +91,19 @@ final class GifHandlerTest extends TestCase
         $this->assertTrue($this->handler("\x03\x00\x02\x00\x00\x00\x00" . $transparent . self::FRAME)->getInfo()->hasAlphaChannel());
     }
 
-    public function testTruncatedImagesAreNotAccepted(): void
+    public function testOtherExtensionsAreNotReadAsTransparency(): void
+    {
+        $comment = "!\xfe\x03\x01\x01\x01\x00";
+
+        $this->assertFalse($this->handler("\x03\x00\x02\x00\x00\x00\x00" . $comment . self::FRAME)->getInfo()->hasAlphaChannel());
+    }
+
+    public function testTruncatedImagesAreRejected(): void
     {
         $handler = new GifHandler(substr(GdImagesFixture::gif(), 0, 30));
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         $handler->getInfo();
     }
@@ -141,7 +157,6 @@ final class GifHandlerTest extends TestCase
     public function testMetadataOperationsAreRejected(callable $operation): void
     {
         $this->expectException(UnsupportedFeatureException::class);
-
         $operation(new GifHandler(GdImagesFixture::gif()));
     }
 

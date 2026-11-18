@@ -12,7 +12,7 @@ use stdClass;
 #[CoversClass(Constraint::class)]
 final class ConstraintTest extends TestCase
 {
-    public function testIsTruthy(): void
+    public function testIsTruthyRecognizesTruthyValues(): void
     {
         $truthyValues = [true, 1, 'true', '1', 'on', 'yes'];
         foreach ($truthyValues as $truthyValue) {
@@ -25,7 +25,7 @@ final class ConstraintTest extends TestCase
         }
     }
 
-    public function testIsFalsy(): void
+    public function testIsFalsyRecognizesFalsyValues(): void
     {
         $falsyValues = [false, 0, 'false', '0', 'off', 'no'];
         foreach ($falsyValues as $falsyValue) {
@@ -38,7 +38,7 @@ final class ConstraintTest extends TestCase
         }
     }
 
-    public function testIsEmpty(): void
+    public function testIsEmptyRecognizesEmptyValues(): void
     {
         $emptyValues = [null, '', []];
         foreach ($emptyValues as $emptyValue) {
@@ -51,7 +51,7 @@ final class ConstraintTest extends TestCase
         }
     }
 
-    public function testIsEqual(): void
+    public function testIsEqualToCanBeStrict(): void
     {
         // Strict comparison
         $this->assertTrue(Constraint::isEqualTo(1, 1, true));
@@ -62,7 +62,7 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isEqualTo(1, 2, false));
     }
 
-    public function testIsNotEqual(): void
+    public function testIsNotEqualToCanBeStrict(): void
     {
         // Strict comparison
         $this->assertTrue(Constraint::isNotEqualTo(1, '1', true));
@@ -73,28 +73,28 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isNotEqualTo(1, '1', false));
     }
 
-    public function testIsGreaterThan(): void
+    public function testIsGreaterThanExcludesTheBound(): void
     {
         $this->assertTrue(Constraint::isGreaterThan(2, 1));
         $this->assertFalse(Constraint::isGreaterThan(1, 1));
         $this->assertFalse(Constraint::isGreaterThan(1, 2));
     }
 
-    public function testIsGreaterThanOrEqual(): void
+    public function testIsGreaterThanOrEqualToIncludesTheBound(): void
     {
         $this->assertTrue(Constraint::isGreaterThanOrEqualTo(2, 1));
         $this->assertTrue(Constraint::isGreaterThanOrEqualTo(1, 1));
         $this->assertFalse(Constraint::isGreaterThanOrEqualTo(1, 2));
     }
 
-    public function testIsLessThan(): void
+    public function testIsLessThanExcludesTheBound(): void
     {
         $this->assertTrue(Constraint::isLessThan(1, 2));
         $this->assertFalse(Constraint::isLessThan(1, 1));
         $this->assertFalse(Constraint::isLessThan(2, 1));
     }
 
-    public function testIsLessThanOrEqual(): void
+    public function testIsLessThanOrEqualToIncludesTheBound(): void
     {
         $this->assertTrue(Constraint::isLessThanOrEqualTo(1, 2));
         $this->assertTrue(Constraint::isLessThanOrEqualTo(1, 1));
@@ -102,7 +102,7 @@ final class ConstraintTest extends TestCase
     }
 
     #[DataProvider('uriProvider')]
-    public function testIsUri(string $value, bool $expected): void
+    public function testIsUriRecognizesValidUris(string $value, bool $expected): void
     {
         $this->assertSame($expected, Constraint::isUri($value));
     }
@@ -112,20 +112,20 @@ final class ConstraintTest extends TestCase
      */
     public static function uriProvider(): iterable
     {
-        yield 'https with path query and fragment' => ['https://example.com/path?x=1#fragment', true];
+        yield 'https with path query and fragment' => ['https://example.test/path?x=1#fragment', true];
         yield 'http with port' => ['http://localhost:8080/a', true];
         yield 'ftp' => ['ftp://host/file', true];
-        yield 'mailto' => ['mailto:user@example.com', true];
+        yield 'mailto' => ['mailto:user@example.test', true];
         yield 'script scheme' => ['javascript:alert(1)', false];
-        yield 'scheme relative' => ['//example.com', false];
-        yield 'host only' => ['example.com', false];
+        yield 'scheme relative' => ['//example.test', false];
+        yield 'host only' => ['example.test', false];
         yield 'missing host' => ['http://', false];
         yield 'space in the host' => ['http://exa mple.com', false];
         yield 'empty' => ['', false];
     }
 
     #[DataProvider('emailProvider')]
-    public function testIsEmail(string $value, bool $expected): void
+    public function testIsEmailRecognizesValidAddresses(string $value, bool $expected): void
     {
         $this->assertSame($expected, Constraint::isEmail($value));
     }
@@ -135,18 +135,18 @@ final class ConstraintTest extends TestCase
      */
     public static function emailProvider(): iterable
     {
-        yield 'simple address' => ['user@example.com', true];
+        yield 'simple address' => ['user@example.test', true];
         yield 'tag and subdomain' => ['user+tag@sub.example.co', true];
         yield 'missing domain' => ['user@', false];
-        yield 'missing local part' => ['@example.com', false];
-        yield 'space' => ['user name@example.com', false];
+        yield 'missing local part' => ['@example.test', false];
+        yield 'space' => ['user name@example.test', false];
         yield 'consecutive dots in the domain' => ['user@example..com', false];
-        yield 'no at sign' => ['user.example.com', false];
+        yield 'no at sign' => ['user.example.test', false];
         yield 'empty' => ['', false];
     }
 
     #[DataProvider('hostnameProvider')]
-    public function testIsHostname(string $value, bool $expected): void
+    public function testIsHostnameRecognizesValidHostnames(string $value, bool $expected): void
     {
         $this->assertSame($expected, Constraint::isHostname($value));
     }
@@ -156,19 +156,19 @@ final class ConstraintTest extends TestCase
      */
     public static function hostnameProvider(): iterable
     {
-        yield 'domain' => ['example.com', true];
+        yield 'domain' => ['example.test', true];
         yield 'single label' => ['localhost', true];
-        yield 'subdomain with a hyphen' => ['sub-domain.example.com', true];
-        yield 'uppercase' => ['EXAMPLE.COM', true];
-        yield 'leading hyphen' => ['-bad.example.com', false];
-        yield 'trailing hyphen' => ['bad-.example.com', false];
+        yield 'subdomain with a hyphen' => ['sub-domain.example.test', true];
+        yield 'uppercase' => ['EXAMPLE.TEST', true];
+        yield 'leading hyphen' => ['-bad.example.test', false];
+        yield 'trailing hyphen' => ['bad-.example.test', false];
         yield 'underscore' => ['exa_mple.com', false];
         yield 'empty label' => ['example..com', false];
         yield 'label longer than 63 characters' => [str_repeat('a', 64) . '.com', false];
         yield 'empty' => ['', false];
     }
 
-    public function testMatches(): void
+    public function testMatchesRegexChecksTheValue(): void
     {
         $this->assertTrue(Constraint::matchesRegex('hello', '/^h.*o$/'));
         $this->assertFalse(Constraint::matchesRegex('hello', '/^H.*O$/i'));
@@ -215,10 +215,11 @@ final class ConstraintTest extends TestCase
     public function testInvalidRegexesAreReported(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid regex "(unclosed"');
         Constraint::matchesRegex('hello', '(unclosed');
     }
 
-    public function testIsInRange(): void
+    public function testIsInRangeAcceptsReversedBoundsAndExclusions(): void
     {
         $this->assertTrue(Constraint::isInRange(5.25, 1, 10));
         $this->assertTrue(Constraint::isInRange(5, 1, 10));
@@ -231,7 +232,7 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isInRange(10, 1, 10, includeMax: false));
     }
 
-    public function testIsInRangeWithIntegerRange(): void
+    public function testIsInRangeAcceptsIntegerRanges(): void
     {
         $this->assertTrue(Constraint::isInIntegerRange(5, 1, 10));
         $this->assertFalse(Constraint::isInIntegerRange(11, 1, 10));
@@ -241,13 +242,13 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isInIntegerRange(10, 1, 10, includeMax: false));
     }
 
-    public function testIsInRangeWithStep(): void
+    public function testIsInRangeHonoursTheStep(): void
     {
         $this->assertTrue(Constraint::isInIntegerRange(4, 0, 10, step: 2));
         $this->assertFalse(Constraint::isInIntegerRange(5, 0, 10, step: 2));
     }
 
-    public function testIsType(): void
+    public function testIsOfTypeChecksTheType(): void
     {
         $this->assertTrue(Constraint::isOfType(123, 'int'));
         $this->assertTrue(Constraint::isOfType('hello', 'string'));
@@ -264,7 +265,7 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isOfType(new stdClass(), 'array'));
     }
 
-    public function testIsTypeWithUnionTypes(): void
+    public function testIsOfTypeAcceptsUnionTypes(): void
     {
         $this->assertTrue(Constraint::isOfType(123, 'int|string', unionTypes: true));
         $this->assertTrue(Constraint::isOfType('hello', 'int|string', unionTypes: true));
@@ -274,7 +275,7 @@ final class ConstraintTest extends TestCase
         $this->assertFalse(Constraint::isOfType(new stdClass(), 'int|string', unionTypes: true));
     }
 
-    public function testHasKeys(): void
+    public function testHasKeysChecksEveryKey(): void
     {
         $array = ['a' => 1, 'b' => 2, 'c' => 3];
 
@@ -343,7 +344,7 @@ final class ConstraintTest extends TestCase
     }
 
     #[DataProvider('ipProvider')]
-    public function testIpValidators(string $value, bool $ip, bool $ipv4, bool $ipv6): void
+    public function testIpValidatorsRecognizeTheirVersion(string $value, bool $ip, bool $ipv4, bool $ipv6): void
     {
         $this->assertSame($ip, Constraint::isIp($value));
         $this->assertSame($ipv4, Constraint::isIpv4($value));

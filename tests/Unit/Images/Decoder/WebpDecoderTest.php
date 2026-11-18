@@ -56,7 +56,7 @@ final class WebpDecoderTest extends TestCase
 
         $types = array_column(iterator_to_array((new WebpDecoder())->decode($data), false), 'type');
 
-        $this->assertNotEmpty(array_intersect($types, ['VP8 ', 'VP8L']));
+        $this->assertSame(['VP8X', 'ALPH', 'VP8 '], $types);
     }
 
     public function testInvalidHeadersAreNotDecoded(): void
@@ -64,6 +64,7 @@ final class WebpDecoderTest extends TestCase
         $data = 'not a WebP image';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid WebP data');
 
         iterator_to_array((new WebpDecoder())->decode($data));
     }
@@ -73,6 +74,7 @@ final class WebpDecoderTest extends TestCase
         $data = 'RIFF' . pack('V', 4) . 'WAVE';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid WebP data');
 
         iterator_to_array((new WebpDecoder())->decode($data));
     }
@@ -82,6 +84,7 @@ final class WebpDecoderTest extends TestCase
         $data = 'RIFF' . pack('V', 20) . 'WEBP' . 'EXIF' . pack('V', 100) . 'short';
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new WebpDecoder())->decode($data));
     }

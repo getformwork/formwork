@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Panel\Controllers;
 use Formwork\Cms\App;
 use Formwork\Cms\Site;
 use Formwork\Events\EventDispatcher;
-use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Http\Response;
 use Formwork\Http\ResponseStatus;
@@ -41,8 +40,7 @@ final class RegisterControllerTest extends TestCase
     {
         $response = $this->register(usersExist: true);
 
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
+        $this->assertOutcome(['to' => 'panel.index'], $response);
     }
 
     public function testUsersAreNotCreatedWhenUsersExist(): void
@@ -103,8 +101,7 @@ final class RegisterControllerTest extends TestCase
         try {
             $response = $this->register(self::validInput(), users: $users, services: [EventDispatcher::class => $events]);
 
-            $this->assertInstanceOf(RedirectResponse::class, $response, $response->content());
-            $this->assertStringEndsWith('/route/panel.index', $response->headers()->get('Location'));
+            $this->assertOutcome(['to' => 'panel.index'], $response);
             $this->assertFileExists($this->accountsPath() . '/newadmin.yaml');
             $this->assertSame('admin', $users->get('newadmin')?->role()->id());
             $this->assertCount(1, $loggedIn);

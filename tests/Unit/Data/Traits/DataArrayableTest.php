@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 #[CoversTrait(DataArrayable::class)]
 final class DataArrayableTest extends TestCase
 {
-    public function testToArray(): void
+    public function testToArrayReturnsTheData(): void
     {
         $data = ['key1' => 'value1', 'key2' => 'value2'];
         $dataArrayableFixture = new DataArrayableFixture($data);

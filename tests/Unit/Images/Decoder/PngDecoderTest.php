@@ -49,6 +49,7 @@ final class PngDecoderTest extends TestCase
         $data = 'not a PNG image';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid PNG data');
 
         iterator_to_array((new PngDecoder())->decode($data));
     }
@@ -58,6 +59,7 @@ final class PngDecoderTest extends TestCase
         $data = self::HEADER . "\x00\x00";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new PngDecoder())->decode($data));
     }
@@ -67,6 +69,7 @@ final class PngDecoderTest extends TestCase
         $data = self::HEADER . pack('N', 100) . 'tEXtshort';
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new PngDecoder())->decode($data));
     }
@@ -76,6 +79,7 @@ final class PngDecoderTest extends TestCase
         $data = substr(self::HEADER . GdImagesFixture::pngChunk('tEXt', 'ab'), 0, -2);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new PngDecoder())->decode($data));
     }

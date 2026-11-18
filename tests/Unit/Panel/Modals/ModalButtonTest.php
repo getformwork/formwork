@@ -26,7 +26,7 @@ final class ModalButtonTest extends TestCase
         $this->assertNull($button->command());
     }
 
-    public function testDataOverridesDefaults(): void
+    public function testGivenDataOverridesTheDefaults(): void
     {
         $button = new ModalButton([
             'action'  => 'command',
@@ -54,6 +54,7 @@ final class ModalButtonTest extends TestCase
     public function testLabelIsRequired(): void
     {
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected empty button label');
 
         new ModalButton(['action' => 'submit'], $this->translation());
     }

@@ -15,15 +15,13 @@ use RuntimeException;
 #[UsesTempDirectory]
 final class MimeTypeTest extends TestCase
 {
-    protected function setUp(): void {}
-
     protected function tearDown(): void
     {
         Environment::enableExtension('fileinfo');
         parent::tearDown();
     }
 
-    public function testFromExtension(): void
+    public function testMimeTypeIsFoundFromTheExtension(): void
     {
         $this->assertSame('image/jpeg', MimeType::fromExtension('jpg'));
         $this->assertSame('text/plain', MimeType::fromExtension('txt'));
@@ -37,7 +35,7 @@ final class MimeTypeTest extends TestCase
         $this->assertSame('application/octet-stream', MimeType::fromExtension(''));
     }
 
-    public function testFromFileThrowsOnDisabledFileinfo(): void
+    public function testFromFileRequiresFileinfo(): void
     {
         Environment::disableExtension('fileinfo');
         $this->expectException(RuntimeException::class);
@@ -95,7 +93,7 @@ final class MimeTypeTest extends TestCase
         yield 'directory' => [__DIR__];
     }
 
-    public function testExtensions(): void
+    public function testExtensionsOfAMimeTypeAreListed(): void
     {
         $this->assertSame(['jpg', 'jpeg', 'jpe'], MimeType::getAssociatedExtensions('image/jpeg'));
         $this->assertSame([], MimeType::getAssociatedExtensions('unknown/mime-type'));
@@ -107,7 +105,7 @@ final class MimeTypeTest extends TestCase
         $this->assertSame('application/pdf', MimeType::fromExtension('Pdf'));
     }
 
-    public function testToExtension(): void
+    public function testToExtensionReturnsTheFirstExtension(): void
     {
         $this->assertSame('jpg', MimeType::toExtension('image/jpeg'));
     }

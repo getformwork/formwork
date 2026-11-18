@@ -40,6 +40,11 @@ use PHPUnit\Framework\TestCase;
  */
 trait BuildsPanelControllers
 {
+    /**
+     * @var array<string, Translations>
+     */
+    private static array $panelTranslations = [];
+
     private ?Request $panelRequest = null;
 
     private Container $panelContainer;
@@ -225,11 +230,25 @@ trait BuildsPanelControllers
         return $router;
     }
 
+    /**
+     * Build the translations of the panel, parsing their files only once per fallback language
+     *
+     * Every controller gets its own copy, so that changing the current translation does not affect the other tests
+     */
     private function panelTranslations(Config $config): Translations
     {
-        $translations = new Translations($config);
-        $translations->loadFromPath(TestInstallation::systemPath() . '/translations');
-        $translations->loadFromPath(TestInstallation::rootPath() . '/panel/translations');
+        $fallback = $config->getString('system.translations.fallback');
+
+        if (!isset(self::$panelTranslations[$fallback])) {
+            $translations = new Translations($config);
+            $translations->loadFromPath(TestInstallation::systemPath() . '/translations');
+            $translations->loadFromPath(TestInstallation::rootPath() . '/panel/translations');
+            // Parse the English translation once, the copies share it
+            $translations->setCurrent('en');
+            self::$panelTranslations[$fallback] = $translations;
+        }
+
+        $translations = clone self::$panelTranslations[$fallback];
         $translations->setCurrent('en');
 
         return $translations;

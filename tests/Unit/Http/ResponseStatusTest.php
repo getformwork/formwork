@@ -63,6 +63,7 @@ final class ResponseStatusTest extends TestCase
     public function testUnknownStatusCodesAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('HTTP status code not found');
         ResponseStatus::fromCode(299);
     }
 }

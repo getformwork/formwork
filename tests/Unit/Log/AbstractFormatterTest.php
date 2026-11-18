@@ -9,6 +9,7 @@ use Formwork\Http\RequestMethod;
 use Formwork\Log\Formatter\AbstractFormatter;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Log\Fixtures\ExposedFormatterFixture;
+use Formwork\Tests\Unit\Log\Fixtures\PlainEnumFixture;
 use JsonSerializable;
 use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -24,7 +25,7 @@ final class AbstractFormatterTest extends TestCase
      * @param array<int|string, mixed> $context
      */
     #[DataProvider('interpolationProvider')]
-    public function testInterpolation(string $message, array $context, string $expected): void
+    public function testPlaceholdersAreReplacedWithTheContext(string $message, array $context, string $expected): void
     {
         $this->assertSame($expected, (new ExposedFormatterFixture())->interpolateMessage($message, $context));
     }
@@ -45,8 +46,8 @@ final class AbstractFormatterTest extends TestCase
         yield 'repeated placeholder' => ['{a} and {a}', ['a' => 'x'], 'x and x'];
         yield 'several placeholders' => ['{a}-{b}-{c}', ['a' => 1, 'b' => 2, 'c' => 3], '1-2-3'];
         yield 'unknown placeholder' => ['{known} {unknown}', ['known' => 'yes'], 'yes {unknown}'];
-        yield 'dotted key' => ['{user.name}', ['user.name' => 'alice'], 'alice'];
-        yield 'underscore key' => ['{user_name}', ['user_name' => 'alice'], 'alice'];
+        yield 'dotted key' => ['{user.name}', ['user.name' => 'user'], 'user'];
+        yield 'underscore key' => ['{user_name}', ['user_name' => 'user'], 'user'];
         yield 'array value' => ['Data: {data}', ['data' => [1, 2]], 'Data: [array]'];
         yield 'object value' => ['Object: {object}', ['object' => new stdClass()], 'Object: [object stdClass]'];
         yield 'stringable object' => ['Name: {object}', ['object' => new class implements Stringable {
@@ -77,7 +78,7 @@ final class AbstractFormatterTest extends TestCase
 
     public function testPlainEnumsAreInterpolatedByName(): void
     {
-        $this->assertSame('Case', (new ExposedFormatterFixture())->interpolateMessage('{e}', ['e' => PlainEnum::Case]));
+        $this->assertSame('Case', (new ExposedFormatterFixture())->interpolateMessage('{e}', ['e' => PlainEnumFixture::Case]));
     }
 
     #[DataProvider('scalarProvider')]
@@ -141,11 +142,7 @@ final class AbstractFormatterTest extends TestCase
             public string $name = 'public';
         };
 
-        $result = (new ExposedFormatterFixture())->normalizeData($object);
-
-        $this->assertIsArray($result);
-        $this->assertCount(1, $result);
-        $this->assertSame($object, array_values($result)[0]);
+        $this->assertSame([get_debug_type($object) => $object], (new ExposedFormatterFixture())->normalizeData($object));
     }
 
     public function testArraySerializableObjectsAreConvertedToArrays(): void
@@ -162,7 +159,7 @@ final class AbstractFormatterTest extends TestCase
             }
         };
 
-        $this->assertSame([['name' => 'value']], array_values((array) (new ExposedFormatterFixture())->normalizeData($object)));
+        $this->assertSame([get_debug_type($object) => ['name' => 'value']], (new ExposedFormatterFixture())->normalizeData($object));
     }
 
     public function testStringableObjectsAreConvertedToStrings(): void
@@ -174,7 +171,7 @@ final class AbstractFormatterTest extends TestCase
             }
         };
 
-        $this->assertSame(['as string'], array_values((array) (new ExposedFormatterFixture())->normalizeData($object)));
+        $this->assertSame([get_debug_type($object) => 'as string'], (new ExposedFormatterFixture())->normalizeData($object));
     }
 
     public function testJsonSerializableObjectsUseTheirSerialization(): void
@@ -189,7 +186,7 @@ final class AbstractFormatterTest extends TestCase
             }
         };
 
-        $this->assertSame(['serialized' => true], array_values((array) (new ExposedFormatterFixture())->normalizeData($object))[0]);
+        $this->assertSame([get_debug_type($object) => ['serialized' => true]], (new ExposedFormatterFixture())->normalizeData($object));
     }
 
     public function testArrayObjectsAreWrappedWithTheirClassName(): void
@@ -240,9 +237,4 @@ final class AbstractFormatterTest extends TestCase
     {
         return new RuntimeException('failure', 7);
     }
-}
-
-enum PlainEnum
-{
-    case Case;
 }

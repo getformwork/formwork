@@ -45,7 +45,7 @@ final class HtmlReferenceTest extends TestCase
         }
     }
 
-    public function testEveryAllowedUrlAttributeIsTreatedAsUri(): void
+    public function testEveryAllowedUriAttributeIsTreatedAsUri(): void
     {
         $missing = array_diff(array_intersect(self::URL_ATTRIBUTES, HtmlReference::ALLOWED_ATTRIBUTES), HtmlReference::URI_ATTRIBUTES);
 

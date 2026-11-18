@@ -11,11 +11,13 @@ final class ResponseHeadersTest extends TestCase
 {
     public function testResponseHeadersNormalizeSetRemoveAndSortValues(): void
     {
-        $responseHeaders = new ResponseHeaders(['z-header' => 'last', 'a-header' => 'first']);
-        $responseHeaders->set('cache_control', 'no-cache');
-        $responseHeaders->remove('Z-HEADER');
+        $responseHeaders = new ResponseHeaders(['z-header' => 'last', 'x-removed' => 'removed', 'a-header' => 'first']);
+        $this->assertSame(['A-Header', 'X-Removed', 'Z-Header'], array_keys($responseHeaders->toArray()));
 
-        $this->assertSame(['A-Header' => 'first', 'Cache-Control' => 'no-cache'], $responseHeaders->toArray());
+        $responseHeaders->set('cache_control', 'no-cache');
+        $responseHeaders->remove('X-REMOVED');
+
+        $this->assertSame(['A-Header' => 'first', 'Cache-Control' => 'no-cache', 'Z-Header' => 'last'], $responseHeaders->toArray());
         $this->assertTrue($responseHeaders->has('cache-control'));
     }
 

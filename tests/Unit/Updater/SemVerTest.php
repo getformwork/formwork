@@ -44,6 +44,7 @@ final class SemVerTest extends TestCase
     public function testNegativeComponentsAreRejected(int $major, int $minor, int $patch): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$major, $minor and $patch arguments must be non-negative integers');
 
         new SemVer($major, $minor, $patch);
     }
@@ -107,11 +108,10 @@ final class SemVerTest extends TestCase
     public function testInvalidVersionsAreRejected(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);
-
         SemVer::fromString($input);
     }
 
-    public function testRoundTrip(): void
+    public function testVersionStringsRoundTrip(): void
     {
         foreach (['1.2.3', '0.0.1-beta.5', '4.5.6-RC.1+build.7', '9.9.9+meta'] as $version) {
             $this->assertSame($version, (string) SemVer::fromString($version));
@@ -137,12 +137,12 @@ final class SemVerTest extends TestCase
 
     // Derived versions
 
-    public function testVersionCoreDropsPrereleaseAndMetadata(): void
+    public function testVersionCoreRemovesPrereleaseAndMetadata(): void
     {
         $this->assertSame('1.2.3', (string) SemVer::fromString('1.2.3-beta.1+build')->versionCore());
     }
 
-    public function testWithoutPrerelease(): void
+    public function testWithoutPrereleasePreservesTheBuildMetadata(): void
     {
         $semVer = SemVer::fromString('1.2.3-beta.1+build')->withoutPrerelease();
 
@@ -150,7 +150,7 @@ final class SemVerTest extends TestCase
         $this->assertFalse($semVer->isPrerelease());
     }
 
-    public function testWithoutBuildMetadata(): void
+    public function testWithoutBuildMetadataPreservesThePrerelease(): void
     {
         $semVer = SemVer::fromString('1.2.3-beta.1+build')->withoutBuildMetadata();
 
@@ -222,7 +222,7 @@ final class SemVerTest extends TestCase
     }
 
     #[DataProvider('comparisonsProvider')]
-    public function testComparison(string $left, string $right, string $operator, bool $expected): void
+    public function testVersionsAreComparedWithEveryOperator(string $left, string $right, string $operator, bool $expected): void
     {
         $this->assertSame($expected, SemVer::fromString($left)->compareWith(SemVer::fromString($right), $operator));
         $this->assertSame($expected, SemVer::fromString($left)->compareWithString($right, $operator));
@@ -236,9 +236,10 @@ final class SemVerTest extends TestCase
         SemVer::fromString('1.0.0')->compareWithString('1.0.0', '=>');
     }
 
-    public function testVersionCompareOperatorAliasesAreNotAccepted(): void
+    public function testVersionCompareOperatorAliasesAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid operator for version comparison: "lt". Use one of the following: "<", "<=", "==", ">=", ">", "!=", "~", "^"');
 
         SemVer::fromString('1.0.0')->compareWithString('1.0.0', 'lt');
     }
@@ -246,6 +247,7 @@ final class SemVerTest extends TestCase
     public function testInvalidVersionStringsAreRejectedByCompareWithString(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid version string: "nope"');
 
         SemVer::fromString('1.0.0')->compareWithString('nope', '==');
     }
@@ -274,7 +276,7 @@ final class SemVerTest extends TestCase
     }
 
     #[DataProvider('rangesProvider')]
-    public function testRangeOperators(string $base, string $candidate, string $operator, bool $expected): void
+    public function testRangeOperatorsMatchCompatibleVersions(string $base, string $candidate, string $operator, bool $expected): void
     {
         $this->assertSame($expected, SemVer::fromString($base)->compareWithString($candidate, $operator));
     }

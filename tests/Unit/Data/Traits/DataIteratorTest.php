@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 #[CoversTrait(DataIterator::class)]
 final class DataIteratorTest extends TestCase
 {
-    public function testIterator(): void
+    public function testIterationVisitsEveryKeyAndValue(): void
     {
         $data = ['key1' => 'value1', 'key2' => 'value2', 'key3' => 'value3'];
         $fixture = new DataIteratorFixture($data);

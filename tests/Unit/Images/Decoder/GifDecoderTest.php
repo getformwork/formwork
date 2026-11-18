@@ -53,6 +53,22 @@ final class GifDecoderTest extends TestCase
         $this->assertSame(2, $blocks[2]['desc']['lzwsize']);
     }
 
+    public function testEveryFieldOfThePackedDescriptorsIsDecoded(): void
+    {
+        $data = "GIF89a\x03\x00\x02\x00\x2A\x05\x07,\x01\x00\x02\x00\x03\x00\x02\x00\x62\x02\x02\x44\x01\x00;";
+
+        $blocks = iterator_to_array((new GifDecoder())->decode($data), false);
+
+        $this->assertSame(
+            ['width' => 3, 'height' => 2, 'packed' => 0x2A, 'gctflag' => 0, 'colorres' => 2, 'sflag' => 1, 'gctsize' => 2, 'bgindex' => 5, 'pxratio' => 7],
+            $blocks[0]['desc'],
+        );
+        $this->assertSame(
+            ['left' => 1, 'top' => 2, 'width' => 3, 'height' => 2, 'packed' => 0x62, 'lctflag' => 0, 'iflag' => 1, 'sflag' => 1, 'lctsize' => 2, 'lzwsize' => 2],
+            $blocks[1]['desc'],
+        );
+    }
+
     public function testImagesWithoutGlobalColorTableAreDecoded(): void
     {
         $data = "GIF89a\x03\x00\x02\x00\x00\x00\x00" . self::IMAGE . ';';
@@ -96,6 +112,7 @@ final class GifDecoderTest extends TestCase
         $data = 'not a GIF image';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid GIF data');
 
         iterator_to_array((new GifDecoder())->decode($data));
     }
@@ -105,6 +122,7 @@ final class GifDecoderTest extends TestCase
         $data = "GIF89a\x03\x00";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new GifDecoder())->decode($data));
     }
@@ -114,6 +132,7 @@ final class GifDecoderTest extends TestCase
         $data = 'GIF89a' . self::SCREEN . "\x00\x00";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new GifDecoder())->decode($data));
     }
@@ -123,6 +142,7 @@ final class GifDecoderTest extends TestCase
         $data = "GIF89a\x03\x00\x02\x00\x00\x00\x00" . substr(self::IMAGE, 0, -2);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new GifDecoder())->decode($data));
     }

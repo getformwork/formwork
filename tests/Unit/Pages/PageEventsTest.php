@@ -19,6 +19,7 @@ use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 #[CoversClass(PageAfterDeleteEvent::class)]
@@ -44,12 +45,28 @@ final class PageEventsTest extends TestCase
         $this->app = App::instance();
     }
 
-    public function testPageAfterDeleteEvent(): void
+    /**
+     * @param class-string<PageAfterDeleteEvent|PageAfterSaveEvent|PageBeforeDeleteEvent|PageBeforeSaveEvent|PageLoadedEvent> $class
+     */
+    #[DataProvider('pageEventProvider')]
+    public function testPageEventsHaveTheirNameAndPage(string $class, string $name): void
     {
-        $pageAfterDeleteEvent = new PageAfterDeleteEvent($page = $this->page('/about'));
+        $event = new $class($page = $this->page('/about'));
 
-        $this->assertSame('pageAfterDelete', $pageAfterDeleteEvent->name());
-        $this->assertSame($page, $pageAfterDeleteEvent->page());
+        $this->assertSame($name, $event->name());
+        $this->assertSame($page, $event->page());
+    }
+
+    /**
+     * @return iterable<string, array{class-string, string}>
+     */
+    public static function pageEventProvider(): iterable
+    {
+        yield 'after delete' => [PageAfterDeleteEvent::class, 'pageAfterDelete'];
+        yield 'after save' => [PageAfterSaveEvent::class, 'pageAfterSave'];
+        yield 'before delete' => [PageBeforeDeleteEvent::class, 'pageBeforeDelete'];
+        yield 'before save' => [PageBeforeSaveEvent::class, 'pageBeforeSave'];
+        yield 'loaded' => [PageLoadedEvent::class, 'pageLoaded'];
     }
 
     public function testPageAfterDuplicateEvent(): void
@@ -62,22 +79,6 @@ final class PageEventsTest extends TestCase
         $this->assertSame('pageAfterDuplicate', $pageAfterDuplicateEvent->name());
         $this->assertSame($page, $pageAfterDuplicateEvent->page());
         $this->assertSame($duplicate, $pageAfterDuplicateEvent->duplicatePage());
-    }
-
-    public function testPageAfterSaveEvent(): void
-    {
-        $pageAfterSaveEvent = new PageAfterSaveEvent($page = $this->page('/about'));
-
-        $this->assertSame('pageAfterSave', $pageAfterSaveEvent->name());
-        $this->assertSame($page, $pageAfterSaveEvent->page());
-    }
-
-    public function testPageBeforeDeleteEvent(): void
-    {
-        $pageBeforeDeleteEvent = new PageBeforeDeleteEvent($page = $this->page('/about'));
-
-        $this->assertSame('pageBeforeDelete', $pageBeforeDeleteEvent->name());
-        $this->assertSame($page, $pageBeforeDeleteEvent->page());
     }
 
     public function testPageBeforeDuplicateEvent(): void
@@ -93,23 +94,7 @@ final class PageEventsTest extends TestCase
         $this->assertSame('Changed', $with['title']);
     }
 
-    public function testPageBeforeSaveEvent(): void
-    {
-        $pageBeforeSaveEvent = new PageBeforeSaveEvent($page = $this->page('/about'));
-
-        $this->assertSame('pageBeforeSave', $pageBeforeSaveEvent->name());
-        $this->assertSame($page, $pageBeforeSaveEvent->page());
-    }
-
-    public function testPageLoadedEvent(): void
-    {
-        $pageLoadedEvent = new PageLoadedEvent($page = $this->page('/about'));
-
-        $this->assertSame('pageLoaded', $pageLoadedEvent->name());
-        $this->assertSame($page, $pageLoadedEvent->page());
-    }
-
-    public function testPageOutputEvent(): void
+    public function testPageOutputEventExposesThePageAndTheOutput(): void
     {
         $output = '<p>Before</p>';
         $pageOutputEvent = new PageOutputEvent($page = $this->page('/about'), $output);
@@ -122,7 +107,7 @@ final class PageEventsTest extends TestCase
         $this->assertSame('<p>Before</p> after', $output);
     }
 
-    public function testPageRenderEvent(): void
+    public function testPageRenderEventExposesThePageAndTheVariables(): void
     {
         $vars = ['page' => $this->page('/about')];
         $pageRenderEvent = new PageRenderEvent($vars['page'], $vars);

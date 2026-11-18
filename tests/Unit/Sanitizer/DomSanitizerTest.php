@@ -20,7 +20,7 @@ final class DomSanitizerTest extends TestCase
         $this->assertSame('', $domSanitizer->sanitize('<p class="a">Text</p>'));
     }
 
-    public function testPlainTextIsKept(): void
+    public function testPlainTextIsPreserved(): void
     {
         $this->assertSame('Plain text', (new DomSanitizer())->sanitize('Plain text'));
     }
@@ -30,7 +30,7 @@ final class DomSanitizerTest extends TestCase
         $this->assertSame('', (new DomSanitizer())->sanitize(''));
     }
 
-    public function testConfigurationMethodsAreFluent(): void
+    public function testConfigMethodsAreFluent(): void
     {
         $domSanitizer = new DomSanitizer();
 
@@ -41,7 +41,7 @@ final class DomSanitizerTest extends TestCase
         $this->assertSame($domSanitizer, $domSanitizer->sanitizeElementsMethod(SanitizeElementsMethod::Escape));
     }
 
-    public function testOnlyAllowedElementsAndAttributesAreKept(): void
+    public function testOnlyAllowedElementsAndAttributesArePreserved(): void
     {
         $domSanitizer = (new DomSanitizer())
             ->allowedElements(['p', 'b'])
@@ -103,6 +103,8 @@ final class DomSanitizerTest extends TestCase
     public function testInvalidUnicodeIsRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid data to sanitize');
+
         (new DomSanitizer())->sanitize("<p>\xff</p>");
     }
 
@@ -114,7 +116,7 @@ final class DomSanitizerTest extends TestCase
     }
 
     #[DataProvider('safeUriProvider')]
-    public function testSafeUrisAreKept(string $uri): void
+    public function testSafeUrisArePreserved(string $uri): void
     {
         $html = $this->uriSanitizer()->sanitize('<a href="' . $uri . '">x</a>');
 
@@ -126,9 +128,9 @@ final class DomSanitizerTest extends TestCase
      */
     public static function safeUriProvider(): iterable
     {
-        yield 'https' => ['https://example.com/path?query=1#fragment'];
-        yield 'http' => ['http://example.com'];
-        yield 'uppercase scheme' => ['HTTPS://example.com'];
+        yield 'https' => ['https://example.test/path?query=1#fragment'];
+        yield 'http' => ['http://example.test'];
+        yield 'uppercase scheme' => ['HTTPS://example.test'];
         yield 'absolute path' => ['/path/to/page'];
         yield 'relative path' => ['../page.html'];
         yield 'query only' => ['?page=2'];
@@ -167,7 +169,7 @@ final class DomSanitizerTest extends TestCase
         yield 'base64 data' => ['data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=='];
         yield 'vbscript' => ['vbscript:msgbox(1)'];
         yield 'file' => ['file:///nonexistent/secret'];
-        yield 'ftp' => ['ftp://example.com/file'];
+        yield 'ftp' => ['ftp://example.test/file'];
         yield 'protocol relative' => ['//evil.test/path'];
     }
 
@@ -177,7 +179,7 @@ final class DomSanitizerTest extends TestCase
 
         $this->assertSame(
             '<a>external</a><a href="/local">local</a>',
-            $uriAttributeSanitizer->sanitize('<a href="https://example.com">external</a><a href="/local">local</a>')
+            $uriAttributeSanitizer->sanitize('<a href="https://example.test">external</a><a href="/local">local</a>')
         );
     }
 
@@ -186,8 +188,8 @@ final class DomSanitizerTest extends TestCase
         $uriAttributeSanitizer = $this->uriSanitizer()->allowedUriSchemes(['ftp']);
 
         $this->assertSame(
-            '<a href="ftp://example.com/file">ftp</a><a>https</a>',
-            $uriAttributeSanitizer->sanitize('<a href="ftp://example.com/file">ftp</a><a href="https://example.com">https</a>')
+            '<a href="ftp://example.test/file">ftp</a><a>https</a>',
+            $uriAttributeSanitizer->sanitize('<a href="ftp://example.test/file">ftp</a><a href="https://example.test">https</a>')
         );
     }
 

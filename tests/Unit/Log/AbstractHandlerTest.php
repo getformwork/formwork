@@ -5,7 +5,6 @@ namespace Formwork\Tests\Unit\Log;
 use DateTimeImmutable;
 use Formwork\Log\Formatter\JsonFormatter;
 use Formwork\Log\Handler\AbstractHandler;
-use Formwork\Log\Handler\HandlerInterface;
 use Formwork\Log\Logger;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Log\Fixtures\ExposedHandlerFixture;
@@ -17,11 +16,6 @@ use Psr\Log\LogLevel;
 #[CoversClass(AbstractHandler::class)]
 final class AbstractHandlerTest extends TestCase
 {
-    public function testHandlersImplementTheirInterface(): void
-    {
-        $this->assertInstanceOf(HandlerInterface::class, new ExposedHandlerFixture(new JsonFormatter()));
-    }
-
     public function testDebugIsTheDefaultLevelAndAcceptsEverything(): void
     {
         $exposedHandler = new ExposedHandlerFixture(new JsonFormatter());

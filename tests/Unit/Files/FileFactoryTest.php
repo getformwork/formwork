@@ -9,6 +9,7 @@ use Formwork\Files\FileFactory;
 use Formwork\Files\FileUriGenerator;
 use Formwork\Services\Container;
 use Formwork\Tests\TestCase;
+use Formwork\Tests\Unit\Files\Fixtures\AssociatedFileFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Tests\UsesTempDirectory;
 use Formwork\Utils\FileSystem;
@@ -21,8 +22,6 @@ use stdClass;
 #[UsesTempDirectory]
 final class FileFactoryTest extends TestCase
 {
-    protected function setUp(): void {}
-
     public function testMakeBuildsAFileLoadsMetadataAndInjectsTheUriGenerator(): void
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
@@ -52,7 +51,7 @@ final class FileFactoryTest extends TestCase
         $container->expects($this->once())->method('build')->with(File::class, ['path' => $path])->willReturn($file);
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $fileFactory = new FileFactory($container, $this->config(), ['image/png' => AssociatedFile::class]);
+        $fileFactory = new FileFactory($container, $this->config(), ['image/png' => AssociatedFileFixture::class]);
 
         $this->assertSame($file, $fileFactory->make($path));
     }
@@ -61,12 +60,12 @@ final class FileFactoryTest extends TestCase
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
-        $associatedFile = new AssociatedFile($path);
+        $associatedFile = new AssociatedFileFixture($path);
         $container = $this->createMock(Container::class);
-        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($associatedFile);
+        $container->expects($this->once())->method('build')->with(AssociatedFileFixture::class, ['path' => $path])->willReturn($associatedFile);
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $fileFactory = new FileFactory($container, $this->config(), ['text/plain' => AssociatedFile::class]);
+        $fileFactory = new FileFactory($container, $this->config(), ['text/plain' => AssociatedFileFixture::class]);
 
         $this->assertSame($associatedFile, $fileFactory->make($path));
     }
@@ -88,18 +87,18 @@ final class FileFactoryTest extends TestCase
     {
         $path = TESTS_TMP_PATH . '/sample.txt';
         FileSystem::write($path, 'hello');
-        $associatedFile = new AssociatedFile($path);
+        $associatedFile = new AssociatedFileFixture($path);
         $container = $this->createMock(Container::class);
-        $container->expects($this->once())->method('build')->with(AssociatedFile::class, ['path' => $path])->willReturn($associatedFile);
+        $container->expects($this->once())->method('build')->with(AssociatedFileFixture::class, ['path' => $path])->willReturn($associatedFile);
         $container->expects($this->once())->method('call')
             ->willReturnCallback(static fn(Closure $factory, array $parameters): mixed => $factory(...$parameters));
         $container->method('get')->willReturn($this->createStub(FileUriGenerator::class));
 
-        $fileFactory = new FileFactory($container, $this->config(), ['text/plain' => [AssociatedFile::class, 'fromPath']]);
+        $fileFactory = new FileFactory($container, $this->config(), ['text/plain' => [AssociatedFileFixture::class, 'fromPath']]);
         $file = $fileFactory->make($path);
 
         $this->assertNotSame($associatedFile, $file);
-        $this->assertInstanceOf(AssociatedFile::class, $file);
+        $this->assertInstanceOf(AssociatedFileFixture::class, $file);
         $this->assertSame($path, $file->path());
         $this->assertSame('created', $file->origin);
     }
@@ -107,18 +106,5 @@ final class FileFactoryTest extends TestCase
     private function config(): Config
     {
         return new Config(['system' => ['files' => ['metadataExtension' => '.meta.yaml']]], resolved: true);
-    }
-}
-
-final class AssociatedFile extends File
-{
-    public string $origin = 'constructed';
-
-    public function fromPath(string $path): static
-    {
-        $file = new self($path);
-        $file->origin = 'created';
-
-        return $file;
     }
 }

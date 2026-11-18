@@ -58,7 +58,7 @@ final class ItemReferenceBoxTest extends TestCase
         $this->assertSame([], $this->references($box));
     }
 
-    public function testOnlyTheRemovedItemIsDroppedFromAReference(): void
+    public function testOnlyTheRemovedItemDisappearsFromAReference(): void
     {
         $box = ItemReferenceBox::fromBox($this->box(0, [['thmb', 4, [1, 2]]]));
         $box->removeItem(2);
@@ -74,7 +74,7 @@ final class ItemReferenceBoxTest extends TestCase
         $this->assertEquals([new ItemReference('cdsc', 3, [1])], $this->references($box));
     }
 
-    public function testEncodingKeepsTheReferencesUnchanged(): void
+    public function testEncodingPreservesTheReferences(): void
     {
         $box = ItemReferenceBox::fromBox($this->box(0, [['cdsc', 3, [1]], ['thmb', 4, [1, 2]]]));
 

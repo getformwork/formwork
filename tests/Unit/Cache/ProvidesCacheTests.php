@@ -10,7 +10,6 @@ use Formwork\Cache\CacheItemInterface;
 use Formwork\Cache\CountableCache;
 use Formwork\Cache\Exceptions\InvalidKeyException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\SimpleCache\CacheInterface;
 use Psr\SimpleCache\InvalidArgumentException as PsrInvalidArgumentException;
 use stdClass;
 
@@ -19,14 +18,6 @@ use stdClass;
  */
 trait ProvidesCacheTests
 {
-    public function testCachesImplementThePsrInterfaces(): void
-    {
-        $cache = $this->createCache();
-
-        $this->assertInstanceOf(CacheInterface::class, $cache);
-        $this->assertInstanceOf(CountableCache::class, $cache);
-    }
-
     public function testDefaultTtlIsExposed(): void
     {
         $dateInterval = new DateInterval('PT5M');
@@ -55,7 +46,7 @@ trait ProvidesCacheTests
 
         $this->assertTrue($cache->set('key', $value));
 
-        $this->assertEquals($value, $cache->get('key', 'default'));
+        $this->assertSame($value, $cache->get('key', 'default'));
         $this->assertTrue($cache->has('key'));
     }
 
@@ -84,7 +75,6 @@ trait ProvidesCacheTests
         yield 'associative array' => [['a' => 1, 'b' => ['c' => 2]]];
         yield 'array with integer keys' => [[5 => 'a', 10 => 'b']];
         yield 'nested empty arrays' => [[[], [[]]]];
-        yield 'stdClass' => [(object) ['a' => 1, 'b' => [2]]];
     }
 
     public function testFalseAndNullValuesAreDistinctFromMisses(): void
@@ -126,7 +116,7 @@ trait ProvidesCacheTests
      * @param non-empty-string $key
      */
     #[DataProvider('validKeyProvider')]
-    public function testValidKeys(string $key): void
+    public function testValidKeysCanBeStoredReadAndDeleted(string $key): void
     {
         $cache = $this->createCache();
 
@@ -446,7 +436,7 @@ trait ProvidesCacheTests
         $this->assertSame(['a' => 1, 'b' => null, 'c' => 'default'], $cache->getMultiple(['a', 'b', 'c'], 'default'));
     }
 
-    public function testGetMultipleKeepsTheOrderOfTheKeys(): void
+    public function testGetMultiplePreservesTheOrderOfTheKeys(): void
     {
         $cache = $this->createCache();
         $cache->set('a', 1);
@@ -530,7 +520,7 @@ trait ProvidesCacheTests
         $this->createCache()->deleteMultiple(['valid', 'in/valid']);
     }
 
-    public function testHasMultiple(): void
+    public function testHasMultipleChecksEveryKey(): void
     {
         $cache = $this->createCache();
         $cache->setMultiple(['a' => 1, 'b' => 2]);

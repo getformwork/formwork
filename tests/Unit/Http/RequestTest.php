@@ -171,16 +171,21 @@ final class RequestTest extends TestCase
             [
                 'HTTP_X_CUSTOM_HEADER' => 'value',
             ],
-            ['user%5Bname%5D' => 'Giuseppe'],
+            ['user%5Bname%5D' => 'Test User', 'tags' => ['a%20b' => 'x', 'c' => 'y']],
             ['page%5Bnumber%5D' => '2'],
             ['cookie%5Bname%5D' => 'session'],
         );
 
-        $this->assertSame(['user[name]' => 'Giuseppe'], $request->input()->toArray());
+        $this->assertSame(['user[name]' => 'Test User', 'tags' => ['a b' => 'x', 'c' => 'y']], $request->input()->toArray());
         $this->assertSame(['page[number]' => '2'], $request->query()->toArray());
         $this->assertSame(['cookie%5Bname%5D' => 'session'], $request->cookies()->toArray());
         $this->assertSame('value', $request->headers()->get('X-Custom-Header'));
         $this->assertNull($request->headers()->get('x_custom_header'));
+    }
+
+    public function testServerNameTakesPrecedenceOverTheServerAddress(): void
+    {
+        $this->assertSame('example.test', $this->request(['SERVER_NAME' => 'example.test', 'SERVER_ADDR' => '192.0.2.1'])->host());
     }
 
     public function testHostIsNormalizedAndInvalidHostsAreRejected(): void
@@ -197,6 +202,7 @@ final class RequestTest extends TestCase
         $invalidRequest = $this->request(['SERVER_NAME' => 'not a valid host']);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid host: "not a valid host"');
         $invalidRequest->host();
     }
 
@@ -206,6 +212,7 @@ final class RequestTest extends TestCase
         $request = $this->request(['HTTP_HOST' => $host]);
 
         $this->expectException(UnexpectedValueException::class);
+
         $request->host();
     }
 
@@ -285,6 +292,7 @@ final class RequestTest extends TestCase
         $request = $this->request(['HTTP_HOST' => '../../etc', 'SERVER_NAME' => 'server.test']);
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid host: "../../etc"');
         $request->host();
     }
 
@@ -292,7 +300,7 @@ final class RequestTest extends TestCase
     {
         $request = $this->request([
             'REMOTE_ADDR'    => '10.0.0.10',
-            'HTTP_FORWARDED' => 'for=203.0.113.9;host=Example.org:8443;proto=https;port=8443',
+            'HTTP_FORWARDED' => 'for=203.0.113.9;host=Another.Example.test:8443;proto=https;port=8443',
             'SERVER_NAME'    => 'internal.test',
             'SERVER_PORT'    => '80',
             'HTTPS'          => 'off',
@@ -301,7 +309,7 @@ final class RequestTest extends TestCase
 
         $this->assertTrue($request->isFromTrustedProxy());
         $this->assertSame('203.0.113.9', $request->ip());
-        $this->assertSame('example.org', $request->host());
+        $this->assertSame('another.example.test', $request->host());
         $this->assertSame(8443, $request->port());
         $this->assertTrue($request->isSecure());
     }
@@ -467,12 +475,16 @@ final class RequestTest extends TestCase
         $this->assertTrue($avatar->isUploaded());
         $this->assertIsArray($documents);
         $this->assertCount(2, $documents);
+        $this->assertSame(
+            ['first.txt', 'first.txt', 'text/plain', '/tmp/php-first', UPLOAD_ERR_OK, 10],
+            [$documents[0]->clientName(), $documents[0]->clientFullPath(), $documents[0]->clientMimeType(), $documents[0]->tempPath(), $documents[0]->error(), $documents[0]->size()],
+        );
         $this->assertSame('second.txt', $documents[1]->clientName());
         $this->assertTrue($documents[1]->isEmpty());
         $this->assertCount(3, $request->files()->getAll());
     }
 
-    public function testNestedUploadedFilesOfDifferentFieldsAreKept(): void
+    public function testNestedUploadedFilesOfDifferentFieldsArePreserved(): void
     {
         // Like PHP builds `$_FILES` for the fields `form[a][]`, `form[b][]` and `form[c]`
         $form = [
@@ -586,6 +598,48 @@ final class RequestTest extends TestCase
         yield 'http' => ['http', false];
         yield 'off' => ['off', false];
         yield 'zero' => ['0', false];
+    }
+
+    #[DataProvider('httpsServerValueProvider')]
+    public function testConnectionSecurityFollowsTheHttpsServerValue(?string $https, bool $expectedSecure): void
+    {
+        $request = $this->request(['REMOTE_ADDR' => '192.0.2.10'] + ($https === null ? [] : ['HTTPS' => $https]));
+
+        $this->assertSame($expectedSecure, $request->isSecure());
+    }
+
+    /**
+     * @return iterable<string, array{?string, bool}>
+     */
+    public static function httpsServerValueProvider(): iterable
+    {
+        yield 'on' => ['on', true];
+        yield 'one' => ['1', true];
+        yield 'off' => ['off', false];
+        yield 'uppercase off' => ['OFF', false];
+        yield 'missing' => [null, false];
+    }
+
+    public function testForwardedDirectiveNamesAreCaseInsensitive(): void
+    {
+        $request = $this->request([
+            'REMOTE_ADDR'    => '10.0.0.10',
+            'HTTP_FORWARDED' => 'Proto=HTTPS;Port=8443',
+            'HTTPS'          => 'off',
+        ]);
+        $request->setTrustedProxies(['10.0.0.10']);
+
+        $this->assertTrue($request->isSecure());
+        $this->assertSame(8443, $request->port());
+    }
+
+    public function testPortDefaultsTo80WithoutServerData(): void
+    {
+        // The helper of the tests sets a port, so the request is created directly
+        $request = new Request(server: ['REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => '/index.php', 'SERVER_NAME' => 'example.test']);
+
+        $this->assertSame(80, $request->port());
+        $this->assertSame('http://example.test/', $request->baseUri());
     }
 
     public function testForwardedProtoIsIgnoredForUntrustedProxies(): void

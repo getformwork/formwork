@@ -77,6 +77,7 @@ final class JpegDecoderTest extends TestCase
         $data = 'not a JPEG image';
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid JPEG data');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }
@@ -86,6 +87,7 @@ final class JpegDecoderTest extends TestCase
         $data = "\xff\xd8\xff";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Unexpected end of data');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }
@@ -95,6 +97,7 @@ final class JpegDecoderTest extends TestCase
         $data = "\xff\xd8\xff\xe1" . pack('n', 100) . 'short';
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid segment size');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }
@@ -104,6 +107,7 @@ final class JpegDecoderTest extends TestCase
         $data = "\xff\xd8\xff\xe1\x00\x01\x00";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid segment size');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }
@@ -113,6 +117,7 @@ final class JpegDecoderTest extends TestCase
         $data = "\xff\xd8" . GdImagesFixture::jpegSegment(0xda, "\x01\x01") . "\x12\x34";
 
         $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Segment end not found');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }
@@ -132,6 +137,7 @@ final class JpegDecoderTest extends TestCase
         $data = "\xff\xd8\x00\x00";
 
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid JPEG data');
 
         iterator_to_array((new JpegDecoder())->decode($data));
     }

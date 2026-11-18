@@ -29,17 +29,17 @@ final class AssetCollectionTest extends TestCase
         $this->collection->set('notes', $this->asset('notes.txt', 'plain'));
     }
 
-    public function testStylesheets(): void
+    public function testStylesheetsAreSelectedByType(): void
     {
         $this->assertSame(['style'], $this->collection->stylesheets()->keys());
     }
 
-    public function testScripts(): void
+    public function testScriptsAreSelectedByType(): void
     {
         $this->assertSame(['app'], $this->collection->scripts()->keys());
     }
 
-    public function testImages(): void
+    public function testImagesAreSelectedByType(): void
     {
         $this->assertSame(['logo', 'photo'], $this->collection->images()->keys());
     }
@@ -64,6 +64,7 @@ final class AssetCollectionTest extends TestCase
     public function testOnlyAssetsCanBeAdded(): void
     {
         $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Value must be of type Formwork\Assets\Asset, string given');
 
         $this->collection->set('invalid', $this->unchecked('not an asset'));
     }

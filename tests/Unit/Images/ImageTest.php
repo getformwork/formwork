@@ -67,6 +67,7 @@ final class ImageTest extends TestCase
 
         // The missing URI generator is reported only when an URI is requested
         $this->expectException(FileUriGenerationException::class);
+        $this->expectExceptionMessage('Cannot generate file uri: generator not set');
         $processed->uri();
     }
 
@@ -232,11 +233,11 @@ final class ImageTest extends TestCase
         $this->assertNotSame($first->path(), $other->path());
     }
 
-    public function testProcessedImagesKeepTheUriGenerator(): void
+    public function testProcessedImagesPreserveTheUriGenerator(): void
     {
         $processed = $this->jpegImage()->resize(50, 25)->process();
 
-        $this->assertStringContainsString('/photo.jpg', $processed->uri());
+        $this->assertMatchesRegularExpression('~/assets/images/[0-9a-f]{32}/photo\.jpg$~', $processed->uri());
     }
 
     public function testImagesThatCannotBeTransformedCanBeCached(): void
@@ -247,7 +248,7 @@ final class ImageTest extends TestCase
         $this->assertNotSame(TESTS_TMP_PATH . '/image.svg', $processed->path());
     }
 
-    public function testProcessedImagesKeepTheirData(): void
+    public function testProcessedImagesPreserveTheirData(): void
     {
         $image = $this->processableImage();
         $image->set('alt', 'A photo');

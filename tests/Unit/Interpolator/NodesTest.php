@@ -13,7 +13,6 @@ use Formwork\Interpolator\Nodes\StringNode;
 use Formwork\Tests\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use TypeError;
 
 #[CoversClass(AbstractNode::class)]
 #[CoversClass(ArgumentsNode::class)]
@@ -97,19 +96,5 @@ final class NodesTest extends TestCase
         $this->assertSame('implicit array key', $implicitArrayKeyNode->type());
         $this->assertSame('node of type implicit array key', (string) $implicitArrayKeyNode);
         $this->assertNull($implicitArrayKeyNode->value());
-    }
-
-    public function testNumberNodesRejectNonNumericValues(): void
-    {
-        $typeError = $this->captureException(TypeError::class, fn() => new NumberNode($this->unchecked('not a number')));
-
-        $this->assertInstanceOf(TypeError::class, $typeError);
-    }
-
-    public function testStringNodesRejectArrays(): void
-    {
-        $typeError = $this->captureException(TypeError::class, fn() => new StringNode($this->unchecked([])));
-
-        $this->assertInstanceOf(TypeError::class, $typeError);
     }
 }

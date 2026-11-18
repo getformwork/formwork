@@ -73,7 +73,7 @@ final class StatisticsTest extends TestCase
         $this->assertSame(['desktop' => 1], $statistics->getDevices());
     }
 
-    public function testTrackedVisitsArePersisted(): void
+    public function testTrackedVisitsAreSaved(): void
     {
         $this->statistics()->trackVisit();
 
@@ -192,7 +192,7 @@ final class StatisticsTest extends TestCase
      */
     public static function botProvider(): iterable
     {
-        yield 'Googlebot' => ['Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'];
+        yield 'Googlebot' => ['Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.search.example.test/bot.html)'];
         yield 'Bingbot' => ['Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)'];
         yield 'curl' => ['curl/8.0.1'];
     }

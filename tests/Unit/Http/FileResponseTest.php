@@ -148,11 +148,17 @@ final class FileResponseTest extends TestCase
         $this->assertTrue(FileSystem::exists($path));
     }
 
+    public function testFilesAreServedInlineUnlessDownloaded(): void
+    {
+        $this->assertSame('inline', (new FileResponse($this->fixturePath()))->headers()->get('Content-Disposition'));
+    }
+
     public function testInlineFileResponseRejectsDownloadFilenameChanges(): void
     {
         $fileResponse = new FileResponse($this->fixturePath());
 
         $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Cannot set filename for inline file response');
         $fileResponse->setFilename('download.txt');
     }
 
@@ -171,13 +177,20 @@ final class FileResponseTest extends TestCase
         $second = FileSystem::joinPaths(TESTS_TMP_PATH, 'second.txt');
         FileSystem::write($first, 'first');
         FileSystem::write($second, 'second');
+        // Both files have the same modification time, so the ETags differ only by the path
         touch($first, 1_700_000_000);
+        touch($second, 1_700_000_000);
 
         $fileResponse = (new FileResponse($first, autoEtag: true, autoLastModified: true))->prepare($this->request());
         $secondResponse = (new FileResponse($second, autoEtag: true, autoLastModified: true))->prepare($this->request());
 
         $this->assertSame('Tue, 14 Nov 2023 22:13:20 GMT', $fileResponse->headers()->get('Last-Modified'));
         $this->assertNotSame($fileResponse->headers()->get('ETag'), $secondResponse->headers()->get('ETag'));
+
+        touch($first, 1_700_000_100);
+        clearstatcache();
+        $modifiedResponse = (new FileResponse($first, autoEtag: true))->prepare($this->request());
+        $this->assertNotSame($fileResponse->headers()->get('ETag'), $modifiedResponse->headers()->get('ETag'));
     }
 
     /**
