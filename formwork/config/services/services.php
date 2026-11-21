@@ -20,6 +20,7 @@ use Formwork\Images\ImageFactory;
 use Formwork\Languages\Languages;
 use Formwork\Languages\LanguagesFactory;
 use Formwork\Log\Logger;
+use Formwork\Log\LoggerManager;
 use Formwork\Pages\PageCollectionFactory;
 use Formwork\Pages\PageFactory;
 use Formwork\Pages\PaginationFactory;
@@ -53,8 +54,11 @@ use Formwork\View\ViewFactory;
 use Psr\Log\LoggerInterface;
 
 return function (Container $container) {
-    $container->define(Logger::class)
+    $container->define(LoggerManager::class)
         ->loader(LoggerServiceLoader::class)
+        ->alias('logger');
+
+    $container->define(Logger::class, fn(LoggerManager $loggerManager) => $loggerManager->get(Logger::DEFAULT_CHANNEL))
         ->alias(LoggerInterface::class);
 
     $container->define(EventDispatcher::class)
