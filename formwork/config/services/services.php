@@ -61,6 +61,8 @@ return function (Container $container) {
     $container->define(Logger::class, fn(LoggerManager $loggerManager) => $loggerManager->get(Logger::DEFAULT_CHANNEL))
         ->alias(LoggerInterface::class);
 
+    $container->define('logger.deprecations', fn(LoggerManager $loggerManager) => $loggerManager->get('deprecations'));
+
     $container->define(EventDispatcher::class)
         ->alias('events');
 

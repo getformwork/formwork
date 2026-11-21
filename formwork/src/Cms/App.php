@@ -22,6 +22,7 @@ use Formwork\Services\Container;
 use Formwork\Traits\SingletonClass;
 use Formwork\Translations\Translations;
 use Formwork\Utils\Str;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
 
@@ -345,10 +346,36 @@ final class App
         ini_set('display_errors', 0);
 
         set_error_handler(function (int $severity, string $message, string $file, int $line): bool {
-            if (!(error_reporting() & $severity) || $severity === E_USER_DEPRECATED) {
+            if (!(error_reporting() & $severity)) {
                 return false;
             }
+
+            if ($severity === E_USER_DEPRECATED) {
+                $this->logDeprecation($message, $file, $line);
+                // Let PHP report the deprecation as well
+                return false;
+            }
+
             throw new ErrorException($message, 0, $severity, $file, $line);
         });
+    }
+
+    /**
+     * Log a deprecation on the deprecations channel, if available
+     */
+    private function logDeprecation(string $message, string $file, int $line): void
+    {
+        if (!$this->container->has('logger.deprecations')) {
+            return;
+        }
+
+        // Errors triggered while logging are not passed again to the error handler by PHP
+        try {
+            /** @var LoggerInterface $logger */
+            $logger = $this->container->get('logger.deprecations');
+            $logger->notice($message, ['file' => $file, 'line' => $line]);
+        } catch (Throwable) {
+            // Deprecations triggered while the logger cannot be resolved or written are only reported by PHP
+        }
     }
 }
