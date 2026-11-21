@@ -23,4 +23,9 @@ final class ExposedHandlerFixture extends AbstractHandler
     {
         return $this->shouldHandle($level);
     }
+
+    public function acceptsChannel(string $channel): bool
+    {
+        return $this->shouldHandleChannel($channel);
+    }
 }

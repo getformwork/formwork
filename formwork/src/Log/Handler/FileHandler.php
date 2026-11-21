@@ -3,8 +3,10 @@
 namespace Formwork\Log\Handler;
 
 use DateTimeInterface;
+use Formwork\Log\Formatter\ChannelAwareFormatterInterface;
 use Formwork\Log\Formatter\FormatterInterface;
 use Formwork\Log\Formatter\JsonFormatter;
+use Formwork\Log\Logger;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Psr\Log\LogLevel;
@@ -13,7 +15,7 @@ use RuntimeException;
 /**
  * @since 2.3.0
  */
-class FileHandler extends AbstractHandler
+class FileHandler extends AbstractHandler implements ChannelAwareHandlerInterface
 {
     /**
      * @var resource
@@ -27,8 +29,9 @@ class FileHandler extends AbstractHandler
         protected string $path,
         FormatterInterface $formatter = new JsonFormatter(),
         string $level = LogLevel::DEBUG,
+        array $channels = [],
     ) {
-        parent::__construct($formatter, $level);
+        parent::__construct($formatter, $level, $channels);
     }
 
     public function __destruct()
@@ -41,13 +44,15 @@ class FileHandler extends AbstractHandler
      *
      * @throws RuntimeException If the log stream cannot be opened for writing
      */
-    public function handle(DateTimeInterface $datetime, string $level, string $message, array $context): void
+    public function handle(DateTimeInterface $datetime, string $level, string $message, array $context, string $channel = Logger::DEFAULT_CHANNEL): void
     {
-        if (!$this->shouldHandle($level)) {
+        if (!$this->shouldHandle($level) || !$this->shouldHandleChannel($channel)) {
             return;
         }
 
-        $line = $this->formatter->format($datetime, $level, $message, $context);
+        $line = $this->formatter instanceof ChannelAwareFormatterInterface
+            ? $this->formatter->format($datetime, $level, $message, $context, $channel)
+            : $this->formatter->format($datetime, $level, $message, $context);
 
         $this->write($line);
     }

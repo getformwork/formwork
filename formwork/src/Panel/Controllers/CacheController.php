@@ -6,6 +6,7 @@ use Formwork\Cache\CacheManager;
 use Formwork\Http\JsonResponse;
 use Formwork\Http\Response;
 use Formwork\Router\RouteParams;
+use Formwork\Services\Attributes\Service;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\ConfigServiceLoader;
 use Formwork\Users\Attributes\Permission;
@@ -17,6 +18,7 @@ final class CacheController extends AbstractController
     public function __construct(
         private Container $container,
         private CacheManager $cacheManager,
+        #[Service('logger.cache')]
         private ?LoggerInterface $logger = null,
     ) {
         $this->container->call(parent::__construct(...));

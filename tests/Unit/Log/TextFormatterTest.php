@@ -21,11 +21,18 @@ final class TextFormatterTest extends TestCase
         $this->date = new DateTimeImmutable('2025-01-02 03:04:05.123456 UTC');
     }
 
+    public function testChannelIsPrefixedToTheLevel(): void
+    {
+        $line = (new TextFormatter())->format($this->date, 'info', 'message', [], 'panel');
+
+        $this->assertSame('[2025-01-02 03:04:05.123456] panel.INFO: message', $line);
+    }
+
     public function testLinesContainTheTimestampLevelAndMessage(): void
     {
         $line = (new TextFormatter())->format($this->date, 'info', 'Something happened', []);
 
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: Something happened', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: Something happened', $line);
     }
 
     #[DataProvider('levelProvider')]
@@ -34,7 +41,7 @@ final class TextFormatterTest extends TestCase
         $line = (new TextFormatter())->format($this->date, $this->unchecked($level), 'message', []);
 
         $this->assertStringContainsString(': message', $line);
-        $this->assertStringContainsString('] ' . strtoupper($level) . ':', $line);
+        $this->assertStringContainsString('] default.' . strtoupper($level) . ':', $line);
     }
 
     /**
@@ -51,28 +58,28 @@ final class TextFormatterTest extends TestCase
     {
         $line = (new TextFormatter(false))->format($this->date, 'info', 'User {username} logged in', ['username' => 'user']);
 
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: User user logged in', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: User user logged in', $line);
     }
 
     public function testContextIsAppendedAsJson(): void
     {
         $line = (new TextFormatter())->format($this->date, 'info', 'message', ['a' => 1, 'b' => ['c' => true]]);
 
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: message {"a":1,"b":{"c":true}}', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: message {"a":1,"b":{"c":true}}', $line);
     }
 
     public function testContextCanBeOmitted(): void
     {
         $line = (new TextFormatter(false))->format($this->date, 'info', 'message', ['a' => 1]);
 
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: message', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: message', $line);
     }
 
     public function testEmptyContextIsNotAppended(): void
     {
         $line = (new TextFormatter())->format($this->date, 'info', 'message', []);
 
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: message', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: message', $line);
     }
 
     public function testDatesInTheContextAreFormattedLikeTheTimestamp(): void
@@ -115,10 +122,10 @@ final class TextFormatterTest extends TestCase
      */
     public static function multilineProvider(): iterable
     {
-        $forged = "\n[2025-01-02 03:04:05.000000] CRITICAL: forged entry";
+        $forged = "\n[2025-01-02 03:04:05.000000] default.CRITICAL: forged entry";
 
         yield 'line feed in the message' => ["message{$forged}", []];
-        yield 'carriage return in the message' => ["message\r[2025-01-02 03:04:05.000000] CRITICAL: forged entry", []];
+        yield 'carriage return in the message' => ["message\r[2025-01-02 03:04:05.000000] default.CRITICAL: forged entry", []];
         yield 'line breaks in an interpolated value' => ['User {name}', ['name' => "another-user{$forged}"]];
         yield 'line breaks in the context' => ['message', ['name' => "another-user{$forged}"]];
     }
@@ -128,7 +135,7 @@ final class TextFormatterTest extends TestCase
         $line = (new TextFormatter())->format($this->date, 'info', "invalid \xff byte", ['value' => "\xff"]);
 
         // Invalid bytes are kept in the message and replaced with U+FFFD only in the JSON of the context
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: invalid ' . "\xff" . ' byte {"value":"\ufffd"}', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: invalid ' . "\xff" . ' byte {"value":"\ufffd"}', $line);
     }
 
     public function testNonFiniteNumbersDoNotMakeLoggingFail(): void
@@ -136,6 +143,6 @@ final class TextFormatterTest extends TestCase
         $line = (new TextFormatter())->format($this->date, 'info', 'message', ['value' => INF, 'other' => NAN]);
 
         // Values that JSON cannot represent are replaced with 0
-        $this->assertSame('[2025-01-02 03:04:05.123456] INFO: message {"value":0,"other":0}', $line);
+        $this->assertSame('[2025-01-02 03:04:05.123456] default.INFO: message {"value":0,"other":0}', $line);
     }
 }

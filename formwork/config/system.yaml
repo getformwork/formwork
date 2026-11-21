@@ -83,6 +83,12 @@ logs:
             type: file
             path: '${%ROOT_PATH%}/logs/formwork.log'
             level: info
+            channels: [default, panel, cache]
+        deprecations:
+            type: file
+            path: '${%ROOT_PATH%}/logs/deprecations.log'
+            level: info
+            channels: [deprecations]
 
 metadata:
     setGenerator: true

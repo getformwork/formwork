@@ -3,6 +3,8 @@
 namespace Formwork\Tests\Unit\Log;
 
 use DateTimeImmutable;
+use DateTimeInterface;
+use Formwork\Log\Handler\HandlerInterface;
 use Formwork\Log\Logger;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\Unit\Log\Fixtures\RecordingHandlerFixture;
@@ -16,6 +18,44 @@ use Stringable;
 #[CoversClass(Logger::class)]
 final class LoggerTest extends TestCase
 {
+    public function testDefaultChannelIsDefault(): void
+    {
+        $this->assertSame('default', (new Logger())->channel());
+    }
+
+    public function testRecordsCarryTheChannelOfTheLogger(): void
+    {
+        $logger = new Logger('cache');
+        $recordingHandler = new RecordingHandlerFixture();
+        $logger->addHandler($recordingHandler);
+
+        $logger->info('message');
+
+        $this->assertSame('cache', $logger->channel());
+        $this->assertSame('cache', $recordingHandler->records[0][4]);
+    }
+
+    public function testHandlersUnawareOfChannelsReceiveTheRecords(): void
+    {
+        $handler = new class implements HandlerInterface {
+            /**
+             * @var list<string>
+             */
+            public array $messages = [];
+
+            public function handle(DateTimeInterface $datetime, string $level, string $message, array $context): void
+            {
+                $this->messages[] = $message;
+            }
+        };
+        $logger = new Logger('cache');
+        $logger->addHandler($handler);
+
+        $logger->info('message');
+
+        $this->assertSame(['message'], $handler->messages);
+    }
+
     public function testLoggingWithoutHandlersDoesNothing(): void
     {
         $this->expectNotToPerformAssertions();
@@ -32,7 +72,8 @@ final class LoggerTest extends TestCase
         $logger->log(LogLevel::WARNING, 'Something happened', ['key' => 'value']);
 
         $this->assertCount(1, $recordingHandler->records);
-        [$datetime, $level, $message, $context] = $recordingHandler->records[0];
+        [$datetime, $level, $message, $context, $channel] = $recordingHandler->records[0];
+        $this->assertSame('default', $channel);
         $this->assertSame('warning', $level);
         $this->assertSame('Something happened', $message);
         $this->assertSame(['key' => 'value'], $context);
