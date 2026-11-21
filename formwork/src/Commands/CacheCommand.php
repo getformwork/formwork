@@ -64,8 +64,10 @@ final class CacheCommand implements CommandInterface
         $this->app = App::instance();
         $this->app->load();
 
-        if ($this->app->hasService(LoggerInterface::class)) {
-            $this->logger = $this->app->getService(LoggerInterface::class);
+        if ($this->app->hasService('logger.cache')) {
+            /** @var LoggerInterface $logger */
+            $logger = $this->app->getService('logger.cache');
+            $this->logger = $logger;
         }
 
         if (count($argv) < 2 || $this->climate->arguments->defined('help', $argv)) {

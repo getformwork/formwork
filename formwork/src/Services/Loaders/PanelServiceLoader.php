@@ -12,6 +12,7 @@ use Formwork\Events\EventDispatcher;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Request;
 use Formwork\Log\Logger;
+use Formwork\Log\LoggerManager;
 use Formwork\Log\Registry;
 use Formwork\Panel\Controllers\AuthenticationController;
 use Formwork\Panel\Controllers\ErrorsController;
@@ -21,7 +22,9 @@ use Formwork\Panel\Modals\Modals;
 use Formwork\Panel\Panel;
 use Formwork\Router\Events\RouteActionResolvedEvent;
 use Formwork\Schemes\Schemes;
+use Formwork\Services\Attributes\Service;
 use Formwork\Services\Container;
+use Formwork\Services\DefinitionAwareServiceLoaderInterface;
 use Formwork\Services\ResolutionAwareServiceLoaderInterface;
 use Formwork\Translations\Translations;
 use Formwork\Users\Users;
@@ -29,10 +32,11 @@ use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
 use Formwork\View\ViewFactory;
 
-final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
+final class PanelServiceLoader implements DefinitionAwareServiceLoaderInterface, ResolutionAwareServiceLoaderInterface
 {
     public function __construct(
         private App $app,
+        #[Service('logger.panel')]
         private Logger $logger,
         private EventDispatcher $eventDispatcher,
         private Request $request,
@@ -43,6 +47,14 @@ final class PanelServiceLoader implements ResolutionAwareServiceLoaderInterface
         private Users $users,
         private Assets $assets,
     ) {}
+
+    /**
+     * @since 2.4.0
+     */
+    public static function onDefined(Container $container): void
+    {
+        $container->define('logger.panel', static fn(LoggerManager $loggerManager) => $loggerManager->get('panel'));
+    }
 
     public function load(Container $container): Panel
     {
