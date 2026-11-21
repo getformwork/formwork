@@ -23,7 +23,7 @@ phpunit.xml
 /site/users/accounts/*
 /site/users/images/*
 
-/tests/coverage/
+/tests-coverage/
 /tests/tmp/
 
 !.gitkeep

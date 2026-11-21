@@ -63,9 +63,9 @@
         "rector:check": "rector --dry-run --config=formwork/.rector.php",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
-            "php bin/serve"
+            "@php bin/serve"
         ],
         "test": "phpunit",
-        "test:coverage": "@php -d pcov.enabled=1 vendor/bin/phpunit --coverage-html tests/coverage"
+        "test:coverage": "@php -d pcov.enabled=1 vendor/bin/phpunit --coverage-html tests-coverage"
     }
 }
