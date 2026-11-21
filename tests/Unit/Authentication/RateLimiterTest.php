@@ -220,7 +220,7 @@ final class RateLimiterTest extends TestCase
         $limiter = $this->limiter(1, 60);
         $limiter->assertAllowed();
 
-        $key = array_key_first($this->storedEntries());
+        $key = $this->storedKey();
         $this->writeRegistry([$key => [5, time() - 61]]);
 
         $limiter = $this->limiter(1, 60);
@@ -236,7 +236,7 @@ final class RateLimiterTest extends TestCase
         $limiter = $this->limiter(1, 60);
         $limiter->assertAllowed();
 
-        $key = array_key_first($this->storedEntries());
+        $key = $this->storedKey();
         $this->writeRegistry([$key => [5, time() - 30]]);
 
         $limiter = $this->limiter(1, 60);
@@ -329,9 +329,12 @@ final class RateLimiterTest extends TestCase
 
     private function storedAttempts(): int
     {
-        $entries = $this->storedEntries();
+        return (int) $this->storedEntries()[$this->storedKey()][0];
+    }
 
-        return (int) $entries[array_key_first($entries)][0];
+    private function storedKey(): string
+    {
+        return array_key_first($this->storedEntries()) ?? $this->fail('Missing stored entry');
     }
 
     /**

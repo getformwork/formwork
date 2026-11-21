@@ -33,6 +33,8 @@ class Scheme implements Arrayable
      * Cached default values of the scheme fields
      *
      * @var array<string, mixed>
+     *
+     * @final
      */
     protected array $defaults;
 

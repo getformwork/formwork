@@ -46,6 +46,8 @@ class View
 
     /**
      * Layout view
+     *
+     * @final
      */
     protected self $layout;
 

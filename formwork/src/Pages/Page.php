@@ -140,6 +140,8 @@ class Page extends Model implements Stringable
 
     /**
      * Page metadata
+     *
+     * @final
      */
     protected MetadataCollection $metadata;
 
@@ -150,6 +152,8 @@ class Page extends Model implements Stringable
 
     /**
      * Page HTTP response status
+     *
+     * @final
      */
     protected ResponseStatus $responseStatus;
 
@@ -846,7 +850,7 @@ class Page extends Model implements Stringable
             /**
              * @var string
              */
-            $key = isset($currentLanguage, $contentFiles[$currentLanguage?->code()])
+            $key = isset($currentLanguage, $contentFiles[$currentLanguage->code()])
                 ? $currentLanguage->code()
                 : array_keys($contentFiles)[0];
 

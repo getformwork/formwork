@@ -146,7 +146,7 @@ final class PageCollectionTest extends TestCase
 
         // The whole query counts twice, each keyword once and at most three times per field
         $this->assertSame([$page, $other, $blog], $results->values());
-        $this->assertSame([$page->route() => 400, $blog->route() => 100, $other->route() => 300], $scores);
+        $this->assertSame([$this->routeOf($page) => 400, $this->routeOf($blog) => 100, $this->routeOf($other) => 300], $scores);
     }
 
     public function testSearchIgnoresKeywordsShorterThanTheMinimumLength(): void
@@ -156,7 +156,7 @@ final class PageCollectionTest extends TestCase
 
         $this->collection($page)->search('zebra a', weights: self::TITLE_ONLY_WEIGHTS, scores: $scores);
 
-        $this->assertSame([$page->route() => 100], $scores);
+        $this->assertSame([$this->routeOf($page) => 100], $scores);
     }
 
     #[DataProvider('defaultSearchWeightProvider')]
@@ -168,7 +168,7 @@ final class PageCollectionTest extends TestCase
 
         $this->collection($page)->search('zebra', scores: $scores);
 
-        $this->assertSame([$page->route() => 3 * $weight], $scores);
+        $this->assertSame([$this->routeOf($page) => 3 * $weight], $scores);
     }
 
     /**
@@ -323,11 +323,16 @@ final class PageCollectionTest extends TestCase
         return $this->fixtureSite->findPage($route) ?? $this->fail("Missing page {$route}");
     }
 
+    private function routeOf(Page $page): string
+    {
+        return $page->route() ?? $this->fail('Missing page route');
+    }
+
     private function collection(Page ...$pages): PageCollection
     {
         $data = [];
         foreach ($pages as $page) {
-            $data[$page->route()] = $page;
+            $data[$this->routeOf($page)] = $page;
         }
 
         return $this->app->getService(PageCollectionFactory::class)->make($data);

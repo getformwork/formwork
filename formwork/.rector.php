@@ -33,9 +33,7 @@ return RectorConfig::configure()
         phpunitMockToStub: true,
         phpunitNarrowAsserts: true,
     )
-    ->withComposerBased(
-        phpunit: true,
-    )
+    ->withComposerBased()
     ->withImportNames(
         importShortClasses: false,
     )
@@ -50,7 +48,7 @@ return RectorConfig::configure()
     ->withSkip([
         __DIR__ . '/views',
         dirname(__DIR__) . '/cache',
-        dirname(__DIR__) . '/panel/node_modules',
+        dirname(__DIR__) . '/panel/node_modules/*',
         dirname(__DIR__) . '/panel/views',
         dirname(__DIR__) . '/site/templates',
         dirname(__DIR__) . '/site/plugins',

@@ -45,6 +45,9 @@ class Image extends File
 {
     protected const string MODEL_IDENTIFIER = 'image';
 
+    /**
+     * @final
+     */
     #[Getter(export: false)]
     protected AbstractHandler $handler;
 

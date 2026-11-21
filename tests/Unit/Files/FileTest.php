@@ -72,7 +72,7 @@ final class FileTest extends TestCase
      */
     public static function contentTypeProvider(): iterable
     {
-        $png = (string) base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==', true);
+        $png = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==', true);
 
         yield 'text' => ['note.txt', 'hello', 'text'];
         yield 'markdown' => ['note.md', '# Title', 'text'];
