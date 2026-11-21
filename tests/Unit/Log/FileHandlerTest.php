@@ -3,6 +3,8 @@
 namespace Formwork\Tests\Unit\Log;
 
 use DateTimeImmutable;
+use DateTimeInterface;
+use Formwork\Log\Formatter\FormatterInterface;
 use Formwork\Log\Formatter\JsonFormatter;
 use Formwork\Log\Formatter\TextFormatter;
 use Formwork\Log\Handler\AbstractHandler;
@@ -50,7 +52,7 @@ final class FileHandlerTest extends TestCase
         $fileHandler->handle(new DateTimeImmutable('2025-01-02 03:04:06.000000 UTC'), 'error', 'second', []);
 
         $this->assertSame(
-            "[2025-01-02 03:04:05.000000] INFO: first\n[2025-01-02 03:04:06.000000] ERROR: second\n",
+            "[2025-01-02 03:04:05.000000] default.INFO: first\n[2025-01-02 03:04:06.000000] default.ERROR: second\n",
             FileSystem::read($this->file),
         );
     }
@@ -71,7 +73,7 @@ final class FileHandlerTest extends TestCase
 
         (new FileHandler($this->file, new TextFormatter(false)))->handle(new DateTimeImmutable('2025-01-02 03:04:05.000000 UTC'), 'info', 'new', []);
 
-        $this->assertSame("existing line\n[2025-01-02 03:04:05.000000] INFO: new\n", FileSystem::read($this->file));
+        $this->assertSame("existing line\n[2025-01-02 03:04:05.000000] default.INFO: new\n", FileSystem::read($this->file));
     }
 
     public function testJsonFormatterIsTheDefault(): void
@@ -88,7 +90,7 @@ final class FileHandlerTest extends TestCase
     {
         (new FileHandler($this->file, new TextFormatter()))->handle(new DateTimeImmutable('2025-01-02 03:04:05.000000 UTC'), 'info', 'message', []);
 
-        $this->assertStringStartsWith('[2025-01-02 03:04:05.000000] INFO: message', FileSystem::read($this->file));
+        $this->assertStringStartsWith('[2025-01-02 03:04:05.000000] default.INFO: message', FileSystem::read($this->file));
     }
 
     public function testRecordsBelowTheThresholdAreNotWritten(): void
@@ -104,6 +106,34 @@ final class FileHandlerTest extends TestCase
 
         $this->assertFileExists($this->file);
         $this->assertCount(1, file($this->file) ?: []);
+    }
+
+    public function testRecordsOfOtherChannelsAreNotWritten(): void
+    {
+        $fileHandler = new FileHandler($this->file, new JsonFormatter(), LogLevel::WARNING, ['panel']);
+
+        $fileHandler->handle(new DateTimeImmutable(), 'warning', 'ignored', [], 'cache');
+        $fileHandler->handle(new DateTimeImmutable(), 'info', 'ignored', [], 'panel');
+
+        $this->assertFileDoesNotExist($this->file);
+
+        $fileHandler->handle(new DateTimeImmutable(), 'warning', 'kept', [], 'panel');
+
+        $this->assertCount(1, file($this->file) ?: []);
+    }
+
+    public function testFormattersUnawareOfChannelsAreSupported(): void
+    {
+        $formatter = new class implements FormatterInterface {
+            public function format(DateTimeInterface $datetime, string $level, string $message, array $context): string
+            {
+                return "{$level}: {$message}";
+            }
+        };
+
+        (new FileHandler($this->file, $formatter))->handle(new DateTimeImmutable(), 'info', 'message', [], 'panel');
+
+        $this->assertSame("info: message\n", FileSystem::read($this->file));
     }
 
     public function testSeveralHandlersCanWriteToTheSameFile(): void

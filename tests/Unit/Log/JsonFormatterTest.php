@@ -20,11 +20,18 @@ final class JsonFormatterTest extends TestCase
         $this->date = new DateTimeImmutable('2025-01-02 03:04:05.123456 UTC');
     }
 
+    public function testChannelIsIncludedInTheEntry(): void
+    {
+        $entry = $this->decode((new JsonFormatter())->format($this->date, 'info', 'message', [], 'panel'));
+
+        $this->assertSame('panel', $entry['channel']);
+    }
+
     public function testEntriesAreJsonObjects(): void
     {
         $entry = $this->decode((new JsonFormatter())->format($this->date, 'info', 'message', ['a' => 1]));
 
-        $this->assertSame(['datetime', 'level', 'message', 'context'], array_keys($entry));
+        $this->assertSame(['datetime', 'channel', 'level', 'message', 'context'], array_keys($entry));
         $this->assertSame('2025-01-02T03:04:05.123456+00:00', $entry['datetime']);
         $this->assertSame('info', $entry['level']);
         $this->assertSame('message', $entry['message']);

@@ -25,6 +25,22 @@ final class AbstractHandlerTest extends TestCase
         }
     }
 
+    public function testHandlerWithoutChannelsAcceptsEveryChannel(): void
+    {
+        $exposedHandler = new ExposedHandlerFixture(new JsonFormatter());
+
+        $this->assertTrue($exposedHandler->acceptsChannel('panel'));
+        $this->assertTrue($exposedHandler->acceptsChannel('cache'));
+    }
+
+    public function testHandlerWithChannelsAcceptsOnlyThoseChannels(): void
+    {
+        $exposedHandler = new ExposedHandlerFixture(new JsonFormatter(), channels: ['panel']);
+
+        $this->assertTrue($exposedHandler->acceptsChannel('panel'));
+        $this->assertFalse($exposedHandler->acceptsChannel('cache'));
+    }
+
     /**
      * @param list<string> $accepted
      */
