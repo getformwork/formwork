@@ -57,6 +57,11 @@ describe("Request Service", () => {
             }
         });
 
+        test("leaves out undefined values", () => {
+            new Request({ data: { foo: "bar", baz: undefined } }, ignoreResponse);
+            assert.equal(String(XMLHttpRequestStub.last.body), "foo=bar");
+        });
+
         test("passes the JSON response and the request to the callback", () => {
             const callback = mock.fn();
             new Request({}, callback);

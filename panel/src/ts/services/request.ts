@@ -61,7 +61,8 @@ export class Request<Data = unknown> {
                 break;
 
             default:
-                request.send(new URLSearchParams(options.data as Record<string, string>));
+                // Undefined values would be sent as the string "undefined"
+                request.send(new URLSearchParams(Object.entries(options.data).filter((entry): entry is [string, string] => entry[1] !== undefined)));
                 break;
         }
 
