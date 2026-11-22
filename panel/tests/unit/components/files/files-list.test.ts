@@ -383,6 +383,13 @@ describe("FilesList", () => {
             assert.deepEqual(shownNotifications(), ["success: File uploaded"]);
         });
 
+        test("shows the new date and size of files without a thumbnail, keeping the thumbnail", (t) => {
+            choose(replace(t, "first.txt"), new File(["foo"], "new.txt", { type: "text/plain" }));
+            XMLHttpRequestStub.last.respondJson("success", "File uploaded", replaced("first.txt"));
+            assert.deepEqual(shownData("first.txt"), ["/panel/pages/blog/files/first.txt/thumbnail/", "2024-02-01", "2 KB"]);
+            assert.deepEqual(shownNotifications(), ["success: File uploaded"]);
+        });
+
         test("keeps the file when the replacement fails", (t) => {
             choose(replace(t, "first.txt"), new File(["foo"], "new.txt", { type: "text/plain" }));
             XMLHttpRequestStub.last.respondJson("error", "Cannot upload the file");

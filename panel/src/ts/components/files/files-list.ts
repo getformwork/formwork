@@ -24,7 +24,8 @@ interface RenamedFile {
  * Describes the file data sent by the server after a replacement
  */
 interface ReplacedFile {
-    thumbnail?: string;
+    // Only images and videos have a thumbnail
+    thumbnail?: string | null;
     lastModifiedTime: string;
     size: string;
 }
@@ -267,8 +268,8 @@ export class FilesList {
                     if (response.status === "success") {
                         if (command.closest("[data-form=file-form]")) {
                             window.location.reload();
-                        } else if (response.data.thumbnail) {
-                            this.updateReplacedItem(command.closest(".files-item") as HTMLElement, { ...response.data, thumbnail: response.data.thumbnail });
+                        } else {
+                            this.updateReplacedItem(command.closest(".files-item") as HTMLElement, response.data);
                         }
                     }
 
@@ -282,11 +283,25 @@ export class FilesList {
 
     /**
      * Show the thumbnail, date and size of a replaced file
+     *
+     * Files that are not images or videos have no thumbnail, and the columns of the list may not
+     * include the date and the size
      */
-    private updateReplacedItem(item: HTMLElement, data: ReplacedFile & { thumbnail: string }) {
-        ($(".file-thumbnail", item) as HTMLImageElement | HTMLVideoElement).src = data.thumbnail;
-        ($(".file-date", item) as HTMLElement).textContent = data.lastModifiedTime;
-        ($(".file-size", item) as HTMLElement).textContent = data.size;
+    private updateReplacedItem(item: HTMLElement, data: ReplacedFile) {
+        const thumbnail = $<HTMLImageElement | HTMLVideoElement>(".file-thumbnail", item);
+        if (thumbnail && data.thumbnail) {
+            thumbnail.src = data.thumbnail;
+        }
+
+        const date = $(".file-date", item);
+        if (date) {
+            date.textContent = data.lastModifiedTime;
+        }
+
+        const size = $(".file-size", item);
+        if (size) {
+            size.textContent = data.size;
+        }
     }
 
     /**
