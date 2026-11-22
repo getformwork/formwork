@@ -2,7 +2,7 @@ import { effect, signal } from "@preact/signals-core";
 import { app } from "../../services/app";
 import type { Form } from "../../services/form";
 import { post } from "../../services/request";
-import { initSearchInput, makeSearchRegExp } from "../../utils/search";
+import { highlightMatches, initSearchInput, makeSearchRegExp } from "../../utils/search";
 import { $, $$ } from "../../utils/selectors";
 import { readStorage, writeStorage } from "../../utils/storage";
 import { escapeHtml } from "../../utils/validation";
@@ -306,7 +306,7 @@ export class FilesList {
         });
 
         initSearchInput(searchInput, () => {
-            this.query.value = escapeHtml(searchInput.value);
+            this.query.value = searchInput.value;
         });
     }
 
@@ -338,13 +338,14 @@ export class FilesList {
                 continue;
             }
 
-            const text = escapeHtml(element.textContent);
+            const text = element.textContent;
+            const html = regexp ? highlightMatches(text, regexp) : null;
 
-            if (regexp && text.match(regexp) !== null) {
-                element.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+            if (html !== null) {
+                element.innerHTML = html;
                 matches++;
             } else {
-                element.innerHTML = text;
+                element.innerHTML = escapeHtml(text);
             }
         }
 

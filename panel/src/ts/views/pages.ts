@@ -8,7 +8,7 @@ import type { Form } from "../services/form";
 import type { Modal } from "../services/modal";
 import { post } from "../services/request";
 import { debounce } from "../utils/events";
-import { initSearchInput } from "../utils/search";
+import { highlightMatches, initSearchInput } from "../utils/search";
 import { $, $$ } from "../utils/selectors";
 import { escapeHtml, makeSlug } from "../utils/validation";
 
@@ -135,7 +135,7 @@ function initSearch(tree: PagesTree) {
         }
     });
 
-    initSearchInput(searchInput, () => tree.search(escapeHtml(searchInput.value)));
+    initSearchInput(searchInput, () => tree.search(searchInput.value));
 }
 
 /**
@@ -155,10 +155,10 @@ function filterPages(tree: PagesTree) {
             continue;
         }
 
-        const text = escapeHtml(title.textContent);
+        const html = highlightMatches(title.textContent, regexp);
 
-        if (text.match(regexp) !== null) {
-            title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+        if (html !== null) {
+            title.innerHTML = html;
             row.style.display = "";
         } else {
             row.style.display = "none";

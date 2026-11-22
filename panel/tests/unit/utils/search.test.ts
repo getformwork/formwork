@@ -1,7 +1,7 @@
 import "../../environment/dom";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, mock, test } from "node:test";
-import { initSearchInput, makeSearchRegExp } from "../../../src/ts/utils/search";
+import { highlightMatches, initSearchInput, makeSearchRegExp } from "../../../src/ts/utils/search";
 
 describe("Search Utils", () => {
     describe("makeSearchRegExp", () => {
@@ -49,6 +49,43 @@ describe("Search Utils", () => {
 
         test("finds every occurrence with the global flag", () => {
             assert.deepEqual("foo bar foo".match(makeSearchRegExp("foo", { global: true })), ["foo", "foo"]);
+        });
+    });
+
+    describe("highlightMatches", () => {
+        test("highlights every match", () => {
+            assert.equal(highlightMatches("foo bar foo", makeSearchRegExp("foo", { global: true })), "<mark>foo</mark> bar <mark>foo</mark>");
+        });
+
+        test("highlights every match of expressions without the global flag", () => {
+            assert.equal(highlightMatches("foo bar foo", makeSearchRegExp("foo")), "<mark>foo</mark> bar <mark>foo</mark>");
+        });
+
+        test("returns null without matches", () => {
+            assert.equal(highlightMatches("foo bar", makeSearchRegExp("baz")), null);
+        });
+
+        test("highlights the whole text", () => {
+            assert.equal(highlightMatches("foo", makeSearchRegExp("foo")), "<mark>foo</mark>");
+        });
+
+        test("preserves the matched text with its case and diacritics", () => {
+            assert.equal(highlightMatches("Café", makeSearchRegExp("cafe")), "<mark>Café</mark>");
+        });
+
+        test("escapes the text around the matches", () => {
+            assert.equal(highlightMatches("<b>foo</b>", makeSearchRegExp("foo", { wordStart: false })), "&lt;b&gt;<mark>foo</mark>&lt;&#x2F;b&gt;");
+        });
+
+        test("does not match inside HTML entities", () => {
+            assert.equal(highlightMatches("Foo & Bar", makeSearchRegExp("amp")), null);
+            assert.equal(highlightMatches("Foo & Bar", makeSearchRegExp("amp", { wordStart: false })), null);
+        });
+
+        test("does not change the state of the expression", () => {
+            const regExp = makeSearchRegExp("foo", { global: true });
+            highlightMatches("foo foo", regExp);
+            assert.equal(regExp.lastIndex, 0);
         });
     });
 
