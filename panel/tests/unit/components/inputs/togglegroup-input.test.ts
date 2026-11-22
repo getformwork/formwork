@@ -52,4 +52,10 @@ describe("TogglegroupInput", () => {
         (document.getElementById("status-label") as HTMLElement).click();
         assert.ok(document.activeElement === radio("second"));
     });
+
+    test("focuses the checked option when the label of a nested field is clicked", () => {
+        makeTogglegroup("second", { id: "newUserModal.role", name: "newUserModal[role]" });
+        (document.getElementById("newUserModal.role-label") as HTMLElement).click();
+        assert.ok(document.activeElement === radio("second"));
+    });
 });

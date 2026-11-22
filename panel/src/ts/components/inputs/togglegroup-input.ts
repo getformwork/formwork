@@ -11,7 +11,8 @@ export class TogglegroupInput extends InputBase<HTMLFieldSetElement> {
     constructor(fieldset: HTMLFieldSetElement) {
         super(fieldset);
 
-        $(`label[for="${this.name}"]`)?.addEventListener("click", () => {
+        // The label is linked to the id of the field, which differs from the name of nested fields
+        $(`label[for="${this.element.id}"]`)?.addEventListener("click", () => {
             $("input:checked", this.element)?.focus();
         });
     }
