@@ -213,6 +213,16 @@ export class TagsInput extends InputBase<HTMLInputElement> {
     }
 
     /**
+     * Rename a tag, keeping its position
+     */
+    renameTag(oldValue: string, newValue: string) {
+        if (this.tags.value.includes(oldValue)) {
+            this.tags.value = this.tags.value.map((tag) => (tag === oldValue ? newValue : tag));
+            this.updateTags();
+        }
+    }
+
+    /**
      * Move a tag to another position
      */
     private moveTag(oldIndex: number, newIndex: number) {

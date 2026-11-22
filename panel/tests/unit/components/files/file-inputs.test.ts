@@ -124,5 +124,21 @@ describe("File Inputs", () => {
             assert.deepEqual(options("file"), ["", "image.jpg", "renamed.pdf"]);
             assert.deepEqual(suggestions("attachments"), ["image.jpg", "renamed.pdf"]);
         });
+
+        test("does not add a renamed file to the inputs of the images if not an image", () => {
+            const { form } = makeForm();
+            replaceInFileInputs(form, "document.pdf", { name: "renamed.pdf", type: "pdf" });
+            assert.deepEqual(options("image"), ["", "image.jpg"]);
+            assert.deepEqual(suggestions("gallery"), ["image.jpg"]);
+        });
+
+        test("keeps a renamed file in the values of the inputs with the new name", () => {
+            const { form, file, image, attachments, gallery } = makeForm({ file: "image.jpg", image: "image.jpg", attachments: "image.jpg, document.pdf", gallery: "image.jpg" });
+            replaceInFileInputs(form, "image.jpg", { name: "renamed.jpg", type: "image" });
+            assert.equal(file.value, "renamed.jpg");
+            assert.equal(image.value, "renamed.jpg");
+            assert.equal(attachments.value, "renamed.jpg, document.pdf");
+            assert.equal(gallery.value, "renamed.jpg");
+        });
     });
 });

@@ -65,6 +65,21 @@ describe("TagsInput", () => {
             assert.deepEqual(tags(), []);
         });
 
+        test("renames a tag, keeping its position", () => {
+            const { input, element, change } = makeTags("foo, bar, baz");
+            input.renameTag("bar", "qux");
+            assert.deepEqual(tags(), ["foo", "qux", "baz"]);
+            assert.equal(element.value, "foo, qux, baz");
+            assert.equal(change.mock.callCount(), 1);
+        });
+
+        test("does not rename a missing tag", () => {
+            const { input, element, change } = makeTags("foo, bar");
+            input.renameTag("baz", "qux");
+            assert.equal(element.value, "foo, bar");
+            assert.equal(change.mock.callCount(), 0);
+        });
+
         test("adds a typed tag with Enter or comma", () => {
             const { element, field, change } = makeTags();
             type(field, "baz");
