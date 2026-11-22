@@ -146,6 +146,13 @@ describe("Dropdowns", () => {
             assert.equal(isOpen("menu"), false);
         });
 
+        test("moves to the item starting with a typed character in a menu opened with the mouse", () => {
+            click("button");
+            assert.equal(focused(), "button");
+            assert.equal(press("s").defaultPrevented, true);
+            assert.equal(focused(), "second");
+        });
+
         test("ignores typed characters while the menu is closed", () => {
             byId("button").focus();
             assert.equal(press("s").defaultPrevented, false);
