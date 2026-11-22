@@ -31,6 +31,8 @@ const focusableSelector = ["a[href]", "button:not([disabled])", "input:not([disa
 export class Modal {
     private static readonly openModals: Modal[] = [];
 
+    private static readonly handledEvents = new WeakSet<Event>();
+
     readonly element: HTMLElement;
 
     readonly form: Form | null;
@@ -270,7 +272,9 @@ export class Modal {
      */
     private bindKeyboard() {
         document.addEventListener("keyup", (event) => {
-            if (event.key === "Escape" && this.isOpen) {
+            // Once the topmost modal is closed, the one below must not handle the same Escape
+            if (event.key === "Escape" && this.isTopmost && !Modal.handledEvents.has(event)) {
+                Modal.handledEvents.add(event);
                 this.close();
             }
         });

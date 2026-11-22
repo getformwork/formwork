@@ -228,6 +228,26 @@ describe("Modal", () => {
             assert.equal(focused(), "second-input");
         });
 
+        test("closes only the topmost modal with Escape", () => {
+            const first = makeModal("first-modal", '<input id="first-input">');
+            const second = makeModal("second-modal", '<input id="second-input">');
+            first.open();
+            second.open();
+            press("Escape", { type: "keyup" });
+            assert.equal(second.isClosed, true);
+            assert.equal(first.isOpen, true);
+        });
+
+        test("closes only the topmost modal with Escape, also if made before the one below", () => {
+            const second = makeModal("second-modal", '<input id="second-input">');
+            const first = makeModal("first-modal", '<input id="first-input">');
+            first.open();
+            second.open();
+            press("Escape", { type: "keyup" });
+            assert.equal(second.isClosed, true);
+            assert.equal(first.isOpen, true);
+        });
+
         test("removes the backdrop when the last modal is closed", () => {
             const first = makeModal("first-modal", '<input id="first-input">');
             const second = makeModal("second-modal", '<input id="second-input">');
