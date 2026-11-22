@@ -86,10 +86,11 @@ class MenuView {
             const state = this.editorView.state;
             const editable = this.editorView.props.editable ? this.editorView.props.editable(state) : true;
 
-            const applicable = editable && command(state, undefined, this.editorView);
+            // The state of the items is shown also when the editor is read-only
+            const applicable = command(state, undefined, this.editorView);
 
             if (dom instanceof HTMLButtonElement) {
-                dom.disabled = !applicable;
+                dom.disabled = !(editable && applicable);
                 dom.classList.remove("is-active");
             }
 

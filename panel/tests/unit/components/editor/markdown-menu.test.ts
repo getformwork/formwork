@@ -135,6 +135,12 @@ describe("Markdown Menu", () => {
             assert.equal(button("Bold").disabled, false);
         });
 
+        test("shows the type of the block of a read-only editor", () => {
+            makeEditor("foo|", false);
+            assert.equal(blockMenuButton().textContent, "Paragraph");
+            assert.deepEqual(activeBlockItems(), ["Paragraph"]);
+        });
+
         test("shows the type of the block in a list", () => {
             makeEditor("* foo|");
             assert.equal(blockMenuButton().textContent, "Paragraph");
