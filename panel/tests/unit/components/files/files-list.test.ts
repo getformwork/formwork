@@ -186,6 +186,12 @@ describe("FilesList", () => {
             assert.deepEqual(visible(), ["first.txt"]);
         });
 
+        test("ignores an unknown remembered view", () => {
+            window.localStorage.setItem("formwork.filesListViewAs[list]", "grid");
+            makeList(["first.txt"]);
+            assert.equal((document.querySelector('input[value="list"]') as HTMLInputElement).checked, true);
+        });
+
         test("opens files when clicked in the thumbnails view", () => {
             window.localStorage.setItem("formwork.filesListViewAs[list]", "thumbnails");
             makeList(["first.txt"]);

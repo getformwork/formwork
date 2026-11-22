@@ -99,22 +99,26 @@ export class FilesList {
         const fieldName = toggle.dataset.for;
 
         const key = formName ? `${formName}.${fieldName}` : fieldName;
-        const viewAs = readStorage(`formwork.filesListViewAs[${key}]`);
+        const storageKey = `formwork.filesListViewAs[${key}]`;
+        const inputs = Array.from($$<HTMLInputElement>("input", toggle));
 
-        if (viewAs) {
-            $$<HTMLInputElement>("input", toggle).forEach((input) => {
-                input.checked = false;
+        // A remembered view without an input, e.g. of an older version, is ignored
+        const viewAs = readStorage(storageKey);
+        const viewAsInput = inputs.find((input) => input.value === viewAs);
+
+        if (viewAsInput) {
+            inputs.forEach((input) => {
+                input.checked = input === viewAsInput;
             });
-            ($(`input[value=${viewAs}]`, this.element) as HTMLInputElement).checked = true;
-            this.element.classList.toggle("is-thumbnails", viewAs === "thumbnails");
-            this.element.classList.toggle("is-list", viewAs === "list");
+            this.element.classList.toggle("is-thumbnails", viewAsInput.value === "thumbnails");
+            this.element.classList.toggle("is-list", viewAsInput.value === "list");
         }
 
-        $$<HTMLInputElement>("input", toggle).forEach((input) => {
+        inputs.forEach((input) => {
             input.addEventListener("input", () => {
                 this.element.classList.toggle("is-thumbnails", input.value === "thumbnails");
                 this.element.classList.toggle("is-list", input.value === "list");
-                writeStorage(`formwork.filesListViewAs[${key}]`, input.value);
+                writeStorage(storageKey, input.value);
             });
         });
     }
