@@ -152,6 +152,8 @@ function filterPages(tree: PagesTree) {
 
         if (regexp === null) {
             row.style.display = "";
+            // Remove the highlights of the previous search
+            title.innerHTML = escapeHtml(title.textContent);
             continue;
         }
 

@@ -177,6 +177,16 @@ describe("Pages View", () => {
                 assert.equal(page("/blog/").classList.contains("is-expanded"), false);
             });
 
+            test("shows all pages and removes the highlights when the search is cleared", () => {
+                makeTree();
+                search("post");
+                search("");
+                assert.deepEqual(visible(), ["/blog/", "/blog/first-post/", "/blog/second-post/", "/about/", "/contact/"]);
+                assert.equal(document.querySelectorAll("mark").length, 0);
+                assert.equal(page("/blog/first-post/").querySelector(".page-title a")?.textContent, "First post");
+                assert.equal(document.querySelector(".pages-tree-root")?.classList.contains("is-filtered"), false);
+            });
+
             test("escapes the titles", () => {
                 makeTree([{ route: "/foo/", title: "&lt;b&gt;Foo&lt;/b&gt;" }]);
                 search("foo");
