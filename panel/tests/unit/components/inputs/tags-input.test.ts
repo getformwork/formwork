@@ -194,6 +194,15 @@ describe("TagsInput", () => {
             assert.equal(element.value, "");
             assert.equal(field.placeholder, "Add tags");
         });
+
+        test("adds the tags of pasted text separated by commas", () => {
+            const { element, field } = makeTags("");
+            field.focus();
+            type(field, "baz, qux");
+            field.blur();
+            assert.deepEqual(tags(), ["baz", "qux"]);
+            assert.equal(element.value, "baz, qux");
+        });
     });
 
     describe("suggestions", () => {

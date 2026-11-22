@@ -372,9 +372,8 @@ export class TagsInput extends InputBase<HTMLInputElement> {
         this.innerInput.addEventListener("focus", () => this.field.classList.add("focused"));
 
         this.innerInput.addEventListener("blur", () => {
-            const value = this.innerInput.value.trim();
-            if (value !== "") {
-                this.addTag(value);
+            for (const tag of parseTags(this.innerInput.value)) {
+                this.addTag(tag);
             }
             this.field.classList.remove("focused");
         });
