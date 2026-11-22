@@ -396,6 +396,6 @@ export class Modal {
      * Get the element to focus when the modal is opened
      */
     private getFirstFocusableElement(parent: HTMLElement = document.body): HTMLElement {
-        return parent.querySelector("[autofocus], button, .button, input:not([type=hidden]), select, textarea") || parent;
+        return parent.querySelector<HTMLElement>("[autofocus]") ?? parent.querySelector<HTMLElement>("button, .button, input:not([type=hidden]), select, textarea") ?? parent;
     }
 }

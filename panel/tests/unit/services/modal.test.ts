@@ -39,6 +39,11 @@ describe("Modal", () => {
             assert.equal(focused(), "first");
         });
 
+        test("focuses the element with autofocus", () => {
+            makeModal("modal", '<input id="first"><input id="second" autofocus>').open();
+            assert.equal(focused(), "second");
+        });
+
         test("opens when a trigger is clicked, setting the action of its form", () => {
             document.body.innerHTML = '<button type="button" id="trigger" data-modal="modal" data-modal-action="/panel/foo/">Open</button>';
             const modal = makeModal("modal", '<form><input name="foo"></form>');
