@@ -212,27 +212,23 @@ function limitTemplates(parentSelect: SelectInput, templateSelect: SelectInput) 
     }
 
     const allowedTemplates = parent.dataset.allowedTemplates ? parent.dataset.allowedTemplates.split(" ") : [];
+    const { dataset } = templateSelect.element;
 
     if (allowedTemplates.length > 0) {
-        templateSelect.element.dataset.previousValue = templateSelect.value;
-
-        templateSelect.value = allowedTemplates[0];
-
-        templateSelect.dropdownItems.forEach((item) => {
-            if (!allowedTemplates.includes(item.dataset.value as string)) {
-                item.classList.add("disabled");
-            }
-        });
-    } else {
-        if ("previousValue" in templateSelect.element.dataset) {
-            templateSelect.value = templateSelect.element.dataset.previousValue as string;
-            delete templateSelect.element.dataset.previousValue;
+        // The template chosen by the user is kept until a parent accepts all templates again
+        if (!("previousValue" in dataset)) {
+            dataset.previousValue = templateSelect.value;
         }
 
-        templateSelect.dropdownItems.forEach((item) => {
-            item.classList.remove("disabled");
-        });
+        templateSelect.value = allowedTemplates[0];
+    } else if ("previousValue" in dataset) {
+        templateSelect.value = dataset.previousValue as string;
+        delete dataset.previousValue;
     }
+
+    templateSelect.dropdownItems.forEach((item) => {
+        item.classList.toggle("disabled", allowedTemplates.length > 0 && !allowedTemplates.includes(item.dataset.value as string));
+    });
 }
 
 /**

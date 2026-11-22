@@ -300,6 +300,21 @@ describe("Pages View", () => {
             assert.equal(template.value, "gallery");
             assert.deepEqual(disabledTemplates(), []);
         });
+
+        test("allows the templates accepted by a parent chosen after another", () => {
+            makeNewPageModal(parents);
+            chooseParent("/blog/");
+            chooseParent("/portfolio/");
+            assert.deepEqual(disabledTemplates(), ["post"]);
+        });
+
+        test("restores the template chosen by the user after changing parent twice", () => {
+            const { template } = makeNewPageModal(parents);
+            chooseParent("/blog/");
+            chooseParent("/portfolio/");
+            chooseParent("/about/");
+            assert.equal(template.value, "gallery");
+        });
     });
 
     describe("initDuplicatePageModal", () => {
