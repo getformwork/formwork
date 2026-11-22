@@ -5,7 +5,8 @@ import type { EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { debounce, throttle } from "../../utils/events";
 import { $ } from "../../utils/selectors";
-import { resolveUri } from "../../utils/uri";
+import { hasSafeScheme, resolveUri } from "../../utils/uri";
+import { escapeHtml } from "../../utils/validation";
 import { link as linkIcon, pencil, trash } from "../ui/icons";
 import { Tooltip } from "../ui/tooltip";
 import { getMarkRange, insertLink, removeLink } from "./markdown-commands";
@@ -85,8 +86,13 @@ class LinkTooltipView {
     private createTooltip(link: Mark, linkDom: HTMLElement) {
         const t = (key: string, defaultValue: string) => app.translation.get(key, defaultValue);
 
+        const href: string = link.attrs.href;
+
+        // The address comes from the content: it is escaped, and it is not opened if unsafe (e.g. `javascript:`)
+        const address = hasSafeScheme(href) ? `<a href="${escapeHtml(resolveUri(href, app.config.siteUri, this.baseUri))}" target="_blank">${escapeHtml(href)}</a>` : escapeHtml(href);
+
         const tooltip = new Tooltip(
-            `<div class="editor-link-tooltip truncate mr-4"><a href="${resolveUri(link.attrs.href, app.config.siteUri, this.baseUri)}" target="_blank">${link.attrs.href}</a></div>
+            `<div class="editor-link-tooltip truncate mr-4">${address}</div>
                 <div class="separator"></div>
                 <button type="button" class="tooltip-button" data-command="edit-link">${t("panel.modal.action.edit", "Edit")}</button>
                 <div class="separator"></div>

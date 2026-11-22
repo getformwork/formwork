@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { resolveUri } from "../../../src/ts/utils/uri";
+import { hasSafeScheme, resolveUri } from "../../../src/ts/utils/uri";
 
 describe("URI Utils", () => {
     describe("resolveUri", () => {
@@ -84,6 +84,37 @@ describe("URI Utils", () => {
 
         test("encodes characters not allowed in URIs", () => {
             assert.equal(resolveUri("my image.jpg", siteUri, pageUri), "/site/blog/post/my%20image.jpg");
+        });
+    });
+
+    describe("hasSafeScheme", () => {
+        test("accepts relative URIs", () => {
+            for (const uri of ["page", "/page", "../page", "#foo", "?foo=bar", "//example.test/page", ""]) {
+                assert.equal(hasSafeScheme(uri), true, uri);
+            }
+        });
+
+        test("accepts safe schemes", () => {
+            for (const uri of ["http://example.test", "https://example.test", "HTTPS://example.test", "mailto:user@example.test", "tel:+10000000000", "ftp://example.test/file.txt"]) {
+                assert.equal(hasSafeScheme(uri), true, uri);
+            }
+        });
+
+        test("rejects unsafe schemes", () => {
+            for (const uri of ["javascript:alert(1)", "JavaScript:alert(1)", "vbscript:foo", "data:text/html,foo", "file:///etc/passwd"]) {
+                assert.equal(hasSafeScheme(uri), false, uri);
+            }
+        });
+
+        test("rejects unsafe schemes hidden by whitespace and control characters", () => {
+            for (const uri of [" javascript:alert(1)", "java\nscript:alert(1)", "java\tscript:alert(1)", "\u0000javascript:alert(1)"]) {
+                assert.equal(hasSafeScheme(uri), false, JSON.stringify(uri));
+            }
+        });
+
+        test("accepts colons after the first path segment", () => {
+            assert.equal(hasSafeScheme("page/foo:bar"), true);
+            assert.equal(hasSafeScheme("?foo=javascript:alert(1)"), true);
         });
     });
 });

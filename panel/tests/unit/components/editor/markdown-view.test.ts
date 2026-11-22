@@ -32,6 +32,11 @@ const images = (editor: MarkdownView) => Array.from(editor.view.dom.querySelecto
  * Replace the content of an editor with a link, as pasting or the link modal do, which unlike the
  * Markdown parser do not normalize the address
  */
+function insertLink(editor: MarkdownView, href: string) {
+    const { state } = editor.view;
+    const text = schema.text("Link", [schema.marks.link.create({ href })]);
+    editor.view.dispatch(state.tr.replaceWith(0, state.doc.content.size, schema.nodes.paragraph.create(null, text)));
+}
 
 /**
  * Move the cursor inside the first link of an editor and wait for its tooltip
@@ -87,6 +92,22 @@ describe("MarkdownView", () => {
         test("shows the address of links outside the site as it is", async () => {
             const tooltip = await showLinkTooltip(makeEditor("[foo](https://example.test/page)"));
             assert.equal(tooltip.querySelector("a")?.getAttribute("href"), "https://example.test/page");
+        });
+
+        test("escapes the address", async () => {
+            const editor = makeEditor("");
+            insertLink(editor, '"><img src="x" id="injected">');
+            const tooltip = await showLinkTooltip(editor);
+            assert.ok(document.getElementById("injected") === null);
+            assert.equal(tooltip.textContent?.trim(), '"><img src="x" id="injected">');
+        });
+
+        test("does not link unsafe addresses", async () => {
+            const editor = makeEditor("");
+            insertLink(editor, "javascript:alert(1)");
+            const tooltip = await showLinkTooltip(editor);
+            assert.equal(tooltip.querySelector("a"), null);
+            assert.equal(tooltip.textContent?.trim(), "javascript:alert(1)");
         });
 
         test("hides the tooltip when the cursor leaves the link", async (t) => {
