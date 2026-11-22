@@ -86,6 +86,11 @@ describe("Validation Utils", () => {
         test("removes characters not allowed", () => {
             assert.equal(validateSlug("foo!?"), "foo");
         });
+
+        test("replaces characters like makeSlug", () => {
+            assert.equal(validateSlug("Café_bar"), "cafe-bar");
+            assert.equal(validateSlug("Über straße"), "ueber-strasse");
+        });
     });
 
     describe("escapeHtml", () => {
