@@ -33,6 +33,11 @@ describe("RangeInput", () => {
         assert.equal(progress(element), "80%");
     });
 
+    test("shows the progress of a range not starting from zero", () => {
+        const { element } = makeRange('min="10" max="20" value="15"');
+        assert.equal(progress(element), "50%");
+    });
+
     test("updates the value shown when set", () => {
         const { input, element } = makeRange();
         input.value = "2";

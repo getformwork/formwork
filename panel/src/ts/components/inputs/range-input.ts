@@ -69,10 +69,13 @@ export class RangeInput extends Input<HTMLInputElement> {
     }
 
     /**
-     * Show the value in the output and the progress
+     * Show the value in the output and the progress from the minimum
      */
     private updateValueLabel() {
-        this.element.style.setProperty("--progress", `${Math.round((parseInt(this.element.value, 10) / (parseInt(this.element.max, 10) - parseInt(this.element.min, 10))) * 100)}%`);
+        const min = parseInt(this.element.min, 10);
+        const max = parseInt(this.element.max, 10);
+
+        this.element.style.setProperty("--progress", `${Math.round(((parseInt(this.element.value, 10) - min) / (max - min)) * 100)}%`);
 
         const outputElement = $(`output[for="${this.element.id}"]`);
         if (outputElement) {
