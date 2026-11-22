@@ -198,6 +198,13 @@ describe("FilesList", () => {
             click(fileItem("first.txt").querySelector(".file-size") as HTMLElement);
             assert.equal(window.location.href, "http://example.test/panel/pages/blog/files/first.txt/edit/");
         });
+
+        test("does not open files when their menu is used in the thumbnails view", () => {
+            window.localStorage.setItem("formwork.filesListViewAs[list]", "thumbnails");
+            makeList(["first.txt"], { selectionActions: false });
+            click(fileItem("first.txt").querySelector(".dropdown-button") as HTMLElement);
+            assert.equal(window.location.href, "http://example.test/");
+        });
     });
 
     describe("selection", () => {

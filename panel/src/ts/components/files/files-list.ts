@@ -147,12 +147,13 @@ export class FilesList {
             return;
         }
 
-        if (this.hasSelectionActions()) {
-            if (target.closest(".dropdown")) {
-                this.clearSelection();
-                return;
-            }
+        // The menu of a file neither selects nor opens it
+        if (target.closest(".dropdown")) {
+            this.clearSelection();
+            return;
+        }
 
+        if (this.hasSelectionActions()) {
             if (event.ctrlKey || event.metaKey) {
                 event.preventDefault();
                 this.toggleSelected(item);
