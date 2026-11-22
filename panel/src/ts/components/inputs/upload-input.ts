@@ -358,21 +358,36 @@ export class UploadInput extends InputBase<HTMLInputElement> {
 
     /**
      * Set the links and actions of the commands of an item
+     *
+     * The commands to rename, replace and delete the file are missing without the permissions
      */
     private setCommands(filesItem: HTMLElement, info: UploadedFile) {
-        const previewFileCommand = $("[data-command=previewFile]", filesItem) as HTMLAnchorElement;
-        const replaceFileCommand = $("[data-command=replaceFile]", filesItem) as HTMLElement;
+        const infoFileCommand = $<HTMLAnchorElement>("[data-command=infoFile]", filesItem);
+        const previewFileCommand = $<HTMLAnchorElement>("[data-command=previewFile]", filesItem);
+        const renameFileCommand = $("[data-command=renameFile]", filesItem);
+        const replaceFileCommand = $("[data-command=replaceFile]", filesItem);
+        const deleteFileCommand = $("[data-command=deleteFile]", filesItem);
 
-        ($("[data-command=infoFile]", filesItem) as HTMLAnchorElement).href = info.actions.info;
+        if (infoFileCommand) {
+            infoFileCommand.href = info.actions.info;
+        }
 
-        previewFileCommand.href = info.uri;
-        previewFileCommand.target = `formwork-preview-file-${info.hash}`;
+        if (previewFileCommand) {
+            previewFileCommand.href = info.uri;
+            previewFileCommand.target = `formwork-preview-file-${info.hash}`;
+        }
 
-        ($("[data-command=renameFile]", filesItem) as HTMLElement).dataset.action = info.actions.rename;
+        if (renameFileCommand) {
+            renameFileCommand.dataset.action = info.actions.rename;
+        }
 
-        replaceFileCommand.dataset.action = info.actions.replace;
-        replaceFileCommand.dataset.mimetype = `${info.mimeType}`;
+        if (replaceFileCommand) {
+            replaceFileCommand.dataset.action = info.actions.replace;
+            replaceFileCommand.dataset.mimetype = `${info.mimeType}`;
+        }
 
-        ($("[data-command=deleteFile]", filesItem) as HTMLElement).dataset.action = info.actions.delete;
+        if (deleteFileCommand) {
+            deleteFileCommand.dataset.action = info.actions.delete;
+        }
     }
 }

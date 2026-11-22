@@ -344,5 +344,14 @@ describe("UploadInput", () => {
             assert.equal(document.querySelectorAll(".files-item").length, 1);
             assert.equal(label(), "Drop files here");
         });
+
+        test("adds the uploaded files also when the user cannot rename, replace or delete them", () => {
+            const { element } = makeUpload({ autoUpload: true, list: true, commands: [] });
+            choose(element, image());
+            respondUpload(XMLHttpRequestStub.last, "image.jpg");
+            assert.notEqual(document.querySelector('.files-item[data-filename="image.jpg"]'), null);
+            assert.equal(label(), "Drop files here");
+            assert.equal(document.querySelector(".notification")?.textContent?.trim(), "File uploaded");
+        });
     });
 });
