@@ -84,7 +84,6 @@ export class CodeView {
                 EditorView.domEventHandlers({
                     focus: () => target.classList.add("focused"),
                     blur: () => target.classList.remove("focused"),
-                    input: () => inputEventHandler(this.content),
                 }),
                 EditorView.updateListener.of((update) => {
                     if (update.docChanged) {

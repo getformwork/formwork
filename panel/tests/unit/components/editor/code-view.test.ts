@@ -49,6 +49,12 @@ describe("CodeView", () => {
             assert.equal(editor.content, "bar\nbaz");
         });
 
+        test("calls the handler only when the content changes", () => {
+            const { editor, handler } = makeEditor("foo");
+            editor.view.contentDOM.dispatchEvent(new Event("input", { bubbles: true }));
+            assert.equal(handler.mock.callCount(), 0);
+        });
+
         test("shows the placeholder of an empty editor", () => {
             makeEditor("", { placeholder: "Write here" });
             assert.equal(document.querySelector(".cm-placeholder")?.textContent, "Write here");
