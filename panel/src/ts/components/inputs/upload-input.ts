@@ -150,7 +150,16 @@ export class UploadInput extends InputBase<HTMLInputElement> {
             this.dragging.value = false;
 
             if (!this.isSubmitted && event.dataTransfer) {
-                this.element.files = event.dataTransfer.files;
+                const { files } = event.dataTransfer;
+
+                if (!this.element.multiple && files.length > 1) {
+                    // An input accepting a single file keeps the first one dropped
+                    const transfer = new DataTransfer();
+                    transfer.items.add(files[0]);
+                    this.element.files = transfer.files;
+                } else {
+                    this.element.files = files;
+                }
                 // Firefox won't trigger a change event, so we explicitly do that
                 this.element.dispatchEvent(new Event("change"));
             }

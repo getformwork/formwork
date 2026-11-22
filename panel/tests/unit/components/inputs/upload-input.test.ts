@@ -194,6 +194,12 @@ describe("UploadInput", () => {
             assert.equal(dropTarget().classList.contains("drag"), false);
         });
 
+        test("chooses only one dropped file in an input accepting a single file", () => {
+            const { element } = makeUpload();
+            drop(image(), document_());
+            assert.equal(element.files?.length, 1);
+        });
+
         test("focuses the drop target when the label is clicked", () => {
             makeUpload();
             (document.querySelector("label.form-label") as HTMLElement).click();
