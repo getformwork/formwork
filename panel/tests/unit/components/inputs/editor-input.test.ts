@@ -170,6 +170,18 @@ describe("EditorInput", () => {
             assert.equal(document.querySelector(".cm-editor") !== null, true);
         });
 
+        test("works without access to the local storage", async (t) => {
+            t.mock.method(Storage.prototype, "getItem", () => {
+                throw new DOMException("The operation is insecure.", "SecurityError");
+            });
+            t.mock.method(Storage.prototype, "setItem", () => {
+                throw new DOMException("The operation is insecure.", "SecurityError");
+            });
+            const { input } = await makeEditor("foo");
+            await switchMode(input);
+            assert.equal(document.querySelector(".cm-editor") !== null, true);
+        });
+
         test("makes a read-only code editor for a disabled textarea", async () => {
             window.localStorage.setItem("formwork.editorMode[page-editor-form.content]", "code");
             const { input } = await makeEditor("foo", "disabled");

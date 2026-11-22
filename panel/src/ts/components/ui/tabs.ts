@@ -1,6 +1,7 @@
 import { effect, signal } from "@preact/signals-core";
 import { getNextIndex } from "../../utils/keyboard";
 import { $, $$ } from "../../utils/selectors";
+import { readStorage, writeStorage } from "../../utils/storage";
 
 /**
  * Handles the tabs of the page with keyboard navigation, whose selection is remembered
@@ -32,20 +33,20 @@ export class Tabs {
             }
         });
 
-        const savedTab = window.localStorage.getItem(storageKey);
+        const savedTab = readStorage(storageKey);
 
         if (savedTab) {
             if ($(`.tabs-tab[data-tab="${savedTab}"]`, tabs)) {
                 selected.value = savedTab;
             } else {
-                window.localStorage.removeItem(storageKey);
+                writeStorage(storageKey, null);
             }
         }
 
         tabButtons.forEach((tabButton) => {
             tabButton.addEventListener("click", () => {
                 selected.value = tabButton.dataset.tab as string;
-                window.localStorage.setItem(storageKey, tabButton.dataset.tab as string);
+                writeStorage(storageKey, tabButton.dataset.tab as string);
             });
 
             tabButton.addEventListener("keydown", (event) => {

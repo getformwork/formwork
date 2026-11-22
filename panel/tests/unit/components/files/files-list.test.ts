@@ -177,6 +177,15 @@ describe("FilesList", () => {
             assert.equal((list.querySelector('input[value="thumbnails"]') as HTMLInputElement).checked, true);
         });
 
+        test("works without access to the local storage", (t) => {
+            t.mock.method(Storage.prototype, "getItem", () => {
+                throw new DOMException("The operation is insecure.", "SecurityError");
+            });
+            makeList(["first.txt", "second.txt"]);
+            search("first");
+            assert.deepEqual(visible(), ["first.txt"]);
+        });
+
         test("opens files when clicked in the thumbnails view", () => {
             window.localStorage.setItem("formwork.filesListViewAs[list]", "thumbnails");
             makeList(["first.txt"]);

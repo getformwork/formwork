@@ -62,4 +62,16 @@ describe("Sections", () => {
         assert.equal(document.querySelector(".section")?.classList.contains("collapsed"), true);
         assert.equal(window.localStorage.length, 0);
     });
+
+    test("works without access to the local storage", (t) => {
+        t.mock.method(Storage.prototype, "getItem", () => {
+            throw new DOMException("The operation is insecure.", "SecurityError");
+        });
+        t.mock.method(Storage.prototype, "setItem", () => {
+            throw new DOMException("The operation is insecure.", "SecurityError");
+        });
+        makeSections();
+        toggle("first").click();
+        assert.equal(isCollapsed("first"), true);
+    });
 });

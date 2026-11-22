@@ -107,4 +107,17 @@ describe("Tabs", () => {
         assert.equal(window.localStorage.getItem("formwork.tabStatus[page]"), "page-second");
         assert.equal(window.localStorage.getItem("formwork.tabStatus[site]"), "site-third");
     });
+
+    test("works without access to the local storage", (t) => {
+        t.mock.method(Storage.prototype, "getItem", () => {
+            throw new DOMException("The operation is insecure.", "SecurityError");
+        });
+        t.mock.method(Storage.prototype, "setItem", () => {
+            throw new DOMException("The operation is insecure.", "SecurityError");
+        });
+        addTabs();
+        new Tabs();
+        byId("page-second").click();
+        assert.deepEqual(selection().visible, ["page-second"]);
+    });
 });

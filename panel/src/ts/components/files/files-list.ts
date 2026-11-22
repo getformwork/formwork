@@ -4,6 +4,7 @@ import type { Form } from "../../services/form";
 import { post } from "../../services/request";
 import { initSearchInput, makeSearchRegExp } from "../../utils/search";
 import { $, $$ } from "../../utils/selectors";
+import { readStorage, writeStorage } from "../../utils/storage";
 import { escapeHtml } from "../../utils/validation";
 import { Notification } from "../ui/notification";
 import { removeFromFileInputs, replaceInFileInputs } from "./file-inputs";
@@ -98,7 +99,7 @@ export class FilesList {
         const fieldName = toggle.dataset.for;
 
         const key = formName ? `${formName}.${fieldName}` : fieldName;
-        const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${key}]`);
+        const viewAs = readStorage(`formwork.filesListViewAs[${key}]`);
 
         if (viewAs) {
             $$<HTMLInputElement>("input", toggle).forEach((input) => {
@@ -113,7 +114,7 @@ export class FilesList {
             input.addEventListener("input", () => {
                 this.element.classList.toggle("is-thumbnails", input.value === "thumbnails");
                 this.element.classList.toggle("is-list", input.value === "list");
-                window.localStorage.setItem(`formwork.filesListViewAs[${key}]`, input.value);
+                writeStorage(`formwork.filesListViewAs[${key}]`, input.value);
             });
         });
     }

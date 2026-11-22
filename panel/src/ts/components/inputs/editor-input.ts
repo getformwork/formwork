@@ -2,6 +2,7 @@ import { effect, signal } from "@preact/signals-core";
 import { app } from "../../services/app";
 import { debounce } from "../../utils/events";
 import { $ } from "../../utils/selectors";
+import { readStorage, writeStorage } from "../../utils/storage";
 import { initToolbar } from "../../utils/toolbar";
 import { markdown } from "../ui/icons";
 import { InputBase } from "./input";
@@ -156,7 +157,7 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
 
         const key = formName ? `${formName}.${this.name}` : this.name;
 
-        const mode = signal<"markdown" | "code">(window.localStorage.getItem(`formwork.editorMode[${key}]`) === "code" ? "code" : "markdown");
+        const mode = signal<"markdown" | "code">(readStorage(`formwork.editorMode[${key}]`) === "code" ? "code" : "markdown");
 
         const toggleButton = $("[data-command=toggle-markdown]", this.container) as HTMLButtonElement;
 
@@ -168,7 +169,7 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
         toggleButton.addEventListener("click", () => {
             toggleButton.disabled = true;
             mode.value = mode.value === "code" ? "markdown" : "code";
-            window.localStorage.setItem(`formwork.editorMode[${key}]`, mode.value);
+            writeStorage(`formwork.editorMode[${key}]`, mode.value);
             void this.editorPromise.then(() => {
                 this.editor?.view.focus();
                 toggleButton.disabled = false;
