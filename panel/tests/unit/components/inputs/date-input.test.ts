@@ -236,6 +236,15 @@ describe("DateInput", () => {
             assert.equal(press("a", { target: element }).defaultPrevented, true);
         });
 
+        test("does not change the date with other keys", () => {
+            const { element, change } = makeDate();
+            element.focus();
+            press("0", { target: element });
+            press("a", { target: element });
+            assert.equal(element.value, "2024-01-15");
+            assert.equal(change.mock.callCount(), 0);
+        });
+
         test("prevents typing without a date", () => {
             const { element } = makeDate("");
             element.focus();

@@ -218,9 +218,10 @@ export class Calendar {
                 return;
 
             case "0":
-                if (event.ctrlKey || event.metaKey) {
-                    this.now();
+                if (!(event.ctrlKey || event.metaKey)) {
+                    return;
                 }
+                this.now();
                 this.dispatchChange();
                 break;
 
