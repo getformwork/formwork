@@ -34,8 +34,7 @@ const defaultOptions: RequestOptions = {
 /**
  * Sends an AJAX request to the panel
  *
- * The callback receives the JSON response, or an error response if the request fails. Responses
- * with code 400 or 403 are ignored
+ * The callback receives the JSON response, or an error response if the request fails
  */
 export class Request<Data = unknown> {
     constructor(userOptions: Partial<RequestOptions>, callback: (response: PanelResponse<Data>, request: XMLHttpRequest) => void) {
@@ -77,12 +76,7 @@ export class Request<Data = unknown> {
                     response = { status: "error", message: request.statusText || "The request failed", data: {} as Data };
                 }
 
-                const code = parseInt(String(response.code), 10) || request.status;
-                if (code === 400 || code === 403) {
-                    // location.reload();
-                } else {
-                    callback(response, request);
-                }
+                callback(response, request);
             };
             request.onload = handler;
             request.onerror = handler;

@@ -71,6 +71,16 @@ describe("Request Service", () => {
             assert.deepEqual(callback.mock.calls[0].arguments, [{ status: "success", message: "Done", data: { foo: "bar" } }, request]);
         });
 
+        test("passes the JSON responses of client errors to the callback", () => {
+            for (const status of [400, 403, 404, 422]) {
+                const callback = mock.fn();
+                new Request({}, callback);
+                XMLHttpRequestStub.last.respond(status, JSON.stringify({ status: "error", message: "Invalid fields", code: status, data: {} }));
+                assert.equal(callback.mock.callCount(), 1, `status: ${status}`);
+                assert.equal(callback.mock.calls[0].arguments[0].message, "Invalid fields");
+            }
+        });
+
         test("reports non-JSON responses with the status text", () => {
             const callback = mock.fn();
             new Request({}, callback);
