@@ -209,9 +209,13 @@ export class Calendar {
 
             case "Backspace":
             case "Escape":
-            case "Tab":
                 this.hide();
                 break;
+
+            case "Tab":
+                // The focus leaves the input
+                this.hide();
+                return;
 
             case "0":
                 if (event.ctrlKey || event.metaKey) {

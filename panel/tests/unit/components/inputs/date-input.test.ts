@@ -223,6 +223,13 @@ describe("DateInput", () => {
             assert.equal(change.mock.callCount(), 1);
         });
 
+        test("leaves Tab to the browser, hiding the calendar", () => {
+            const { element } = makeDate();
+            element.focus();
+            assert.equal(press("Tab", { target: element }).defaultPrevented, false);
+            assert.equal(isShown(), false);
+        });
+
         test("prevents typing in the input", () => {
             const { element } = makeDate();
             element.focus();
