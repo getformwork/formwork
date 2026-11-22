@@ -21,7 +21,8 @@ export class Tabs {
      */
     private initTabs(tabs: HTMLElement) {
         const formName = tabs.closest("form")?.dataset.form;
-        const storageKey = `formwork.tabStatus[${formName}]`;
+        // The tab is remembered only for named forms, as the others would share it
+        const storageKey = formName ? `formwork.tabStatus[${formName}]` : null;
         const tabButtons = Array.from($$(".tabs-tab[data-tab]", tabs));
 
         // `null` means that the tab defined by the markup is selected
@@ -33,20 +34,24 @@ export class Tabs {
             }
         });
 
-        const savedTab = readStorage(storageKey);
+        if (storageKey) {
+            const savedTab = readStorage(storageKey);
 
-        if (savedTab) {
-            if ($(`.tabs-tab[data-tab="${savedTab}"]`, tabs)) {
-                selected.value = savedTab;
-            } else {
-                writeStorage(storageKey, null);
+            if (savedTab) {
+                if ($(`.tabs-tab[data-tab="${savedTab}"]`, tabs)) {
+                    selected.value = savedTab;
+                } else {
+                    writeStorage(storageKey, null);
+                }
             }
         }
 
         tabButtons.forEach((tabButton) => {
             tabButton.addEventListener("click", () => {
                 selected.value = tabButton.dataset.tab as string;
-                writeStorage(storageKey, tabButton.dataset.tab as string);
+                if (storageKey) {
+                    writeStorage(storageKey, tabButton.dataset.tab as string);
+                }
             });
 
             tabButton.addEventListener("keydown", (event) => {

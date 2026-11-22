@@ -108,6 +108,14 @@ describe("Tabs", () => {
         assert.equal(window.localStorage.getItem("formwork.tabStatus[site]"), "site-third");
     });
 
+    test("does not share the selected tab between forms without a name", () => {
+        addTabs("");
+        new Tabs();
+        byId("-second").click();
+        assert.deepEqual(selection().visible, ["-second"]);
+        assert.equal(window.localStorage.length, 0);
+    });
+
     test("works without access to the local storage", (t) => {
         t.mock.method(Storage.prototype, "getItem", () => {
             throw new DOMException("The operation is insecure.", "SecurityError");
