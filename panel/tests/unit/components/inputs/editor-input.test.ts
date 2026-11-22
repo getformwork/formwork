@@ -163,5 +163,23 @@ describe("EditorInput", () => {
             const { input } = await makeEditor("foo", "disabled");
             assert.equal(input.disabled, true);
         });
+
+        test("removes the tooltip of the links when switching to the code editor", async (t) => {
+            const { input } = await makeEditor("[fo|o](https://example.test/)");
+            // The tooltip is removed after a delay and the resizes of the window are throttled
+            t.mock.timers.enable({ apis: ["setTimeout", "Date"] });
+            placeCursor(proseMirror(input));
+            t.mock.timers.tick(0);
+            await switchMode(input);
+            // Errors are compared by message, printing the events would walk the document
+            const errors: string[] = [];
+            t.mock.method(console, "error", (...args: unknown[]) => errors.push(String(args[0])));
+            window.addEventListener("error", (event) => errors.push(event.message));
+            t.mock.timers.tick(100);
+            window.dispatchEvent(new Event("resize"));
+            t.mock.timers.tick(100);
+            assert.deepEqual(errors, []);
+            assert.equal(document.querySelector(".editor-link-tooltip"), null);
+        });
     });
 });

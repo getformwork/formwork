@@ -23,32 +23,39 @@ class LinkTooltipView {
     tooltip?: Tooltip;
     baseUri: string;
 
+    private readonly resizeHandler = throttle(() => this.update(this.editorView), 100);
+
+    private readonly scrollHandler = debounce(() => this.hide(), 100, true);
+
+    private destroyed = false;
+
     constructor(view: EditorView, baseUri: string) {
         this.editorView = view;
 
         this.baseUri = baseUri;
 
-        const resizeHandler = throttle(() => this.update(this.editorView), 100);
+        window.addEventListener("resize", this.resizeHandler);
+        window.addEventListener("scroll", this.scrollHandler);
 
-        const scrollHandler = debounce(() => this.destroy(), 100, true);
-
-        window.addEventListener("resize", resizeHandler);
-        window.addEventListener("scroll", scrollHandler);
-
-        this.editorView.dom.addEventListener("scroll", scrollHandler);
-        this.editorView.dom.addEventListener("blur", () => this.destroy());
+        this.editorView.dom.addEventListener("scroll", this.scrollHandler);
+        this.editorView.dom.addEventListener("blur", () => this.hide());
     }
 
     /**
      * Show the tooltip if the cursor is in a link
      */
     update(view: EditorView) {
+        // A throttled resize may arrive after the editor is removed
+        if (this.destroyed) {
+            return;
+        }
+
         const { from, to } = view.state.selection;
 
         const range = getMarkRange(view.state, schema.marks.link);
 
         if (!(range && from >= range.from && to <= range.to)) {
-            this.destroy();
+            this.hide();
             return;
         }
 
@@ -119,12 +126,22 @@ class LinkTooltipView {
     /**
      * Hide the tooltip
      */
-    destroy() {
+    hide() {
         if (this.tooltip) {
             const tooltip = this.tooltip;
             window.setTimeout(() => tooltip.remove(), 100);
         }
         this.tooltip = undefined;
+    }
+
+    /**
+     * Hide the tooltip and stop following the window, when the editor is removed
+     */
+    destroy() {
+        this.destroyed = true;
+        window.removeEventListener("resize", this.resizeHandler);
+        window.removeEventListener("scroll", this.scrollHandler);
+        this.hide();
     }
 }
 
