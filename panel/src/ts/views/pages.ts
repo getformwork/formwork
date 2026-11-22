@@ -151,9 +151,9 @@ function filterPages(tree: PagesTree) {
         const row = $(".pages-tree-row", item) as HTMLElement;
 
         if (regexp === null) {
-            row.style.display = "";
             // Remove the highlights of the previous search
             title.innerHTML = escapeHtml(title.textContent);
+            row.style.display = "";
             continue;
         }
 
@@ -400,7 +400,7 @@ async function createSortable(element: HTMLElement) {
 
             post(`${app.config.baseUri}pages/reorder/`, data, (response) => {
                 if (response.status) {
-                    const notification = new Notification(response.message, response.status, { icon: "checkCircle" });
+                    const notification = new Notification(response.message, response.status);
                     notification.show();
                 }
                 if (!response.status || response.status === "error") {

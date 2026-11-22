@@ -2,11 +2,12 @@ import "../../environment/dom";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, test } from "node:test";
 import Sortable from "sortablejs";
+import { checkCircle, exclamationOctagon } from "../../../src/ts/components/ui/icons";
 import { app } from "../../../src/ts/services/app";
 import { Form } from "../../../src/ts/services/form";
 import { Modal } from "../../../src/ts/services/modal";
 import { initDuplicatePageModal, initNewPageModal, initPagePreview, initPagesTree, initSortable } from "../../../src/ts/views/pages";
-import { resetModals, setTranslation, shownNotifications } from "../../helpers/panel";
+import { iconMarkup, resetModals, setTranslation, shownNotifications } from "../../helpers/panel";
 import { installXMLHttpRequestStub, XMLHttpRequestStub } from "../../stubs/xhr";
 
 beforeEach(() => {
@@ -428,6 +429,16 @@ describe("Pages View", () => {
             moveFirstPage(element, sortable);
             XMLHttpRequestStub.last.respondJson("error", "Cannot reorder the pages");
             assert.deepEqual(order(element), ["/about/", "/blog/", "/contact/"]);
+        });
+
+        test("notifies the failure with the icon of the errors", async () => {
+            const { element, sortable } = await makeSortable();
+            moveFirstPage(element, sortable);
+            XMLHttpRequestStub.last.respondJson("error", "Cannot reorder the pages");
+            const notification = document.querySelector(".notification") as HTMLElement;
+            assert.equal(notification.classList.contains("notification-danger"), true);
+            assert.equal(notification.firstElementChild?.outerHTML, iconMarkup(exclamationOctagon));
+            assert.notEqual(iconMarkup(exclamationOctagon), iconMarkup(checkCircle));
         });
     });
 });
