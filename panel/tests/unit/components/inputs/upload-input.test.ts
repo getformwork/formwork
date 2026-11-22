@@ -155,6 +155,10 @@ describe("UploadInput", () => {
             test("shows the sizes beyond the largest unit with it", () => {
                 assert.deepEqual(shownSizes(1024 ** 5), ["(1024.00 TB)"]);
             });
+
+            test("shows the size of empty files", () => {
+                assert.deepEqual(shownSizes(0), ["(0.00 B)"]);
+            });
         });
 
         test("escapes the names of the files", () => {

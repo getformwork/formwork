@@ -252,7 +252,8 @@ export class UploadInput extends InputBase<HTMLInputElement> {
      */
     private formatFileSize(size: number) {
         const units = ["B", "KB", "MB", "GB", "TB"];
-        const exp = Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1);
+        // Sizes below a byte (e.g. empty files) are in bytes, as their logarithm is not positive
+        const exp = Math.max(0, Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1));
         return `${(size / 1024 ** exp).toFixed(2)} ${units[exp]}`;
     }
 
