@@ -165,6 +165,11 @@ describe("DateInput", () => {
             assert.equal(calendar().querySelector(".calendar-meridiem")?.textContent, "");
         });
 
+        test("shows the time with the 24-hour clock by default", () => {
+            const { element } = makeDate("2024-01-15T15:30", { time: true });
+            assert.equal(element.value, "2024-01-15 15:30:00");
+        });
+
         test("shows the time with the 12-hour clock of a format with text", () => {
             makeDate("2024-01-15T15:05", { time: true, dateTimeFormat: "YYYY-MM-DD [at] HH:mm A" });
             assert.equal(calendar().querySelector(".calendar-hours")?.textContent, "03");
