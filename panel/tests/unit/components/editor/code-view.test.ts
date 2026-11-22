@@ -128,5 +128,14 @@ describe("CodeView", () => {
             button("Undo").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, detail: 0 }));
             assert.equal(editor.content, "foo");
         });
+
+        test("disables undo and redo in a read-only editor", () => {
+            const { editor } = makeEditor("foo");
+            append(editor, "bar");
+            editor.editable = false;
+            assert.equal(button("Undo").disabled, true);
+            button("Undo").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+            assert.equal(editor.content, "foobar");
+        });
     });
 });

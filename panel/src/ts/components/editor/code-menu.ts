@@ -1,6 +1,5 @@
 import { redo, redoDepth, undo, undoDepth } from "@codemirror/commands";
-import type { EditorView, ViewUpdate } from "@codemirror/view";
-import { ViewPlugin } from "@codemirror/view";
+import { EditorView, ViewPlugin } from "@codemirror/view";
 import { app } from "../../services/app";
 import { createToolbarButton } from "./toolbar-button";
 
@@ -33,10 +32,11 @@ class Menu {
 
         this.dom = document.createElement("div");
 
-        items.forEach(({ dom, enabler }) => {
+        items.forEach(({ dom }) => {
             this.dom.appendChild(dom);
-            dom.disabled = !enabler(this.view);
         });
+
+        this.updateItems();
 
         const toolbar = this.view.dom.parentNode?.querySelector(".editor-toolbar") as HTMLElement;
 
@@ -63,14 +63,20 @@ class Menu {
     }
 
     /**
-     * Enable or disable the buttons when the document changes
+     * Enable or disable the buttons when the editor changes, e.g. when it becomes read-only
      */
-    update(update: ViewUpdate) {
-        if (update.docChanged) {
-            this.items.forEach(({ dom, enabler }) => {
-                dom.disabled = !enabler(this.view);
-            });
-        }
+    update() {
+        this.updateItems();
+    }
+
+    /**
+     * Enable the buttons that can be used, none if the editor is read-only
+     */
+    private updateItems() {
+        const editable = this.view.state.facet(EditorView.editable);
+        this.items.forEach(({ dom, enabler }) => {
+            dom.disabled = !(editable && enabler(this.view));
+        });
     }
 }
 
