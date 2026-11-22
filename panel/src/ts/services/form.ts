@@ -236,16 +236,8 @@ export class Form {
 
         const { node, input } = wrap ? this.cloneWithWrap(wrap, element) : this.cloneAlone(element);
 
-        // Generate a new unique ID for the duplicated input
-        const previousId = element.id;
-        const newId = `${element.tagName.toLowerCase()}-${Math.random().toString(36).slice(2)}`;
-        input.id = newId;
-
-        if (wrap && previousId) {
-            $$<HTMLLabelElement>(`label[for="${previousId}"]`).forEach((label) => {
-                label.htmlFor = newId;
-            });
-        }
+        // Generate a new unique ID for the duplicated input, the labels stay with the original one
+        input.id = `${element.tagName.toLowerCase()}-${Math.random().toString(36).slice(2)}`;
 
         targetElement.appendChild(node);
 

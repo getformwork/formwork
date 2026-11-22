@@ -262,5 +262,11 @@ describe("Form", () => {
             );
             assert.notEqual(copy.id, "");
         });
+
+        test("preserves the labels of the input", () => {
+            const form = makeForm('<label for="foo">Foo</label><div class="form-input-wrap"><input id="foo" name="foo" value="bar"></div><div id="target"></div>');
+            form.duplicateInput(input("foo"), document.getElementById("target") as HTMLElement);
+            assert.equal((document.querySelector("label") as HTMLLabelElement).htmlFor, "foo");
+        });
     });
 });
