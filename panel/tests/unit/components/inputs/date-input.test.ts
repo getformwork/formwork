@@ -164,6 +164,12 @@ describe("DateInput", () => {
             assert.equal(calendar().querySelector(".calendar-hours")?.textContent, "15");
             assert.equal(calendar().querySelector(".calendar-meridiem")?.textContent, "");
         });
+
+        test("shows the time with the 12-hour clock of a format with text", () => {
+            makeDate("2024-01-15T15:05", { time: true, dateTimeFormat: "YYYY-MM-DD [at] HH:mm A" });
+            assert.equal(calendar().querySelector(".calendar-hours")?.textContent, "03");
+            assert.equal(calendar().querySelector(".calendar-meridiem")?.textContent, "PM");
+        });
     });
 
     describe("keyboard", () => {

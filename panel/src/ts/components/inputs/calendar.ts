@@ -382,7 +382,7 @@ export class Calendar {
      * Return whether a format uses the 12-hour clock
      */
     private has12HourFormat(format: string) {
-        const match = format.match(/\[([^\]]*)\]|H{1,2}/);
-        return match !== null && match[0][0] === "H";
+        // Text in square brackets is not a token
+        return format.replace(/\[[^\]]*\]/g, "").includes("H");
     }
 }
