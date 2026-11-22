@@ -353,6 +353,10 @@ export class Form {
             .filter((link) => !link.closest(".editor-wrap"))
             .forEach((link) => {
                 link.addEventListener("click", (event) => {
+                    // Links opened in a new tab or window, or downloaded, do not leave the page
+                    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+                        return;
+                    }
                     if (this.hasChanged()) {
                         event.preventDefault();
 

@@ -169,6 +169,17 @@ describe("Form", () => {
             }
             assert.equal(changesModal.open.mock.callCount(), 0);
         });
+
+        test("does not confirm links opened in a new tab or window", () => {
+            document.body.innerHTML = '<a id="link" href="/panel/pages/">Pages</a>';
+            makeForm('<input id="foo" name="foo" value="bar">');
+            input("foo").value = "baz";
+            for (const modifier of ["ctrlKey", "metaKey", "shiftKey", "altKey"]) {
+                assert.equal(clickLink("link", { [modifier]: true }), false, modifier);
+            }
+            assert.equal(clickLink("link", { button: 1 }), false, "middle button");
+            assert.equal(changesModal.open.mock.callCount(), 0);
+        });
     });
 
     describe("removeInputs", () => {
