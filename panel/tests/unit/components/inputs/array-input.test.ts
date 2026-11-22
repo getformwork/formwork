@@ -4,6 +4,7 @@ import { beforeEach, describe, test } from "node:test";
 import type { ArrayInput } from "../../../../src/ts/components/inputs/array-input";
 import { app } from "../../../../src/ts/services/app";
 import { Form } from "../../../../src/ts/services/form";
+import { serializeForm } from "../../../../src/ts/utils/forms";
 
 beforeEach(() => {
     app.modals = {};
@@ -165,6 +166,20 @@ describe("ArrayInput", () => {
             assert.equal(keyInput(rows()[0]).required, true);
             type(valueInput(rows()[0]), " ");
             assert.equal(keyInput(rows()[0]).required, false);
+        });
+
+        test("does not send the rows without a key", async () => {
+            const { form } = await makeArray([row("bar", "foo"), row("", "")], { associative: true });
+            form.element.dispatchEvent(new Event("submit"));
+            assert.equal(serializeForm(form.element), "items%5Bfoo%5D=bar");
+        });
+
+        test("sends the values by key", async () => {
+            const { form } = await makeArray([row("bar", "foo")], { associative: true });
+            click(rows()[0], "add");
+            type(keyInput(rows()[1]), "baz");
+            type(valueInput(rows()[1]), "qux");
+            assert.equal(serializeForm(form.element), "items%5Bfoo%5D=bar&items%5Bbaz%5D=qux");
         });
     });
 

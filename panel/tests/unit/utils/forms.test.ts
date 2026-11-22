@@ -116,6 +116,26 @@ describe("Form Utils", () => {
             `);
             assert.equal(serializeForm(form), "bar=baz");
         });
+
+        test("leaves out fieldsets", () => {
+            assert.equal(serialize('<fieldset name="group"><input type="radio" name="foo" value="bar" checked></fieldset>'), "foo=bar");
+        });
+
+        test("leaves out the fields of disabled fieldsets", () => {
+            assert.equal(serialize('<fieldset disabled><input type="radio" name="foo" value="bar" checked></fieldset><input name="baz" value="qux">'), "baz=qux");
+        });
+
+        test("leaves out the fields of fieldsets inside disabled fieldsets", () => {
+            assert.equal(serialize('<fieldset disabled><fieldset><legend><input name="foo" value="bar"></legend></fieldset></fieldset>'), "");
+        });
+
+        test("serializes the fields in the first legend of disabled fieldsets", () => {
+            assert.equal(serialize('<fieldset disabled><legend><input name="foo" value="bar"></legend><legend><input name="baz" value="qux"></legend></fieldset>'), "foo=bar");
+        });
+
+        test("leaves out the fields in the legend of a fieldset inside a disabled fieldset", () => {
+            assert.equal(serialize('<fieldset disabled><fieldset disabled><legend><input name="foo" value="bar"></legend></fieldset></fieldset>'), "");
+        });
     });
 
     describe("triggerDownload", () => {
