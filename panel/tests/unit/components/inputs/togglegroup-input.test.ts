@@ -53,6 +53,10 @@ describe("TogglegroupInput", () => {
         assert.ok(document.activeElement === radio("second"));
     });
 
+    test("returns an empty value without a checked option", () => {
+        assert.equal(makeTogglegroup(null).value, "");
+    });
+
     test("focuses the checked option when the label of a nested field is clicked", () => {
         makeTogglegroup("second", { id: "newUserModal.role", name: "newUserModal[role]" });
         (document.getElementById("newUserModal.role-label") as HTMLElement).click();

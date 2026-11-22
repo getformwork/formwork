@@ -35,10 +35,10 @@ export class TogglegroupInput extends InputBase<HTMLFieldSetElement> {
     }
 
     /**
-     * Get the value of the checked radio button
+     * Get the value of the checked radio button, or an empty string if none is checked
      */
     get value() {
-        return ($(`input:checked`, this.element) as HTMLInputElement).value;
+        return $<HTMLInputElement>("input:checked", this.element)?.value ?? "";
     }
 
     /**
