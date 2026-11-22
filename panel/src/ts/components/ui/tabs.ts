@@ -48,6 +48,8 @@ export class Tabs {
 
         tabButtons.forEach((tabButton) => {
             tabButton.addEventListener("click", () => {
+                // Some browsers do not focus a button when it is clicked, but the arrows need it
+                tabButton.focus();
                 selected.value = tabButton.dataset.tab as string;
                 if (storageKey) {
                     writeStorage(storageKey, tabButton.dataset.tab as string);

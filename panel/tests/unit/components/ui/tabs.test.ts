@@ -52,6 +52,13 @@ describe("Tabs", () => {
         assert.equal(byId("page-first").tabIndex, -1);
     });
 
+    test("focuses a tab when clicked, so the arrows work", () => {
+        addTabs();
+        new Tabs();
+        byId("page-second").click();
+        assert.equal(document.activeElement?.id, "page-second");
+    });
+
     test("selects the next and previous tabs with the arrows, wrapping around", () => {
         addTabs();
         new Tabs();
