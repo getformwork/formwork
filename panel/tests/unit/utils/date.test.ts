@@ -59,6 +59,10 @@ describe("Date Utils", () => {
         assert.equal(formatDateTime(date, "YYYY/MM/DD, hh.mm", options), "2024/01/05, 09.07");
     });
 
+    test("removes empty square brackets", () => {
+        assert.equal(formatDateTime(date, "YYYY[]MM", options), "202401");
+    });
+
     describe("week of the year (ISO 8601)", () => {
         const cases: [string, Date, string][] = [
             ["first days of a year in the last week of the previous one", new Date(2021, 0, 1), "53 53 20 2020"],

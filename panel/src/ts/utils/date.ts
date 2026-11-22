@@ -147,7 +147,8 @@ export function formatDateTime(date: Date, format: string, options: DateFormatOp
             case "z":
                 return splitTimezoneOffset(date.getTimezoneOffset()).join("");
             default:
-                return escaped || match;
+                // `escaped` is undefined for tokens and may be an empty string for empty brackets
+                return escaped ?? match;
         }
     });
 }
