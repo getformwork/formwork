@@ -222,6 +222,15 @@ describe("Markdown Commands", () => {
             assert.equal(view.state.doc.textContent, "foo bar baz");
         });
 
+        test("links a selection going beyond a link as new text", () => {
+            const { text, uri, remove } = addLinkModal();
+            const view = makeView("foo [b|ar](https://example.test/) baz|");
+            run(view, insertLink);
+            assert.equal(text.value, "ar baz");
+            assert.equal(uri.value, "https://");
+            assert.equal(remove.disabled, true);
+        });
+
         test("changes the whole link with formatted parts", () => {
             const { text, uri, insert } = addLinkModal();
             const view = makeView("[f|oo **bar**](https://example.test/)");

@@ -25,8 +25,11 @@ export const insertLink: Command = (state, dispatch, view) => {
 
     let { from, to } = state.selection;
 
-    const range = getMarkRange(state, schema.marks.link);
-    if (range && from >= range.from && to <= range.to) {
+    // The link is changed only if the selection is inside it, otherwise the selection is linked
+    const linkRange = getMarkRange(state, schema.marks.link);
+    const range = linkRange && from >= linkRange.from && to <= linkRange.to ? linkRange : null;
+
+    if (range) {
         from = range.from;
         to = range.to;
     }
