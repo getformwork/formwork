@@ -80,6 +80,11 @@ describe("ArrayInput", () => {
             const { array } = await makeArray([row(" bar ", " foo ")], { associative: true });
             assert.equal(array.value, '{"foo":"bar"}');
         });
+
+        test("ignores the rows without a key of an associative array", async () => {
+            const { array } = await makeArray([row("bar", "foo"), row("qux", "")], { associative: true });
+            assert.equal(array.value, '{"foo":"bar"}');
+        });
     });
 
     describe("rows", () => {

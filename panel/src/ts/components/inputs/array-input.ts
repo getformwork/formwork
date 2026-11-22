@@ -75,8 +75,11 @@ export class ArrayInput extends InputBase<HTMLFieldSetElement> {
             const key = keyInput?.value.trim() ?? "";
             const value = valueInput.value.trim();
 
-            if (this.isAssociative && key) {
-                values[key] = value;
+            if (this.isAssociative) {
+                // Rows without a key are not sent with the form
+                if (key) {
+                    values[key] = value;
+                }
             } else if (value) {
                 values[i++] = value;
             }
