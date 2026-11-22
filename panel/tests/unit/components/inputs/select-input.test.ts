@@ -265,6 +265,11 @@ describe("SelectInput", () => {
             makeSelect('<option value="blog" data-allowed-templates="post">Blog</option>');
             assert.equal(item("blog").dataset.allowedTemplates, "post");
         });
+
+        test("ignores unknown icons", () => {
+            makeSelect('<option value="page" data-icon="missing-icon">Page</option>');
+            assert.equal(item("page").textContent?.trim(), "Page");
+        });
     });
 
     describe("value", () => {

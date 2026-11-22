@@ -318,7 +318,8 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
             const icon = toCamelCase(option.dataset.icon) as keyof typeof icons;
 
             // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
-            item.insertAdjacentHTML("afterbegin", icons[icon]);
+            // Unknown icons are left out
+            item.insertAdjacentHTML("afterbegin", icons[icon] ?? "");
         }
 
         for (const key in option.dataset) {
