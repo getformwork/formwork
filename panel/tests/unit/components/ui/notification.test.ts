@@ -120,4 +120,13 @@ describe("Notification", () => {
         t.mock.timers.tick(1000);
         assert.equal(element.classList.contains("fadeout"), true);
     });
+
+    test("keeps the notification while hovered after losing the focus", (t) => {
+        const element = show("Hello");
+        element.focus();
+        element.dispatchEvent(new MouseEvent("mouseenter"));
+        element.blur();
+        t.mock.timers.tick(10000);
+        assert.equal(element.classList.contains("fadeout"), false);
+    });
 });
