@@ -64,7 +64,7 @@ export function initBackups(view: HTMLElement) {
                 status.value = "danger";
             }
 
-            const notification = new Notification(response.message, response.status, { icon: "checkCircle" });
+            const notification = new Notification(response.message, response.status);
             notification.show();
 
             if (response.status === "success") {

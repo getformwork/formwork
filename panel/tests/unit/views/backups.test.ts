@@ -1,9 +1,10 @@
 import "../../environment/dom";
 import assert from "node:assert/strict";
 import { beforeEach, describe, test } from "node:test";
+import { checkCircle, exclamationOctagon } from "../../../src/ts/components/ui/icons";
 import { app } from "../../../src/ts/services/app";
 import { initBackups } from "../../../src/ts/views/backups";
-import { setTranslation } from "../../helpers/panel";
+import { iconMarkup, setTranslation } from "../../helpers/panel";
 import { installXMLHttpRequestStub, XMLHttpRequestStub } from "../../stubs/xhr";
 
 beforeEach(() => {
@@ -123,5 +124,13 @@ describe("Backups View", () => {
         assert.equal(spinner().className, "spinner spinner-danger");
         assert.deepEqual(backups(), []);
         assert.equal(document.querySelector(".notification-danger")?.textContent?.trim(), "Cannot make the backup");
+    });
+
+    test("notifies the failure with the icon of the errors", () => {
+        makeBackups();
+        button().click();
+        XMLHttpRequestStub.last.respondJson("error", "Cannot make the backup");
+        assert.equal(document.querySelector(".notification")?.firstElementChild?.outerHTML, iconMarkup(exclamationOctagon));
+        assert.notEqual(iconMarkup(exclamationOctagon), iconMarkup(checkCircle));
     });
 });
