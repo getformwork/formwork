@@ -103,10 +103,30 @@ describe("CodeView", () => {
             assert.equal(button("Undo").disabled, false);
         });
 
+        test("undoes and redoes the changes with the buttons, keeping the focus in the editor", () => {
+            const { editor } = makeEditor("foo");
+            append(editor, "bar");
+            const mousedown = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+            button("Undo").dispatchEvent(mousedown);
+            assert.equal(mousedown.defaultPrevented, true);
+            button("Undo").click();
+            assert.equal(editor.content, "foo");
+            assert.equal(button("Redo").disabled, false);
+            button("Redo").click();
+            assert.equal(editor.content, "foobar");
+        });
+
         test("removes the buttons with the editor", () => {
             const { editor } = makeEditor();
             editor.destroy();
             assert.equal(button("Undo"), null);
+        });
+
+        test("undoes the changes with the button activated with the keyboard", () => {
+            const { editor } = makeEditor("foo");
+            append(editor, "bar");
+            button("Undo").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, detail: 0 }));
+            assert.equal(editor.content, "foo");
         });
     });
 });

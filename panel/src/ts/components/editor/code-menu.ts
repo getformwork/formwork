@@ -42,14 +42,16 @@ class Menu {
 
         toolbar.insertBefore(this.dom, toolbar.firstChild);
 
-        this.dom.addEventListener("mousedown", (e) => {
-            e.preventDefault();
-            editorView.focus();
-            items.forEach(({ command, dom }) => {
-                if (dom.contains(e.target as HTMLElement)) {
-                    command(editorView);
-                }
-            });
+        // The buttons do not take the focus from the editor when pressed with the pointer
+        this.dom.addEventListener("mousedown", (e) => e.preventDefault());
+
+        // The commands run on click, so that the buttons also work with the keyboard
+        this.dom.addEventListener("click", (e) => {
+            const item = items.find(({ dom }) => dom.contains(e.target as HTMLElement));
+            if (item && !item.dom.disabled) {
+                editorView.focus();
+                item.command(editorView);
+            }
         });
     }
 
