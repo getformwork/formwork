@@ -101,6 +101,12 @@ describe("Markdown Keymap", () => {
             press(view, "[", mod);
             assert.equal(markdown(view), "* foo\n\n* bar");
         });
+
+        test("lifts a paragraph out of a quote with Mod+[", () => {
+            const view = makeView("> foo|");
+            assert.equal(press(view, "[", mod), true);
+            assert.equal(markdown(view), "foo");
+        });
     });
 
     describe("history", () => {

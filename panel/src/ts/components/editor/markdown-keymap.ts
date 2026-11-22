@@ -40,7 +40,7 @@ export function buildKeymap(schema: Schema, mapKeys?: { [key: string]: false | s
 
     bind("Alt-ArrowUp", joinUp);
     bind("Alt-ArrowDown", joinDown);
-    bind("Mod-BracketLeft", lift);
+    bind("Mod-[", lift);
     bind("Escape", selectParentNode);
 
     if (schema.marks.strong) {
@@ -80,7 +80,8 @@ export function buildKeymap(schema: Schema, mapKeys?: { [key: string]: false | s
     }
     if (schema.nodes.list_item) {
         bind("Enter", splitListItem(schema.nodes.list_item));
-        bind("Mod-[", liftListItem(schema.nodes.list_item));
+        // Outside lists the key lifts the block out of its parent, e.g. a quote
+        bind("Mod-[", chainCommands(liftListItem(schema.nodes.list_item), lift));
         bind("Mod-]", sinkListItem(schema.nodes.list_item));
     }
     if (schema.nodes.paragraph) {
