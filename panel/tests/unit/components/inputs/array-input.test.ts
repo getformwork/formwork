@@ -143,6 +143,12 @@ describe("ArrayInput", () => {
             assert.equal(valueInput(rows()[0]).value, "");
             assert.equal(valueInput(rows()[0]).name, "items[]");
         });
+
+        test("removes the inputs of the removed rows from the form", async () => {
+            const { form } = await makeArray([row("bar", "foo"), row("qux", "baz")], { associative: true });
+            click(rows()[1], "remove");
+            assert.equal("items[baz]" in form.inputs, false);
+        });
     });
 
     describe("keys", () => {

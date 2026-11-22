@@ -171,6 +171,20 @@ describe("Form", () => {
         });
     });
 
+    describe("removeInputs", () => {
+        test("removes the inputs of the elements inside a parent", () => {
+            const form = makeForm('<input name="foo"><div id="parent"><input name="bar"><div><input name="baz"></div></div>');
+            form.removeInputs(document.getElementById("parent") as HTMLElement);
+            assert.deepEqual(Object.keys(form.inputs), ["foo"]);
+        });
+
+        test("removes the input of the parent itself", () => {
+            const form = makeForm('<input id="foo" name="foo"><input name="bar">');
+            form.removeInputs(input("foo"));
+            assert.deepEqual(Object.keys(form.inputs), ["bar"]);
+        });
+    });
+
     describe("behaviors", () => {
         test("clears a date with its reset button", () => {
             setTranslation();

@@ -192,6 +192,17 @@ export class Form {
     }
 
     /**
+     * Remove the inputs of the elements inside a parent, e.g. when it is removed from the form
+     */
+    removeInputs(parent: HTMLElement) {
+        for (let i = this.formInputs.length - 1; i >= 0; i--) {
+            if (parent.contains(this.formInputs[i].element)) {
+                this.formInputs.splice(i, 1);
+            }
+        }
+    }
+
+    /**
      * Load input and behaviors of a single element
      */
     private loadInput(element: HTMLElement) {

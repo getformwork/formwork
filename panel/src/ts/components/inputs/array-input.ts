@@ -157,6 +157,7 @@ export class ArrayInput extends InputBase<HTMLFieldSetElement> {
         if ($$(".form-input-array-row", parent).length > 1) {
             parent.removeChild(item);
             this.itemCache.delete(item);
+            this.form.removeInputs(item);
         } else {
             this.clearItem(item);
         }
