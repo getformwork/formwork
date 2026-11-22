@@ -299,8 +299,9 @@ export class Modal {
             }
         });
 
+        // The focus is moved only if outside, to preserve the position in the modal
         window.addEventListener("focus", () => {
-            if (this.element.classList.contains("open")) {
+            if (this.isTopmost && !this.element.contains(document.activeElement)) {
                 this.getFirstFocusableElement(this.element).focus();
             }
         });

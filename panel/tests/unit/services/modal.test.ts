@@ -215,6 +215,13 @@ describe("Modal", () => {
             byId("outside").focus();
             assert.equal(focused(), "outside");
         });
+
+        test("preserves the focus inside the modal when the window gets the focus", () => {
+            makeModal().open();
+            byId("second").focus();
+            window.dispatchEvent(new FocusEvent("focus"));
+            assert.equal(focused(), "second");
+        });
     });
 
     describe("nested modals", () => {
