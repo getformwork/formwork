@@ -79,5 +79,12 @@ describe("Cookies Utils", () => {
             setCookie("foo", "light", {});
             assert.equal(document.cookie, "foo=light");
         });
+
+        test("preserves values with special characters", () => {
+            for (const value of ["foo;bar", "100%25", "Hello world"]) {
+                setCookie("foo", value, {});
+                assert.equal(getCookies().foo, value);
+            }
+        });
     });
 });

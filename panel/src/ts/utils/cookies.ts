@@ -14,12 +14,12 @@ export function getCookies() {
 }
 
 /**
- * Set a cookie
+ * Set a cookie, encoding its value as getCookies() decodes it
  *
  * @param options Attributes of the cookie, e.g. `path` or `max-age`
  */
 export function setCookie(name: string, value: string, options: Record<string, string | number>) {
-    let cookie = `${name}=${value}`;
+    let cookie = `${name}=${encodeURIComponent(value)}`;
     for (const option in options) {
         cookie += `;${option}=${options[option]}`;
     }
