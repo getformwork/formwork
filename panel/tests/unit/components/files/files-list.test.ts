@@ -454,5 +454,20 @@ describe("FilesList", () => {
             click(document.querySelector(".selection-delete") as HTMLElement);
             assert.equal(document.querySelector("#deleteFileItemModal .modal-text")?.textContent, "Delete the file?");
         });
+
+        test("reports the failure of a deletion of the selected files", () => {
+            makeList(["first.txt", "second.txt"]);
+            click(fileItem("first.txt"), { ctrlKey: true });
+            click(fileItem("second.txt"), { ctrlKey: true });
+            click(document.querySelector(".selection-delete") as HTMLElement);
+            click(document.getElementById("confirm-delete") as HTMLElement);
+
+            const [first, second] = XMLHttpRequestStub.requests;
+            first.respondJson("error", "Cannot delete the file");
+            second.respondJson("success", "File deleted");
+
+            assert.deepEqual(filenames(), ["first.txt"]);
+            assert.deepEqual(shownNotifications(), ["danger: Cannot delete the file"]);
+        });
     });
 });

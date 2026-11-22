@@ -500,7 +500,8 @@ export class FilesList {
     private deleteItems(selectedItems: HTMLElement[]) {
         let pending = selectedItems.length;
         let deletedCount = 0;
-        let lastMessage = "";
+        let successMessage = "";
+        let errorMessage = "";
 
         selectedItems.forEach((selectedItem) => {
             const deleteCommand = $("[data-command=deleteFile]", selectedItem);
@@ -519,13 +520,15 @@ export class FilesList {
                 },
                 (response) => {
                     pending -= 1;
-                    lastMessage = response.message;
 
                     if (response.status === "success") {
                         deletedCount += 1;
+                        successMessage = response.message;
                         selectedItem.remove();
 
                         removeFromFileInputs(this.form, itemFilename as string);
+                    } else {
+                        errorMessage = response.message;
                     }
 
                     if (pending === 0) {
@@ -536,7 +539,8 @@ export class FilesList {
                         this.selected.value = new Set(this.selectedItems());
 
                         const allDeleted = deletedCount === selectedItems.length;
-                        const message = allDeleted && deletedCount > 1 ? app.translation.get("panel.files.deleted.multiple").replace("%d", String(deletedCount)) : lastMessage;
+                        // A failure is reported with the message of a failed deletion
+                        const message = !allDeleted ? errorMessage : deletedCount > 1 ? app.translation.get("panel.files.deleted.multiple").replace("%d", String(deletedCount)) : successMessage;
                         const notification = new Notification(message, allDeleted ? "success" : "error");
                         notification.show();
                     }
