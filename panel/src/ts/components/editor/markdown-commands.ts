@@ -31,6 +31,8 @@ export const insertLink: Command = (state, dispatch, view) => {
         to = range.to;
     }
 
+    const selectedText = state.doc.textBetween(from, to);
+
     const { linkModal } = app.modals;
 
     const textInput = $('[id="linkModal.text"]', linkModal.element) as HTMLInputElement;
@@ -38,14 +40,12 @@ export const insertLink: Command = (state, dispatch, view) => {
     const removeCommand = $('[data-command="remove-link"]', linkModal.element) as HTMLButtonElement;
 
     removeCommand.disabled = !range;
-    textInput.value = "";
+    textInput.value = selectedText;
 
     if (range) {
-        textInput.value = range.node.textContent;
         uriInput.value = range.mark.attrs.href;
         uriInput.setSelectionRange(0, uriInput.value.length);
     } else {
-        textInput.value = state.doc.textBetween(from, to);
         uriInput.value = "https://";
         uriInput.setSelectionRange(8, 8);
     }
@@ -57,12 +57,14 @@ export const insertLink: Command = (state, dispatch, view) => {
     linkModal.onCommand("insert-link", (modal) => {
         if (uriInput.value) {
             const text = textInput.value || uriInput.value;
-            if (range && range.mark.attrs.href === uriInput.value && range.node.text === text) {
+            if (range && range.mark.attrs.href === uriInput.value && selectedText === text) {
                 modal.close();
                 return;
             }
             const linkMark = schema.marks.link.create({ href: uriInput.value });
-            dispatch(view.state.tr.insertText(text, from, to).addMark(from, from + text.length, linkMark));
+            // The formatting of the text is kept unless the text changes
+            const tr = text === selectedText ? view.state.tr.removeMark(from, to, schema.marks.link) : view.state.tr.insertText(text, from, to);
+            dispatch(tr.addMark(from, from + text.length, linkMark));
         } else {
             dispatch(view.state.tr.removeMark(from, to, schema.marks.link));
         }
@@ -207,39 +209,37 @@ export function isMarkActive(state: EditorState, type: MarkType) {
 /**
  * Get the range of the text having a mark at the cursor
  *
- * @returns Range, mark and node, or `null` if the cursor is not in a text having the mark
+ * The range spans the adjacent texts with the same mark, e.g. the parts of a link with different
+ * formatting
+ *
+ * @returns Range and mark, or `null` if the cursor is not in a text having the mark
  */
-export function getMarkRange(state: EditorState, markType: MarkType): { from: number; to: number; mark: Mark; node: Node } | null {
+export function getMarkRange(state: EditorState, markType: MarkType): { from: number; to: number; mark: Mark } | null {
     const { $from } = state.selection;
-    let from = $from.pos;
-    let to = $from.pos;
-
     const parent = $from.parent;
-    let foundMark: Mark | undefined;
 
-    parent.forEach((node, offset) => {
-        if (!node.isText) {
-            return;
+    let range: { from: number; to: number; mark: Mark } | null = null;
+    let current: { from: number; to: number; mark: Mark } | null = null;
+    let position = $from.start();
+
+    for (let index = 0; index < parent.childCount; index++) {
+        const node = parent.child(index);
+        const mark = node.isText ? markType.isInSet(node.marks) : undefined;
+        const nodeEnd = position + node.nodeSize;
+
+        if (mark && current?.mark.eq(mark)) {
+            current.to = nodeEnd;
+        } else {
+            current = mark ? { from: position, to: nodeEnd, mark } : null;
         }
-        node.marks.forEach((mark) => {
-            if (mark.type === markType) {
-                const nodeStart = $from.start() + offset;
-                const nodeEnd = nodeStart + node.nodeSize;
-                if (nodeStart <= $from.pos && nodeEnd >= $from.pos) {
-                    from = nodeStart;
-                    to = nodeEnd;
-                    foundMark = mark;
-                }
-            }
-        });
-    });
 
-    return foundMark
-        ? {
-              from: from,
-              to: to,
-              mark: foundMark,
-              node: state.doc.nodeAt(from) as Node,
-          }
-        : null;
+        // A later range containing the cursor at its start is preferred
+        if (current && current.from <= $from.pos && current.to >= $from.pos) {
+            range = current;
+        }
+
+        position = nodeEnd;
+    }
+
+    return range;
 }

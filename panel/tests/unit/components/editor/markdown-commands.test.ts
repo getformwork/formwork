@@ -40,6 +40,12 @@ describe("Markdown Commands", () => {
             assert.equal(range?.mark.attrs.href, "https://example.test/");
         });
 
+        test("returns the range of a link with formatted parts", () => {
+            const view = makeView("foo [b|ar **baz**](https://example.test/) qux");
+            const range = getMarkRange(view.state, schema.marks.link);
+            assert.equal(view.state.doc.textBetween(range?.from ?? 0, range?.to ?? 0), "bar baz");
+        });
+
         test("returns the range of the link at the cursor between two links", () => {
             const view = makeView("[foo](https://example.test/foo/)|[bar](https://example.test/bar/)");
             assert.equal(getMarkRange(view.state, schema.marks.link)?.mark.attrs.href, "https://example.test/bar/");
@@ -205,6 +211,25 @@ describe("Markdown Commands", () => {
             run(view, insertLink);
             modal.close();
             assert.ok(document.activeElement === view.dom);
+        });
+
+        test("preserves the selected text after a link", () => {
+            const { uri, insert } = addLinkModal();
+            const view = makeView("foo [b|ar](https://example.test/) baz|");
+            run(view, insertLink);
+            uri.value = "https://example.test/qux/";
+            insert.click();
+            assert.equal(view.state.doc.textContent, "foo bar baz");
+        });
+
+        test("changes the whole link with formatted parts", () => {
+            const { text, uri, insert } = addLinkModal();
+            const view = makeView("[f|oo **bar**](https://example.test/)");
+            run(view, insertLink);
+            assert.equal(text.value, "foo bar");
+            uri.value = "https://example.test/qux/";
+            insert.click();
+            assert.equal(markdown(view), "[foo **bar**](https://example.test/qux/)");
         });
     });
 
