@@ -84,9 +84,9 @@ export function longClick(element: HTMLElement, callback: (event: MouseEvent) =>
         clearTimeout(timer);
     }
     element.addEventListener("mousedown", function (event: MouseEvent) {
-        if (event.button !== 0) {
-            clear();
-        } else {
+        // A previous press may not have been released on the page
+        clear();
+        if (event.button === 0) {
             callback.call(this, event);
             timer = window.setTimeout(() => {
                 timer = window.setInterval(callback.bind(this, event), interval);

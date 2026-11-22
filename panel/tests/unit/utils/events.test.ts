@@ -234,5 +234,19 @@ describe("Event Utils", () => {
             mock.timers.tick(1000);
             assert.equal(callback.mock.callCount(), 0);
         });
+
+        test("stops every repetition when released", () => {
+            const { button, callback } = makeButton();
+            button.dispatchEvent(mousedown());
+            mock.timers.tick(500);
+            mock.timers.tick(100);
+            button.dispatchEvent(mousedown());
+            mock.timers.tick(500);
+            mock.timers.tick(100);
+            window.dispatchEvent(new MouseEvent("mouseup"));
+            const calls = callback.mock.callCount();
+            mock.timers.tick(1000);
+            assert.equal(callback.mock.callCount(), calls);
+        });
     });
 });
