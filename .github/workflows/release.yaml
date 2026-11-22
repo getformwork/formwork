@@ -48,6 +48,7 @@ jobs:
           \*.github/\* \
           \*node_modules/\* \
           \tests/\* \
+          \panel/tests/\* \
           \phpunit.xml.dist
 
       - name: Upload release assets
