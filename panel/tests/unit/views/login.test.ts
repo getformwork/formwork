@@ -45,6 +45,13 @@ describe("Login View", () => {
         assert.equal(button.disabled, false);
     });
 
+    test("enables the button again when the page is shown from the history", () => {
+        const { form, button } = makeLogin();
+        submit(form, button);
+        window.dispatchEvent(pageshow(true));
+        assert.equal(button.disabled, false);
+    });
+
     test("keeps the button disabled when the page is shown otherwise", () => {
         const { form, button } = makeLogin();
         submit(form, button);
