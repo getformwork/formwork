@@ -314,8 +314,16 @@ export class UploadInput extends InputBase<HTMLInputElement> {
         anchor.href = info.actions.info;
         anchor.textContent = info.name;
 
-        ($(".file-date", filesItem) as HTMLElement).textContent = info.lastModifiedTime;
-        ($(".file-size", filesItem) as HTMLElement).textContent = info.size;
+        // The columns of the list may not include the date and the size
+        const date = $(".file-date", filesItem);
+        if (date) {
+            date.textContent = info.lastModifiedTime;
+        }
+
+        const size = $(".file-size", filesItem);
+        if (size) {
+            size.textContent = info.size;
+        }
 
         ($(".dropdown-button", filesItem) as HTMLElement).dataset.dropdown = `dropdown-${info.hash}`;
         ($(".dropdown-menu", filesItem) as HTMLElement).id = `dropdown-${info.hash}`;
