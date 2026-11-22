@@ -43,6 +43,13 @@ describe("SlugInput", () => {
         assert.equal(element.value, "-foo");
     });
 
+    test("makes a complete slug when leaving the field", () => {
+        const { element } = makeSlug();
+        type(element, "-Hello World-");
+        element.dispatchEvent(new FocusEvent("blur"));
+        assert.equal(element.value, "hello-world");
+    });
+
     test("makes a complete slug from the set value", () => {
         const { input } = makeSlug();
         input.value = "Hello World!";

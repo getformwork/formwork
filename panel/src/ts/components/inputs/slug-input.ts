@@ -24,7 +24,7 @@ export class SlugInput extends Input<HTMLInputElement> {
      * Set the value, making it a valid slug
      */
     set value(value: string) {
-        this.element.value = validateSlug(value);
+        this.element.value = makeSlug(value);
     }
 
     /**
@@ -53,12 +53,16 @@ export class SlugInput extends Input<HTMLInputElement> {
             }
         }
 
-        const handleSlugChange = (event: Event) => {
+        // While typing hyphens at the ends are kept, as the slug may continue
+        this.element.addEventListener("keyup", (event: Event) => {
             const target = event.target as HTMLInputElement;
             target.value = validateSlug(target.value);
-        };
+        });
 
-        this.element.addEventListener("keyup", handleSlugChange);
-        this.element.addEventListener("blur", handleSlugChange);
+        // Once the field is left the slug is complete, as the site requires
+        this.element.addEventListener("blur", (event: Event) => {
+            const target = event.target as HTMLInputElement;
+            target.value = makeSlug(target.value);
+        });
     }
 }
