@@ -11,16 +11,16 @@ import { installXMLHttpRequestStub, XMLHttpRequestStub } from "../../../stubs/xh
  * Get the template of the items of the files, as the panel renders it
  *
  * @param commands Commands the user is allowed to use
+ * @param columns  Whether the date and the size of the files are shown
  */
-function itemTemplate(commands = ["renameFile", "replaceFile", "deleteFile"]) {
+function itemTemplate(commands = ["renameFile", "replaceFile", "deleteFile"], columns = true) {
     const buttons = commands.map((command) => `<button type="button" class="dropdown-item" data-command="${command}" data-action="">${command}</button>`).join("");
     return `<template id="files-item">
         <div class="files-item" role="row" data-filename="">
             <div class="file-thumbnail" aria-hidden="true"></div>
             <div class="files-item-cell file-icon" role="cell"></div>
             <div class="files-item-cell file-name truncate" role="cell"><a></a></div>
-            <div class="files-item-cell file-date" role="cell"></div>
-            <div class="files-item-cell file-size" role="cell"></div>
+            ${columns ? '<div class="files-item-cell file-date" role="cell"></div><div class="files-item-cell file-size" role="cell"></div>' : ""}
             <div class="files-item-cell file-actions" role="cell">
                 <div class="dropdown">
                     <button type="button" class="button dropdown-button" data-dropdown=""></button>
@@ -42,9 +42,10 @@ function itemTemplate(commands = ["renameFile", "replaceFile", "deleteFile"]) {
  * @param list       Whether the files of the page are listed
  * @param multiple   Whether the input accepts more than one file
  * @param commands   Commands the user is allowed to use on the uploaded files
+ * @param columns    Whether the list shows the date and the size of the files
  * @param fields     HTML of the other fields of the form
  */
-function makeUpload({ autoUpload = false, list = false, multiple = false, commands = undefined as string[] | undefined, fields = "" } = {}) {
+function makeUpload({ autoUpload = false, list = false, multiple = false, commands = undefined as string[] | undefined, columns = true, fields = "" } = {}) {
     document.body.innerHTML = `
         <form data-form="page-editor-form" method="post">
             ${fields}
@@ -56,7 +57,7 @@ function makeUpload({ autoUpload = false, list = false, multiple = false, comman
             </label>
             <button type="submit">Save</button>
         </form>
-        ${itemTemplate(commands)}`;
+        ${itemTemplate(commands, columns)}`;
     const form = new Form(document.querySelector("form") as HTMLFormElement, { preventUnloadOnChanges: false });
     const element = document.getElementById("files") as HTMLInputElement;
     return { form, element, input: form.inputs[element.name] as UploadInput };
@@ -343,6 +344,14 @@ describe("UploadInput", () => {
             );
             assert.equal(document.querySelectorAll(".files-item").length, 1);
             assert.equal(label(), "Drop files here");
+        });
+
+        test("adds the uploaded files also to a list without their date and size", () => {
+            const { element } = makeUpload({ autoUpload: true, list: true, columns: false });
+            choose(element, image());
+            respondUpload(XMLHttpRequestStub.last, "image.jpg");
+            assert.notEqual(document.querySelector('.files-item[data-filename="image.jpg"]'), null);
+            assert.equal(document.querySelector(".notification")?.textContent?.trim(), "File uploaded");
         });
 
         test("adds the uploaded files also when the user cannot rename, replace or delete them", () => {

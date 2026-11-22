@@ -43,6 +43,11 @@ describe("RangeInput", () => {
         assert.equal(progress(element), "50%");
     });
 
+    test("shows the progress from the default minimum and maximum", () => {
+        const { element } = makeRange('value="25"');
+        assert.equal(progress(element), "25%");
+    });
+
     test("updates the value shown when set", () => {
         const { input, element } = makeRange();
         input.value = "2";
@@ -65,6 +70,11 @@ describe("RangeInput", () => {
         test("adds no ticks when their number is zero", () => {
             makeRange('min="0" max="10" value="4" data-ticks="0"');
             assert.equal(document.querySelector(".form-input-range-ticks"), null);
+        });
+
+        test("adds a tick for each step between the default minimum and maximum", () => {
+            makeRange('step="25" value="50" data-ticks="true"');
+            assert.equal(ticks(), 5);
         });
 
         test("adds a tick for each decimal step", () => {
