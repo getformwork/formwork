@@ -155,6 +155,13 @@ describe("FilesList", () => {
             assert.deepEqual(visible(), ["first.txt", "second.txt"]);
             assert.equal(document.querySelectorAll("mark").length, 0);
         });
+
+        test("filters only the files of its list", () => {
+            makeList(["first.txt"], { id: "list" });
+            makeList(["second.txt"], { id: "other" });
+            search("first", "list");
+            assert.deepEqual(visible("other"), ["second.txt"]);
+        });
     });
 
     describe("view", () => {

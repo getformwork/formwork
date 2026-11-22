@@ -316,9 +316,9 @@ export class FilesList {
     private filterItems(query: string) {
         const regexp = query ? makeSearchRegExp(query, { wordStart: false, global: true }) : null;
 
-        ($(".files-item") as HTMLElement).classList.toggle("is-filtered", query.length > 0);
+        this.element.classList.toggle("is-filtered", query.length > 0);
 
-        $$(".files-item").forEach((item) => {
+        $$(".files-item", this.element).forEach((item) => {
             const matches = this.highlightMatches(item, regexp);
 
             item.style.display = !query || matches > 0 ? "" : "none";
