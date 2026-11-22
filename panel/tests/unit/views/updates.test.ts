@@ -100,4 +100,12 @@ describe("Updates View", () => {
         assert.deepEqual(shown(), { status: "Formwork 2.1.0 installed", spinner: "spinner spinner-success", newVersion: null, currentVersion: "Formwork 2.1.0" });
         assert.equal(document.querySelector(".notification-success")?.textContent?.trim(), "Formwork updated");
     });
+
+    test("reports a failed installation", (t) => {
+        checkOutdated(t);
+        install();
+        XMLHttpRequestStub.last.respondJson("error", "Cannot install the update");
+        assert.deepEqual(shown(), { status: "Cannot install the update", spinner: "spinner spinner-danger", newVersion: null, currentVersion: null });
+        assert.equal(document.querySelector(".notification-danger")?.textContent?.trim(), "Cannot install the update");
+    });
 });

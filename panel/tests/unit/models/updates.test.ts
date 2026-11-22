@@ -83,4 +83,12 @@ describe("UpdatesModel", () => {
         assert.equal(updates.message.value, "Cannot install");
         assert.equal(updates.currentVersionVisible.value, false);
     });
+
+    test("reports an installation failed by a network error", () => {
+        const updates = new UpdatesModel();
+        updates.installing("Installing…");
+        updates.installed({ status: "error", message: "The request failed", data: {} as never });
+        assert.equal(updates.phase.value, "error");
+        assert.equal(updates.message.value, "The request failed");
+    });
 });

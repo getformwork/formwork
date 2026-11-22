@@ -84,7 +84,8 @@ export const UpdatesModel = createModel(() => {
          * Set the result of the installation
          */
         installed(response: PanelResponse<UpdateInstallation>) {
-            message.value = response.data.status;
+            // Network errors and non-JSON responses have no data
+            message.value = response.data.status ?? response.message;
             phase.value = response.status === "success" ? "installed" : "error";
         },
     };
