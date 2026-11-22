@@ -220,6 +220,11 @@ describe("TagsInput", () => {
             assert.notEqual(pdf.querySelector("svg"), null);
         });
 
+        test("ignores unknown icons", () => {
+            makeTags("", options({ "file.xyz": { value: "file.xyz", icon: "file-xyz" } }));
+            assert.equal(suggestions()[0].textContent, "file.xyz");
+        });
+
         test("adds a suggestion when clicked", () => {
             const { element } = makeTags("", options(["first", "second"]));
             suggestions()[1].click();

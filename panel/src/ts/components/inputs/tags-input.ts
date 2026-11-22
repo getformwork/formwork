@@ -254,7 +254,8 @@ export class TagsInput extends InputBase<HTMLInputElement> {
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.icon) {
             // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
-            item.insertAdjacentHTML("afterbegin", icons[option.icon]);
+            // Unknown icons are left out
+            item.insertAdjacentHTML("afterbegin", icons[option.icon] ?? "");
         }
 
         item.addEventListener("click", () => {
