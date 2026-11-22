@@ -253,14 +253,16 @@ export class TagsInput extends InputBase<HTMLInputElement> {
             img.alt = "";
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.icon) {
-            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             // Unknown icons are left out
+            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             item.insertAdjacentHTML("afterbegin", icons[option.icon] ?? "");
         }
 
         item.addEventListener("click", () => {
             if (item.dataset.value) {
                 this.addTag(item.dataset.value);
+                this.clearInput();
+                this.updateDropdown();
             }
         });
 
@@ -372,8 +374,9 @@ export class TagsInput extends InputBase<HTMLInputElement> {
         this.innerInput.addEventListener("focus", () => this.field.classList.add("focused"));
 
         this.innerInput.addEventListener("blur", () => {
-            for (const tag of parseTags(this.innerInput.value)) {
-                this.addTag(tag);
+            const value = this.innerInput.value.trim();
+            if (value !== "") {
+                this.addTypedTags(value);
             }
             this.field.classList.remove("focused");
         });
@@ -425,20 +428,21 @@ export class TagsInput extends InputBase<HTMLInputElement> {
         } else if (isAddKey || (event.key === "Enter" && value !== "")) {
             event.preventDefault();
             if (value !== "") {
-                this.addTypedTag(value);
+                this.addTypedTags(value);
             }
         }
     }
 
     /**
-     * Add a tag typed by the user, marking the text field as invalid if the tag cannot be added
+     * Add the tags typed or pasted by the user, separated by commas, keeping in the text field
+     * those that cannot be added, which is marked as invalid
      */
-    private addTypedTag(value: string) {
-        if (this.tags.value.length >= this.options.limit || this.tags.value.includes(value)) {
-            this.innerInput.classList.add("form-input-invalid");
-        } else {
-            this.addTag(value);
-        }
+    private addTypedTags(text: string) {
+        const rejected = parseTags(text).filter((tag) => !this.addTag(tag));
+        this.innerInput.value = rejected.join(", ");
+        this.innerInput.classList.toggle("form-input-invalid", rejected.length > 0);
+        this.updatePlaceholder();
+        this.updateDropdown();
     }
 
     /**
@@ -556,17 +560,15 @@ export class TagsInput extends InputBase<HTMLInputElement> {
     }
 
     /**
-     * Add a tag if valid and clear the text field
+     * Add a tag if valid, returning whether it was added
      */
     private addTag(value: string) {
-        if (this.validateTag(value)) {
-            this.tags.value = [...this.tags.value, value];
-            this.updateTags();
-        } else {
-            this.updatePlaceholder();
+        if (!this.validateTag(value)) {
+            return false;
         }
-        this.innerInput.value = "";
-        this.updateDropdown();
+        this.tags.value = [...this.tags.value, value];
+        this.updateTags();
+        return true;
     }
 
     /**

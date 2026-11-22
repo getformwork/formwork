@@ -130,6 +130,15 @@ describe("TagsInput", () => {
             assert.equal(field.classList.contains("form-input-invalid"), false);
         });
 
+        test("keeps the pasted tags that cannot be added in the field", () => {
+            const { element, field } = makeTags();
+            type(field, "foo, baz, bar");
+            press(field, "Enter");
+            assert.equal(element.value, "foo, bar, baz");
+            assert.equal(field.value, "foo, bar");
+            assert.equal(field.classList.contains("form-input-invalid"), true);
+        });
+
         test("rejects tags beyond the limit", () => {
             const { field } = makeTags("foo, bar", 'data-limit="2"');
             type(field, "baz");
@@ -321,6 +330,14 @@ describe("TagsInput", () => {
             type(field, "other");
             press(field, "Enter");
             assert.equal(element.value, "other");
+        });
+
+        test("rejects typed tags that are not options, keeping the typed text", () => {
+            const { field } = makeTags("", `${options(["first"])} data-accept="options"`);
+            type(field, "other");
+            press(field, "Enter");
+            assert.equal(field.value, "other");
+            assert.equal(field.classList.contains("form-input-invalid"), true);
         });
     });
 });
