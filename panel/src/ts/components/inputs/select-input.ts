@@ -27,6 +27,17 @@ export interface SelectInputOptions {
 let instanceCount = 0;
 
 /**
+ * Return whether a key edits the text of a field: a printable character, Backspace, Delete, or
+ * the shortcuts to paste and cut
+ */
+function isEditingKey(event: KeyboardEvent) {
+    if (event.ctrlKey || event.metaKey) {
+        return event.key.toLowerCase() === "v" || event.key.toLowerCase() === "x";
+    }
+    return event.key.length === 1 || event.key === "Backspace" || event.key === "Delete";
+}
+
+/**
  * Provides a select input with a searchable list of options in place of a native select
  *
  * The native select is hidden and holds the value sent with the form
@@ -317,8 +328,8 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
         } else if (option.dataset.icon) {
             const icon = toCamelCase(option.dataset.icon) as keyof typeof icons;
 
-            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             // Unknown icons are left out
+            // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
             item.insertAdjacentHTML("afterbegin", icons[icon] ?? "");
         }
 
@@ -505,8 +516,9 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
                 break;
 
             default:
-                // The first key typed replaces the label instead of editing it
-                if (!this.isTyping) {
+                // The first key typed replaces the label instead of editing it, keys that do not
+                // edit the text (e.g. Shift or the shortcut to copy) leave it
+                if (!this.isTyping && isEditingKey(event)) {
                     this.labelInput.value = "";
                     this.isTyping = true;
                 }
@@ -535,6 +547,10 @@ export class SelectInput extends InputBase<HTMLSelectElement> {
                 break;
 
             default: {
+                if (!isEditingKey(event)) {
+                    break;
+                }
+
                 const value = this.labelInput.value.trim();
 
                 this.list.open.value = true;

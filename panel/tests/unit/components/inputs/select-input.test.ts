@@ -234,6 +234,19 @@ describe("SelectInput", () => {
             assert.equal(pageEscape.mock.callCount(), 0);
         });
 
+        test("keeps the label with the keys that do not type", () => {
+            const { field } = makeSelect();
+            field.focus();
+            for (const key of ["Shift", "Control", "Home", "End"]) {
+                field.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+                assert.equal(field.value, "Second", key);
+            }
+            field.dispatchEvent(new KeyboardEvent("keydown", { key: "c", ctrlKey: true, bubbles: true, cancelable: true }));
+            assert.equal(field.value, "Second");
+            field.dispatchEvent(new KeyboardEvent("keyup", { key: "Shift", bubbles: true, cancelable: true }));
+            assert.deepEqual(visibleItems(), ["first", "second", "third", "fourth"]);
+        });
+
         test("replaces the label with the pasted text", () => {
             const { field } = makeSelect();
             field.focus();
