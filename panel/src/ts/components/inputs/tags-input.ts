@@ -31,11 +31,11 @@ interface TagsInputDropdownItem {
 }
 
 /**
- * Get the tags of a value, ignoring the empty ones
+ * Get the tags of a value separated by commas, ignoring the empty ones, as the server does
  */
 function parseTags(value: string) {
     return value
-        .split(", ")
+        .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag !== "");
 }

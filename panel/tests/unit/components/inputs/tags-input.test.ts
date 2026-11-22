@@ -55,6 +55,11 @@ describe("TagsInput", () => {
             assert.notEqual(field, element);
         });
 
+        test("reads the tags of the value separated by commas, also without spaces as the server writes them", () => {
+            makeTags("foo, bar,baz");
+            assert.deepEqual(tags(), ["foo", "bar", "baz"]);
+        });
+
         test("trims the tags of the value, ignoring the empty ones and preserving the spaces inside them", () => {
             makeTags("  Hello world ,  , foo,  ");
             assert.deepEqual(tags(), ["Hello world", "foo"]);
