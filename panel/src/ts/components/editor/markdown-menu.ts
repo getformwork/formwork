@@ -6,7 +6,7 @@ import type { EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { $$ } from "../../utils/selectors";
 import { insertImage, insertLink, isMarkActive, lift, redo, setBlockType, sinkListItem, toggleMark, undo, wrapIn, wrapInList } from "./markdown-commands";
-import { createToolbarButton } from "./toolbar-button";
+import type { Toolbar } from "./toolbar";
 
 /**
  * Describes an item of the toolbar
@@ -22,17 +22,19 @@ interface MenuItem {
 }
 
 /**
- * Manages the toolbar of the Markdown editor
+ * Manages the buttons of the Markdown editor in the toolbar
  */
 class MenuView {
     items: MenuItem[];
     editorView: EditorView;
     dom: HTMLElement;
     dropdowns: { [name: string]: HTMLElement };
+    toolbar: Toolbar;
 
-    constructor(id: string, items: MenuItem[], editorView: EditorView) {
+    constructor(id: string, items: MenuItem[], editorView: EditorView, toolbar: Toolbar) {
         this.items = items;
         this.editorView = editorView;
+        this.toolbar = toolbar;
 
         this.dom = document.createElement("div");
 
@@ -62,6 +64,8 @@ class MenuView {
 
             target.appendChild(dom);
         });
+
+        toolbar.add(this.dom, "afterbegin");
 
         this.update();
 
@@ -114,36 +118,31 @@ class MenuView {
     }
 
     /**
-     * Remove the toolbar
+     * Remove the buttons from the toolbar
      */
     destroy() {
-        this.dom.remove();
+        this.toolbar.remove(this.dom);
     }
 }
 
 let modalsInitialized = false;
 
 /**
- * Get the plugin that adds the toolbar to the editor
+ * Get the plugin that adds the buttons of the editor to a toolbar
  *
  * @param id Id of the editor
  */
-export function menuPlugin(id: string) {
+export function menuPlugin(id: string, toolbar: Toolbar) {
     if (!modalsInitialized) {
         initModals();
         modalsInitialized = true;
     }
 
-    const items = createMenuItems();
+    const items = createMenuItems(toolbar);
 
     return new Plugin({
         view(editorView: EditorView) {
-            const menuView = new MenuView(id, items, editorView);
-
-            const toolbar = editorView.dom.parentNode?.querySelector(".editor-toolbar");
-            toolbar?.prepend(menuView.dom);
-
-            return menuView;
+            return new MenuView(id, items, editorView, toolbar);
         },
     });
 }
@@ -152,7 +151,7 @@ export function menuPlugin(id: string) {
  * Create the items of the toolbar: the block type menu, the formatting and block buttons, the
  * media buttons, undo and redo
  */
-function createMenuItems(): MenuItem[] {
+function createMenuItems(toolbar: Toolbar): MenuItem[] {
     const t = (key: string, defaultValue: string) => app.translation.get(key, defaultValue);
 
     const { nodes, marks } = schema;
@@ -189,66 +188,66 @@ function createMenuItems(): MenuItem[] {
         {
             mark: marks.strong,
             command: toggleMark(marks.strong),
-            dom: createToolbarButton("bold", t("panel.editor.bold", "Bold")),
+            dom: toolbar.createButton("bold", t("panel.editor.bold", "Bold")),
             group: "style",
         },
         {
             mark: marks.em,
             command: toggleMark(marks.em),
-            dom: createToolbarButton("italic", t("panel.editor.italic", "Italic")),
+            dom: toolbar.createButton("italic", t("panel.editor.italic", "Italic")),
             group: "style",
         },
         {
             mark: marks.code,
             command: toggleMark(marks.code),
-            dom: createToolbarButton("code", t("panel.editor.code", "Code")),
+            dom: toolbar.createButton("code", t("panel.editor.code", "Code")),
             group: "style",
         },
         {
             command: wrapInList(nodes.bullet_list, nodes.list_item),
-            dom: createToolbarButton("listUnordered", t("panel.editor.bulletList", "Bullet list")),
+            dom: toolbar.createButton("listUnordered", t("panel.editor.bulletList", "Bullet list")),
             group: "blocks",
         },
         {
             command: wrapInList(nodes.ordered_list, nodes.list_item),
-            dom: createToolbarButton("listOrdered", t("panel.editor.numberedList", "Numbered list")),
+            dom: toolbar.createButton("listOrdered", t("panel.editor.numberedList", "Numbered list")),
             group: "blocks",
         },
         {
             node: nodes.blockquote,
             command: wrapIn(nodes.blockquote),
-            dom: createToolbarButton("blockquote", t("panel.editor.quote", "Quote")),
+            dom: toolbar.createButton("blockquote", t("panel.editor.quote", "Quote")),
             group: "blocks",
         },
         {
             command: sinkListItem(nodes.list_item),
-            dom: createToolbarButton("indentIncrease", t("panel.editor.increaseIndent", "Increase indent")),
+            dom: toolbar.createButton("indentIncrease", t("panel.editor.increaseIndent", "Increase indent")),
             group: "blocks",
         },
         {
             command: lift,
-            dom: createToolbarButton("indentDecrease", t("panel.editor.decreaseIndent", "Decrease indent")),
+            dom: toolbar.createButton("indentDecrease", t("panel.editor.decreaseIndent", "Decrease indent")),
             group: "blocks",
         },
         {
             node: nodes.image,
             command: insertImage,
-            dom: createToolbarButton("image", t("panel.editor.image", "Image")),
+            dom: toolbar.createButton("image", t("panel.editor.image", "Image")),
             group: "media",
         },
         {
             mark: marks.link,
             command: insertLink,
-            dom: createToolbarButton("link", t("panel.editor.link", "Link")),
+            dom: toolbar.createButton("link", t("panel.editor.link", "Link")),
             group: "media",
         },
         {
             command: undo,
-            dom: createToolbarButton("rotateLeft", t("panel.editor.undo", "Undo")),
+            dom: toolbar.createButton("rotateLeft", t("panel.editor.undo", "Undo")),
         },
         {
             command: redo,
-            dom: createToolbarButton("rotateRight", t("panel.editor.redo", "Redo")),
+            dom: toolbar.createButton("rotateRight", t("panel.editor.redo", "Redo")),
         },
     ];
 }

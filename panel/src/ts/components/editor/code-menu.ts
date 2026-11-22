@@ -1,7 +1,7 @@
 import { redo, redoDepth, undo, undoDepth } from "@codemirror/commands";
 import { EditorView, ViewPlugin } from "@codemirror/view";
 import { app } from "../../services/app";
-import { createToolbarButton } from "./toolbar-button";
+import type { Toolbar } from "./toolbar";
 
 /**
  * Represents a command of the code editor
@@ -19,16 +19,18 @@ interface MenuItem {
 }
 
 /**
- * Manages the toolbar of the code editor
+ * Manages the buttons of the code editor in the toolbar
  */
 class Menu {
     items: MenuItem[];
     dom: HTMLElement;
     view: EditorView;
+    toolbar: Toolbar;
 
-    constructor(items: MenuItem[], editorView: EditorView) {
+    constructor(items: MenuItem[], editorView: EditorView, toolbar: Toolbar) {
         this.items = items;
         this.view = editorView;
+        this.toolbar = toolbar;
 
         this.dom = document.createElement("div");
 
@@ -38,9 +40,7 @@ class Menu {
 
         this.updateItems();
 
-        const toolbar = this.view.dom.parentNode?.querySelector(".editor-toolbar") as HTMLElement;
-
-        toolbar.insertBefore(this.dom, toolbar.firstChild);
+        toolbar.add(this.dom, "afterbegin");
 
         // The buttons do not take the focus from the editor when pressed with the pointer
         this.dom.addEventListener("mousedown", (e) => e.preventDefault());
@@ -59,7 +59,7 @@ class Menu {
      * Remove the toolbar
      */
     destroy() {
-        this.dom.remove();
+        this.toolbar.remove(this.dom);
     }
 
     /**
@@ -81,17 +81,18 @@ class Menu {
 }
 
 /**
- * Get the CodeMirror extension that adds the toolbar to the editor
+ * Get the CodeMirror extension that adds the buttons of the editor to a toolbar
  */
-export function MenuPlugin() {
+export function menuPlugin(toolbar: Toolbar) {
     return ViewPlugin.define(
         (view) =>
             new Menu(
                 [
-                    { dom: createToolbarButton("rotateLeft", app.translation.get("panel.editor.undo", "Undo")), command: (view) => undo(view), enabler: (view) => undoDepth(view.state) > 0 },
-                    { dom: createToolbarButton("rotateRight", app.translation.get("panel.editor.redo", "Redo")), command: (view) => redo(view), enabler: (view) => redoDepth(view.state) > 0 },
+                    { dom: toolbar.createButton("rotateLeft", app.translation.get("panel.editor.undo", "Undo")), command: (view) => undo(view), enabler: (view) => undoDepth(view.state) > 0 },
+                    { dom: toolbar.createButton("rotateRight", app.translation.get("panel.editor.redo", "Redo")), command: (view) => redo(view), enabler: (view) => redoDepth(view.state) > 0 },
                 ],
                 view,
+                toolbar,
             ),
     );
 }

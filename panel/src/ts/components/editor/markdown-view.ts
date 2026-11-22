@@ -12,6 +12,7 @@ import { buildKeymap } from "./markdown-keymap";
 import { linkTooltip } from "./markdown-link-tooltip";
 import { menuPlugin } from "./markdown-menu";
 import { placeholderPlugin } from "./markdown-placeholder";
+import type { Toolbar } from "./toolbar";
 
 /**
  * Holds the options of the Markdown editor
@@ -24,6 +25,10 @@ export interface MarkdownViewOptions {
     baseUri?: string;
     placeholder?: string;
     attributes?: Record<string, string>;
+    /**
+     * Toolbar to which the buttons of the editor are added
+     */
+    toolbar?: Toolbar;
 }
 
 /**
@@ -48,7 +53,7 @@ export class MarkdownView {
                     keymap(buildKeymap(schema)),
                     keymap(baseKeymap),
                     history(),
-                    menuPlugin(id),
+                    ...(options.toolbar ? [menuPlugin(id, options.toolbar)] : []),
                     placeholderPlugin(options.placeholder ?? ""),
                     linkTooltip(baseUri),
                     new Plugin({

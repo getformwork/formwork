@@ -10,8 +10,6 @@ import { setTranslation } from "../../../helpers/panel";
 beforeEach(() => {
     app.config.siteUri = "/site/";
     setTranslation();
-    // The menu of the editor binds the link modal of the panel
-    Object.assign(app, { modals: { linkModal: { element: document.createElement("div") } } });
 });
 
 /**

@@ -2,6 +2,7 @@ import "../../../environment/dom";
 import assert from "node:assert/strict";
 import { beforeEach, describe, mock, test } from "node:test";
 import { CodeView } from "../../../../src/ts/components/editor/code-view";
+import { Toolbar } from "../../../../src/ts/components/editor/toolbar";
 import { setTranslation } from "../../../helpers/panel";
 
 beforeEach(() => {
@@ -12,9 +13,10 @@ beforeEach(() => {
  * Make a code editor with its toolbar, as the editor input does
  */
 function makeEditor(content = "foo", options = {}) {
-    document.body.innerHTML = '<div class="editor-wrap"><div class="editor-toolbar"><button type="button" data-command="toggle-markdown"></button></div></div>';
+    document.body.innerHTML = '<div class="editor-toolbar"><button type="button" data-command="toggle-markdown"></button></div><div class="editor-wrap"></div>';
+    const toolbar = new Toolbar(document.querySelector(".editor-toolbar") as HTMLElement);
     const handler = mock.fn();
-    const editor = new CodeView(document.querySelector(".editor-wrap") as HTMLElement, content, handler, options);
+    const editor = new CodeView(document.querySelector(".editor-wrap") as HTMLElement, content, handler, { toolbar, ...options });
     return { editor, handler };
 }
 
@@ -99,6 +101,12 @@ describe("CodeView", () => {
             editor.destroy();
             const buttons = Array.from(document.querySelectorAll<HTMLElement>(".editor-toolbar button"), (element) => element.dataset.command);
             assert.deepEqual(buttons, ["toggle-markdown"]);
+        });
+
+        test("adds no buttons without a toolbar", () => {
+            document.body.innerHTML = '<div class="editor-wrap"></div>';
+            new CodeView(document.querySelector(".editor-wrap") as HTMLElement, "foo", mock.fn());
+            assert.equal(document.querySelector("button"), null);
         });
 
         test("enables undo and redo when there are changes", () => {

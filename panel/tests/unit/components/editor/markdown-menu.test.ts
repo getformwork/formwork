@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { beforeEach, describe, mock, test } from "node:test";
 import { TextSelection } from "prosemirror-state";
 import { MarkdownView } from "../../../../src/ts/components/editor/markdown-view";
+import { Toolbar } from "../../../../src/ts/components/editor/toolbar";
 import { app } from "../../../../src/ts/services/app";
 import { setTranslation } from "../../../helpers/panel";
 import { markdown, placeCursor, type } from "../../../helpers/prosemirror";
@@ -18,8 +19,9 @@ beforeEach(() => {
  * Make a Markdown editor with its toolbar, as the editor input does, placing the cursor at `|`
  */
 function makeEditor(content: string, editable = true) {
-    document.body.innerHTML = '<div class="editor-wrap"><div class="editor-toolbar"></div></div>';
-    const editor = new MarkdownView("content", document.querySelector(".editor-wrap") as HTMLElement, content, mock.fn(), { editable });
+    document.body.innerHTML = '<div class="editor-toolbar"></div><div class="editor-wrap"></div>';
+    const toolbar = new Toolbar(document.querySelector(".editor-toolbar") as HTMLElement);
+    const editor = new MarkdownView("content", document.querySelector(".editor-wrap") as HTMLElement, content, mock.fn(), { editable, toolbar });
     placeCursor(editor.view);
     return editor;
 }

@@ -3,8 +3,7 @@ import { app } from "../../services/app";
 import { debounce } from "../../utils/events";
 import { $ } from "../../utils/selectors";
 import { readStorage, writeStorage } from "../../utils/storage";
-import { initToolbar } from "../../utils/toolbar";
-import { markdown } from "../ui/icons";
+import { Toolbar } from "../editor/toolbar";
 import { InputBase } from "./input";
 
 /**
@@ -66,6 +65,11 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
     private container: HTMLElement;
 
     /**
+     * Toolbar to which the editors add their buttons
+     */
+    private toolbar: Toolbar;
+
+    /**
      * Current editor
      */
     private editor: EditorView | undefined;
@@ -99,13 +103,14 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
         this.options = { ...defaults, ...options };
 
         this.container = this.getContainer();
+        this.toolbar = this.getToolbar();
 
         this.bindModeToggle();
         this.bindLabel();
     }
 
     /**
-     * Get the element wrapping the textarea, creating it with the toolbar if the textarea has none
+     * Get the element wrapping the textarea, creating it if the textarea has none
      */
     private getContainer() {
         const textarea = this.element;
@@ -117,34 +122,45 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
         const container = document.createElement("div");
         container.classList.add("editor-wrap");
         textarea.parentNode?.insertBefore(container, textarea);
-
-        const toolbar = document.createElement("div");
-        toolbar.classList.add("editor-toolbar");
-        toolbar.appendChild(this.createToggleButton());
-
-        container.appendChild(toolbar);
         container.appendChild(textarea);
-
-        this.options.height -= toolbar.offsetHeight;
-        textarea.style.height = `${this.options.height}px`;
 
         return container;
     }
 
     /**
+     * Get the toolbar of the container, creating it with the button that switches the editor if the
+     * container has none
+     */
+    private getToolbar() {
+        const labelId = $(`label[for="${this.id}"]`)?.id;
+
+        const existing = $<HTMLElement>(".editor-toolbar", this.container);
+
+        if (existing) {
+            return new Toolbar(existing, labelId);
+        }
+
+        const element = document.createElement("div");
+        element.classList.add("editor-toolbar");
+        this.container.prepend(element);
+
+        const toolbar = new Toolbar(element, labelId);
+        toolbar.add(this.createToggleButton(toolbar));
+
+        this.options.height -= element.offsetHeight;
+        this.element.style.height = `${this.options.height}px`;
+
+        return toolbar;
+    }
+
+    /**
      * Create the button of the toolbar that switches between the Markdown and the code editor
      */
-    private createToggleButton() {
-        const title = app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown");
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.classList.add("button", "toolbar-button", "editor-toggle-markdown");
+    private createToggleButton(toolbar: Toolbar) {
+        const button = toolbar.createButton("markdown", app.translation.get("panel.editor.toggleMarkdown", "Toggle Markdown"));
+        button.classList.add("editor-toggle-markdown");
         button.dataset.command = "toggle-markdown";
-        button.title = title;
-        button.ariaLabel = title;
         button.disabled = this.element.disabled;
-        button.innerHTML = markdown;
 
         return button;
     }
@@ -178,22 +194,12 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
     }
 
     /**
-     * Focus the editor when the label is clicked and make the toolbar accessible
+     * Focus the editor when the label is clicked
      */
     private bindLabel() {
-        const label = $(`label[for="${this.id}"]`);
-
-        const toolbar = $<HTMLElement>(".editor-toolbar", this.container);
-
-        if (label) {
-            label.addEventListener("click", () => {
-                void this.editorPromise.then(() => this.editor?.view.focus());
-            });
-        }
-
-        if (toolbar) {
-            initToolbar(toolbar, label?.id);
-        }
+        $(`label[for="${this.id}"]`)?.addEventListener("click", () => {
+            void this.editorPromise.then(() => this.editor?.view.focus());
+        });
     }
 
     /**
@@ -207,6 +213,7 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
                 editable: !(this.element.disabled || this.element.readOnly),
                 placeholder: this.element.placeholder,
                 baseUri: this.options.baseUri,
+                toolbar: this.toolbar,
                 attributes: {
                     spellcheck: this.options.spellcheck ? "true" : "false",
                     ...this.accessibilityAttributes(),
@@ -225,6 +232,7 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
             return new CodeView(this.container, this.element.value, this.options.inputEventHandler, {
                 editable: !(this.element.disabled || this.element.readOnly),
                 placeholder: this.element.placeholder,
+                toolbar: this.toolbar,
             });
         });
     }
