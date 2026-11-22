@@ -257,5 +257,14 @@ describe("Modal", () => {
             first.close();
             assert.equal(hasBackdrop(), false);
         });
+
+        test("keeps the backdrop while another modal is open", () => {
+            const first = makeModal("first-modal", '<input id="first-input">');
+            const second = makeModal("second-modal", '<input id="second-input">');
+            first.open();
+            second.open();
+            second.close();
+            assert.equal(hasBackdrop(), true);
+        });
     });
 });

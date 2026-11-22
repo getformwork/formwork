@@ -138,14 +138,17 @@ export class Modal {
         this.element.role = null;
         this.element.ariaModal = null;
 
-        this.removeBackdrop();
-
         this.state = "closed";
 
         const index = Modal.openModals.indexOf(this);
 
         if (index !== -1) {
             Modal.openModals.splice(index, 1);
+        }
+
+        // The backdrop is shared by the open modals
+        if (Modal.openModals.length === 0) {
+            this.removeBackdrop();
         }
 
         this.dispatchCallback("close", options.triggerElement);
