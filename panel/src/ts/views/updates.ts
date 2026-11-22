@@ -52,7 +52,7 @@ export function initUpdates(updater: HTMLElement) {
         updates.installing(updateStatus.dataset.installingText as string);
 
         post<UpdateInstallation>(`${app.config.baseUri}updates/update/`, {}, (response) => {
-            const notification = new Notification(response.message, response.status, { icon: "checkCircle" });
+            const notification = new Notification(response.message, response.status);
             notification.show();
 
             updates.installed(response);

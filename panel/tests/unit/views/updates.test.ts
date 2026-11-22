@@ -1,8 +1,10 @@
 import "../../environment/dom";
 import assert from "node:assert/strict";
 import { beforeEach, describe, type TestContext, test } from "node:test";
+import { checkCircle, exclamationOctagon } from "../../../src/ts/components/ui/icons";
 import { app } from "../../../src/ts/services/app";
 import { initUpdates } from "../../../src/ts/views/updates";
+import { iconMarkup } from "../../helpers/panel";
 import { installXMLHttpRequestStub, XMLHttpRequestStub } from "../../stubs/xhr";
 
 beforeEach((t) => {
@@ -107,5 +109,13 @@ describe("Updates View", () => {
         XMLHttpRequestStub.last.respondJson("error", "Cannot install the update");
         assert.deepEqual(shown(), { status: "Cannot install the update", spinner: "spinner spinner-danger", newVersion: null, currentVersion: null });
         assert.equal(document.querySelector(".notification-danger")?.textContent?.trim(), "Cannot install the update");
+    });
+
+    test("notifies the failed installation with the icon of the errors", (t) => {
+        checkOutdated(t);
+        install();
+        XMLHttpRequestStub.last.respondJson("error", "Cannot install the update");
+        assert.equal(document.querySelector(".notification")?.firstElementChild?.outerHTML, iconMarkup(exclamationOctagon));
+        assert.notEqual(iconMarkup(exclamationOctagon), iconMarkup(checkCircle));
     });
 });
