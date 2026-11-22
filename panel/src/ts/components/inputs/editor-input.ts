@@ -82,13 +82,16 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
 
         this.id = textarea.id;
 
+        // The changes are notified once the user stops typing
+        const notifyChange = debounce(() => this.dispatchChange(), 500);
+
         const defaults: EditorInputOptions = {
             baseUri: textarea.dataset.baseUri ?? app.config.siteUri,
             height: getTextareaHeight(textarea) ?? 200,
             spellcheck: true,
             inputEventHandler: (value: string) => {
                 this.element.value = value;
-                debounce(() => this.dispatchChange(), 500, true)();
+                notifyChange();
             },
         };
 

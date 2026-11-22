@@ -76,6 +76,18 @@ describe("EditorInput", () => {
             assert.equal(input.value, "foobar");
         });
 
+        test("notifies the changes when the user stops typing", async (t) => {
+            const { input, change } = await makeEditor("foo");
+            t.mock.timers.enable({ apis: ["setTimeout"] });
+            type(proseMirror(input), "bar");
+            assert.equal(change.mock.callCount(), 0);
+            t.mock.timers.tick(500);
+            assert.equal(change.mock.callCount(), 1);
+            type(proseMirror(input), "baz");
+            t.mock.timers.tick(500);
+            assert.equal(change.mock.callCount(), 2);
+        });
+
         test("sets the content", async () => {
             const { input, textarea } = await makeEditor("foo");
             input.value = "# bar";
