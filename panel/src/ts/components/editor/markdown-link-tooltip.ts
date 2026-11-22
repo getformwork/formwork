@@ -5,16 +5,12 @@ import type { EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { debounce, throttle } from "../../utils/events";
 import { $ } from "../../utils/selectors";
+import { hasSafeScheme, resolveUri } from "../../utils/uri";
+import { escapeHtml } from "../../utils/validation";
 import { link as linkIcon, pencil, trash } from "../ui/icons";
 import { Tooltip } from "../ui/tooltip";
 import { getMarkRange, insertLink, removeLink } from "./markdown-commands";
 
-/**
- * Make a relative link absolute
- */
-function addBaseUri(text: string, baseUri: string) {
-    return text.replace(/^\/?(?!https?:\/\/)(.+)/, `${baseUri}$1`);
-}
 /**
  * Shows a tooltip with the address of the link at the cursor and the buttons to edit or remove it
  */
@@ -23,32 +19,39 @@ class LinkTooltipView {
     tooltip?: Tooltip;
     baseUri: string;
 
+    private readonly resizeHandler = throttle(() => this.update(this.editorView), 100);
+
+    private readonly scrollHandler = debounce(() => this.hide(), 100, true);
+
+    private destroyed = false;
+
     constructor(view: EditorView, baseUri: string) {
         this.editorView = view;
 
         this.baseUri = baseUri;
 
-        const resizeHandler = throttle(() => this.update(this.editorView), 100);
+        window.addEventListener("resize", this.resizeHandler);
+        window.addEventListener("scroll", this.scrollHandler);
 
-        const scrollHandler = debounce(() => this.destroy(), 100, true);
-
-        window.addEventListener("resize", resizeHandler);
-        window.addEventListener("scroll", scrollHandler);
-
-        this.editorView.dom.addEventListener("scroll", scrollHandler);
-        this.editorView.dom.addEventListener("blur", () => this.destroy());
+        this.editorView.dom.addEventListener("scroll", this.scrollHandler);
+        this.editorView.dom.addEventListener("blur", () => this.hide());
     }
 
     /**
      * Show the tooltip if the cursor is in a link
      */
     update(view: EditorView) {
+        // A throttled resize may arrive after the editor is removed
+        if (this.destroyed) {
+            return;
+        }
+
         const { from, to } = view.state.selection;
 
         const range = getMarkRange(view.state, schema.marks.link);
 
         if (!(range && from >= range.from && to <= range.to)) {
-            this.destroy();
+            this.hide();
             return;
         }
 
@@ -83,8 +86,13 @@ class LinkTooltipView {
     private createTooltip(link: Mark, linkDom: HTMLElement) {
         const t = (key: string, defaultValue: string) => app.translation.get(key, defaultValue);
 
+        const href: string = link.attrs.href;
+
+        // The address comes from the content: it is escaped, and it is not opened if unsafe (e.g. `javascript:`)
+        const address = hasSafeScheme(href) ? `<a href="${escapeHtml(resolveUri(href, app.config.siteUri, this.baseUri))}" target="_blank">${escapeHtml(href)}</a>` : escapeHtml(href);
+
         const tooltip = new Tooltip(
-            `<div class="editor-link-tooltip truncate mr-4"><a href="${addBaseUri(link.attrs.href, this.baseUri)}" target="_blank">${link.attrs.href}</a></div>
+            `<div class="editor-link-tooltip truncate mr-4">${address}</div>
                 <div class="separator"></div>
                 <button type="button" class="tooltip-button" data-command="edit-link">${t("panel.modal.action.edit", "Edit")}</button>
                 <div class="separator"></div>
@@ -119,19 +127,29 @@ class LinkTooltipView {
     /**
      * Hide the tooltip
      */
-    destroy() {
+    hide() {
         if (this.tooltip) {
             const tooltip = this.tooltip;
             window.setTimeout(() => tooltip.remove(), 100);
         }
         this.tooltip = undefined;
     }
+
+    /**
+     * Hide the tooltip and stop following the window, when the editor is removed
+     */
+    destroy() {
+        this.destroyed = true;
+        window.removeEventListener("resize", this.resizeHandler);
+        window.removeEventListener("scroll", this.scrollHandler);
+        this.hide();
+    }
 }
 
 /**
  * Get the plugin that shows the tooltip of the links
  *
- * @param baseUri Base URI used to resolve relative links
+ * @param baseUri URI of the page, against which relative links are resolved
  */
 export function linkTooltip(baseUri: string): Plugin {
     return new Plugin({

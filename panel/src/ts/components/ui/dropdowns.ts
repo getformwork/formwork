@@ -198,7 +198,8 @@ function getItems(dropdown: HTMLElement): HTMLElement[] {
 }
 
 /**
- * Open and close a menu with the keyboard, and focus its first or last item
+ * Open and close a menu with the keyboard, and focus its first or last item or the one starting
+ * with a typed character
  */
 function handleButtonKeydown(event: KeyboardEvent, button: HTMLElement) {
     const dropdown = getDropdown(button);
@@ -220,7 +221,20 @@ function handleButtonKeydown(event: KeyboardEvent, button: HTMLElement) {
         const items = getItems(dropdown);
 
         (event.key === "ArrowDown" ? items[0] : items[items.length - 1])?.focus();
+    } else if (isPrintable(event) && isVisible(dropdown)) {
+        // A menu opened with the mouse keeps the focus on its button
+        event.preventDefault();
+        focusByText(getItems(dropdown), -1, event.key);
     }
+}
+
+/**
+ * Return whether a key types a character to look for an item
+ *
+ * Space is left out, as it chooses the focused item or toggles the menu
+ */
+function isPrintable(event: KeyboardEvent) {
+    return event.key.length === 1 && event.key !== " " && !event.ctrlKey && !event.metaKey && !event.altKey;
 }
 
 /**
@@ -275,7 +289,7 @@ function handleMenuKeydown(event: KeyboardEvent, menu: HTMLElement) {
             }
             break;
         default:
-            if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+            if (isPrintable(event)) {
                 event.preventDefault();
                 focusByText(items, index, event.key);
             }

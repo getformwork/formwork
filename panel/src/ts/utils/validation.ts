@@ -162,9 +162,12 @@ const htmlEntityMap: Record<string, string> = {
 
 /**
  * Escape the characters of a string having a special meaning in a regular expression
+ *
+ * `-` is not escaped, as it is special only in character classes and its escape is not valid with
+ * the `u` flag
  */
 export function escapeRegExp(string: string) {
-    return string.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
+    return string.replace(/[[\]/{}()*+?.\\^$|]/g, "\\$&");
 }
 
 /**
@@ -178,14 +181,8 @@ export function makeDiacriticsRegExp(string: string) {
  * Make a slug from a text
  */
 export function makeSlug(string: string) {
-    // Whitespace becomes hyphens, and hyphens at the ends are removed after the characters not allowed, which can be at the ends instead of them
-    return string
-        .toLowerCase()
-        .replace(/./gu, (match) => slugMap[match] ?? match)
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
+    // Hyphens are collapsed and removed at the ends after removing the characters not allowed, which may leave them
+    return validateSlug(string).replace(/-+/g, "-").replace(/^-|-$/g, "");
 }
 
 /**
@@ -203,6 +200,7 @@ export function escapeHtml(string: string) {
 export function validateSlug(slug: string) {
     return slug
         .toLowerCase()
+        .replace(/./gu, (match) => slugMap[match] ?? match)
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
 }

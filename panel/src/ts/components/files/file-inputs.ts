@@ -85,11 +85,30 @@ export function removeFromFileInputs(form: Form | undefined, filename: string) {
 }
 
 /**
- * Replace a renamed file in the inputs of a form
+ * Replace a renamed file in the inputs of a form, also in their values
+ *
+ * The file is removed from the inputs that do not accept its new type
  */
 export function replaceInFileInputs(form: Form | undefined, filename: string, file: FileOption) {
+    const acceptingInputs = fileInputs(form, file.type);
+
     for (const input of fileInputs(form)) {
+        const accepts = acceptingInputs.includes(input);
+        const selected = input instanceof SelectInput && input.value === filename;
+
+        // Removing the option also removes the file from the value, so the tag is renamed before
+        if (accepts && input instanceof TagsInput) {
+            input.renameTag(filename, file.name);
+        }
+
         removeOption(input, filename);
-        addOption(input, file);
+
+        if (accepts) {
+            addOption(input, file);
+
+            if (selected) {
+                input.value = file.name;
+            }
+        }
     }
 }

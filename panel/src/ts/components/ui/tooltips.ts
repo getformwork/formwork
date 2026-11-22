@@ -100,7 +100,7 @@ export class Tooltips {
             return;
         }
 
-        if (this.element === element || element.getAttribute("aria-expanded") === "true") {
+        if (this.isShownFor(element) || element.getAttribute("aria-expanded") === "true") {
             return;
         }
 

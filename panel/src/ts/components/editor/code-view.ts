@@ -4,7 +4,8 @@ import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { Compartment } from "@codemirror/state";
 import { EditorView, keymap, placeholder } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
-import { MenuPlugin } from "./code-menu";
+import { menuPlugin } from "./code-menu";
+import type { Toolbar } from "./toolbar";
 
 /**
  * Holds the options of the code editor
@@ -12,6 +13,10 @@ import { MenuPlugin } from "./code-menu";
 interface CodeViewOptions {
     editable?: boolean;
     placeholder?: string;
+    /**
+     * Toolbar to which the buttons of the editor are added
+     */
+    toolbar?: Toolbar;
 }
 
 /**
@@ -78,13 +83,12 @@ export class CodeView {
                 history(),
                 syntaxHighlighting(myHighlightStyle, { fallback: true }),
                 markdown(),
-                MenuPlugin(),
+                options.toolbar ? menuPlugin(options.toolbar) : [],
                 theme,
                 keymap.of([...defaultKeymap, ...historyKeymap]),
                 EditorView.domEventHandlers({
                     focus: () => target.classList.add("focused"),
                     blur: () => target.classList.remove("focused"),
-                    input: () => inputEventHandler(this.content),
                 }),
                 EditorView.updateListener.of((update) => {
                     if (update.docChanged) {

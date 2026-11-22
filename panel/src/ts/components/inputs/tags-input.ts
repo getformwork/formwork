@@ -31,11 +31,11 @@ interface TagsInputDropdownItem {
 }
 
 /**
- * Get the tags of a value, ignoring the empty ones
+ * Get the tags of a value separated by commas, ignoring the empty ones, as the server does
  */
 function parseTags(value: string) {
     return value
-        .split(", ")
+        .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag !== "");
 }
@@ -213,6 +213,16 @@ export class TagsInput extends InputBase<HTMLInputElement> {
     }
 
     /**
+     * Rename a tag, keeping its position
+     */
+    renameTag(oldValue: string, newValue: string) {
+        if (this.tags.value.includes(oldValue)) {
+            this.tags.value = this.tags.value.map((tag) => (tag === oldValue ? newValue : tag));
+            this.updateTags();
+        }
+    }
+
+    /**
      * Move a tag to another position
      */
     private moveTag(oldIndex: number, newIndex: number) {
@@ -243,13 +253,16 @@ export class TagsInput extends InputBase<HTMLInputElement> {
             img.alt = "";
             item.insertAdjacentElement("afterbegin", img);
         } else if (option.icon) {
+            // Unknown icons are left out
             // biome-ignore lint/performance/noDynamicNamespaceImportAccess: Accessing the icon dynamically from the imported icons object is necessary for flexibility
-            item.insertAdjacentHTML("afterbegin", icons[option.icon]);
+            item.insertAdjacentHTML("afterbegin", icons[option.icon] ?? "");
         }
 
         item.addEventListener("click", () => {
             if (item.dataset.value) {
                 this.addTag(item.dataset.value);
+                this.clearInput();
+                this.updateDropdown();
             }
         });
 
@@ -363,7 +376,7 @@ export class TagsInput extends InputBase<HTMLInputElement> {
         this.innerInput.addEventListener("blur", () => {
             const value = this.innerInput.value.trim();
             if (value !== "") {
-                this.addTag(value);
+                this.addTypedTags(value);
             }
             this.field.classList.remove("focused");
         });
@@ -415,20 +428,21 @@ export class TagsInput extends InputBase<HTMLInputElement> {
         } else if (isAddKey || (event.key === "Enter" && value !== "")) {
             event.preventDefault();
             if (value !== "") {
-                this.addTypedTag(value);
+                this.addTypedTags(value);
             }
         }
     }
 
     /**
-     * Add a tag typed by the user, marking the text field as invalid if the tag cannot be added
+     * Add the tags typed or pasted by the user, separated by commas, keeping in the text field
+     * those that cannot be added, which is marked as invalid
      */
-    private addTypedTag(value: string) {
-        if (this.tags.value.length >= this.options.limit || this.tags.value.includes(value)) {
-            this.innerInput.classList.add("form-input-invalid");
-        } else {
-            this.addTag(value);
-        }
+    private addTypedTags(text: string) {
+        const rejected = parseTags(text).filter((tag) => !this.addTag(tag));
+        this.innerInput.value = rejected.join(", ");
+        this.innerInput.classList.toggle("form-input-invalid", rejected.length > 0);
+        this.updatePlaceholder();
+        this.updateDropdown();
     }
 
     /**
@@ -546,17 +560,15 @@ export class TagsInput extends InputBase<HTMLInputElement> {
     }
 
     /**
-     * Add a tag if valid and clear the text field
+     * Add a tag if valid, returning whether it was added
      */
     private addTag(value: string) {
-        if (this.validateTag(value)) {
-            this.tags.value = [...this.tags.value, value];
-            this.updateTags();
-        } else {
-            this.updatePlaceholder();
+        if (!this.validateTag(value)) {
+            return false;
         }
-        this.innerInput.value = "";
-        this.updateDropdown();
+        this.tags.value = [...this.tags.value, value];
+        this.updateTags();
+        return true;
     }
 
     /**

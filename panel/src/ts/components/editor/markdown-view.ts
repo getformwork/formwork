@@ -4,21 +4,30 @@ import { keymap } from "prosemirror-keymap";
 import { defaultMarkdownParser, defaultMarkdownSerializer, schema } from "prosemirror-markdown";
 import type { Transaction } from "prosemirror-state";
 import { EditorState, Plugin } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
+import { Decoration, DecorationSet, EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
+import { resolveUri } from "../../utils/uri";
 import { buildInputRules } from "./markdown-input-rules";
 import { buildKeymap } from "./markdown-keymap";
 import { linkTooltip } from "./markdown-link-tooltip";
 import { menuPlugin } from "./markdown-menu";
-import { placeholderPlugin } from "./markdown-placeholder";
+import type { Toolbar } from "./toolbar";
 
 /**
  * Holds the options of the Markdown editor
  */
 export interface MarkdownViewOptions {
     editable?: boolean;
+    /**
+     * URI of the page, against which the relative URIs of links and images are resolved
+     */
+    baseUri?: string;
     placeholder?: string;
     attributes?: Record<string, string>;
+    /**
+     * Toolbar to which the buttons of the editor are added
+     */
+    toolbar?: Toolbar;
 }
 
 /**
@@ -33,6 +42,8 @@ export class MarkdownView {
     view: EditorView;
 
     constructor(id: string, target: Element, content: string, inputEventHandler: (content: string) => void, options: MarkdownViewOptions = {}) {
+        const baseUri = options.baseUri ?? app.config.siteUri;
+
         this.view = new EditorView(target, {
             state: EditorState.create({
                 doc: defaultMarkdownParser.parse(content),
@@ -41,9 +52,9 @@ export class MarkdownView {
                     keymap(buildKeymap(schema)),
                     keymap(baseKeymap),
                     history(),
-                    menuPlugin(id),
+                    ...(options.toolbar ? [menuPlugin(id, options.toolbar)] : []),
                     placeholderPlugin(options.placeholder ?? ""),
-                    linkTooltip(app.config.siteUri),
+                    linkTooltip(baseUri),
                     new Plugin({
                         props: {
                             handleDOMEvents: {
@@ -56,6 +67,18 @@ export class MarkdownView {
             }),
             attributes: options.attributes,
             editable: () => options.editable ?? true,
+            nodeViews: {
+                // Images are shown resolving their source as the site does, without changing the content
+                image(node) {
+                    const image = document.createElement("img");
+                    image.src = resolveUri(node.attrs.src, app.config.siteUri, baseUri);
+                    image.alt = node.attrs.alt ?? "";
+                    if (node.attrs.title) {
+                        image.title = node.attrs.title;
+                    }
+                    return { dom: image };
+                },
+            },
             dispatchTransaction(this: EditorView, tr: Transaction) {
                 this.updateState(this.state.apply(tr));
                 if (tr.docChanged) {
@@ -111,4 +134,33 @@ export class MarkdownView {
     destroy() {
         this.view.destroy();
     }
+}
+
+/**
+ * Get the plugin that shows a placeholder when the document is empty
+ *
+ * @param text Text of the placeholder
+ */
+function placeholderPlugin(text: string) {
+    if (!text) {
+        return new Plugin({});
+    }
+
+    return new Plugin({
+        props: {
+            decorations(state: EditorState) {
+                const isEmpty = state.doc.childCount === 1 && state.doc?.firstChild?.isTextblock && state.doc?.firstChild.content.size === 0;
+
+                if (!isEmpty) {
+                    return null;
+                }
+
+                const placeholder = document.createElement("span");
+                placeholder.className = "pm-placeholder";
+                placeholder.textContent = text;
+
+                return DecorationSet.create(state.doc, [Decoration.widget(1, placeholder, { side: 1 })]);
+            },
+        },
+    });
 }

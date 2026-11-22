@@ -8,7 +8,7 @@ import type { Form } from "../services/form";
 import type { Modal } from "../services/modal";
 import { post } from "../services/request";
 import { debounce } from "../utils/events";
-import { initSearchInput } from "../utils/search";
+import { highlightMatches, initSearchInput } from "../utils/search";
 import { $, $$ } from "../utils/selectors";
 import { escapeHtml, makeSlug } from "../utils/validation";
 
@@ -135,7 +135,7 @@ function initSearch(tree: PagesTree) {
         }
     });
 
-    initSearchInput(searchInput, () => tree.search(escapeHtml(searchInput.value)));
+    initSearchInput(searchInput, () => tree.search(searchInput.value));
 }
 
 /**
@@ -151,14 +151,16 @@ function filterPages(tree: PagesTree) {
         const row = $(".pages-tree-row", item) as HTMLElement;
 
         if (regexp === null) {
+            // Remove the highlights of the previous search
+            title.innerHTML = escapeHtml(title.textContent);
             row.style.display = "";
             continue;
         }
 
-        const text = escapeHtml(title.textContent);
+        const html = highlightMatches(title.textContent, regexp);
 
-        if (text.match(regexp) !== null) {
-            title.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+        if (html !== null) {
+            title.innerHTML = html;
             row.style.display = "";
         } else {
             row.style.display = "none";
@@ -210,27 +212,23 @@ function limitTemplates(parentSelect: SelectInput, templateSelect: SelectInput) 
     }
 
     const allowedTemplates = parent.dataset.allowedTemplates ? parent.dataset.allowedTemplates.split(" ") : [];
+    const { dataset } = templateSelect.element;
 
     if (allowedTemplates.length > 0) {
-        templateSelect.element.dataset.previousValue = templateSelect.value;
-
-        templateSelect.value = allowedTemplates[0];
-
-        templateSelect.dropdownItems.forEach((item) => {
-            if (!allowedTemplates.includes(item.dataset.value as string)) {
-                item.classList.add("disabled");
-            }
-        });
-    } else {
-        if ("previousValue" in templateSelect.element.dataset) {
-            templateSelect.value = templateSelect.element.dataset.previousValue as string;
-            delete templateSelect.element.dataset.previousValue;
+        // The template chosen by the user is kept until a parent accepts all templates again
+        if (!("previousValue" in dataset)) {
+            dataset.previousValue = templateSelect.value;
         }
 
-        templateSelect.dropdownItems.forEach((item) => {
-            item.classList.remove("disabled");
-        });
+        templateSelect.value = allowedTemplates[0];
+    } else if ("previousValue" in dataset) {
+        templateSelect.value = dataset.previousValue as string;
+        delete dataset.previousValue;
     }
+
+    templateSelect.dropdownItems.forEach((item) => {
+        item.classList.toggle("disabled", allowedTemplates.length > 0 && !allowedTemplates.includes(item.dataset.value as string));
+    });
 }
 
 /**
@@ -402,7 +400,7 @@ async function createSortable(element: HTMLElement) {
 
             post(`${app.config.baseUri}pages/reorder/`, data, (response) => {
                 if (response.status) {
-                    const notification = new Notification(response.message, response.status, { icon: "checkCircle" });
+                    const notification = new Notification(response.message, response.status);
                     notification.show();
                 }
                 if (!response.status || response.status === "error") {

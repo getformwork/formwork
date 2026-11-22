@@ -1,8 +1,8 @@
 /**
  * Serialize the fields of a form as a query string
  *
- * Disabled fields, buttons, file inputs, unchecked checkboxes and radios and fields with
- * `data-form-ignore="true"` are left out
+ * Fieldsets, disabled fields (also by a fieldset), buttons, file inputs, unchecked checkboxes and
+ * radios and fields with `data-form-ignore="true"` are left out
  */
 export function serializeForm(form: HTMLFormElement) {
     const serialized: string[] = [];
@@ -34,7 +34,26 @@ export function serializeForm(form: HTMLFormElement) {
  * Return whether a field is sent with the form and is considered in its changes
  */
 function isSerializable(field: HTMLFormElement) {
-    return field.name && !field.disabled && field.dataset.formIgnore !== "true" && !["file", "reset", "submit", "button"].includes(field.type);
+    return field.name && !isDisabled(field) && field.dataset.formIgnore !== "true" && !["fieldset", "file", "reset", "submit", "button"].includes(field.type);
+}
+
+/**
+ * Return whether a field is disabled, also by a disabled fieldset
+ *
+ * As in browsers, the fields in the first legend of a disabled fieldset are not disabled by it
+ */
+function isDisabled(field: HTMLFormElement) {
+    if (field.disabled) {
+        return true;
+    }
+
+    for (let fieldset = field.closest("fieldset[disabled]"); fieldset !== null; fieldset = fieldset.parentElement?.closest("fieldset[disabled]") ?? null) {
+        if (!fieldset.querySelector(":scope > legend")?.contains(field)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**

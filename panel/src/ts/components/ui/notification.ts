@@ -153,14 +153,24 @@ export class Notification {
 
         notification.addEventListener("click", () => this.remove());
 
-        notification.addEventListener("mouseenter", pause);
+        let hovered = false;
+
+        notification.addEventListener("mouseenter", () => {
+            hovered = true;
+            pause();
+        });
         notification.addEventListener("mouseleave", () => {
+            hovered = false;
             if (!notification.matches(":focus-within")) {
                 resume();
             }
         });
         notification.addEventListener("focusin", pause);
-        notification.addEventListener("focusout", resume);
+        notification.addEventListener("focusout", () => {
+            if (!hovered) {
+                resume();
+            }
+        });
 
         notification.addEventListener("keydown", (event) => {
             if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {

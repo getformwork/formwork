@@ -75,8 +75,11 @@ export class ArrayInput extends InputBase<HTMLFieldSetElement> {
             const key = keyInput?.value.trim() ?? "";
             const value = valueInput.value.trim();
 
-            if (this.isAssociative && key) {
-                values[key] = value;
+            if (this.isAssociative) {
+                // Rows without a key are not sent with the form
+                if (key) {
+                    values[key] = value;
+                }
             } else if (value) {
                 values[i++] = value;
             }
@@ -154,6 +157,7 @@ export class ArrayInput extends InputBase<HTMLFieldSetElement> {
         if ($$(".form-input-array-row", parent).length > 1) {
             parent.removeChild(item);
             this.itemCache.delete(item);
+            this.form.removeInputs(item);
         } else {
             this.clearItem(item);
         }

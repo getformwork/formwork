@@ -107,18 +107,20 @@ export class DurationInput extends Input<HTMLInputElement> {
     private updateHiddenInput() {
         const intervals: TimeIntervals = {};
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
-            intervals[i] = parseInt(input.value, 10);
+            // An empty field counts as zero
+            intervals[i] = parseInt(input.value, 10) || 0;
         });
         let seconds = intervalsToSeconds(intervals);
         if (this.element.step) {
             const step = parseInt(this.element.step, 10) * TIME_INTERVALS[this.options.unit];
             seconds = Math.floor(seconds / step) * step;
         }
+        // The minimum and the maximum are in the unit of the value
         if (this.element.min) {
-            seconds = Math.max(seconds, parseInt(this.element.min, 10));
+            seconds = Math.max(seconds, parseInt(this.element.min, 10) * TIME_INTERVALS[this.options.unit]);
         }
         if (this.element.max) {
-            seconds = Math.min(seconds, parseInt(this.element.max, 10));
+            seconds = Math.min(seconds, parseInt(this.element.max, 10) * TIME_INTERVALS[this.options.unit]);
         }
         this.element.value = `${Math.round(seconds / TIME_INTERVALS[this.options.unit])}`;
         this.dispatchChange();

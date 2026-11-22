@@ -2,8 +2,9 @@ import { effect, signal } from "@preact/signals-core";
 import { app } from "../../services/app";
 import type { Form } from "../../services/form";
 import { post } from "../../services/request";
-import { initSearchInput, makeSearchRegExp } from "../../utils/search";
+import { highlightMatches, initSearchInput, makeSearchRegExp } from "../../utils/search";
 import { $, $$ } from "../../utils/selectors";
+import { readStorage, writeStorage } from "../../utils/storage";
 import { escapeHtml } from "../../utils/validation";
 import { Notification } from "../ui/notification";
 import { removeFromFileInputs, replaceInFileInputs } from "./file-inputs";
@@ -23,7 +24,8 @@ interface RenamedFile {
  * Describes the file data sent by the server after a replacement
  */
 interface ReplacedFile {
-    thumbnail?: string;
+    // Only images and videos have a thumbnail
+    thumbnail?: string | null;
     lastModifiedTime: string;
     size: string;
 }
@@ -98,22 +100,26 @@ export class FilesList {
         const fieldName = toggle.dataset.for;
 
         const key = formName ? `${formName}.${fieldName}` : fieldName;
-        const viewAs = window.localStorage.getItem(`formwork.filesListViewAs[${key}]`);
+        const storageKey = `formwork.filesListViewAs[${key}]`;
+        const inputs = Array.from($$<HTMLInputElement>("input", toggle));
 
-        if (viewAs) {
-            $$<HTMLInputElement>("input", toggle).forEach((input) => {
-                input.checked = false;
+        // A remembered view without an input, e.g. of an older version, is ignored
+        const viewAs = readStorage(storageKey);
+        const viewAsInput = inputs.find((input) => input.value === viewAs);
+
+        if (viewAsInput) {
+            inputs.forEach((input) => {
+                input.checked = input === viewAsInput;
             });
-            ($(`input[value=${viewAs}]`, this.element) as HTMLInputElement).checked = true;
-            this.element.classList.toggle("is-thumbnails", viewAs === "thumbnails");
-            this.element.classList.toggle("is-list", viewAs === "list");
+            this.element.classList.toggle("is-thumbnails", viewAsInput.value === "thumbnails");
+            this.element.classList.toggle("is-list", viewAsInput.value === "list");
         }
 
-        $$<HTMLInputElement>("input", toggle).forEach((input) => {
+        inputs.forEach((input) => {
             input.addEventListener("input", () => {
                 this.element.classList.toggle("is-thumbnails", input.value === "thumbnails");
                 this.element.classList.toggle("is-list", input.value === "list");
-                window.localStorage.setItem(`formwork.filesListViewAs[${key}]`, input.value);
+                writeStorage(storageKey, input.value);
             });
         });
     }
@@ -142,12 +148,13 @@ export class FilesList {
             return;
         }
 
-        if (this.hasSelectionActions()) {
-            if (target.closest(".dropdown")) {
-                this.clearSelection();
-                return;
-            }
+        // The menu of a file neither selects nor opens it
+        if (target.closest(".dropdown")) {
+            this.clearSelection();
+            return;
+        }
 
+        if (this.hasSelectionActions()) {
             if (event.ctrlKey || event.metaKey) {
                 event.preventDefault();
                 this.toggleSelected(item);
@@ -261,8 +268,8 @@ export class FilesList {
                     if (response.status === "success") {
                         if (command.closest("[data-form=file-form]")) {
                             window.location.reload();
-                        } else if (response.data.thumbnail) {
-                            this.updateReplacedItem(command.closest(".files-item") as HTMLElement, { ...response.data, thumbnail: response.data.thumbnail });
+                        } else {
+                            this.updateReplacedItem(command.closest(".files-item") as HTMLElement, response.data);
                         }
                     }
 
@@ -276,11 +283,25 @@ export class FilesList {
 
     /**
      * Show the thumbnail, date and size of a replaced file
+     *
+     * Files that are not images or videos have no thumbnail, and the columns of the list may not
+     * include the date and the size
      */
-    private updateReplacedItem(item: HTMLElement, data: ReplacedFile & { thumbnail: string }) {
-        ($(".file-thumbnail", item) as HTMLImageElement | HTMLVideoElement).src = data.thumbnail;
-        ($(".file-date", item) as HTMLElement).textContent = data.lastModifiedTime;
-        ($(".file-size", item) as HTMLElement).textContent = data.size;
+    private updateReplacedItem(item: HTMLElement, data: ReplacedFile) {
+        const thumbnail = $<HTMLImageElement | HTMLVideoElement>(".file-thumbnail", item);
+        if (thumbnail && data.thumbnail) {
+            thumbnail.src = data.thumbnail;
+        }
+
+        const date = $(".file-date", item);
+        if (date) {
+            date.textContent = data.lastModifiedTime;
+        }
+
+        const size = $(".file-size", item);
+        if (size) {
+            size.textContent = data.size;
+        }
     }
 
     /**
@@ -300,7 +321,7 @@ export class FilesList {
         });
 
         initSearchInput(searchInput, () => {
-            this.query.value = escapeHtml(searchInput.value);
+            this.query.value = searchInput.value;
         });
     }
 
@@ -310,9 +331,9 @@ export class FilesList {
     private filterItems(query: string) {
         const regexp = query ? makeSearchRegExp(query, { wordStart: false, global: true }) : null;
 
-        ($(".files-item") as HTMLElement).classList.toggle("is-filtered", query.length > 0);
+        this.element.classList.toggle("is-filtered", query.length > 0);
 
-        $$(".files-item").forEach((item) => {
+        $$(".files-item", this.element).forEach((item) => {
             const matches = this.highlightMatches(item, regexp);
 
             item.style.display = !query || matches > 0 ? "" : "none";
@@ -332,13 +353,14 @@ export class FilesList {
                 continue;
             }
 
-            const text = escapeHtml(element.textContent);
+            const text = element.textContent;
+            const html = regexp ? highlightMatches(text, regexp) : null;
 
-            if (regexp && text.match(regexp) !== null) {
-                element.innerHTML = text.replace(regexp, "<mark>$&</mark>");
+            if (html !== null) {
+                element.innerHTML = html;
                 matches++;
             } else {
-                element.innerHTML = text;
+                element.innerHTML = escapeHtml(text);
             }
         }
 
@@ -493,7 +515,8 @@ export class FilesList {
     private deleteItems(selectedItems: HTMLElement[]) {
         let pending = selectedItems.length;
         let deletedCount = 0;
-        let lastMessage = "";
+        let successMessage = "";
+        let errorMessage = "";
 
         selectedItems.forEach((selectedItem) => {
             const deleteCommand = $("[data-command=deleteFile]", selectedItem);
@@ -512,13 +535,15 @@ export class FilesList {
                 },
                 (response) => {
                     pending -= 1;
-                    lastMessage = response.message;
 
                     if (response.status === "success") {
                         deletedCount += 1;
+                        successMessage = response.message;
                         selectedItem.remove();
 
                         removeFromFileInputs(this.form, itemFilename as string);
+                    } else {
+                        errorMessage = response.message;
                     }
 
                     if (pending === 0) {
@@ -529,7 +554,8 @@ export class FilesList {
                         this.selected.value = new Set(this.selectedItems());
 
                         const allDeleted = deletedCount === selectedItems.length;
-                        const message = allDeleted && deletedCount > 1 ? app.translation.get("panel.files.deleted.multiple").replace("%d", String(deletedCount)) : lastMessage;
+                        // A failure is reported with the message of a failed deletion
+                        const message = !allDeleted ? errorMessage : deletedCount > 1 ? app.translation.get("panel.files.deleted.multiple").replace("%d", String(deletedCount)) : successMessage;
                         const notification = new Notification(message, allDeleted ? "success" : "error");
                         notification.show();
                     }

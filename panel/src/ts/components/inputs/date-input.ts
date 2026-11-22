@@ -57,7 +57,8 @@ export class DateInput extends InputBase<HTMLInputElement> {
         const defaults: DateInputOptions = {
             weekStarts: 0,
             dateFormat: "YYYY-MM-DD",
-            dateTimeFormat: "YYYY-MM-DD HH:mm:ss",
+            // `hh` are the hours of the 24-hour clock
+            dateTimeFormat: "YYYY-MM-DD hh:mm:ss",
             time: false,
             labels: {
                 today: app.translation.get("date.today", "Today"),

@@ -31,6 +31,8 @@ const focusableSelector = ["a[href]", "button:not([disabled])", "input:not([disa
 export class Modal {
     private static readonly openModals: Modal[] = [];
 
+    private static readonly handledEvents = new WeakSet<Event>();
+
     readonly element: HTMLElement;
 
     readonly form: Form | null;
@@ -105,7 +107,11 @@ export class Modal {
 
         if (this.isClosed) {
             this.returnFocusElement = this.resolveReturnFocusElement(options.triggerElement ?? (document.activeElement as HTMLElement | null));
+            Modal.openModals.push(this);
         }
+
+        // The modal must be the topmost one before getting the focus, or the one below takes it back
+        this.state = "open";
 
         (document.activeElement as HTMLElement | null)?.blur(); // Don't retain focus on any element
 
@@ -116,12 +122,6 @@ export class Modal {
         });
 
         this.createBackdrop();
-
-        if (this.isClosed) {
-            Modal.openModals.push(this);
-        }
-
-        this.state = "open";
 
         this.dispatchCallback("open", options.triggerElement);
     }
@@ -138,14 +138,17 @@ export class Modal {
         this.element.role = null;
         this.element.ariaModal = null;
 
-        this.removeBackdrop();
-
         this.state = "closed";
 
         const index = Modal.openModals.indexOf(this);
 
         if (index !== -1) {
             Modal.openModals.splice(index, 1);
+        }
+
+        // The backdrop is shared by the open modals
+        if (Modal.openModals.length === 0) {
+            this.removeBackdrop();
         }
 
         this.dispatchCallback("close", options.triggerElement);
@@ -272,7 +275,9 @@ export class Modal {
      */
     private bindKeyboard() {
         document.addEventListener("keyup", (event) => {
-            if (event.key === "Escape" && this.isOpen) {
+            // Once the topmost modal is closed, the one below must not handle the same Escape
+            if (event.key === "Escape" && this.isTopmost && !Modal.handledEvents.has(event)) {
+                Modal.handledEvents.add(event);
                 this.close();
             }
         });
@@ -294,8 +299,9 @@ export class Modal {
             }
         });
 
+        // The focus is moved only if outside, to preserve the position in the modal
         window.addEventListener("focus", () => {
-            if (this.element.classList.contains("open")) {
+            if (this.isTopmost && !this.element.contains(document.activeElement)) {
                 this.getFirstFocusableElement(this.element).focus();
             }
         });
@@ -391,6 +397,6 @@ export class Modal {
      * Get the element to focus when the modal is opened
      */
     private getFirstFocusableElement(parent: HTMLElement = document.body): HTMLElement {
-        return parent.querySelector("[autofocus], button, .button, input:not([type=hidden]), select, textarea") || parent;
+        return parent.querySelector<HTMLElement>("[autofocus]") ?? parent.querySelector<HTMLElement>("button, .button, input:not([type=hidden]), select, textarea") ?? parent;
     }
 }

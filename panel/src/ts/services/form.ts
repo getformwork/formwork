@@ -192,6 +192,17 @@ export class Form {
     }
 
     /**
+     * Remove the inputs of the elements inside a parent, e.g. when it is removed from the form
+     */
+    removeInputs(parent: HTMLElement) {
+        for (let i = this.formInputs.length - 1; i >= 0; i--) {
+            if (parent.contains(this.formInputs[i].element)) {
+                this.formInputs.splice(i, 1);
+            }
+        }
+    }
+
+    /**
      * Load input and behaviors of a single element
      */
     private loadInput(element: HTMLElement) {
@@ -225,16 +236,8 @@ export class Form {
 
         const { node, input } = wrap ? this.cloneWithWrap(wrap, element) : this.cloneAlone(element);
 
-        // Generate a new unique ID for the duplicated input
-        const previousId = element.id;
-        const newId = `${element.tagName.toLowerCase()}-${Math.random().toString(36).slice(2)}`;
-        input.id = newId;
-
-        if (wrap && previousId) {
-            $$<HTMLLabelElement>(`label[for="${previousId}"]`).forEach((label) => {
-                label.htmlFor = newId;
-            });
-        }
+        // Generate a new unique ID for the duplicated input, the labels stay with the original one
+        input.id = `${element.tagName.toLowerCase()}-${Math.random().toString(36).slice(2)}`;
 
         targetElement.appendChild(node);
 
@@ -350,6 +353,10 @@ export class Form {
             .filter((link) => !link.closest(".editor-wrap"))
             .forEach((link) => {
                 link.addEventListener("click", (event) => {
+                    // Links opened in a new tab or window, or downloaded, do not leave the page
+                    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+                        return;
+                    }
                     if (this.hasChanged()) {
                         event.preventDefault();
 

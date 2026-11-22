@@ -6,12 +6,14 @@ on:
       - 2.x
     paths:
       - "panel/src/**"
+      - "panel/tests/**"
 
   pull_request:
     branches:
       - 2.x
     paths:
       - "panel/src/**"
+      - "panel/tests/**"
 
   workflow_dispatch:
 
@@ -27,12 +29,16 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "26"
+
       - name: Setup pnpm
         uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
-          package-json-file: panel/package.json
+          working-directory: panel
           cache: true
-          cache-dependency-path: panel/pnpm-lock.yaml
           install: false
 
       - name: Install dependencies
@@ -49,3 +55,13 @@ jobs:
         run: |
           cd panel
           pnpm run check:css
+
+      - name: Check types of tests
+        run: |
+          cd panel
+          pnpm run test:types
+
+      - name: Run tests
+        run: |
+          cd panel
+          pnpm test

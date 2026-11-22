@@ -209,14 +209,19 @@ export class Calendar {
 
             case "Backspace":
             case "Escape":
-            case "Tab":
                 this.hide();
                 break;
 
+            case "Tab":
+                // The focus leaves the input
+                this.hide();
+                return;
+
             case "0":
-                if (event.ctrlKey || event.metaKey) {
-                    this.now();
+                if (!(event.ctrlKey || event.metaKey)) {
+                    return;
                 }
+                this.now();
                 this.dispatchChange();
                 break;
 
@@ -377,7 +382,7 @@ export class Calendar {
      * Return whether a format uses the 12-hour clock
      */
     private has12HourFormat(format: string) {
-        const match = format.match(/\[([^\]]*)\]|H{1,2}/);
-        return match !== null && match[0][0] === "H";
+        // Text in square brackets is not a token
+        return format.replace(/\[[^\]]*\]/g, "").includes("H");
     }
 }

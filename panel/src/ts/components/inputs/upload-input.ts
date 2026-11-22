@@ -150,7 +150,16 @@ export class UploadInput extends InputBase<HTMLInputElement> {
             this.dragging.value = false;
 
             if (!this.isSubmitted && event.dataTransfer) {
-                this.element.files = event.dataTransfer.files;
+                const { files } = event.dataTransfer;
+
+                if (!this.element.multiple && files.length > 1) {
+                    // An input accepting a single file keeps the first one dropped
+                    const transfer = new DataTransfer();
+                    transfer.items.add(files[0]);
+                    this.element.files = transfer.files;
+                } else {
+                    this.element.files = files;
+                }
                 // Firefox won't trigger a change event, so we explicitly do that
                 this.element.dispatchEvent(new Event("change"));
             }
@@ -243,7 +252,8 @@ export class UploadInput extends InputBase<HTMLInputElement> {
      */
     private formatFileSize(size: number) {
         const units = ["B", "KB", "MB", "GB", "TB"];
-        const exp = Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1);
+        // Sizes below a byte (e.g. empty files) are in bytes, as their logarithm is not positive
+        const exp = Math.max(0, Math.min(Math.floor(Math.log(size) / Math.log(1024)), units.length - 1));
         return `${(size / 1024 ** exp).toFixed(2)} ${units[exp]}`;
     }
 
@@ -304,8 +314,16 @@ export class UploadInput extends InputBase<HTMLInputElement> {
         anchor.href = info.actions.info;
         anchor.textContent = info.name;
 
-        ($(".file-date", filesItem) as HTMLElement).textContent = info.lastModifiedTime;
-        ($(".file-size", filesItem) as HTMLElement).textContent = info.size;
+        // The columns of the list may not include the date and the size
+        const date = $(".file-date", filesItem);
+        if (date) {
+            date.textContent = info.lastModifiedTime;
+        }
+
+        const size = $(".file-size", filesItem);
+        if (size) {
+            size.textContent = info.size;
+        }
 
         ($(".dropdown-button", filesItem) as HTMLElement).dataset.dropdown = `dropdown-${info.hash}`;
         ($(".dropdown-menu", filesItem) as HTMLElement).id = `dropdown-${info.hash}`;
@@ -340,21 +358,36 @@ export class UploadInput extends InputBase<HTMLInputElement> {
 
     /**
      * Set the links and actions of the commands of an item
+     *
+     * The commands to rename, replace and delete the file are missing without the permissions
      */
     private setCommands(filesItem: HTMLElement, info: UploadedFile) {
-        const previewFileCommand = $("[data-command=previewFile]", filesItem) as HTMLAnchorElement;
-        const replaceFileCommand = $("[data-command=replaceFile]", filesItem) as HTMLElement;
+        const infoFileCommand = $<HTMLAnchorElement>("[data-command=infoFile]", filesItem);
+        const previewFileCommand = $<HTMLAnchorElement>("[data-command=previewFile]", filesItem);
+        const renameFileCommand = $("[data-command=renameFile]", filesItem);
+        const replaceFileCommand = $("[data-command=replaceFile]", filesItem);
+        const deleteFileCommand = $("[data-command=deleteFile]", filesItem);
 
-        ($("[data-command=infoFile]", filesItem) as HTMLAnchorElement).href = info.actions.info;
+        if (infoFileCommand) {
+            infoFileCommand.href = info.actions.info;
+        }
 
-        previewFileCommand.href = info.uri;
-        previewFileCommand.target = `formwork-preview-file-${info.hash}`;
+        if (previewFileCommand) {
+            previewFileCommand.href = info.uri;
+            previewFileCommand.target = `formwork-preview-file-${info.hash}`;
+        }
 
-        ($("[data-command=renameFile]", filesItem) as HTMLElement).dataset.action = info.actions.rename;
+        if (renameFileCommand) {
+            renameFileCommand.dataset.action = info.actions.rename;
+        }
 
-        replaceFileCommand.dataset.action = info.actions.replace;
-        replaceFileCommand.dataset.mimetype = `${info.mimeType}`;
+        if (replaceFileCommand) {
+            replaceFileCommand.dataset.action = info.actions.replace;
+            replaceFileCommand.dataset.mimetype = `${info.mimeType}`;
+        }
 
-        ($("[data-command=deleteFile]", filesItem) as HTMLElement).dataset.action = info.actions.delete;
+        if (deleteFileCommand) {
+            deleteFileCommand.dataset.action = info.actions.delete;
+        }
     }
 }

@@ -64,7 +64,7 @@ export function initBackups(view: HTMLElement) {
                 status.value = "danger";
             }
 
-            const notification = new Notification(response.message, response.status, { icon: "checkCircle" });
+            const notification = new Notification(response.message, response.status);
             notification.show();
 
             if (response.status === "success") {
@@ -103,7 +103,8 @@ function addBackup(data: BackupData) {
 
     ($("tbody", table) as HTMLElement).prepend(node);
 
-    $$("tr", table).forEach((row, index) => {
+    // The row of the headers is not a backup
+    $$("tbody tr", table).forEach((row, index) => {
         if (index + 1 > data.maxFiles) {
             row.remove();
         }
