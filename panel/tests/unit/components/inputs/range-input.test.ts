@@ -38,6 +38,11 @@ describe("RangeInput", () => {
         assert.equal(progress(element), "50%");
     });
 
+    test("shows the progress of decimal values", () => {
+        const { element } = makeRange('min="0" max="1" step="0.1" value="0.5"');
+        assert.equal(progress(element), "50%");
+    });
+
     test("updates the value shown when set", () => {
         const { input, element } = makeRange();
         input.value = "2";
@@ -60,6 +65,11 @@ describe("RangeInput", () => {
         test("adds no ticks when their number is zero", () => {
             makeRange('min="0" max="10" value="4" data-ticks="0"');
             assert.equal(document.querySelector(".form-input-range-ticks"), null);
+        });
+
+        test("adds a tick for each decimal step", () => {
+            makeRange('min="0" max="1" step="0.25" value="0.5" data-ticks="true"');
+            assert.equal(ticks(), 5);
         });
     });
 });
