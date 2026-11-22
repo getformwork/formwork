@@ -35,4 +35,10 @@ describe("ColorInput", () => {
         assert.equal(click.mock.callCount(), 1);
         assert.ok(document.activeElement === element);
     });
+
+    test("updates the value shown when set", () => {
+        const { input } = makeColor();
+        input.value = "#0000ff";
+        assert.equal(output().textContent, "#0000ff");
+    });
 });

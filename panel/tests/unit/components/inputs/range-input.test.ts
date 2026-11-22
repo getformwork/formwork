@@ -33,6 +33,13 @@ describe("RangeInput", () => {
         assert.equal(progress(element), "80%");
     });
 
+    test("updates the value shown when set", () => {
+        const { input, element } = makeRange();
+        input.value = "2";
+        assert.equal(output(), "2");
+        assert.equal(progress(element), "20%");
+    });
+
     describe("ticks", () => {
         test("adds a tick for each step", () => {
             makeRange('min="0" max="10" step="2" value="4" data-ticks="true"');
