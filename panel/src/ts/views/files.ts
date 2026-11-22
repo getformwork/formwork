@@ -29,7 +29,8 @@ function initRenameFileModal() {
 
     renameFileModal.form?.element.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            renameFileModal.form?.element.submit();
+            // Unlike `submit()`, the form is validated
+            renameFileModal.form?.element.requestSubmit();
             event.preventDefault();
         }
     });

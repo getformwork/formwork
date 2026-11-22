@@ -57,6 +57,15 @@ describe("Files View", () => {
             assert.equal(enter.defaultPrevented, true);
             assert.equal(submit.mock.callCount() + requestSubmit.mock.callCount(), 1);
         });
+
+        test("does not rename the file with an empty name", (t) => {
+            const submit = t.mock.method(HTMLFormElement.prototype, "submit", () => undefined);
+            makeFileForm();
+            (document.getElementById("rename") as HTMLElement).click();
+            filename().value = "";
+            filename().dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }));
+            assert.equal(submit.mock.callCount(), 0);
+        });
     });
 
     describe("replace", () => {
