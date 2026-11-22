@@ -6,6 +6,7 @@ import { TextSelection } from "prosemirror-state";
 import { MarkdownView, type MarkdownViewOptions } from "../../../../src/ts/components/editor/markdown-view";
 import { app } from "../../../../src/ts/services/app";
 import { setTranslation } from "../../../helpers/panel";
+import { type } from "../../../helpers/prosemirror";
 
 beforeEach(() => {
     app.config.siteUri = "/site/";
@@ -20,6 +21,11 @@ function makeEditor(content: string, options: MarkdownViewOptions = {}) {
     document.body.append(target);
     return new MarkdownView("editor", target, content, mock.fn(), { baseUri: "/site/blog/post/", ...options });
 }
+
+/**
+ * Get the text of the placeholder shown in the document
+ */
+const placeholder = () => document.querySelector(".pm-placeholder")?.textContent ?? null;
 
 /**
  * Get the images of the content of an editor
@@ -54,6 +60,36 @@ async function showLinkTooltip(editor: MarkdownView) {
 }
 
 describe("MarkdownView", () => {
+    describe("placeholder", () => {
+        test("shows the placeholder in an empty editor", () => {
+            makeEditor("", { placeholder: "Write here" });
+            assert.equal(placeholder(), "Write here");
+        });
+
+        test("hides the placeholder when the editor has content", () => {
+            const editor = makeEditor("", { placeholder: "Write here" });
+            type(editor.view, "foo");
+            assert.equal(placeholder(), null);
+        });
+
+        test("shows the placeholder in an empty heading", () => {
+            makeEditor("#", { placeholder: "Write here" });
+            assert.equal(placeholder(), "Write here");
+        });
+
+        test("does not show the placeholder with more blocks", () => {
+            const { view } = makeEditor("foo", { placeholder: "Write here" });
+            view.dispatch(view.state.tr.insert(view.state.doc.content.size, view.state.schema.nodes.paragraph.create()).delete(1, 4));
+            assert.equal(view.state.doc.childCount, 2);
+            assert.equal(placeholder(), null);
+        });
+
+        test("shows nothing without a text", () => {
+            makeEditor("");
+            assert.equal(document.querySelector(".pm-placeholder"), null);
+        });
+    });
+
     describe("images", () => {
         test("shows images resolving their source against the page", () => {
             const [image] = images(makeEditor('![foo](image.jpg "Title")'));

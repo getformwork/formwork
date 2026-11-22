@@ -4,14 +4,13 @@ import { keymap } from "prosemirror-keymap";
 import { defaultMarkdownParser, defaultMarkdownSerializer, schema } from "prosemirror-markdown";
 import type { Transaction } from "prosemirror-state";
 import { EditorState, Plugin } from "prosemirror-state";
-import { EditorView } from "prosemirror-view";
+import { Decoration, DecorationSet, EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { resolveUri } from "../../utils/uri";
 import { buildInputRules } from "./markdown-input-rules";
 import { buildKeymap } from "./markdown-keymap";
 import { linkTooltip } from "./markdown-link-tooltip";
 import { menuPlugin } from "./markdown-menu";
-import { placeholderPlugin } from "./markdown-placeholder";
 import type { Toolbar } from "./toolbar";
 
 /**
@@ -135,4 +134,33 @@ export class MarkdownView {
     destroy() {
         this.view.destroy();
     }
+}
+
+/**
+ * Get the plugin that shows a placeholder when the document is empty
+ *
+ * @param text Text of the placeholder
+ */
+function placeholderPlugin(text: string) {
+    if (!text) {
+        return new Plugin({});
+    }
+
+    return new Plugin({
+        props: {
+            decorations(state: EditorState) {
+                const isEmpty = state.doc.childCount === 1 && state.doc?.firstChild?.isTextblock && state.doc?.firstChild.content.size === 0;
+
+                if (!isEmpty) {
+                    return null;
+                }
+
+                const placeholder = document.createElement("span");
+                placeholder.className = "pm-placeholder";
+                placeholder.textContent = text;
+
+                return DecorationSet.create(state.doc, [Decoration.widget(1, placeholder, { side: 1 })]);
+            },
+        },
+    });
 }
