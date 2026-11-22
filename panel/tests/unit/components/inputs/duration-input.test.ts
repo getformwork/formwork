@@ -120,6 +120,12 @@ describe("DurationInput", () => {
         assert.equal(element.value, "30");
     });
 
+    test("reads an empty field as zero", () => {
+        const { element } = makeDuration('value="3660" data-intervals="hours, minutes"');
+        type("minutes", "");
+        assert.equal(element.value, "3600");
+    });
+
     test("sets the value, showing it in the fields", () => {
         const { input } = makeDuration('value="0" data-intervals="hours, minutes"');
         input.value = "7260";

@@ -107,7 +107,8 @@ export class DurationInput extends Input<HTMLInputElement> {
     private updateHiddenInput() {
         const intervals: TimeIntervals = {};
         (Object.entries(this.innerInputs) as [TimeInterval, HTMLInputElement][]).forEach(([i, input]) => {
-            intervals[i] = parseInt(input.value, 10);
+            // An empty field counts as zero
+            intervals[i] = parseInt(input.value, 10) || 0;
         });
         let seconds = intervalsToSeconds(intervals);
         if (this.element.step) {
