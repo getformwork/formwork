@@ -5,16 +5,11 @@ import type { EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { debounce, throttle } from "../../utils/events";
 import { $ } from "../../utils/selectors";
+import { resolveUri } from "../../utils/uri";
 import { link as linkIcon, pencil, trash } from "../ui/icons";
 import { Tooltip } from "../ui/tooltip";
 import { getMarkRange, insertLink, removeLink } from "./markdown-commands";
 
-/**
- * Make a relative link absolute
- */
-function addBaseUri(text: string, baseUri: string) {
-    return text.replace(/^\/?(?!https?:\/\/)(.+)/, `${baseUri}$1`);
-}
 /**
  * Shows a tooltip with the address of the link at the cursor and the buttons to edit or remove it
  */
@@ -91,7 +86,7 @@ class LinkTooltipView {
         const t = (key: string, defaultValue: string) => app.translation.get(key, defaultValue);
 
         const tooltip = new Tooltip(
-            `<div class="editor-link-tooltip truncate mr-4"><a href="${addBaseUri(link.attrs.href, this.baseUri)}" target="_blank">${link.attrs.href}</a></div>
+            `<div class="editor-link-tooltip truncate mr-4"><a href="${resolveUri(link.attrs.href, app.config.siteUri, this.baseUri)}" target="_blank">${link.attrs.href}</a></div>
                 <div class="separator"></div>
                 <button type="button" class="tooltip-button" data-command="edit-link">${t("panel.modal.action.edit", "Edit")}</button>
                 <div class="separator"></div>
@@ -148,7 +143,7 @@ class LinkTooltipView {
 /**
  * Get the plugin that shows the tooltip of the links
  *
- * @param baseUri Base URI used to resolve relative links
+ * @param baseUri URI of the page, against which relative links are resolved
  */
 export function linkTooltip(baseUri: string): Plugin {
     return new Plugin({

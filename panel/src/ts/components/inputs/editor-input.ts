@@ -3,7 +3,6 @@ import { app } from "../../services/app";
 import { debounce } from "../../utils/events";
 import { $ } from "../../utils/selectors";
 import { initToolbar } from "../../utils/toolbar";
-import { escapeRegExp } from "../../utils/validation";
 import { markdown } from "../ui/icons";
 import { InputBase } from "./input";
 
@@ -15,24 +14,6 @@ interface EditorView {
     content: string;
     editable: boolean;
     destroy(): void;
-}
-
-/**
- * Make the relative image paths of a Markdown text absolute
- *
- * @param baseUri Base URI prepended to the relative paths
- */
-function addBaseUri(markdown: string, baseUri: string) {
-    return markdown.replace(/(!\[.*\])\((?!https?:\/\/)([^)]+)\)/g, `$1(${baseUri}$2)`);
-}
-
-/**
- * Make the image paths of a Markdown text relative
- *
- * @param baseUri Base URI removed from the paths
- */
-function removeBaseUri(markdown: string, baseUri: string) {
-    return markdown.replace(new RegExp(`(!\\[.*\\])\\(${escapeRegExp(baseUri)}([^)]+)\\)`, "g"), "$1($2)");
 }
 
 /**
@@ -52,6 +33,9 @@ function getTextareaHeight(textarea: HTMLTextAreaElement): number {
  * Holds the options of an editor input
  */
 interface EditorInputOptions {
+    /**
+     * URI of the page the content belongs to, against which its relative URIs are resolved
+     */
     baseUri: string;
     height: number;
     spellcheck: boolean;
@@ -99,11 +83,11 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
         this.id = textarea.id;
 
         const defaults: EditorInputOptions = {
-            baseUri: textarea.dataset.baseUri ?? "",
+            baseUri: textarea.dataset.baseUri ?? app.config.siteUri,
             height: getTextareaHeight(textarea) ?? 200,
             spellcheck: true,
             inputEventHandler: (value: string) => {
-                this.element.value = removeBaseUri(value, this.options.baseUri);
+                this.element.value = value;
                 debounce(() => this.dispatchChange(), 500, true)();
             },
         };
@@ -215,9 +199,10 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
         await this.switchEditor(async () => {
             const { MarkdownView } = await import("../editor/markdown-view");
 
-            return new MarkdownView(this.name, this.container, addBaseUri(this.element.value, this.options.baseUri), this.options.inputEventHandler, {
+            return new MarkdownView(this.name, this.container, this.element.value, this.options.inputEventHandler, {
                 editable: !(this.element.disabled || this.element.readOnly),
                 placeholder: this.element.placeholder,
+                baseUri: this.options.baseUri,
                 attributes: {
                     spellcheck: this.options.spellcheck ? "true" : "false",
                     ...this.accessibilityAttributes(),
@@ -233,7 +218,7 @@ export class EditorInput extends InputBase<HTMLTextAreaElement> {
         await this.switchEditor(async () => {
             const { CodeView } = await import("../editor/code-view");
 
-            return new CodeView(this.container, removeBaseUri(this.element.value, this.options.baseUri), this.options.inputEventHandler, {
+            return new CodeView(this.container, this.element.value, this.options.inputEventHandler, {
                 editable: !(this.element.disabled || this.element.readOnly),
                 placeholder: this.element.placeholder,
             });

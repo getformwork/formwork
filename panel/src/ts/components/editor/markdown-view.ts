@@ -6,6 +6,7 @@ import type { Transaction } from "prosemirror-state";
 import { EditorState, Plugin } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
+import { resolveUri } from "../../utils/uri";
 import { buildInputRules } from "./markdown-input-rules";
 import { buildKeymap } from "./markdown-keymap";
 import { linkTooltip } from "./markdown-link-tooltip";
@@ -17,6 +18,10 @@ import { placeholderPlugin } from "./markdown-placeholder";
  */
 export interface MarkdownViewOptions {
     editable?: boolean;
+    /**
+     * URI of the page, against which the relative URIs of links and images are resolved
+     */
+    baseUri?: string;
     placeholder?: string;
     attributes?: Record<string, string>;
 }
@@ -33,6 +38,8 @@ export class MarkdownView {
     view: EditorView;
 
     constructor(id: string, target: Element, content: string, inputEventHandler: (content: string) => void, options: MarkdownViewOptions = {}) {
+        const baseUri = options.baseUri ?? app.config.siteUri;
+
         this.view = new EditorView(target, {
             state: EditorState.create({
                 doc: defaultMarkdownParser.parse(content),
@@ -43,7 +50,7 @@ export class MarkdownView {
                     history(),
                     menuPlugin(id),
                     placeholderPlugin(options.placeholder ?? ""),
-                    linkTooltip(app.config.siteUri),
+                    linkTooltip(baseUri),
                     new Plugin({
                         props: {
                             handleDOMEvents: {
@@ -56,6 +63,18 @@ export class MarkdownView {
             }),
             attributes: options.attributes,
             editable: () => options.editable ?? true,
+            nodeViews: {
+                // Images are shown resolving their source as the site does, without changing the content
+                image(node) {
+                    const image = document.createElement("img");
+                    image.src = resolveUri(node.attrs.src, app.config.siteUri, baseUri);
+                    image.alt = node.attrs.alt ?? "";
+                    if (node.attrs.title) {
+                        image.title = node.attrs.title;
+                    }
+                    return { dom: image };
+                },
+            },
             dispatchTransaction(this: EditorView, tr: Transaction) {
                 this.updateState(this.state.apply(tr));
                 if (tr.docChanged) {

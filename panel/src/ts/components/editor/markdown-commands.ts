@@ -136,12 +136,12 @@ export const insertImage: Command = (state, dispatch, view) => {
             const selected = $(".image-picker-thumbnail.selected", modal.element);
 
             if (selected && view) {
-                const baseUri = $("textarea", view.dom.parentNode as HTMLElement)?.dataset.baseUri;
+                // Files of the page are relative to its route
                 const filename = selected.dataset.filename;
                 view.dispatch(
                     state.tr.replaceSelectionWith(
                         schema.nodes.image.createAndFill({
-                            src: `${baseUri}${filename}`,
+                            src: filename,
                             alt: "",
                         }) as Node,
                     ),

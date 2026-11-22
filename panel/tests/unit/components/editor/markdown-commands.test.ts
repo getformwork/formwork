@@ -286,6 +286,26 @@ describe("Markdown Commands", () => {
             assert.equal((document.querySelector(".image-picker-empty-state") as HTMLElement).style.display, "none");
         });
 
+        test("inserts the chosen image with its name, relative to the page", () => {
+            const modal = addImagesModal();
+            const view = makeView("foo |bar|");
+            run(view, insertImage);
+            respondImages();
+            (document.querySelector(".image-picker-thumbnail") as HTMLElement).click();
+            (document.getElementById("pick-image") as HTMLElement).click();
+            assert.equal(markdown(view), "foo ![](image.jpg)");
+            assert.equal(modal.isClosed, true);
+        });
+
+        test("inserts an image when double clicked", () => {
+            addImagesModal();
+            const view = makeView("foo|");
+            run(view, insertImage);
+            respondImages();
+            (document.querySelector(".image-picker-thumbnail") as HTMLElement).dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+            assert.equal(markdown(view), "foo![](image.jpg)");
+        });
+
         test("does not insert images without a choice", () => {
             const modal = addImagesModal();
             const view = makeView("foo|");
