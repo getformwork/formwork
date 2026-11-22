@@ -103,7 +103,8 @@ function addBackup(data: BackupData) {
 
     ($("tbody", table) as HTMLElement).prepend(node);
 
-    $$("tr", table).forEach((row, index) => {
+    // The row of the headers is not a backup
+    $$("tbody tr", table).forEach((row, index) => {
         if (index + 1 > data.maxFiles) {
             row.remove();
         }

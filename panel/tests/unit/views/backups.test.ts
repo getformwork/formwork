@@ -107,6 +107,14 @@ describe("Backups View", () => {
         assert.equal((form.querySelector("[name=csrf-token]") as HTMLInputElement).value, "token");
     });
 
+    test("keeps the most recent backups, as many as allowed", () => {
+        makeBackups(["first.zip", "second.zip", "third.zip"]);
+        button().click();
+        respondBackup("fourth.zip", 3);
+        assert.deepEqual(backups(), ["fourth.zip", "first.zip", "second.zip"]);
+        assert.equal(document.querySelectorAll("#backups-table thead tr").length, 1);
+    });
+
     test("reports the failure", () => {
         makeBackups();
         button().click();
