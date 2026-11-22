@@ -42,13 +42,30 @@ describe("Search Utils", () => {
             assert.ok(makeSearchRegExp("foo-bar", { wordStart: false }).test("xfoo-bar"));
         });
 
+        test("matches words starting with symbols at word start", () => {
+            assert.ok(makeSearchRegExp("(foo").test("bar (foo)"));
+            assert.ok(makeSearchRegExp("#foo").test("bar #foo"));
+        });
+
         test("does not match after digits or underscores at word start", () => {
             assert.equal(makeSearchRegExp("foo").test("1foo"), false);
             assert.equal(makeSearchRegExp("foo").test("bar_foo"), false);
         });
 
+        test("does not match after combining marks at word start", () => {
+            assert.equal(makeSearchRegExp("foo").test("e\u0301foo"), false);
+        });
+
         test("finds every occurrence with the global flag", () => {
             assert.deepEqual("foo bar foo".match(makeSearchRegExp("foo", { global: true })), ["foo", "foo"]);
+        });
+
+        test("matches words starting with diacritics at word start", () => {
+            assert.ok(makeSearchRegExp("ecole").test("Grande école"));
+        });
+
+        test("does not match after letters with diacritics at word start", () => {
+            assert.equal(makeSearchRegExp("foo").test("éfoo"), false);
         });
     });
 
@@ -75,6 +92,11 @@ describe("Search Utils", () => {
 
         test("escapes the text around the matches", () => {
             assert.equal(highlightMatches("<b>foo</b>", makeSearchRegExp("foo", { wordStart: false })), "&lt;b&gt;<mark>foo</mark>&lt;&#x2F;b&gt;");
+        });
+
+        test("escapes the matches", () => {
+            assert.equal(highlightMatches("Foo & Bar", makeSearchRegExp("&")), "Foo <mark>&amp;</mark> Bar");
+            assert.equal(highlightMatches("a<b", makeSearchRegExp("<", { wordStart: false })), "a<mark>&lt;</mark>b");
         });
 
         test("does not match inside HTML entities", () => {

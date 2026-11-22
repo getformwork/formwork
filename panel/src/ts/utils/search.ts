@@ -19,7 +19,8 @@ interface SearchRegExpOptions {
  * Make a regular expression matching a search text, ignoring case and diacritics
  */
 export function makeSearchRegExp(value: string, { wordStart = true, global = false }: SearchRegExpOptions = {}) {
-    return new RegExp(`${wordStart ? "(^|\\b)" : ""}${makeDiacriticsRegExp(escapeRegExp(value))}`, global ? "gi" : "i");
+    // `\b` only knows ASCII word characters, so the start of a word is not preceded by any letter, mark, digit or underscore
+    return new RegExp(`${wordStart ? "(?<![\\p{L}\\p{M}\\p{N}_])" : ""}${makeDiacriticsRegExp(escapeRegExp(value))}`, global ? "giu" : "iu");
 }
 
 /**

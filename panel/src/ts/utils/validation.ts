@@ -162,9 +162,12 @@ const htmlEntityMap: Record<string, string> = {
 
 /**
  * Escape the characters of a string having a special meaning in a regular expression
+ *
+ * `-` is not escaped, as it is special only in character classes and its escape is not valid with
+ * the `u` flag
  */
 export function escapeRegExp(string: string) {
-    return string.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
+    return string.replace(/[[\]/{}()*+?.\\^$|]/g, "\\$&");
 }
 
 /**

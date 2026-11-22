@@ -13,6 +13,15 @@ describe("Validation Utils", () => {
             assert.equal(new RegExp(escapeRegExp("foo.bar")).test("fooxbar"), false);
             assert.equal(new RegExp(escapeRegExp("foo.bar")).test("foo.bar"), true);
         });
+
+        test("leaves other characters unchanged", () => {
+            assert.equal(escapeRegExp("foo bar-baz"), "foo bar-baz");
+        });
+
+        test("makes expressions valid with the unicode flag", () => {
+            const special = "-[]/{}()*+?.\\^$|";
+            assert.ok(new RegExp(`^${escapeRegExp(special)}$`, "u").test(special));
+        });
     });
 
     describe("makeDiacriticsRegExp", () => {
