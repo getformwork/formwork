@@ -105,7 +105,11 @@ export class Modal {
 
         if (this.isClosed) {
             this.returnFocusElement = this.resolveReturnFocusElement(options.triggerElement ?? (document.activeElement as HTMLElement | null));
+            Modal.openModals.push(this);
         }
+
+        // The modal must be the topmost one before getting the focus, or the one below takes it back
+        this.state = "open";
 
         (document.activeElement as HTMLElement | null)?.blur(); // Don't retain focus on any element
 
@@ -116,12 +120,6 @@ export class Modal {
         });
 
         this.createBackdrop();
-
-        if (this.isClosed) {
-            Modal.openModals.push(this);
-        }
-
-        this.state = "open";
 
         this.dispatchCallback("open", options.triggerElement);
     }

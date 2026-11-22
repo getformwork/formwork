@@ -222,6 +222,12 @@ describe("Modal", () => {
             assert.equal(focused(), "second-input");
         });
 
+        test("focuses a modal opened over another", () => {
+            makeModal("first-modal", '<input id="first-input">').open();
+            makeModal("second-modal", '<input id="second-input">').open();
+            assert.equal(focused(), "second-input");
+        });
+
         test("removes the backdrop when the last modal is closed", () => {
             const first = makeModal("first-modal", '<input id="first-input">');
             const second = makeModal("second-modal", '<input id="second-input">');
