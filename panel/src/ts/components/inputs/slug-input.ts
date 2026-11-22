@@ -39,7 +39,12 @@ export class SlugInput extends Input<HTMLInputElement> {
                 if (this.element.disabled || this.element.readOnly) {
                     return;
                 }
-                this.element.value = makeSlug(source.value);
+                const slug = makeSlug(source.value);
+                if (slug !== this.element.value) {
+                    this.element.value = slug;
+                    // The form sees the change of the generated slug
+                    this.dispatchChange();
+                }
             };
 
             if (autoUpdate) {

@@ -1,6 +1,6 @@
 import "../../../environment/dom";
 import assert from "node:assert/strict";
-import { describe, test } from "node:test";
+import { describe, mock, test } from "node:test";
 import { SlugInput } from "../../../../src/ts/components/inputs/slug-input";
 
 /**
@@ -95,5 +95,14 @@ describe("SlugInput", () => {
         const element = document.getElementById("slug") as HTMLInputElement;
         new SlugInput(element);
         assert.equal(element.value, "foo");
+    });
+
+    test("notifies the change of the slug generated with the button", () => {
+        const { source } = makeSlug();
+        const changes = mock.fn();
+        (document.querySelector("form") as HTMLFormElement).addEventListener("input", changes);
+        source.value = "Hello world";
+        generate();
+        assert.equal(changes.mock.callCount(), 1);
     });
 });
