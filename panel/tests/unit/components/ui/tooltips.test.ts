@@ -124,5 +124,13 @@ describe("Tooltips", () => {
             byId("foo").blur();
             assert.deepEqual(shown(), []);
         });
+
+        test("shows the tooltip of a button that gets the focus again", (t) => {
+            makeTooltips('<button type="button" id="foo" data-tooltip="Foo tooltip">Foo</button><button type="button" id="bar">Bar</button>');
+            focus(t, byId("foo"));
+            focus(t, byId("bar"));
+            focus(t, byId("foo"));
+            assert.deepEqual(shown(), ["Foo tooltip"]);
+        });
     });
 });
