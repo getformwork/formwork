@@ -115,11 +115,12 @@ export class DurationInput extends Input<HTMLInputElement> {
             const step = parseInt(this.element.step, 10) * TIME_INTERVALS[this.options.unit];
             seconds = Math.floor(seconds / step) * step;
         }
+        // The minimum and the maximum are in the unit of the value
         if (this.element.min) {
-            seconds = Math.max(seconds, parseInt(this.element.min, 10));
+            seconds = Math.max(seconds, parseInt(this.element.min, 10) * TIME_INTERVALS[this.options.unit]);
         }
         if (this.element.max) {
-            seconds = Math.min(seconds, parseInt(this.element.max, 10));
+            seconds = Math.min(seconds, parseInt(this.element.max, 10) * TIME_INTERVALS[this.options.unit]);
         }
         this.element.value = `${Math.round(seconds / TIME_INTERVALS[this.options.unit])}`;
         this.dispatchChange();

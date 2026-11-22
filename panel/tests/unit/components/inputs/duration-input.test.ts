@@ -120,6 +120,14 @@ describe("DurationInput", () => {
         assert.equal(element.value, "30");
     });
 
+    test("keeps the value between the minimum and the maximum in its unit", () => {
+        const { element } = makeDuration('value="10" min="5" max="60" data-unit="minutes" data-intervals="hours, minutes"');
+        type("minutes", "2");
+        assert.equal(element.value, "5");
+        type("hours", "2");
+        assert.equal(element.value, "60");
+    });
+
     test("reads an empty field as zero", () => {
         const { element } = makeDuration('value="3660" data-intervals="hours, minutes"');
         type("minutes", "");
