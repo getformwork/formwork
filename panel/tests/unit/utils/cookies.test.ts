@@ -36,6 +36,12 @@ describe("Cookies Utils", () => {
             setDocumentCookie("bar=baz");
             assert.deepEqual(getCookies(), { foo: "", bar: "baz" });
         });
+
+        test("preserves equal signs in values", () => {
+            setDocumentCookie("foo=YmFy==");
+            setDocumentCookie("bar=key=value");
+            assert.deepEqual(getCookies(), { foo: "YmFy==", bar: "key=value" });
+        });
     });
 
     describe("setCookie", () => {

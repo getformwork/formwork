@@ -5,9 +5,9 @@ export function getCookies() {
     const result: Record<string, string> = {};
     const cookies = document.cookie.split(";");
     for (const cookie of cookies) {
-        const nameAndValue = cookie.split("=", 2);
-        if (nameAndValue.length === 2) {
-            result[nameAndValue[0].trim()] = decodeURIComponent(nameAndValue[1].trim());
+        const index = cookie.indexOf("=");
+        if (index !== -1) {
+            result[cookie.slice(0, index).trim()] = decodeURIComponent(cookie.slice(index + 1).trim());
         }
     }
     return result;
