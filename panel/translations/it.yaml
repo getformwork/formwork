@@ -45,6 +45,21 @@ panel.editor.paragraph: Paragrafo
 panel.editor.quote: Citazione
 panel.editor.redo: Ripeti
 panel.editor.summary: Sommario
+panel.editor.table: Tabella
+panel.editor.table.addColumnLeft: Aggiungi colonna a sinistra
+panel.editor.table.addColumnRight: Aggiungi colonna a destra
+panel.editor.table.addRowAbove: Aggiungi riga sopra
+panel.editor.table.addRowBelow: Aggiungi riga sotto
+panel.editor.table.alignCenter: Allinea al centro
+panel.editor.table.alignLeft: Allinea a sinistra
+panel.editor.table.alignRight: Allinea a destra
+panel.editor.table.clearColumn: Svuota colonna
+panel.editor.table.clearRow: Svuota riga
+panel.editor.table.column: Colonna
+panel.editor.table.deleteColumn: Elimina colonna
+panel.editor.table.deleteRow: Elimina riga
+panel.editor.table.deleteTable: Elimina tabella
+panel.editor.table.row: Riga
 panel.editor.toggleMarkdown: Mostra/nascondi Markdown
 panel.editor.undo: Annulla
 panel.errors.action.reportToGithub: Segnala un problema su GitHub

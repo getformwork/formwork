@@ -76,6 +76,20 @@ describe("Tooltips", () => {
         assert.equal((document.querySelector(".tooltip") as HTMLElement).style.left, "100px");
     });
 
+    test("does not show the tooltip of a disabled element", (t) => {
+        makeTooltips('<button type="button" id="foo" data-tooltip="Foo tooltip" disabled>Foo</button>');
+        hover(t, byId("foo"));
+        assert.deepEqual(shown(), []);
+    });
+
+    test("removes the tooltip of an element disabled while it is shown when the pointer leaves it", (t) => {
+        makeTooltips('<button type="button" id="foo" data-tooltip="Foo tooltip">Foo</button><span id="bar">Bar</span>');
+        hover(t, byId("foo"));
+        (byId("foo") as HTMLButtonElement).disabled = true;
+        hover(t, byId("bar"));
+        assert.deepEqual(shown(), []);
+    });
+
     test("does not cover the open menu of a button", (t) => {
         makeTooltips('<button type="button" id="foo" data-tooltip="Foo tooltip" aria-expanded="true">Foo</button>');
         hover(t, byId("foo"));

@@ -45,6 +45,21 @@ panel.editor.paragraph: Bekezdés
 panel.editor.quote: Idézet
 panel.editor.redo: Ismét
 panel.editor.summary: Összefoglaló
+panel.editor.table: Táblázat
+panel.editor.table.addColumnLeft: Oszlop beszúrása balra
+panel.editor.table.addColumnRight: Oszlop beszúrása jobbra
+panel.editor.table.addRowAbove: Sor beszúrása fölé
+panel.editor.table.addRowBelow: Sor beszúrása alá
+panel.editor.table.alignCenter: Középre igazítás
+panel.editor.table.alignLeft: Balra igazítás
+panel.editor.table.alignRight: Jobbra igazítás
+panel.editor.table.clearColumn: Oszlop ürítése
+panel.editor.table.clearRow: Sor ürítése
+panel.editor.table.column: Oszlop
+panel.editor.table.deleteColumn: Oszlop törlése
+panel.editor.table.deleteRow: Sor törlése
+panel.editor.table.deleteTable: Táblázat törlése
+panel.editor.table.row: Sor
 panel.editor.toggleMarkdown: Markdown váltása
 panel.editor.undo: Visszavonás
 panel.errors.action.reportToGithub: Hiba jelentése GitHubon

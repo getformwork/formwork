@@ -1,9 +1,9 @@
 import { baseKeymap } from "prosemirror-commands";
 import { history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
-import { defaultMarkdownParser, defaultMarkdownSerializer, schema } from "prosemirror-markdown";
 import type { Transaction } from "prosemirror-state";
 import { EditorState, Plugin } from "prosemirror-state";
+import { tableEditing } from "prosemirror-tables";
 import { Decoration, DecorationSet, EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { resolveUri } from "../../utils/uri";
@@ -11,6 +11,11 @@ import { buildInputRules } from "./markdown-input-rules";
 import { buildKeymap } from "./markdown-keymap";
 import { linkTooltip } from "./markdown-link-tooltip";
 import { menuPlugin } from "./markdown-menu";
+import { markdownParser, markdownSerializer, schema } from "./markdown-schema";
+import { buildTableGapKeymap, tableGap } from "./markdown-table-gap";
+import { tableHandles } from "./markdown-table-handles";
+import { tableSelection } from "./markdown-table-selection";
+import { buildTableKeymap, normalizeTables } from "./markdown-tables";
 import type { Toolbar } from "./toolbar";
 
 /**
@@ -46,15 +51,22 @@ export class MarkdownView {
 
         this.view = new EditorView(target, {
             state: EditorState.create({
-                doc: defaultMarkdownParser.parse(content),
+                doc: markdownParser.parse(content),
                 plugins: [
                     buildInputRules(schema),
+                    // Handles the keys over the tables in a selection before the keymaps
+                    tableSelection(),
+                    keymap(buildTableGapKeymap()),
+                    keymap(buildTableKeymap()),
                     keymap(buildKeymap(schema)),
                     keymap(baseKeymap),
                     history(),
                     ...(options.toolbar ? [menuPlugin(id, options.toolbar)] : []),
                     placeholderPlugin(options.placeholder ?? ""),
                     linkTooltip(baseUri),
+                    normalizeTables(),
+                    tableGap(),
+                    ...(options.toolbar ? [tableHandles(id)] : []),
                     new Plugin({
                         props: {
                             handleDOMEvents: {
@@ -63,6 +75,8 @@ export class MarkdownView {
                             },
                         },
                     }),
+                    // Handles the mouse and arrow keys in the tables, so it comes last
+                    tableEditing(),
                 ],
             }),
             attributes: options.attributes,
@@ -82,7 +96,7 @@ export class MarkdownView {
             dispatchTransaction(this: EditorView, tr: Transaction) {
                 this.updateState(this.state.apply(tr));
                 if (tr.docChanged) {
-                    inputEventHandler(defaultMarkdownSerializer.serialize(tr.doc));
+                    inputEventHandler(markdownSerializer.serialize(this.state.doc));
                 }
             },
         });
@@ -92,7 +106,7 @@ export class MarkdownView {
      * Get the content of the editor as Markdown
      */
     get content() {
-        return defaultMarkdownSerializer.serialize(this.view.state.doc);
+        return markdownSerializer.serialize(this.view.state.doc);
     }
 
     /**
@@ -101,7 +115,7 @@ export class MarkdownView {
     set content(value: string) {
         this.view.updateState(
             EditorState.create({
-                doc: defaultMarkdownParser.parse(value),
+                doc: markdownParser.parse(value),
                 plugins: this.view.state.plugins,
             }),
         );

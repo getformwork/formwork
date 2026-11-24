@@ -45,6 +45,21 @@ panel.editor.paragraph: Stycke
 panel.editor.quote: Citat
 panel.editor.redo: Gör om
 panel.editor.summary: Sammanfattning
+panel.editor.table: Tabell
+panel.editor.table.addColumnLeft: Lägg till kolumn till vänster
+panel.editor.table.addColumnRight: Lägg till kolumn till höger
+panel.editor.table.addRowAbove: Lägg till rad ovanför
+panel.editor.table.addRowBelow: Lägg till rad nedanför
+panel.editor.table.alignCenter: Centrera
+panel.editor.table.alignLeft: Vänsterjustera
+panel.editor.table.alignRight: Högerjustera
+panel.editor.table.clearColumn: Töm kolumn
+panel.editor.table.clearRow: Töm rad
+panel.editor.table.column: Kolumn
+panel.editor.table.deleteColumn: Ta bort kolumn
+panel.editor.table.deleteRow: Ta bort rad
+panel.editor.table.deleteTable: Ta bort tabell
+panel.editor.table.row: Rad
 panel.editor.toggleMarkdown: Växla Markdown
 panel.editor.undo: Ångra
 panel.errors.action.reportToGithub: Rapportera ett problem på GitHub

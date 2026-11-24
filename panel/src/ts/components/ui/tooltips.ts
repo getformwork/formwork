@@ -46,6 +46,11 @@ export class Tooltips {
             return;
         }
 
+        // An element disabled while its tooltip is shown gets no `mouseout`
+        if (this.element && !this.element.contains(target) && this.element.matches(":disabled")) {
+            this.tooltip?.remove();
+        }
+
         const pointer = {
             position: { x: event.pageX, y: event.pageY },
             offset: { x: 0, y: 16 },

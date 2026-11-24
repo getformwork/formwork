@@ -1,4 +1,3 @@
-import { schema } from "prosemirror-markdown";
 import type { Mark } from "prosemirror-model";
 import { Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
@@ -10,6 +9,7 @@ import { escapeHtml } from "../../utils/validation";
 import { link as linkIcon, pencil, trash } from "../ui/icons";
 import { Tooltip } from "../ui/tooltip";
 import { getMarkRange, insertLink, removeLink } from "./markdown-commands";
+import { schema } from "./markdown-schema";
 
 /**
  * Shows a tooltip with the address of the link at the cursor and the buttons to edit or remove it

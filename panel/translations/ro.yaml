@@ -45,6 +45,21 @@ panel.editor.paragraph: Paragraf
 panel.editor.quote: Citat
 panel.editor.redo: Refă
 panel.editor.summary: Rezumat
+panel.editor.table: Tabel
+panel.editor.table.addColumnLeft: Adaugă coloană la stânga
+panel.editor.table.addColumnRight: Adaugă coloană la dreapta
+panel.editor.table.addRowAbove: Adaugă rând deasupra
+panel.editor.table.addRowBelow: Adaugă rând dedesubt
+panel.editor.table.alignCenter: Aliniază la centru
+panel.editor.table.alignLeft: Aliniază la stânga
+panel.editor.table.alignRight: Aliniază la dreapta
+panel.editor.table.clearColumn: Golește coloana
+panel.editor.table.clearRow: Golește rândul
+panel.editor.table.column: Coloană
+panel.editor.table.deleteColumn: Șterge coloana
+panel.editor.table.deleteRow: Șterge rândul
+panel.editor.table.deleteTable: Șterge tabelul
+panel.editor.table.row: Rând
 panel.editor.toggleMarkdown: Comută Markdown
 panel.editor.undo: Anulează
 panel.errors.action.reportToGithub: Raportează o problemă pe GitHub

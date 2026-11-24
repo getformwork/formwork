@@ -45,6 +45,21 @@ panel.editor.paragraph: Абзац
 panel.editor.quote: Цитата
 panel.editor.redo: Повторити
 panel.editor.summary: Опис
+panel.editor.table: Таблиця
+panel.editor.table.addColumnLeft: Додати стовпець ліворуч
+panel.editor.table.addColumnRight: Додати стовпець праворуч
+panel.editor.table.addRowAbove: Додати рядок вище
+panel.editor.table.addRowBelow: Додати рядок нижче
+panel.editor.table.alignCenter: Вирівняти по центру
+panel.editor.table.alignLeft: Вирівняти ліворуч
+panel.editor.table.alignRight: Вирівняти праворуч
+panel.editor.table.clearColumn: Очистити стовпець
+panel.editor.table.clearRow: Очистити рядок
+panel.editor.table.column: Стовпець
+panel.editor.table.deleteColumn: Видалити стовпець
+panel.editor.table.deleteRow: Видалити рядок
+panel.editor.table.deleteTable: Видалити таблицю
+panel.editor.table.row: Рядок
 panel.editor.toggleMarkdown: Перемкнути Markdown
 panel.editor.undo: Скасувати
 panel.errors.action.reportToGithub: Повідомити про помилку на GitHub

@@ -45,6 +45,21 @@ panel.editor.paragraph: Paragraf
 panel.editor.quote: Alıntı
 panel.editor.redo: Yeniden yap
 panel.editor.summary: Özet
+panel.editor.table: Tablo
+panel.editor.table.addColumnLeft: Sola sütun ekle
+panel.editor.table.addColumnRight: Sağa sütun ekle
+panel.editor.table.addRowAbove: Üste satır ekle
+panel.editor.table.addRowBelow: Alta satır ekle
+panel.editor.table.alignCenter: Ortala
+panel.editor.table.alignLeft: Sola hizala
+panel.editor.table.alignRight: Sağa hizala
+panel.editor.table.clearColumn: Sütunu temizle
+panel.editor.table.clearRow: Satırı temizle
+panel.editor.table.column: Sütun
+panel.editor.table.deleteColumn: Sütunu sil
+panel.editor.table.deleteRow: Satırı sil
+panel.editor.table.deleteTable: Tabloyu sil
+panel.editor.table.row: Satır
 panel.editor.toggleMarkdown: Markdown’ı aç/kapat
 panel.editor.undo: Geri al
 panel.errors.action.reportToGithub: GitHub’da sorun bildir

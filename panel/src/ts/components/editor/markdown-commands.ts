@@ -6,10 +6,10 @@ export { lift, setBlockType, toggleMark, wrapIn } from "prosemirror-commands";
 export { sinkListItem, wrapInList } from "prosemirror-schema-list";
 
 import { redo as historyRedo, undo as historyUndo, redoDepth, undoDepth } from "prosemirror-history";
-import { schema } from "prosemirror-markdown";
 import { app } from "../../services/app";
 import { $ } from "../../utils/selectors";
 import type { ImagePicker } from "../inputs/image-picker";
+import { schema } from "./markdown-schema";
 
 /**
  * Open the modal to insert or edit a link
