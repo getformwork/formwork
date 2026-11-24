@@ -45,6 +45,21 @@ panel.editor.paragraph: Alinea
 panel.editor.quote: Citaat
 panel.editor.redo: Herstellen
 panel.editor.summary: Samenvatting
+panel.editor.table: Tabel
+panel.editor.table.addColumnLeft: Kolom links invoegen
+panel.editor.table.addColumnRight: Kolom rechts invoegen
+panel.editor.table.addRowAbove: Rij erboven invoegen
+panel.editor.table.addRowBelow: Rij eronder invoegen
+panel.editor.table.alignCenter: Centreren
+panel.editor.table.alignLeft: Links uitlijnen
+panel.editor.table.alignRight: Rechts uitlijnen
+panel.editor.table.clearColumn: Kolom legen
+panel.editor.table.clearRow: Rij legen
+panel.editor.table.column: Kolom
+panel.editor.table.deleteColumn: Kolom verwijderen
+panel.editor.table.deleteRow: Rij verwijderen
+panel.editor.table.deleteTable: Tabel verwijderen
+panel.editor.table.row: Rij
 panel.editor.toggleMarkdown: Markdown wisselen
 panel.editor.undo: Ongedaan maken
 panel.errors.action.reportToGithub: Meld een probleem op GitHub

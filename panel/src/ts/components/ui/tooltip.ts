@@ -120,7 +120,9 @@ export class Tooltip {
     private place() {
         const { container, referenceElement, zIndex, timeout, removeOnMouseout } = this.options;
 
-        if (!referenceElement.isConnected || referenceElement.getAttribute("aria-expanded") === "true") {
+        // Disabled elements get no pointer events, so the tooltip would not be removed when the
+        // pointer leaves them, as it happens if they are disabled when clicked
+        if (!referenceElement.isConnected || referenceElement.getAttribute("aria-expanded") === "true" || referenceElement.matches(":disabled")) {
             return;
         }
 

@@ -45,6 +45,21 @@ panel.editor.paragraph: Akapit
 panel.editor.quote: Cytat
 panel.editor.redo: Ponów
 panel.editor.summary: Podsumowanie
+panel.editor.table: Tabela
+panel.editor.table.addColumnLeft: Dodaj kolumnę po lewej
+panel.editor.table.addColumnRight: Dodaj kolumnę po prawej
+panel.editor.table.addRowAbove: Dodaj wiersz powyżej
+panel.editor.table.addRowBelow: Dodaj wiersz poniżej
+panel.editor.table.alignCenter: Wyśrodkuj
+panel.editor.table.alignLeft: Wyrównaj do lewej
+panel.editor.table.alignRight: Wyrównaj do prawej
+panel.editor.table.clearColumn: Wyczyść kolumnę
+panel.editor.table.clearRow: Wyczyść wiersz
+panel.editor.table.column: Kolumna
+panel.editor.table.deleteColumn: Usuń kolumnę
+panel.editor.table.deleteRow: Usuń wiersz
+panel.editor.table.deleteTable: Usuń tabelę
+panel.editor.table.row: Wiersz
 panel.editor.toggleMarkdown: Przełącz Markdown
 panel.editor.undo: Cofnij
 panel.errors.action.reportToGithub: Zgłoś problem na GitHubie

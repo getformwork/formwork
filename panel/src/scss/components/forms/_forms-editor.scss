@@ -190,6 +190,193 @@ img.ProseMirror-separator {
     text-decoration: underline;
 }
 
+.ProseMirror table {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.ProseMirror th,
+.ProseMirror td,
+.table-ghost th,
+.table-ghost td {
+    position: relative;
+    padding: 0.375rem 0.5rem;
+    vertical-align: top;
+    text-align: left;
+    border: 1px solid var(--color-base-500);
+
+    & > p {
+        margin-bottom: 0;
+    }
+}
+
+.ProseMirror th,
+.table-ghost th {
+    font-weight: 600;
+}
+
+// Copy of the row or the column being dragged
+.table-ghost {
+    position: absolute;
+    z-index: 3;
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-md);
+    color: var(--color-base-100);
+    white-space: break-spaces;
+    pointer-events: none;
+    outline: 2px solid var(--color-accent-500);
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: var(--color-base-900);
+    box-shadow: var(--box-shadow-md);
+    opacity: 0.85;
+
+    .color-scheme-dark & {
+        background-color: var(--color-base-800);
+    }
+}
+
+// The cursor before or after a table is as tall as the table and 1px wide like the one of the
+// browser. A shadow of the color of the editor keeps it 1px apart from the border
+.ProseMirror table.table-gap-before,
+.ProseMirror table.table-gap-after {
+    --table-gap-background: var(--color-base-900);
+    animation: table-gap-blink 1.1s step-end infinite;
+}
+
+.ProseMirror table.table-gap-before {
+    box-shadow: -2px 0 0 -1px var(--table-gap-background), -3px 0 0 -1px var(--color-base-100);
+}
+
+.ProseMirror table.table-gap-after {
+    box-shadow: 2px 0 0 -1px var(--table-gap-background), 3px 0 0 -1px var(--color-base-100);
+}
+
+.color-scheme-dark .ProseMirror table.table-gap-before,
+.color-scheme-dark .ProseMirror table.table-gap-after {
+    --table-gap-background: var(--color-base-800);
+}
+
+@keyframes table-gap-blink {
+    50% {
+        box-shadow: none;
+    }
+}
+
+// A table in a selection is shown selected as a whole, without the selection of its text
+.ProseMirror table.table-selected *::selection {
+    background: transparent;
+}
+
+.ProseMirror .selectedCell::after,
+.ProseMirror table.table-selected :is(th, td)::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    background-color: var(--color-selection);
+}
+
+.table-handle .dropdown-item[hidden] {
+    display: none;
+}
+
+.table-handle {
+    position: absolute;
+    z-index: 2;
+    margin-bottom: 0;
+    transform: translate(-50%, -50%);
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.table-handle-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: var(--color-base-300);
+    // The handles are dragged to move rows and columns
+    touch-action: none;
+    cursor: grab;
+    background-color: var(--color-base-900);
+    border: 1px solid var(--color-base-500);
+    border-radius: 1rem;
+
+    // The same icon is used for both handles, turned for the rows
+    & .icon {
+        flex-shrink: 0;
+        width: 1rem;
+        min-width: 0;
+        height: 1rem;
+        min-height: 0;
+        margin-right: 0;
+    }
+
+    .table-handle-row & .icon {
+        transform: rotate(90deg);
+    }
+
+    // Before the states, so that they apply also to the dark color scheme
+    .color-scheme-dark & {
+        background-color: var(--color-base-700);
+    }
+
+    &:hover,
+    &.is-active,
+    &[aria-expanded="true"] {
+        color: var(--color-white);
+        background-color: var(--color-accent-500);
+        border-color: var(--color-accent-500);
+    }
+
+    &:focus-visible {
+        @include focusring;
+    }
+
+    &.is-dragging {
+        cursor: grabbing;
+    }
+
+    .table-handle-column & {
+        width: 2rem;
+        height: 1rem;
+    }
+
+    .table-handle-row & {
+        width: 1rem;
+        height: 2rem;
+    }
+}
+
+.table-drop-indicator {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    background-color: var(--color-accent-500);
+    border-radius: 1px;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.table-drop-indicator-row {
+    width: var(--length);
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+.table-drop-indicator-column {
+    width: 2px;
+    height: var(--length);
+    transform: translateX(-50%);
+}
+
 .cm-editor {
     overflow: auto;
     resize: vertical;
@@ -229,7 +416,8 @@ img.ProseMirror-separator {
     border-left: 1px solid var(--color-base-500);
 }
 
-.editor-toolbar .dropdown-item.is-active {
+.editor-toolbar .dropdown-item.is-active,
+.table-handle .dropdown-item.is-active {
     color: var(--color-link);
 }
 
@@ -266,6 +454,7 @@ img.ProseMirror-separator {
 }
 
 .editor-wrap {
+    position: relative;
     display: flex;
     flex-direction: column;
     margin-bottom: 0.75rem;
@@ -285,6 +474,11 @@ img.ProseMirror-separator {
 
 .editor-wrap .dropdown-menu {
     margin-top: 0;
+}
+
+// The menus of the table handles are apart from them like the other menus of the panel
+.editor-wrap .table-handle .dropdown-menu {
+    margin-top: 3px;
 }
 
 .editor-wrap:has(.is-invalid):focus-within {

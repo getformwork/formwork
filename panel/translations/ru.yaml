@@ -45,6 +45,21 @@ panel.editor.paragraph: Абзац
 panel.editor.quote: Кавычки
 panel.editor.redo: Выбор
 panel.editor.summary: Краткий
+panel.editor.table: Таблица
+panel.editor.table.addColumnLeft: Добавить столбец слева
+panel.editor.table.addColumnRight: Добавить столбец справа
+panel.editor.table.addRowAbove: Добавить строку выше
+panel.editor.table.addRowBelow: Добавить строку ниже
+panel.editor.table.alignCenter: Выровнять по центру
+panel.editor.table.alignLeft: Выровнять по левому краю
+panel.editor.table.alignRight: Выровнять по правому краю
+panel.editor.table.clearColumn: Очистить столбец
+panel.editor.table.clearRow: Очистить строку
+panel.editor.table.column: Столбец
+panel.editor.table.deleteColumn: Удалить столбец
+panel.editor.table.deleteRow: Удалить строку
+panel.editor.table.deleteTable: Удалить таблицу
+panel.editor.table.row: Строка
 panel.editor.toggleMarkdown: Показать/скрыть Markdown
 panel.editor.undo: Открыть
 panel.errors.action.reportToGithub: Сообщить о проблеме на GitHub

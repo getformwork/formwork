@@ -45,6 +45,21 @@ panel.editor.paragraph: Παράγραφος
 panel.editor.quote: Παράθεση
 panel.editor.redo: Επανάληψη
 panel.editor.summary: Περίληψη
+panel.editor.table: Πίνακας
+panel.editor.table.addColumnLeft: Προσθήκη στήλης αριστερά
+panel.editor.table.addColumnRight: Προσθήκη στήλης δεξιά
+panel.editor.table.addRowAbove: Προσθήκη γραμμής επάνω
+panel.editor.table.addRowBelow: Προσθήκη γραμμής κάτω
+panel.editor.table.alignCenter: Στοίχιση στο κέντρο
+panel.editor.table.alignLeft: Στοίχιση αριστερά
+panel.editor.table.alignRight: Στοίχιση δεξιά
+panel.editor.table.clearColumn: Εκκαθάριση στήλης
+panel.editor.table.clearRow: Εκκαθάριση γραμμής
+panel.editor.table.column: Στήλη
+panel.editor.table.deleteColumn: Διαγραφή στήλης
+panel.editor.table.deleteRow: Διαγραφή γραμμής
+panel.editor.table.deleteTable: Διαγραφή πίνακα
+panel.editor.table.row: Γραμμή
 panel.editor.toggleMarkdown: Εναλλαγή Markdown
 panel.editor.undo: Αναίρεση
 panel.errors.action.reportToGithub: Αναφορά προβλήματος στο GitHub

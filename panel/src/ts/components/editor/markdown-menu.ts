@@ -1,11 +1,13 @@
-import { schema } from "prosemirror-markdown";
 import type { MarkType, NodeType } from "prosemirror-model";
-import type { Command } from "prosemirror-state";
+import type { Command, EditorState } from "prosemirror-state";
 import { NodeSelection, Plugin } from "prosemirror-state";
 import type { EditorView } from "prosemirror-view";
 import { app } from "../../services/app";
 import { $$ } from "../../utils/selectors";
-import { insertImage, insertLink, isMarkActive, lift, redo, setBlockType, sinkListItem, toggleMark, undo, wrapIn, wrapInList } from "./markdown-commands";
+import { insertImage, insertLink, isMarkActive, redo, setBlockType, sinkListItem, toggleMark, undo, wrapIn } from "./markdown-commands";
+import { decreaseIndent, isInList, toggleList } from "./markdown-lists";
+import { schema } from "./markdown-schema";
+import { insertTable } from "./markdown-tables";
 import type { Toolbar } from "./toolbar";
 
 /**
@@ -13,6 +15,10 @@ import type { Toolbar } from "./toolbar";
  */
 interface MenuItem {
     command: Command;
+    /**
+     * Get whether the item is active, like the button of the list around the cursor
+     */
+    active?: (state: EditorState) => boolean;
     dom: HTMLElement;
     mark?: MarkType;
     node?: NodeType;
@@ -86,7 +92,10 @@ class MenuView {
      * Update the state of the items
      */
     update() {
-        this.items.forEach(({ command, dom, mark, dropdown, name, node }) => {
+        // Menus already showing the type of the block
+        const labelled = new Set<string>();
+
+        this.items.forEach(({ command, active, dom, mark, dropdown, name, node }) => {
             const state = this.editorView.state;
             const editable = this.editorView.props.editable ? this.editorView.props.editable(state) : true;
 
@@ -101,10 +110,14 @@ class MenuView {
             if (dropdown && name) {
                 const btn = this.dropdowns[dropdown].querySelector(".dropdown-button") as HTMLButtonElement;
                 btn.disabled = !editable;
-                if (!applicable) {
+                // The first type that cannot be set is the current one: in the cells of a table,
+                // where only paragraphs are allowed, no type can be set
+                const current = !applicable && !labelled.has(dropdown);
+                if (current) {
                     btn.textContent = name;
+                    labelled.add(dropdown);
                 }
-                dom.classList.toggle("is-active", !applicable);
+                dom.classList.toggle("is-active", current);
             }
 
             if (applicable && node) {
@@ -113,6 +126,10 @@ class MenuView {
 
             if (applicable && mark) {
                 dom.classList.toggle("is-active", isMarkActive(state, mark));
+            }
+
+            if (active) {
+                dom.classList.toggle("is-active", active(state));
             }
         });
     }
@@ -204,12 +221,14 @@ function createMenuItems(toolbar: Toolbar): MenuItem[] {
             group: "style",
         },
         {
-            command: wrapInList(nodes.bullet_list, nodes.list_item),
+            command: toggleList(nodes.bullet_list),
+            active: (state) => isInList(state, nodes.bullet_list),
             dom: toolbar.createButton("listUnordered", t("panel.editor.bulletList", "Bullet list")),
             group: "blocks",
         },
         {
-            command: wrapInList(nodes.ordered_list, nodes.list_item),
+            command: toggleList(nodes.ordered_list),
+            active: (state) => isInList(state, nodes.ordered_list),
             dom: toolbar.createButton("listOrdered", t("panel.editor.numberedList", "Numbered list")),
             group: "blocks",
         },
@@ -225,7 +244,7 @@ function createMenuItems(toolbar: Toolbar): MenuItem[] {
             group: "blocks",
         },
         {
-            command: lift,
+            command: decreaseIndent,
             dom: toolbar.createButton("indentDecrease", t("panel.editor.decreaseIndent", "Decrease indent")),
             group: "blocks",
         },
@@ -239,6 +258,11 @@ function createMenuItems(toolbar: Toolbar): MenuItem[] {
             mark: marks.link,
             command: insertLink,
             dom: toolbar.createButton("link", t("panel.editor.link", "Link")),
+            group: "media",
+        },
+        {
+            command: insertTable,
+            dom: toolbar.createButton("table", t("panel.editor.table", "Table")),
             group: "media",
         },
         {

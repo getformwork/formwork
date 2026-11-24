@@ -1,8 +1,8 @@
 import "../../../environment/dom";
 import assert from "node:assert/strict";
 import { beforeEach, describe, mock, test } from "node:test";
-import { schema } from "prosemirror-markdown";
 import { TextSelection } from "prosemirror-state";
+import { schema } from "../../../../src/ts/components/editor/markdown-schema";
 import { MarkdownView, type MarkdownViewOptions } from "../../../../src/ts/components/editor/markdown-view";
 import { app } from "../../../../src/ts/services/app";
 import { setTranslation } from "../../../helpers/panel";

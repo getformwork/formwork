@@ -2,8 +2,9 @@ import { chainCommands, exitCode, joinDown, joinUp, lift, selectParentNode, setB
 import { redo, undo } from "prosemirror-history";
 import { undoInputRule } from "prosemirror-inputrules";
 import type { Schema } from "prosemirror-model";
-import { liftListItem, sinkListItem, splitListItem, wrapInList } from "prosemirror-schema-list";
+import { sinkListItem, splitListItem } from "prosemirror-schema-list";
 import type { Command } from "prosemirror-state";
+import { decreaseIndent, toggleList } from "./markdown-lists";
 
 const mac = typeof navigator !== "undefined" ? /Mac|iP(hone|[oa]d)/.test(navigator.platform) : false;
 
@@ -56,10 +57,10 @@ export function buildKeymap(schema: Schema, mapKeys?: { [key: string]: false | s
     }
 
     if (schema.nodes.bullet_list) {
-        bind("Shift-Ctrl-8", wrapInList(schema.nodes.bullet_list));
+        bind("Shift-Ctrl-8", toggleList(schema.nodes.bullet_list));
     }
     if (schema.nodes.ordered_list) {
-        bind("Shift-Ctrl-9", wrapInList(schema.nodes.ordered_list));
+        bind("Shift-Ctrl-9", toggleList(schema.nodes.ordered_list));
     }
     if (schema.nodes.blockquote) {
         bind("Ctrl->", wrapIn(schema.nodes.blockquote));
@@ -81,7 +82,7 @@ export function buildKeymap(schema: Schema, mapKeys?: { [key: string]: false | s
     if (schema.nodes.list_item) {
         bind("Enter", splitListItem(schema.nodes.list_item));
         // Outside lists the key lifts the block out of its parent, e.g. a quote
-        bind("Mod-[", chainCommands(liftListItem(schema.nodes.list_item), lift));
+        bind("Mod-[", decreaseIndent);
         bind("Mod-]", sinkListItem(schema.nodes.list_item));
     }
     if (schema.nodes.paragraph) {

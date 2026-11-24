@@ -49,7 +49,7 @@ describe("Markdown Menu", () => {
             makeEditor("foo|");
             const toolbar = document.querySelector(".editor-toolbar > div") as HTMLElement;
             const children = Array.from(toolbar.children, (child) => (child as HTMLElement).ariaLabel ?? child.className);
-            assert.deepEqual(children, ["dropdown", "Bold", "Italic", "Code", "separator", "Bullet list", "Numbered list", "Quote", "Increase indent", "Decrease indent", "separator", "Image", "Link", "separator", "Undo", "Redo"]);
+            assert.deepEqual(children, ["dropdown", "Bold", "Italic", "Code", "separator", "Bullet list", "Numbered list", "Quote", "Increase indent", "Decrease indent", "separator", "Image", "Link", "Table", "separator", "Undo", "Redo"]);
         });
 
         test("removes its buttons from the toolbar when the editor is destroyed", () => {
@@ -73,6 +73,14 @@ describe("Markdown Menu", () => {
     });
 
     describe("state", () => {
+        test("shows the button of the list around the cursor as active, keeping both enabled", () => {
+            makeEditor("* foo|");
+            assert.equal(isActive(button("Bullet list")), true);
+            assert.equal(isActive(button("Numbered list")), false);
+            assert.equal(button("Bullet list").disabled, false);
+            assert.equal(button("Numbered list").disabled, false);
+        });
+
         test("shows the type of the block at the cursor", () => {
             const editor = makeEditor("## foo|\n\nbar");
             assert.equal(blockMenuButton().textContent, "Heading 2");

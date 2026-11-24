@@ -1,8 +1,8 @@
 import "../../../environment/dom";
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { schema } from "prosemirror-markdown";
 import { buildKeymap } from "../../../../src/ts/components/editor/markdown-keymap";
+import { schema } from "../../../../src/ts/components/editor/markdown-schema";
 import { makeView, markdown, press, type } from "../../../helpers/prosemirror";
 
 // happy-dom is not a Mac, so Mod is Ctrl
@@ -95,11 +95,11 @@ describe("Markdown Keymap", () => {
         });
 
         test("indents and outdents list items", () => {
-            const view = makeView("* foo\n\n* bar|");
+            const view = makeView("* foo\n* bar|");
             press(view, "]", mod);
-            assert.equal(markdown(view), "* foo\n\n  * bar");
+            assert.equal(markdown(view), "* foo\n  * bar");
             press(view, "[", mod);
-            assert.equal(markdown(view), "* foo\n\n* bar");
+            assert.equal(markdown(view), "* foo\n* bar");
         });
 
         test("lifts a paragraph out of a quote with Mod+[", () => {

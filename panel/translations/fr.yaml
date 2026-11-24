@@ -45,6 +45,21 @@ panel.editor.paragraph: Paragraphe
 panel.editor.quote: Citer
 panel.editor.redo: Refaire
 panel.editor.summary: Résumé
+panel.editor.table: Tableau
+panel.editor.table.addColumnLeft: Ajouter une colonne à gauche
+panel.editor.table.addColumnRight: Ajouter une colonne à droite
+panel.editor.table.addRowAbove: Ajouter une ligne au-dessus
+panel.editor.table.addRowBelow: Ajouter une ligne en dessous
+panel.editor.table.alignCenter: Centrer
+panel.editor.table.alignLeft: Aligner à gauche
+panel.editor.table.alignRight: Aligner à droite
+panel.editor.table.clearColumn: Vider la colonne
+panel.editor.table.clearRow: Vider la ligne
+panel.editor.table.column: Colonne
+panel.editor.table.deleteColumn: Supprimer la colonne
+panel.editor.table.deleteRow: Supprimer la ligne
+panel.editor.table.deleteTable: Supprimer le tableau
+panel.editor.table.row: Ligne
 panel.editor.toggleMarkdown: Afficher/masquer Markdown
 panel.editor.undo: Annuler
 panel.errors.action.reportToGithub: Signaler le problème sur GitHub

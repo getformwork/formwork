@@ -1,9 +1,9 @@
 import "../../../environment/dom";
 import assert from "node:assert/strict";
 import { afterEach, beforeEach, describe, test } from "node:test";
-import { schema } from "prosemirror-markdown";
 import type { EditorView } from "prosemirror-view";
 import { canInsert, getMarkRange, insertImage, insertLink, isMarkActive, redo, removeLink, undo } from "../../../../src/ts/components/editor/markdown-commands";
+import { schema } from "../../../../src/ts/components/editor/markdown-schema";
 import { app } from "../../../../src/ts/services/app";
 import { Modal } from "../../../../src/ts/services/modal";
 import { resetModals, setTranslation } from "../../../helpers/panel";
