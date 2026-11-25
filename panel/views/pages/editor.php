@@ -42,7 +42,7 @@
             </div>
             <?php if ($site->languages()->hasMultiple()) : ?>
                 <div class="dropdown">
-                    <button type="button" class="button dropdown-button caret button-accent" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?> <?= $this->translate('panel.pages.languages') ?><?php if ($currentLanguage) : ?> <span class="badge badge-blue"><?= $currentLanguage ?></span><?php endif ?></button>
+                    <button type="button" class="button dropdown-button caret button-accent" title="<?= $this->translate('panel.pages.languages') ?>" aria-label="<?= $this->translate('panel.pages.languages') ?>" data-dropdown="languages-dropdown"><?= $this->icon('translate') ?><span class="show-from-md"> <?= $this->translate('panel.pages.languages') ?></span><?php if ($currentLanguage) : ?> <span class="badge badge-blue"><?= $currentLanguage ?></span><?php endif ?></button>
                     <div class="dropdown-menu" id="languages-dropdown">
                         <?php foreach ($site->languages()->available() as $language) : ?>
                             <a href="<?= $panel->uri('/pages/' . trim($page->route(), '/') . '/edit/language/' . $language . '/') ?>" class="dropdown-item"><?= $page->languages()->available()->has($language) ? $this->translate('panel.pages.languages.editLanguage', $language->nativeName() . ' (' . $language->code() . ')') : $this->translate('panel.pages.languages.addLanguage', $language->nativeName() . ' (' . $language->code() . ')') ?></a>
