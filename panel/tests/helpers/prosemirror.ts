@@ -15,6 +15,23 @@ import { MarkdownView } from "../../src/ts/components/editor/markdown-view";
 import { Toolbar } from "../../src/ts/components/editor/toolbar";
 
 /**
+ * Fire the `selectionchange` event of the document asynchronously, as the browsers do
+ *
+ * happy-dom fires it while the selection is being set, so the editor would read the selection of the
+ * DOM before knowing that it set it, replacing the selection of its state (e.g. a table gap)
+ */
+function deferSelectionChange() {
+    const dispatchEvent = document.dispatchEvent.bind(document);
+    document.dispatchEvent = (event) => {
+        if (event.type === "selectionchange") {
+            setTimeout(() => dispatchEvent(event));
+            return true;
+        }
+        return dispatchEvent(event);
+    };
+}
+
+/**
  * Get the transaction removing the markers of an editor state and selecting between them
  */
 function selectMarkers(state: EditorState, marker: string) {
@@ -51,6 +68,7 @@ function selectMarkers(state: EditorState, marker: string) {
 export function makeView(markdown: string, plugins: Plugin[] = [history(), buildInputRules(schema), keymap(buildKeymap(schema)), keymap(baseKeymap)], cursor = "|") {
     // The marker is not parsed as Markdown
     const marker = "\u2063";
+    deferSelectionChange();
     const state = EditorState.create({ doc: markdownParser.parse(markdown.replaceAll(cursor, marker)), plugins });
 
     const target = document.createElement("div");
@@ -72,6 +90,7 @@ export function makeTableView(markdown: string) {
  * placing the cursor at `^` and focusing it
  */
 export function makeTableEditor(content: string) {
+    deferSelectionChange();
     document.body.innerHTML = '<div class="editor-toolbar"></div><div class="editor-wrap"></div>';
     const toolbar = new Toolbar(document.querySelector(".editor-toolbar") as HTMLElement);
     const editor = new MarkdownView("content", document.querySelector(".editor-wrap") as HTMLElement, content, mock.fn(), { toolbar });
