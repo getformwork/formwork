@@ -116,6 +116,18 @@ describe("Pages View", () => {
                 assert.equal(page("/blog/").querySelector(".pages-tree-children-toggle button")?.getAttribute("aria-expanded"), "false");
             });
 
+            test("does not expand a page without children", () => {
+                makeTree();
+                (page("/about/").querySelector(".page-details") as HTMLElement).click();
+                assert.equal(page("/about/").classList.contains("is-expanded"), false);
+                assert.equal(page("/about/").querySelector(".pages-tree-children-toggle button"), null);
+            });
+
+            test("does not show as expanded a page without children rendered as expanded", () => {
+                makeTree([{ route: "/about/", title: "About", expanded: true }]);
+                assert.equal(page("/about/").classList.contains("is-expanded"), false);
+            });
+
             test("does not toggle a page when its link or handle are clicked", () => {
                 makeTree();
                 (page("/blog/").querySelector(".page-title a") as HTMLElement).click();
@@ -176,6 +188,12 @@ describe("Pages View", () => {
                 assert.equal(page("/blog/").classList.contains("is-expanded"), true);
                 search("");
                 assert.equal(page("/blog/").classList.contains("is-expanded"), false);
+            });
+
+            test("does not show as expanded the pages without children while searching", () => {
+                makeTree();
+                search("about");
+                assert.equal(page("/about/").classList.contains("is-expanded"), false);
             });
 
             test("shows all pages and removes the highlights when the search is cleared", () => {

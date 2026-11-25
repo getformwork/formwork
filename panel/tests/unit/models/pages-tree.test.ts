@@ -65,11 +65,20 @@ describe("PagesTreeModel", () => {
         assert.equal(tree.expandedCount.value, 2);
     });
 
-    test("counts only expandable items as expanded", () => {
+    test("expands only the items with children", () => {
         const tree = makeTree();
+        tree.collapseAll();
         tree.expandAll();
-        assert.equal(tree.expanded.value.size, 6);
+        assert.deepEqual(tree.expanded.value, new Set([first, fourth]));
         assert.equal(tree.expandedCount.value, 2);
+    });
+
+    test("does not toggle an item without children", () => {
+        const tree = makeTree();
+        const expanded = tree.expanded.value;
+        tree.toggle(sixth as unknown as HTMLElement);
+        assert.equal(tree.expanded.value, expanded);
+        assert.deepEqual(tree.expanded.value, new Set([first, fourth]));
     });
 
     test("toggles an item", () => {

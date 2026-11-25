@@ -40,10 +40,10 @@ export const PagesTreeModel = createModel((initialReordering: boolean) => {
         filtering,
 
         /**
-         * Expand all items
+         * Expand all items with children
          */
         expandAll() {
-            expanded.value = new Set(items.value);
+            expanded.value = new Set(parents.value);
         },
 
         /**
@@ -54,9 +54,12 @@ export const PagesTreeModel = createModel((initialReordering: boolean) => {
         },
 
         /**
-         * Expand an item, or collapse it if expanded
+         * Expand an item with children, or collapse it if expanded
          */
         toggle(item: HTMLElement) {
+            if (!parents.value.has(item)) {
+                return;
+            }
             const next = new Set(expanded.value);
             if (!next.delete(item)) {
                 next.add(item);
