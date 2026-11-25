@@ -9,7 +9,7 @@ const options = {
     bundle: true,
     format: "esm",
     target: "es2020",
-    chunkNames: "chunks/[name]-[hash]",
+    chunkNames: "chunks/[hash]",
     minify: true,
     splitting: true,
     outdir: "./assets/js",
