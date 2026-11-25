@@ -247,11 +247,15 @@ img.ProseMirror-separator {
 }
 
 .ProseMirror table.table-gap-before {
-    box-shadow: -2px 0 0 -1px var(--table-gap-background), -3px 0 0 -1px var(--color-base-100);
+    box-shadow:
+        -2px 0 0 -1px var(--table-gap-background),
+        -3px 0 0 -1px var(--color-base-100);
 }
 
 .ProseMirror table.table-gap-after {
-    box-shadow: 2px 0 0 -1px var(--table-gap-background), 3px 0 0 -1px var(--color-base-100);
+    box-shadow:
+        2px 0 0 -1px var(--table-gap-background),
+        3px 0 0 -1px var(--color-base-100);
 }
 
 .color-scheme-dark .ProseMirror table.table-gap-before,

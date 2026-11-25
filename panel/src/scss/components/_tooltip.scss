@@ -46,7 +46,9 @@
     background: transparent;
     border: 0;
     border-radius: var(--border-radius-sm);
-    transition: color var(--transition-time-sm), background-color var(--transition-time-sm);
+    transition:
+        color var(--transition-time-sm),
+        background-color var(--transition-time-sm);
 
     &:hover {
         color: var(--color-button-hover);

@@ -5,20 +5,16 @@
 @use "sass:map";
 
 @mixin make-pages-tree-levels($levels) {
-    // biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
+    .pages-tree-level-1 {
+        --level: 1;
+    }
+
     @for $i from 2 through $levels {
-        $indent: 0.5rem;
-
-        @if $i == 2 {
-            $indent: 0.875rem;
-        } @else {
-            $indent: $indent + 2rem * ($i - 2);
-        }
-
         .pages-tree-level-#{$i} {
-            &::before,
+            --level: #{$i};
+
+            > .pages-tree-row::before,
             &::after {
-                left: $indent;
                 content: "";
             }
 
@@ -57,6 +53,7 @@
 }
 
 .pages-tree-row {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
@@ -69,50 +66,75 @@
             background-color: var(--color-base-700);
         }
     }
+
+    &::after {
+        position: absolute;
+        top: 2.25rem;
+        bottom: -1px;
+        z-index: 1;
+        border-left: 2px solid var(--color-base-600);
+    }
 }
 
 .pages-tree-item {
+    // Indent of the connectors of this level and of its children
+    --indent: max(0.875rem, calc(0.5rem + 2rem * (var(--level) - 2)));
+    --children-indent: max(0.875rem, calc(0.5rem + 2rem * (var(--level) - 1)));
+
     position: relative;
 
-    &::before {
+    > .pages-tree-row::before {
         position: absolute;
-        top: -2.125rem;
+        top: 0;
         z-index: 1;
         width: 1.625rem;
-        height: 3.625rem;
+        height: 1.5rem;
         border-bottom: 2px solid var(--color-base-600);
         border-left: 2px solid var(--color-base-600);
     }
 
+    > .pages-tree-row::before,
+    &::after {
+        left: var(--indent);
+    }
+
     &::after {
         position: absolute;
-        top: -2.125rem;
+        top: 0;
         z-index: 1;
         width: 1.625rem;
         height: 100%;
         border-left: 2px solid var(--color-base-600);
     }
 
-    .is-filtered &::before,
+    .is-filtered & > .pages-tree-row::before,
+    .is-filtered & > .pages-tree-row::after,
     .is-filtered &::after {
         display: none;
     }
 
     &:last-child::after,
-    .is-dragging > &:nth-last-child(2)::after {
+    .is-dragging > &:nth-last-child(2)::after,
+    &.sortable-chosen > .pages-tree-row::after,
+    &.sortable-fallback > .pages-tree-row::after {
         display: none;
     }
 
-    &.has-children::before,
+    &.has-children > .pages-tree-row::before,
     &.has-children::after,
-    .is-reordering &.is-orderable::before,
+    .is-reordering &.is-orderable > .pages-tree-row::before,
     .is-reordering &.is-orderable::after {
         width: 0.875rem;
     }
 
-    .is-reordering &:not(.is-orderable, .has-children)::before,
+    .is-reordering &:not(.is-orderable, .has-children) > .pages-tree-row::before,
     .is-reordering &:not(.is-orderable, .has-children)::after {
         width: 2.5rem;
+    }
+
+    &.is-expanded.has-children > .pages-tree-row::after {
+        left: var(--children-indent);
+        content: "";
     }
 }
 
@@ -132,6 +154,11 @@
     min-width: 1rem;
 }
 
+.pages-tree-item .page-actions {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 .pages-tree-children-toggle .button {
     padding: 0;
     color: var(--color-base-300);
@@ -140,7 +167,9 @@
 
     & .icon {
         margin-right: 0;
-        transition: transform var(--transition-time-sm), color var(--transition-time-sm);
+        transition:
+            transform var(--transition-time-sm),
+            color var(--transition-time-sm);
     }
 }
 

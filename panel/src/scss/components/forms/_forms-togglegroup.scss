@@ -38,7 +38,9 @@
     padding: 0.25rem 0.75rem;
     font-size: var(--font-size-sm);
     border-radius: calc(var(--border-radius) - 1px);
-    transition: background-color var(--transition-time-sm), color var(--transition-time-sm);
+    transition:
+        background-color var(--transition-time-sm),
+        color var(--transition-time-sm);
 }
 
 .form-togglegroup .form-input[type="radio"]:hover + span {

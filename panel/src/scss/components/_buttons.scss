@@ -15,7 +15,11 @@
     background-color: transparent;
     border: 1px solid transparent;
     border-radius: var(--border-radius);
-    transition: border-color var(--transition-time-sm), background-color var(--transition-time-sm), box-shadow var(--transition-time-sm), color var(--transition-time-sm);
+    transition:
+        border-color var(--transition-time-sm),
+        background-color var(--transition-time-sm),
+        box-shadow var(--transition-time-sm),
+        color var(--transition-time-sm);
     @include user-select-none;
 
     &:hover {

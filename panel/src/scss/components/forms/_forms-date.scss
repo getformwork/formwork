@@ -90,7 +90,9 @@
 
 .calendar-day {
     border-radius: var(--border-radius);
-    transition: background-color var(--transition-time-sm), color var(--transition-time-sm);
+    transition:
+        background-color var(--transition-time-sm),
+        color var(--transition-time-sm);
 
     &:hover {
         color: var(--color-white);

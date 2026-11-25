@@ -16,7 +16,9 @@
     content: " ";
     border: 1px solid var(--color-base-500);
     border-radius: var(--border-radius-sm);
-    transition: border-color var(--transition-time-sm), background-color var(--transition-time-sm);
+    transition:
+        border-color var(--transition-time-sm),
+        background-color var(--transition-time-sm);
 }
 
 .form-checkbox + .form-checkbox-text:hover::before,

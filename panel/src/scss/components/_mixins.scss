@@ -44,7 +44,6 @@
     outline-offset: 0; // Fix for Safari
 }
 
-// biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
 @mixin make-columns-globals($columns-count, $breakpoints) {
     $selectors: "";
 
@@ -55,7 +54,6 @@
             $selectors: ".col-#{$breakpoint-name}";
         }
 
-        // biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
         @for $i from 1 through $columns-count {
             $selectors: "#{$selectors}, .col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
             $gcd: gcd($i, $columns-count);
@@ -82,7 +80,6 @@
         max-width: 100%;
     }
 
-    // biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
     @for $i from 1 through $columns-count {
         $selectors: ".col-#{$breakpoint-name}-#{$i}-#{$columns-count}";
         $gcd: gcd($i, $columns-count);
@@ -99,7 +96,6 @@
 }
 
 @mixin make-util($name, $property, $list) {
-    // biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
     @each $k, $v in $list {
         $suffix: "";
 
@@ -113,12 +109,15 @@
     }
 }
 
-// biome-ignore assist/source/useSortedProperties: sorting would move Sass variable assignments after their use
 @mixin checkered-background($size, $opacity) {
     $color: rgba(0, 0, 0, $opacity);
     $half: $size * 0.5;
 
     background-image: linear-gradient(45deg, $color 25%, transparent 25%), linear-gradient(-45deg, $color 25%, transparent 25%), linear-gradient(45deg, transparent 75%, $color 75%), linear-gradient(-45deg, transparent 75%, $color 75%);
-    background-position: 0 0, 0 $half, $half (-$half), (-$half) 0;
+    background-position:
+        0 0,
+        0 $half,
+        $half (-$half),
+        (-$half) 0;
     background-size: $size $size;
 }
