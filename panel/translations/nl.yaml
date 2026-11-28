@@ -346,6 +346,9 @@ panel.statistics.devices.type: Type
 panel.statistics.devices.type.desktop: Desktop
 panel.statistics.devices.type.mobile: Mobiel
 panel.statistics.devices.type.tablet: Tablet
+panel.statistics.download: Downloaden
+panel.statistics.download.csv: Downloaden CSV
+panel.statistics.download.tsv: Downloaden TSV
 panel.statistics.monthlyUniqueVisitors: Maandelijkse unieke bezoekers
 panel.statistics.monthlyVisits: Maandelijkse bezoeken
 panel.statistics.sources: Bronnen

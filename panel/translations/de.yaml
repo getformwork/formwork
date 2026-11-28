@@ -346,6 +346,9 @@ panel.statistics.devices.type: Typ
 panel.statistics.devices.type.desktop: Desktop
 panel.statistics.devices.type.mobile: Mobil
 panel.statistics.devices.type.tablet: Tablet
+panel.statistics.download: Herunterladen
+panel.statistics.download.csv: Herunterladen CSV
+panel.statistics.download.tsv: Herunterladen TSV
 panel.statistics.monthlyUniqueVisitors: Monatlich eindeutige Besucher
 panel.statistics.monthlyVisits: Monatliche Besuche
 panel.statistics.sources: Quellen

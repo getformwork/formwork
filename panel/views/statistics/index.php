@@ -10,10 +10,10 @@
     <div>
         <?php if ($panel->user()->permissions()->has('panel.statistics.download')) : ?>
             <div class="dropdown mb-0">
-                <button type="button" class="button button-accent dropdown-button caret" data-dropdown="dropdown-statistics-download"><?= $this->icon('cloud-download') ?> Download</button>
+                <button type="button" class="button button-accent dropdown-button caret" data-dropdown="dropdown-statistics-download"><?= $this->icon('cloud-download') ?> <?= $this->translate('panel.statistics.download') ?></button>
                 <div class="dropdown-menu" id="dropdown-statistics-download">
-                    <a class="dropdown-item" href="<?= $panel->uri('/statistics/download/tsv/') ?>">Download TSV</a>
-                    <a class="dropdown-item" href="<?= $panel->uri('/statistics/download/csv/') ?>">Download CSV</a>
+                    <a class="dropdown-item" href="<?= $this->uri($app->router()->generate('panel.statistics.download', ['format' => 'tsv'])) ?>"><?= $this->translate('panel.statistics.download.tsv') ?></a>
+                    <a class="dropdown-item" href="<?= $this->uri($app->router()->generate('panel.statistics.download', ['format' => 'csv'])) ?>"><?= $this->translate('panel.statistics.download.csv') ?></a>
                 </div>
             </div>
         <?php endif ?>

@@ -12,6 +12,7 @@ use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
+use RuntimeException;
 use ZipArchive;
 
 final class StatisticsController extends AbstractController
@@ -45,13 +46,10 @@ final class StatisticsController extends AbstractController
     /**
      * Statistics@download action
      */
-    public function download(Statistics $statistics, RouteParams $routeParams): Response
+    #[Permission('panel.statistics.download')]
+    public function download(Statistics $statistics, RouteParams $routeParams): FileResponse
     {
-        if (!$this->hasPermission('panel.statistics.download')) {
-            return $this->forward(ErrorsController::class, 'forbidden');
-        }
-
-        $format = $routeParams->get('format', 'tsv');
+        $format = $routeParams->get('format') ?? 'tsv';
 
         $chartData = $statistics->getChartData(31, 'Y-m-d');
 
@@ -77,7 +75,10 @@ final class StatisticsController extends AbstractController
         $file = FileSystem::joinPaths($this->config->getString('site.statistics.path'), sprintf('.export-%s.zip', FileSystem::randomName()));
 
         $zipArchive = new ZipArchive();
-        $zipArchive->open($file, ZipArchive::CREATE);
+
+        if ($zipArchive->open($file, ZipArchive::CREATE) !== true) {
+            throw new RuntimeException('Cannot create the statistics archive');
+        }
 
         foreach ($stats as $name => $data) {
             $zipArchive->addFromString(
@@ -89,6 +90,6 @@ final class StatisticsController extends AbstractController
         $zipArchive->close();
 
         return (new FileResponse($file, download: true, deleteAfterSend: true))
-            ->setFilename(sprintf('statistics-%s-%s.zip', Str::slug($this->site->title()), date('Ymd-His')));
+            ->setFilename(sprintf('%s.zip', implode('-', array_filter(['statistics', Str::slug((string) $this->site->title()), date('Ymd-His')]))));
     }
 }

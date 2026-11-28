@@ -346,6 +346,9 @@ panel.statistics.devices.type: Тип
 panel.statistics.devices.type.desktop: Комп’ютер
 panel.statistics.devices.type.mobile: Мобільний
 panel.statistics.devices.type.tablet: Планшет
+panel.statistics.download: Завантажити
+panel.statistics.download.csv: Завантажити CSV
+panel.statistics.download.tsv: Завантажити TSV
 panel.statistics.monthlyUniqueVisitors: Унікальні відвідувачі за місяць
 panel.statistics.monthlyVisits: Відвідування за місяць
 panel.statistics.sources: Джерела

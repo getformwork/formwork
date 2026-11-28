@@ -884,6 +884,35 @@ final class ArrTest extends TestCase
         $this->assertSame($expected, Arr::fromEntries($entries));
     }
 
+    public function testZipCombinesArraysElementByElement(): void
+    {
+        $this->assertSame(
+            [['a', 1], ['b', 2]],
+            Arr::zip([['a', 'b'], [1, 2]])
+        );
+    }
+
+    public function testZipIgnoresKeysAndPadsShorterArraysWithTheDefault(): void
+    {
+        $this->assertSame(
+            [['a', 1], ['b', 0], ['c', 0]],
+            Arr::zip([['x' => 'a', 'y' => 'b', 'z' => 'c'], [1]], 0)
+        );
+    }
+
+    public function testZipOfNoArraysIsEmpty(): void
+    {
+        $this->assertSame([], Arr::zip([]));
+    }
+
+    public function testZipRejectsNonArrays(): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('All elements of the $arrays parameter must be arrays');
+        /** @phpstan-ignore argument.type */
+        Arr::zip([['a'], 'invalid_value']);
+    }
+
     public function testLiteralDottedKeysTakePrecedenceOverNestedPaths(): void
     {
         /** @var array<string, mixed> $array */
