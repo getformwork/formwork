@@ -346,6 +346,9 @@ panel.statistics.devices.type: Τύπος
 panel.statistics.devices.type.desktop: Υπολογιστής
 panel.statistics.devices.type.mobile: Κινητό
 panel.statistics.devices.type.tablet: Tablet
+panel.statistics.download: Λήψη
+panel.statistics.download.csv: Λήψη CSV
+panel.statistics.download.tsv: Λήψη TSV
 panel.statistics.monthlyUniqueVisitors: Μηνιαίοι μοναδικοί επισκέπτες
 panel.statistics.monthlyVisits: Μηνιαίες επισκέψεις
 panel.statistics.sources: Πηγές

@@ -346,6 +346,9 @@ panel.statistics.devices.type: Typ
 panel.statistics.devices.type.desktop: Stationär dator
 panel.statistics.devices.type.mobile: Mobil
 panel.statistics.devices.type.tablet: Surfplatta
+panel.statistics.download: Ladda ner
+panel.statistics.download.csv: Ladda ner CSV
+panel.statistics.download.tsv: Ladda ner TSV
 panel.statistics.monthlyUniqueVisitors: Månatliga unika besökare
 panel.statistics.monthlyVisits: Månatliga besök
 panel.statistics.sources: Källor

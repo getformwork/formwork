@@ -346,6 +346,9 @@ panel.statistics.devices.type: Tip
 panel.statistics.devices.type.desktop: Desktop
 panel.statistics.devices.type.mobile: Mobil
 panel.statistics.devices.type.tablet: Tabletă
+panel.statistics.download: Descarcă
+panel.statistics.download.csv: Descarcă CSV
+panel.statistics.download.tsv: Descarcă TSV
 panel.statistics.monthlyUniqueVisitors: Vizitatori unici lunar
 panel.statistics.monthlyVisits: Vizite lunare
 panel.statistics.sources: Surse

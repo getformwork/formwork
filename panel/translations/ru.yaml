@@ -346,6 +346,9 @@ panel.statistics.devices.type: Тип
 panel.statistics.devices.type.desktop: Компьютер
 panel.statistics.devices.type.mobile: Мобильный
 panel.statistics.devices.type.tablet: Планшет
+panel.statistics.download: Скачать
+panel.statistics.download.csv: Скачать CSV
+panel.statistics.download.tsv: Скачать TSV
 panel.statistics.monthlyUniqueVisitors: Уникальные посетители в месяц
 panel.statistics.monthlyVisits: Посещения в месяц
 panel.statistics.sources: Источники

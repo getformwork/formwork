@@ -346,6 +346,9 @@ panel.statistics.devices.type: Típus
 panel.statistics.devices.type.desktop: Asztali
 panel.statistics.devices.type.mobile: Mobil
 panel.statistics.devices.type.tablet: Tablet
+panel.statistics.download: Letöltés
+panel.statistics.download.csv: Letöltés CSV
+panel.statistics.download.tsv: Letöltés TSV
 panel.statistics.monthlyUniqueVisitors: Havi egyedi látogatók
 panel.statistics.monthlyVisits: Havi látogatások
 panel.statistics.sources: Források

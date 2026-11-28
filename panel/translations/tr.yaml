@@ -346,6 +346,9 @@ panel.statistics.devices.type: Tür
 panel.statistics.devices.type.desktop: Masaüstü
 panel.statistics.devices.type.mobile: Mobil
 panel.statistics.devices.type.tablet: Tablet
+panel.statistics.download: İndir
+panel.statistics.download.csv: İndir CSV
+panel.statistics.download.tsv: İndir TSV
 panel.statistics.monthlyUniqueVisitors: Aylık tekil ziyaretçiler
 panel.statistics.monthlyVisits: Aylık ziyaretler
 panel.statistics.sources: Kaynaklar

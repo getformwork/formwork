@@ -133,16 +133,17 @@ trait BuildsPanelControllers
      * @param bool                  $previousSession      Whether the request has a previous session
      * @param bool                  $realErrorsController Whether to build the real errors controller when a controller forwards to it
      * @param array<string, object> $services             Additional or replacing container services
+     * @param array<string, mixed>  $site                 The `site` configuration
      *
      * @template T of object
      *
      * @return T
      */
-    protected function makeController(string $class, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = []): object
+    protected function makeController(string $class, array $system = [], array $input = [], array $services = [], ?User $user = null, ?Users $users = null, array $query = [], bool $realErrorsController = false, array $server = [], bool $previousSession = false, array $files = [], array $site = []): object
     {
         $app = App::instance();
 
-        $config = new Config(['system' => array_replace_recursive($app->config()->get('system'), ['panel' => ['root' => '/panel/']], $system)], resolved: true);
+        $config = new Config(['system' => array_replace_recursive($app->config()->get('system'), ['panel' => ['root' => '/panel/']], $system), 'site' => $site], resolved: true);
 
         $request = $this->panelRequest($input, $query, $server, $files, $previousSession);
 
