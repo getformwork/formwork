@@ -23,6 +23,7 @@ import type { Modal } from "./modal";
  */
 interface FormOptions {
     preventUnloadOnChanges?: boolean;
+    autoSubmit?: boolean;
 }
 
 /**
@@ -141,7 +142,9 @@ export class Form {
 
         this.options = { ...this.options, ...options };
 
-        if (this.options.preventUnloadOnChanges) {
+        if (this.options.autoSubmit) {
+            this.autoSubmit();
+        } else if (this.options.preventUnloadOnChanges) {
             this.preventUnloadOnChanges();
         }
     }
@@ -294,6 +297,15 @@ export class Form {
         }
 
         return { node, input };
+    }
+
+    /**
+     * Submit the form whenever one of its inputs changes
+     *
+     * Since the changes are submitted at once there is nothing to lose, so no confirmation is asked before leaving the page
+     */
+    private autoSubmit() {
+        this.element.addEventListener("change", () => this.element.requestSubmit());
     }
 
     /**

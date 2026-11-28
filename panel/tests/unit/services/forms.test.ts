@@ -1,6 +1,6 @@
 import "../../environment/dom";
 import assert from "node:assert/strict";
-import { beforeEach, describe, test } from "node:test";
+import { beforeEach, describe, mock, test } from "node:test";
 import { app } from "../../../src/ts/services/app";
 import { Form } from "../../../src/ts/services/form";
 import { Forms } from "../../../src/ts/services/forms";
@@ -39,6 +39,31 @@ describe("Forms", () => {
 
     test("does not ask for confirmation for the forms ignoring their changes", () => {
         document.body.innerHTML = '<form data-form="first" data-ignore-changes="true"><input id="foo" name="foo" value="bar"></form>';
+        new Forms();
+        (document.getElementById("foo") as HTMLInputElement).value = "baz";
+        assert.equal(leavePage(), false);
+    });
+
+    test("submits the forms with auto submit when an input changes", () => {
+        document.body.innerHTML = '<form data-form="first" data-auto-submit="true"><input id="foo" name="foo" value="bar"></form>';
+        const forms = new Forms();
+        const requestSubmit = mock.fn();
+        forms.first.element.requestSubmit = requestSubmit;
+        (document.getElementById("foo") as HTMLInputElement).dispatchEvent(new Event("change", { bubbles: true }));
+        assert.equal(requestSubmit.mock.callCount(), 1);
+    });
+
+    test("does not submit the other forms when an input changes", () => {
+        document.body.innerHTML = '<form data-form="first"><input id="foo" name="foo" value="bar"></form>';
+        const forms = new Forms();
+        const requestSubmit = mock.fn();
+        forms.first.element.requestSubmit = requestSubmit;
+        (document.getElementById("foo") as HTMLInputElement).dispatchEvent(new Event("change", { bubbles: true }));
+        assert.equal(requestSubmit.mock.callCount(), 0);
+    });
+
+    test("does not ask for confirmation for the forms with auto submit", () => {
+        document.body.innerHTML = '<form data-form="first" data-auto-submit="true"><input id="foo" name="foo" value="bar"></form>';
         new Forms();
         (document.getElementById("foo") as HTMLInputElement).value = "baz";
         assert.equal(leavePage(), false);
