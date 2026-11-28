@@ -367,6 +367,17 @@ panel.tools.backups: Kopie zapasowe
 panel.tools.info: Informacje
 panel.tools.latestBackup: 'Ostatnia kopia zapasowa:'
 panel.tools.latestBackups: Ostatnie kopie zapasowe
+panel.tools.logs: Logi
+panel.tools.logs.allLevels: Wszystkie poziomy
+panel.tools.logs.clear: Wyczyść log
+panel.tools.logs.clear.prompt: Czy na pewno chcesz wyczyścić log tego kanału? Tej operacji nie można cofnąć.
+panel.tools.logs.cleared: Log wyczyszczony
+panel.tools.logs.date: Data
+panel.tools.logs.empty: Nie znaleziono wpisów logu.
+panel.tools.logs.level: Poziom
+panel.tools.logs.message: Wiadomość
+panel.tools.logs.refresh: Odśwież
+panel.tools.logs.search: Szukaj w wiadomościach
 panel.tools.tools: Narzędzia
 panel.tools.updates: Aktualizacje
 panel.updates.availableForInstall: jest dostępna do zainstalowania

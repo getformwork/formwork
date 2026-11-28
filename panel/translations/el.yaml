@@ -367,6 +367,17 @@ panel.tools.backups: Αντίγραφα ασφαλείας
 panel.tools.info: Πληροφορίες
 panel.tools.latestBackup: 'Τελευταίο αντίγραφο ασφαλείας:'
 panel.tools.latestBackups: Πρόσφατα αντίγραφα ασφαλείας
+panel.tools.logs: Καταγραφές
+panel.tools.logs.allLevels: Όλα τα επίπεδα
+panel.tools.logs.clear: Εκκαθάριση καταγραφής
+panel.tools.logs.clear.prompt: Είστε βέβαιοι ότι θέλετε να εκκαθαρίσετε την καταγραφή αυτού του καναλιού; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
+panel.tools.logs.cleared: Η καταγραφή εκκαθαρίστηκε
+panel.tools.logs.date: Ημερομηνία
+panel.tools.logs.empty: Δεν βρέθηκαν καταχωρήσεις καταγραφής.
+panel.tools.logs.level: Επίπεδο
+panel.tools.logs.message: Μήνυμα
+panel.tools.logs.refresh: Ανανέωση
+panel.tools.logs.search: Αναζήτηση μηνυμάτων
 panel.tools.tools: Εργαλεία
 panel.tools.updates: Ενημερώσεις
 panel.updates.availableForInstall: είναι διαθέσιμη για εγκατάσταση

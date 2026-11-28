@@ -367,6 +367,17 @@ panel.tools.backups: Yedekler
 panel.tools.info: Bilgi
 panel.tools.latestBackup: 'Son yedek:'
 panel.tools.latestBackups: Son yedekler
+panel.tools.logs: Günlükler
+panel.tools.logs.allLevels: Tüm seviyeler
+panel.tools.logs.clear: Günlüğü temizle
+panel.tools.logs.clear.prompt: Bu kanalın günlüğünü temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+panel.tools.logs.cleared: Günlük temizlendi
+panel.tools.logs.date: Tarih
+panel.tools.logs.empty: Günlük girdisi bulunamadı.
+panel.tools.logs.level: Seviye
+panel.tools.logs.message: Mesaj
+panel.tools.logs.refresh: Yenile
+panel.tools.logs.search: Mesajlarda ara
 panel.tools.tools: Araçlar
 panel.tools.updates: Güncellemeler
 panel.updates.availableForInstall: yüklenebilir

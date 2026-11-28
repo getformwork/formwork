@@ -367,6 +367,17 @@ panel.tools.backups: Biztonsági mentések
 panel.tools.info: Információ
 panel.tools.latestBackup: 'Legutóbbi biztonsági mentés:'
 panel.tools.latestBackups: Legutóbbi biztonsági mentések
+panel.tools.logs: Naplók
+panel.tools.logs.allLevels: Minden szint
+panel.tools.logs.clear: Napló törlése
+panel.tools.logs.clear.prompt: Biztosan törölni szeretnéd ennek a csatornának a naplóját? Ez a művelet nem vonható vissza.
+panel.tools.logs.cleared: Napló törölve
+panel.tools.logs.date: Dátum
+panel.tools.logs.empty: Nem található naplóbejegyzés.
+panel.tools.logs.level: Szint
+panel.tools.logs.message: Üzenet
+panel.tools.logs.refresh: Frissítés
+panel.tools.logs.search: Keresés az üzenetekben
 panel.tools.tools: Eszközök
 panel.tools.updates: Frissítések
 panel.updates.availableForInstall: elérhető telepítésre

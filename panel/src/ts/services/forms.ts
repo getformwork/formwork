@@ -12,6 +12,7 @@ export class Forms {
             if (element.dataset.form) {
                 this[element.dataset.form] = new Form(element, {
                     preventUnloadOnChanges: element.dataset.ignoreChanges !== "true",
+                    autoSubmit: element.dataset.autoSubmit === "true",
                 });
             }
         });

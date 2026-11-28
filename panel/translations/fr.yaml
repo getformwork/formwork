@@ -367,6 +367,17 @@ panel.tools.backups: Sauvegardes
 panel.tools.info: Information
 panel.tools.latestBackup: 'Dernière sauvegarde:'
 panel.tools.latestBackups: Dernières sauvegardes
+panel.tools.logs: Journaux
+panel.tools.logs.allLevels: Tous les niveaux
+panel.tools.logs.clear: Vider le journal
+panel.tools.logs.clear.prompt: Voulez-vous vraiment vider le journal de ce canal ? Cette action est irréversible.
+panel.tools.logs.cleared: Journal vidé
+panel.tools.logs.date: Date
+panel.tools.logs.empty: Aucune entrée de journal trouvée.
+panel.tools.logs.level: Niveau
+panel.tools.logs.message: Message
+panel.tools.logs.refresh: Actualiser
+panel.tools.logs.search: Rechercher dans les messages
 panel.tools.tools: Outils
 panel.tools.updates: Mises à jour
 panel.updates.availableForInstall: est disponible pour l’installation

@@ -6,12 +6,21 @@ use Formwork\Backup\Backupper;
 use Formwork\Data\Collection;
 use Formwork\Http\RedirectResponse;
 use Formwork\Http\Response;
+use Formwork\Log\Logger;
 use Formwork\Parsers\Json;
+use Formwork\Router\RouteParams;
 use Formwork\Users\Attributes\Permission;
 use Formwork\Utils\Arr;
+use Formwork\Utils\Constraint;
 use Formwork\Utils\FileSystem;
 use Formwork\Utils\Str;
+use Formwork\Utils\Uri;
+use JsonException;
 
+/**
+ * @phpstan-type LogHandler array{type?: string, path: string, formatter?: string, channels?: list<string>}
+ * @phpstan-type LogEntry array{timestamp: int, channel: string, level: string, message: string, context: string}
+ */
 final class ToolsController extends AbstractController
 {
     /**
@@ -59,6 +68,84 @@ final class ToolsController extends AbstractController
             'title'          => $this->translate('panel.tools.updates'),
             'currentVersion' => $this->app::VERSION,
         ]));
+    }
+
+    /**
+     * Tools@logs action
+     */
+    #[Permission('panel.tools.logs')]
+    public function logs(RouteParams $routeParams): Response|RedirectResponse
+    {
+        $limits = [25, 50, 100, 200];
+        $defaultLimit = 50;
+
+        $channels = $this->getLogChannels();
+
+        $query = $this->request->query();
+
+        // Allow selecting the channel from a plain GET form
+        if ($query->has('channel')) {
+            $selected = (string) $query->get('channel');
+            $route = $this->generateRoute('panel.tools.logs', ['channel' => in_array($selected, $channels, true) ? $selected : Logger::DEFAULT_CHANNEL]);
+            /** @var array<string> $parameters */
+            $parameters = Arr::filter(['limit' => $query->get('limit'), 'level' => $query->get('level')], fn($value) => is_string($value) && !Constraint::isEmpty($value));
+
+            // The default limit is omitted from the query
+            if ((int) ($parameters['limit'] ?? 0) === $defaultLimit) {
+                unset($parameters['limit']);
+            }
+
+            return $this->redirect(Uri::make(['query' => $parameters], $route));
+        }
+
+        $channel = $routeParams->get('channel', Logger::DEFAULT_CHANNEL);
+
+        if (!in_array($channel, $channels, true)) {
+            return $this->redirect($this->generateRoute('panel.tools.logs', ['channel' => Logger::DEFAULT_CHANNEL]));
+        }
+
+        $limit = (int) $query->get('limit', $defaultLimit);
+
+        if (!in_array($limit, $limits, true)) {
+            $limit = $defaultLimit;
+        }
+
+        $levels = array_keys(Logger::LOG_LEVELS);
+
+        $level = $query->get('level');
+
+        if (!is_string($level) || !in_array($level, $levels, true)) {
+            $level = null;
+        }
+
+        return new Response($this->view('@panel.tools.logs', [
+            'title'    => $this->translate('panel.tools.logs'),
+            'channels' => $channels,
+            'channel'  => $channel,
+            'limits'   => $limits,
+            'limit'    => $limit,
+            'levels'   => $levels,
+            'level'    => $level,
+            'entries'  => $this->readLogEntries($channel, $limit, $level),
+        ]));
+    }
+
+    /**
+     * Tools@clearLogs action
+     */
+    #[Permission('panel.tools.logs.clear')]
+    public function clearLogs(RouteParams $routeParams): RedirectResponse
+    {
+        $channel = $routeParams->get('channel');
+
+        if (in_array($channel, $this->getLogChannels(), true)) {
+            $this->clearLogEntries($channel);
+            $this->panel->notify($this->translate('panel.tools.logs.cleared'), 'success');
+        } else {
+            $channel = Logger::DEFAULT_CHANNEL;
+        }
+
+        return $this->redirect($this->generateRoute('panel.tools.logs', ['channel' => $channel]));
     }
 
     /**
@@ -282,5 +369,132 @@ final class ToolsController extends AbstractController
             return $this->composerJson = Json::parseFile($this->app->rootPath() . '/composer.json');
         }
         return $this->composerJson = [];
+    }
+
+    /**
+     * Get the file log handlers, optionally only those handling a channel
+     *
+     * @return array<LogHandler>
+     */
+    private function getLogHandlers(?string $channel = null): array
+    {
+        return Arr::filter(
+            $this->config->getArray('system.logs.handlers', []),
+            fn(array $handler) => ($handler['type'] ?? null) === 'file'
+                && FileSystem::isFile($handler['path'], assertExists: false)
+                && ($channel === null || ($handler['channels'] ?? []) === [] || in_array($channel, $handler['channels'], true))
+        );
+    }
+
+    /**
+     * Get the channels that can be read from the file log handlers
+     *
+     * @return list<string>
+     */
+    private function getLogChannels(): array
+    {
+        $channels = [Logger::DEFAULT_CHANNEL];
+
+        foreach ($this->getLogHandlers() as $handler) {
+            foreach ($handler['channels'] ?? [] as $channel) {
+                if (!in_array($channel, $channels, true)) {
+                    $channels[] = $channel;
+                }
+            }
+        }
+
+        return $channels;
+    }
+
+    /**
+     * Read the latest entries of a log channel, most recent first
+     *
+     * @return list<LogEntry>
+     */
+    private function readLogEntries(string $channel, int $limit, ?string $level = null): array
+    {
+        $entries = [];
+
+        foreach ($this->getLogHandlers($channel) as $handler) {
+            foreach (array_reverse($this->readLogLines($handler['path'])) as $line) {
+                $entry = $this->parseLogLine($line, $handler['formatter'] ?? 'json');
+
+                if ($entry !== null && $entry['channel'] === $channel && ($level === null || $entry['level'] === $level)) {
+                    $entries[] = $entry;
+                }
+            }
+        }
+
+        $entries = Arr::sort($entries, SORT_DESC, sortBy: Arr::extract($entries, 'timestamp'), preserveKeys: false);
+
+        return array_slice($entries, 0, $limit);
+    }
+
+    /**
+     * Remove the entries of a log channel from the log files, leaving those of other channels untouched
+     *
+     * Files left without entries are deleted
+     */
+    private function clearLogEntries(string $channel): void
+    {
+        foreach ($this->getLogHandlers($channel) as $handler) {
+            $kept = Arr::filter($this->readLogLines($handler['path']), fn(string $line) => ($entry = $this->parseLogLine($line, $handler['formatter'] ?? 'json')) !== null && $entry['channel'] !== $channel);
+
+            if ($kept === []) {
+                // The file is created again by the handler when something is logged
+                FileSystem::delete($handler['path']);
+            } else {
+                FileSystem::write($handler['path'], implode(PHP_EOL, $kept) . PHP_EOL);
+            }
+        }
+    }
+
+    /**
+     * Get the non-empty lines of a log file
+     *
+     * @return list<string>
+     */
+    private function readLogLines(string $path): array
+    {
+        return preg_split('/\R/', FileSystem::read($path), flags: PREG_SPLIT_NO_EMPTY) ?: [];
+    }
+
+    /**
+     * Parse a log line, returning null if it is invalid
+     *
+     * @return LogEntry|null
+     */
+    private function parseLogLine(string $line, string $formatter): ?array
+    {
+        if ($formatter === 'text') {
+            if (preg_match('/^\[(.+?)\] (?:(.+?)\.)?([A-Za-z]+): (.*)$/', $line, $matches) !== 1) {
+                return null;
+            }
+
+            [, $datetime, $channel, $level, $message] = $matches;
+            $context = '';
+        } else {
+            try {
+                $data = Json::parse($line);
+            } catch (JsonException) {
+                return null;
+            }
+
+            if (!is_string($data['datetime'] ?? null) || !is_string($data['level'] ?? null) || !is_string($data['message'] ?? null)) {
+                return null;
+            }
+
+            ['datetime' => $datetime, 'level' => $level, 'message' => $message] = $data;
+            $channel = is_string($data['channel'] ?? null) ? $data['channel'] : '';
+            $context = Constraint::isEmpty($data['context'] ?? null) ? '' : Json::encode($data['context']);
+        }
+
+        return [
+            'timestamp' => (int) strtotime($datetime),
+            'channel'   => $channel === '' ? Logger::DEFAULT_CHANNEL : $channel,
+            'level'     => strtolower($level),
+            'message'   => $message,
+            'context'   => $context,
+        ];
     }
 }

@@ -21,6 +21,7 @@ import { initBackups } from "./views/backups";
 import { initDashboard } from "./views/dashboard";
 import { initFileForm, initFilesView } from "./views/files";
 import { initLogin } from "./views/login";
+import { initLogs } from "./views/logs";
 import { initDuplicatePageModal, initNewPageModal, initPagePreview, initPagesTree, initSortable } from "./views/pages";
 import { initPluginToggle } from "./views/plugins";
 import { initUpdates } from "./views/updates";
@@ -51,6 +52,7 @@ app.view("[data-view=files]", initFilesView);
 app.view("[data-form=file-form]", initFileForm);
 app.view(".statistics-chart", initStatisticsChart);
 app.view("[data-view=backups]", initBackups);
+app.view("[data-view=logs]", initLogs);
 app.view("#updater-component", initUpdates);
 app.views<HTMLInputElement>(".plugin-status-toggle", initPluginToggle);
 

@@ -71,6 +71,11 @@ return fn(App $app, Site $site, Translation $translation) => [
                 'uri'         => '/tools/updates/',
                 'permissions' => 'panel.tools.updates',
             ],
+            'logs' => [
+                'label'       => $translation->translate('panel.tools.logs'),
+                'uri'         => '/tools/logs/',
+                'permissions' => 'panel.tools.logs',
+            ],
             'info' => [
                 'label'       => $translation->translate('panel.tools.info'),
                 'uri'         => '/tools/info/',

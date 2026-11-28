@@ -367,6 +367,17 @@ panel.tools.backups: Säkerhetskopior
 panel.tools.info: Information
 panel.tools.latestBackup: 'Senaste säkerhetskopian:'
 panel.tools.latestBackups: Senaste säkerhetskopiorna
+panel.tools.logs: Loggar
+panel.tools.logs.allLevels: Alla nivåer
+panel.tools.logs.clear: Töm loggen
+panel.tools.logs.clear.prompt: Är du säker på att du vill tömma loggen för den här kanalen? Åtgärden kan inte ångras.
+panel.tools.logs.cleared: Loggen tömd
+panel.tools.logs.date: Datum
+panel.tools.logs.empty: Inga loggposter hittades.
+panel.tools.logs.level: Nivå
+panel.tools.logs.message: Meddelande
+panel.tools.logs.refresh: Uppdatera
+panel.tools.logs.search: Sök i meddelanden
 panel.tools.tools: Verktyg
 panel.tools.updates: Uppdateringar
 panel.updates.availableForInstall: finns tillgänglig för installation
