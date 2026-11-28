@@ -66,6 +66,10 @@ final class PanelRoutesTest extends TestCase
         yield 'editors cannot open the system options' => ['another-user', 'GET', '/panel/options/system/', ['status' => 403]];
         yield 'editors cannot open the backups' => ['another-user', 'GET', '/panel/tools/backups/', ['status' => 403]];
         yield 'editors cannot open the updates' => ['another-user', 'GET', '/panel/tools/updates/', ['status' => 403]];
+        yield 'the logs of the default channel' => ['user', 'GET', '/panel/tools/logs/', ['status' => 200, 'title' => 'Logs | Formwork']];
+        yield 'the logs of a channel' => ['user', 'GET', '/panel/tools/logs/default/', ['status' => 200, 'title' => 'Logs | Formwork']];
+        yield 'the logs of an unknown channel redirect to the default one' => ['user', 'GET', '/panel/tools/logs/missing/', ['status' => 302, 'to' => '/panel/tools/logs/default/']];
+        yield 'editors cannot open the logs' => ['another-user', 'GET', '/panel/tools/logs/', ['status' => 403]];
     }
 
     public function testWrongPasswordsDoNotLogIn(): void

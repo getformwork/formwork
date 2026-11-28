@@ -367,6 +367,17 @@ panel.tools.backups: Backups
 panel.tools.info: Info
 panel.tools.latestBackup: 'Latest backup:'
 panel.tools.latestBackups: Latest backups
+panel.tools.logs: Logs
+panel.tools.logs.allLevels: All levels
+panel.tools.logs.clear: Clear log
+panel.tools.logs.clear.prompt: Are you sure you want to clear the log of this channel? This action can’t be undone.
+panel.tools.logs.cleared: Log cleared
+panel.tools.logs.date: Date
+panel.tools.logs.empty: No log entries found.
+panel.tools.logs.level: Level
+panel.tools.logs.message: Message
+panel.tools.logs.refresh: Refresh
+panel.tools.logs.search: Search messages
 panel.tools.tools: Tools
 panel.tools.updates: Updates
 panel.updates.availableForInstall: is available for install

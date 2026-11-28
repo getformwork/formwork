@@ -244,6 +244,17 @@ return [
             'action' => 'Formwork\Panel\Controllers\ToolsController@info',
         ],
 
+        'panel.tools.logs' => [
+            'path'   => '/tools/logs/{channel:all}?/',
+            'action' => 'Formwork\Panel\Controllers\ToolsController@logs',
+        ],
+
+        'panel.tools.logs.clear' => [
+            'path'    => '/tools/logs/{channel:all}/clear/',
+            'action'  => 'Formwork\Panel\Controllers\ToolsController@clearLogs',
+            'methods' => ['POST'],
+        ],
+
         'panel.backup.make' => [
             'path'    => '/backup/make/',
             'action'  => 'Formwork\Panel\Controllers\BackupController@make',

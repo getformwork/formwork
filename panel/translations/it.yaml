@@ -367,6 +367,17 @@ panel.tools.backups: Backup
 panel.tools.info: Informazioni
 panel.tools.latestBackup: 'Ultimo backup:'
 panel.tools.latestBackups: Ultimi backup effettuati
+panel.tools.logs: Log
+panel.tools.logs.allLevels: Tutti i livelli
+panel.tools.logs.clear: Svuota log
+panel.tools.logs.clear.prompt: Vuoi davvero svuotare il log di questo canale? Questa azione non può essere annullata.
+panel.tools.logs.cleared: Log svuotato
+panel.tools.logs.date: Data
+panel.tools.logs.empty: Nessuna voce di log trovata.
+panel.tools.logs.level: Livello
+panel.tools.logs.message: Messaggio
+panel.tools.logs.refresh: Aggiorna
+panel.tools.logs.search: Cerca nei messaggi
 panel.tools.tools: Strumenti
 panel.tools.updates: Aggiornamenti
 panel.updates.availableForInstall: è disponibile per l’installazione
