@@ -367,6 +367,17 @@ panel.tools.backups: Резервные копии
 panel.tools.info: Информация
 panel.tools.latestBackup: 'Последняя резервная копия:'
 panel.tools.latestBackups: Последние резервные копии
+panel.tools.logs: Логи
+panel.tools.logs.allLevels: Все уровни
+panel.tools.logs.clear: Очистить лог
+panel.tools.logs.clear.prompt: Вы уверены, что хотите очистить лог этого канала? Это действие нельзя отменить.
+panel.tools.logs.cleared: Лог очищен
+panel.tools.logs.date: Дата
+panel.tools.logs.empty: Записи лога не найдены.
+panel.tools.logs.level: Уровень
+panel.tools.logs.message: Сообщение
+panel.tools.logs.refresh: Обновить
+panel.tools.logs.search: Поиск по сообщениям
 panel.tools.tools: Инструменты
 panel.tools.updates: Обновления
 panel.updates.availableForInstall: доступен для установки

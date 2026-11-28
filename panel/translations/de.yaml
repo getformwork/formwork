@@ -367,6 +367,17 @@ panel.tools.backups: Sicherungen
 panel.tools.info: Info
 panel.tools.latestBackup: 'Letzte Sicherung:'
 panel.tools.latestBackups: Letzte Sicherungen
+panel.tools.logs: Logs
+panel.tools.logs.allLevels: Alle Level
+panel.tools.logs.clear: Log leeren
+panel.tools.logs.clear.prompt: Möchten Sie das Log dieses Kanals wirklich leeren? Diese Aktion kann nicht rückgängig gemacht werden.
+panel.tools.logs.cleared: Log geleert
+panel.tools.logs.date: Datum
+panel.tools.logs.empty: Keine Log-Einträge gefunden.
+panel.tools.logs.level: Level
+panel.tools.logs.message: Nachricht
+panel.tools.logs.refresh: Aktualisieren
+panel.tools.logs.search: Nachrichten durchsuchen
 panel.tools.tools: Werkzeuge
 panel.tools.updates: Updates
 panel.updates.availableForInstall: ist verfügbar zur Installation

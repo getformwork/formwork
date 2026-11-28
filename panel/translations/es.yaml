@@ -367,6 +367,17 @@ panel.tools.backups: Copias de seguridad
 panel.tools.info: Información
 panel.tools.latestBackup: 'Última copia de seguridad:'
 panel.tools.latestBackups: Últimas copias de seguridad
+panel.tools.logs: Registros
+panel.tools.logs.allLevels: Todos los niveles
+panel.tools.logs.clear: Vaciar registro
+panel.tools.logs.clear.prompt: ¿Estás seguro de que quieres vaciar el registro de este canal? Esta acción no se puede deshacer.
+panel.tools.logs.cleared: Registro vaciado
+panel.tools.logs.date: Fecha
+panel.tools.logs.empty: No se han encontrado entradas de registro.
+panel.tools.logs.level: Nivel
+panel.tools.logs.message: Mensaje
+panel.tools.logs.refresh: Actualizar
+panel.tools.logs.search: Buscar en los mensajes
 panel.tools.tools: Herramientas
 panel.tools.updates: Actualizaciones
 panel.updates.availableForInstall: está disponible para instalar

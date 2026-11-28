@@ -367,6 +367,17 @@ panel.tools.backups: Backups
 panel.tools.info: Info
 panel.tools.latestBackup: 'Laatste backup:'
 panel.tools.latestBackups: Laatste backups
+panel.tools.logs: Logs
+panel.tools.logs.allLevels: Alle niveaus
+panel.tools.logs.clear: Log legen
+panel.tools.logs.clear.prompt: Weet je zeker dat je het log van dit kanaal wilt legen? Deze actie kan niet ongedaan worden gemaakt.
+panel.tools.logs.cleared: Log geleegd
+panel.tools.logs.date: Datum
+panel.tools.logs.empty: Geen logvermeldingen gevonden.
+panel.tools.logs.level: Niveau
+panel.tools.logs.message: Bericht
+panel.tools.logs.refresh: Vernieuwen
+panel.tools.logs.search: Berichten doorzoeken
 panel.tools.tools: Hulpmiddelen
 panel.tools.updates: Updates
 panel.updates.availableForInstall: is beschikbaar voor installatie

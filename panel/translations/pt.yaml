@@ -367,6 +367,17 @@ panel.tools.backups: Backups
 panel.tools.info: Informações
 panel.tools.latestBackup: 'Último backup:'
 panel.tools.latestBackups: Últimos backups
+panel.tools.logs: Registos
+panel.tools.logs.allLevels: Todos os níveis
+panel.tools.logs.clear: Limpar registo
+panel.tools.logs.clear.prompt: Tem certeza de que deseja limpar o registo deste canal? Esta acção não pode ser desfeita.
+panel.tools.logs.cleared: Registo limpo
+panel.tools.logs.date: Data
+panel.tools.logs.empty: Nenhuma entrada de registo encontrada.
+panel.tools.logs.level: Nível
+panel.tools.logs.message: Mensagem
+panel.tools.logs.refresh: Atualizar
+panel.tools.logs.search: Pesquisar nas mensagens
 panel.tools.tools: Ferramentas
 panel.tools.updates: Actualizações
 panel.updates.availableForInstall: está disponível para instalação

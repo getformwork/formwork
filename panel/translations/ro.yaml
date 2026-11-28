@@ -367,6 +367,17 @@ panel.tools.backups: Backup-uri
 panel.tools.info: Informații
 panel.tools.latestBackup: 'Ultimul backup:'
 panel.tools.latestBackups: Ultimele backup-uri
+panel.tools.logs: Jurnale
+panel.tools.logs.allLevels: Toate nivelurile
+panel.tools.logs.clear: Golește jurnalul
+panel.tools.logs.clear.prompt: Sigur dorești să golești jurnalul acestui canal? Această acțiune nu poate fi anulată.
+panel.tools.logs.cleared: Jurnal golit
+panel.tools.logs.date: Dată
+panel.tools.logs.empty: Nu s-au găsit intrări în jurnal.
+panel.tools.logs.level: Nivel
+panel.tools.logs.message: Mesaj
+panel.tools.logs.refresh: Reîmprospătează
+panel.tools.logs.search: Caută în mesaje
 panel.tools.tools: Unelte
 panel.tools.updates: Actualizări
 panel.updates.availableForInstall: este disponibil pentru instalare
