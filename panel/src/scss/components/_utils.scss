@@ -31,6 +31,10 @@
 @include make-util("pb", "padding-bottom", $spacers);
 @include make-util("pr", "padding-right", $spacers);
 
+@include make-util("gap", "gap", $spacers);
+@include make-util("gap-x", "column-gap", $spacers);
+@include make-util("gap-y", "row-gap", $spacers);
+
 @include make-util(
     "min-w",
     "min-width",
