@@ -155,4 +155,25 @@ describe("MarkdownView", () => {
             assert.ok(document.querySelector(".editor-link-tooltip") === null);
         });
     });
+
+    describe("resize grip", () => {
+        /**
+         * Press the mouse on the editor at a distance from its bottom right corner
+         */
+        function mouseDown(editor: MarkdownView, distance: number) {
+            const { dom } = editor.view;
+            dom.getBoundingClientRect = () => new DOMRect(0, 0, 400, 200);
+            const event = new MouseEvent("mousedown", { bubbles: true, cancelable: true, button: 0, clientX: 400 - distance, clientY: 200 - distance });
+            dom.dispatchEvent(event);
+            return event;
+        }
+
+        test("leaves the clicks on the grip to the browser", () => {
+            assert.equal(mouseDown(makeEditor("foo"), 4).defaultPrevented, false);
+        });
+
+        test("handles the clicks elsewhere", () => {
+            assert.equal(mouseDown(makeEditor("foo"), 100).defaultPrevented, true);
+        });
+    });
 });

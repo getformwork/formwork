@@ -53,6 +53,8 @@ export class MarkdownView {
             state: EditorState.create({
                 doc: markdownParser.parse(content),
                 plugins: [
+                    // Comes first, so that no other plugin handles the clicks on the grip
+                    resizeGripPlugin(),
                     buildInputRules(schema),
                     // Handles the keys over the tables in a selection before the keymaps
                     tableSelection(),
@@ -148,6 +150,30 @@ export class MarkdownView {
     destroy() {
         this.view.destroy();
     }
+}
+
+/**
+ * Size of the corner of the editor where the browser shows the grip resizing it
+ */
+const RESIZE_GRIP_SIZE = 16;
+
+/**
+ * Get the plugin leaving the grip resizing the editor to the browser
+ *
+ * ProseMirror prevents the default of the clicks to handle the selection by itself, which would
+ * stop the browser from resizing the editor
+ */
+function resizeGripPlugin() {
+    return new Plugin({
+        props: {
+            handleDOMEvents: {
+                mousedown(view, event) {
+                    const rect = view.dom.getBoundingClientRect();
+                    return getComputedStyle(view.dom).resize !== "none" && rect.right - event.clientX <= RESIZE_GRIP_SIZE && rect.bottom - event.clientY <= RESIZE_GRIP_SIZE;
+                },
+            },
+        },
+    });
 }
 
 /**
