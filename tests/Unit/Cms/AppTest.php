@@ -15,6 +15,7 @@ use Formwork\Fields\Dynamic\DynamicFieldValue;
 use Formwork\Http\FileResponse;
 use Formwork\Http\Request;
 use Formwork\Http\ResponseStatus;
+use Formwork\Log\LoggerManager;
 use Formwork\Panel\Panel;
 use Formwork\Plugins\Plugins;
 use Formwork\Router\Router;
@@ -23,6 +24,7 @@ use Formwork\Services\Container;
 use Formwork\Services\Exceptions\ServiceNotFoundException;
 use Formwork\Tests\TestCase;
 use Formwork\Tests\TestInstallation;
+use Formwork\Tests\Unit\Log\Fixtures\RecordingHandlerFixture;
 use Formwork\Tests\UsesApplication;
 use Formwork\Translations\Translations;
 use Formwork\Updater\SemVer;
@@ -449,6 +451,38 @@ final class AppTest extends TestCase
     public function testUserDeprecationsAreLeftToThePhpHandler(): void
     {
         $this->assertFalse($this->errorHandler()(E_USER_DEPRECATED, 'deprecated', 'file.php', 1));
+    }
+
+    public function testUserDeprecationsAreLoggedOnTheDeprecationsChannel(): void
+    {
+        $recordingHandler = new RecordingHandlerFixture();
+        App::instance()->getService(LoggerManager::class)->addHandler($recordingHandler);
+
+        $this->assertFalse($this->errorHandler()(E_USER_DEPRECATED, 'deprecated', 'file.php', 1));
+
+        $this->assertCount(1, $recordingHandler->records);
+        [, $level, $message, $context, $channel] = $recordingHandler->records[0];
+        $this->assertSame('deprecations', $channel);
+        $this->assertSame('notice', $level);
+        $this->assertSame('deprecated', $message);
+        $this->assertSame(['file' => 'file.php', 'line' => 1], $context);
+    }
+
+    public function testSilencedUserDeprecationsAreNotLogged(): void
+    {
+        $recordingHandler = new RecordingHandlerFixture();
+        App::instance()->getService(LoggerManager::class)->addHandler($recordingHandler);
+        $handler = $this->errorHandler();
+        $previous = error_reporting(0);
+
+        try {
+            $result = $handler(E_USER_DEPRECATED, 'silenced', 'file.php', 1);
+        } finally {
+            error_reporting($previous);
+        }
+
+        $this->assertFalse($result);
+        $this->assertSame([], $recordingHandler->records);
     }
 
     public function testSilencedErrorsAreIgnored(): void

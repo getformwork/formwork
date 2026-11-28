@@ -16,7 +16,8 @@ class StderrHandler extends FileHandler
     public function __construct(
         FormatterInterface $formatter = new TextFormatter(),
         string $level = LogLevel::DEBUG,
+        array $channels = [],
     ) {
-        parent::__construct('php://stderr', $formatter, $level);
+        parent::__construct('php://stderr', $formatter, $level, $channels);
     }
 }

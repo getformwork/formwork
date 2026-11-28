@@ -8,6 +8,7 @@ use Formwork\Log\Formatter\TextFormatter;
 use Formwork\Log\Handler\FileHandler;
 use Formwork\Log\Handler\StderrHandler;
 use Formwork\Log\Logger;
+use Formwork\Log\LoggerManager;
 use Formwork\Services\Container;
 use Formwork\Services\Loaders\LoggerServiceLoader;
 use Formwork\Tests\TestCase;
@@ -27,6 +28,7 @@ final class LoggerServiceLoaderTest extends TestCase
         $logger = $this->load([]);
 
         $this->assertInstanceOf(Logger::class, $logger);
+        $this->assertSame('default', $logger->channel());
         $logger->error('nothing handles this');
     }
 
@@ -116,6 +118,32 @@ final class LoggerServiceLoaderTest extends TestCase
         yield 'file with the text format' => [['type' => 'file', 'path' => TESTS_TMP_PATH . '/app.log', 'formatter' => 'text'], FileHandler::class, TextFormatter::class];
     }
 
+    public function testHandlersCanBeLimitedToChannels(): void
+    {
+        $loggerManager = $this->loadManager([['type' => 'file', 'path' => TESTS_TMP_PATH . '/panel.log', 'channels' => ['panel']]]);
+
+        $loggerManager->get('panel')->error('from panel');
+        $loggerManager->get('cache')->error('from cache');
+        unset($loggerManager);
+
+        $content = FileSystem::read(TESTS_TMP_PATH . '/panel.log');
+        $this->assertStringContainsString('from panel', $content);
+        $this->assertStringNotContainsString('from cache', $content);
+    }
+
+    public function testHandlersWithoutChannelsReceiveEveryChannel(): void
+    {
+        $loggerManager = $this->loadManager([['type' => 'file', 'path' => TESTS_TMP_PATH . '/app.log']]);
+
+        $loggerManager->get('panel')->error('from panel');
+        $loggerManager->get('cache')->error('from cache');
+        unset($loggerManager);
+
+        $content = FileSystem::read(TESTS_TMP_PATH . '/app.log');
+        $this->assertStringContainsString('from panel', $content);
+        $this->assertStringContainsString('from cache', $content);
+    }
+
     public function testUnknownHandlerTypesAreRejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -141,9 +169,17 @@ final class LoggerServiceLoaderTest extends TestCase
     }
 
     /**
-     * @param list<array<string, string>> $handlers
+     * @param list<array<string, mixed>> $handlers
      */
     private function load(array $handlers): Logger
+    {
+        return $this->loadManager($handlers)->get(Logger::DEFAULT_CHANNEL);
+    }
+
+    /**
+     * @param list<array<string, mixed>> $handlers
+     */
+    private function loadManager(array $handlers): LoggerManager
     {
         $container = new Container();
         $container->define(Container::class, $container);

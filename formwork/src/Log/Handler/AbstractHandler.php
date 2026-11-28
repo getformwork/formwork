@@ -14,11 +14,13 @@ use Psr\Log\LogLevel;
 abstract class AbstractHandler implements HandlerInterface
 {
     /**
-     * @param LogLevel::* $level
+     * @param LogLevel::*  $level
+     * @param list<string> $channels Channels handled by the handler, all channels if empty
      */
     public function __construct(
         protected FormatterInterface $formatter,
         protected string $level = LogLevel::DEBUG,
+        protected array $channels = [],
     ) {
         // @phpstan-ignore isset.offset
         if (!isset(Logger::LOG_LEVELS[$level])) {
@@ -43,5 +45,15 @@ abstract class AbstractHandler implements HandlerInterface
             throw new InvalidArgumentException(sprintf('Invalid log level: "%s"', $level));
         }
         return Logger::LOG_LEVELS[$level] <= Logger::LOG_LEVELS[$this->level];
+    }
+
+    /**
+     * Determine if the handler should handle a log record of the given channel
+     *
+     * @since 2.4.0
+     */
+    protected function shouldHandleChannel(string $channel): bool
+    {
+        return $this->channels === [] || in_array($channel, $this->channels, true);
     }
 }

@@ -3,11 +3,12 @@
 namespace Formwork\Log\Formatter;
 
 use DateTimeInterface;
+use Formwork\Log\Logger;
 
 /**
  * @since 2.3.0
  */
-class TextFormatter extends AbstractFormatter
+class TextFormatter extends AbstractFormatter implements ChannelAwareFormatterInterface
 {
     public const DATE_FORMAT = 'Y-m-d H:i:s.u';
 
@@ -18,11 +19,12 @@ class TextFormatter extends AbstractFormatter
     /**
      * @inheritDoc
      */
-    public function format(DateTimeInterface $datetime, string $level, string $message, array $context): string
+    public function format(DateTimeInterface $datetime, string $level, string $message, array $context, string $channel = Logger::DEFAULT_CHANNEL): string
     {
         return sprintf(
-            '[%s] %s: %s',
+            '[%s] %s.%s: %s',
             $datetime->format(self::DATE_FORMAT),
+            $channel,
             strtoupper($level),
             rtrim(implode(' ', [
                 $this->interpolate($message, $context, self::DATE_FORMAT),

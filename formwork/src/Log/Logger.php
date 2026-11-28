@@ -3,6 +3,7 @@
 namespace Formwork\Log;
 
 use DateTimeImmutable;
+use Formwork\Log\Handler\ChannelAwareHandlerInterface;
 use Formwork\Log\Handler\HandlerInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
@@ -15,6 +16,8 @@ use Stringable;
  */
 class Logger extends AbstractLogger implements LoggerInterface
 {
+    public const DEFAULT_CHANNEL = 'default';
+
     public const LOG_LEVELS = [
         LogLevel::EMERGENCY => 0,
         LogLevel::ALERT     => 1,
@@ -30,6 +33,21 @@ class Logger extends AbstractLogger implements LoggerInterface
      * @var array<HandlerInterface>
      */
     private array $handlers = [];
+
+    /**
+     * @param non-empty-string $channel
+     */
+    public function __construct(
+        private string $channel = self::DEFAULT_CHANNEL,
+    ) {}
+
+    /**
+     * Get the channel name of the logger
+     */
+    public function channel(): string
+    {
+        return $this->channel;
+    }
 
     /**
      * Add a log handler
@@ -59,12 +77,11 @@ class Logger extends AbstractLogger implements LoggerInterface
         $datetime = new DateTimeImmutable(sprintf('@%.6F', microtime(true)));
 
         foreach ($this->handlers as $handler) {
-            $handler->handle(
-                $datetime,
-                (string) $level,
-                (string) $message,
-                $context
-            );
+            if ($handler instanceof ChannelAwareHandlerInterface) {
+                $handler->handle($datetime, (string) $level, (string) $message, $context, $this->channel);
+            } else {
+                $handler->handle($datetime, (string) $level, (string) $message, $context);
+            }
         }
     }
 }

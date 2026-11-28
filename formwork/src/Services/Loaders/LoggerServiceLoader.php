@@ -9,7 +9,7 @@ use Formwork\Log\Formatter\TextFormatter;
 use Formwork\Log\Handler\FileHandler;
 use Formwork\Log\Handler\HandlerInterface;
 use Formwork\Log\Handler\StderrHandler;
-use Formwork\Log\Logger;
+use Formwork\Log\LoggerManager;
 use Formwork\Services\Container;
 use Formwork\Services\ServiceLoaderInterface;
 use InvalidArgumentException;
@@ -24,18 +24,18 @@ final class LoggerServiceLoader implements ServiceLoaderInterface
         private Config $config
     ) {}
 
-    public function load(Container $container): Logger
+    public function load(Container $container): LoggerManager
     {
-        $logger = $container->build(Logger::class);
+        $loggerManager = $container->build(LoggerManager::class);
         foreach ($this->config->getArray('system.logs.handlers', []) as $handlerConfig) {
-            $logger->addHandler($this->buildHandler($handlerConfig));
+            $loggerManager->addHandler($this->buildHandler($handlerConfig));
         }
 
-        return $logger;
+        return $loggerManager;
     }
 
     /**
-     * @param array{type?: string, path?: string, level?: string, formatter?: string} $config
+     * @param array{type?: string, path?: string, level?: string, formatter?: string, channels?: list<string>} $config
      */
     private function buildHandler(array $config): HandlerInterface
     {

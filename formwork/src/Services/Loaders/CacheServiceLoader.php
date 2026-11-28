@@ -7,15 +7,24 @@ use Formwork\Cache\ArrayCache;
 use Formwork\Cache\CacheManager;
 use Formwork\Cache\FilesCache;
 use Formwork\Config\Config;
+use Formwork\Log\LoggerManager;
 use Formwork\Services\Container;
-use Formwork\Services\ServiceLoaderInterface;
+use Formwork\Services\DefinitionAwareServiceLoaderInterface;
 use InvalidArgumentException;
 
-final class CacheServiceLoader implements ServiceLoaderInterface
+final class CacheServiceLoader implements DefinitionAwareServiceLoaderInterface
 {
     public function __construct(
         private Config $config,
     ) {}
+
+    /**
+     * @since 2.4.0
+     */
+    public static function onDefined(Container $container): void
+    {
+        $container->define('logger.cache', static fn(LoggerManager $loggerManager) => $loggerManager->get('cache'));
+    }
 
     public function load(Container $container): CacheManager
     {
