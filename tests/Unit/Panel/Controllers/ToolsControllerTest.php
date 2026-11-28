@@ -29,6 +29,11 @@ final class ToolsControllerTest extends TestCase
      */
     private array $logHandlers = [];
 
+    /**
+     * @var list<string>
+     */
+    private array $createdLogPaths = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,6 +41,19 @@ final class ToolsControllerTest extends TestCase
         FileSystem::createDirectory(FileSystem::joinPaths(TESTS_TMP_PATH, 'logs'));
 
         $root = App::instance()->rootPath();
+
+        // The files of the default log handlers exist when something has been logged
+        if (!FileSystem::isDirectory($root . '/logs', assertExists: false)) {
+            FileSystem::createDirectory($root . '/logs');
+            $this->createdLogPaths[] = $root . '/logs';
+        }
+
+        foreach (['formwork.log', 'deprecations.log'] as $name) {
+            if (!FileSystem::isFile($root . '/logs/' . $name, assertExists: false)) {
+                FileSystem::write($root . '/logs/' . $name, '');
+                array_unshift($this->createdLogPaths, $root . '/logs/' . $name);
+            }
+        }
 
         FileSystem::write($root . '/composer.json', Json::encode([
             'require' => ['php' => '>=8.3', 'ext-mbstring' => '*', 'ext-zip' => '*', 'league/commonmark' => '^2.4'],
@@ -49,6 +67,11 @@ final class ToolsControllerTest extends TestCase
     {
         $root = App::instance()->rootPath();
 
+        foreach ($this->createdLogPaths as $path) {
+            FileSystem::delete($path);
+        }
+
+        $this->createdLogPaths = [];
         FileSystem::delete($root . '/composer.json');
         FileSystem::delete($root . '/composer.lock');
 
@@ -422,7 +445,10 @@ final class ToolsControllerTest extends TestCase
         $router = $this->createStub(Router::class);
         $router->method('generate')->willReturnCallback(static fn(string $name, array $params = []): string => '/route/' . $name . '/' . ($params['channel'] ?? ''));
 
-        return $this->makeController(ToolsController::class, system: ['logs' => ['handlers' => $this->logHandlers]], services: [Router::class => $router], query: $query);
+        // The default handlers are replaced, so that their files do not affect the logs of the test
+        $handlers = ['default' => ['type' => 'stderr'], 'deprecations' => ['type' => 'stderr'], ...$this->logHandlers];
+
+        return $this->makeController(ToolsController::class, system: ['logs' => ['handlers' => $handlers]], services: [Router::class => $router], query: $query);
     }
 
     /**
